@@ -79,7 +79,7 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
 	} # Close innerFun
 	res <- lapply( 1:B, innerFun, x=x, which=which, gth=gth, gqu=gqu,
 				   penalty=penalty, gaussianParameters=gaussianParameters,
-				pass = 1 )
+				pass = 1, trace=trace )
 
 	# Re run for non-converged sets
 	if ( nPass > 1 ){
@@ -91,7 +91,7 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
 				cat( "Pass", pass, ":", sum( rerun ), "samples to rerun.\n" )
 				rerun <- ( 1:B )[ rerun ]
 				res[ rerun ] <- lapply( (1:B)[ rerun ], innerFun, x=x, which=which, gth=gth, gqu=gqu,
-						   penalty=penalty, gaussianParameters=gaussianParameters , pass=pass)
+						   penalty=penalty, gaussianParameters=gaussianParameters , pass=pass, trace=trace )
 			}
 		} # close for( pass in...
 	} # close if (nPass > 1 )
