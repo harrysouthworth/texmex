@@ -13,11 +13,11 @@
     \item{\code{ALP_B}}{Alkaline phosphatase at baseline. A numeric vector.}
     \item{\code{ALT_B}}{Alanine aminotransferase at baseline. A numeric vector.}
     \item{\code{AST_B}}{Aspartate aminotransferase at baseline. A numeric vector.}
-    \item{\code{TBili_B}}{Total bilirubin at baseline. A numeric vector.}
+    \item{\code{TBL_B}}{Total bilirubin at baseline. A numeric vector.}
     \item{\code{ALP_M}}{Alkaline phosphatase after treatment. A numeric vector.}
     \item{\code{ALT_M}}{Alanine aminotransferase after treatment. A numeric vector.}
     \item{\code{AST_M}}{Aspartate aminotransferase after treatment. A numeric vector.}
-    \item{\code{TBili_M}}{Total bilirubin after treatment. A numeric vector.}
+    \item{\code{TBL_M}}{Total bilirubin after treatment. A numeric vector.}
     \item{\code{dose}}{The treatment group (i.e. dose group). A factor with levels \code{A} \code{B} \code{C} \code{D}}
   }
 }
