@@ -1,9 +1,9 @@
-Package: gpdcmvx
+Package: texmex
 Type: Package
-Title: Conditional multivariate extreme value modelling
-Version: 0.2
+Title: Threshold exceedences and multivariate extremes
+Version: 0.3
 Date: 2010-09-27
-Author: Harry Southworth
+Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 Description: Conditional multivariate extreme value modelling using
              the approach of Heffernan and Tawn.
@@ -11,4 +11,4 @@ License: GPL (>=2) | BSD
 Depends: mvtnorm
 LazyLoad: yes
 LazyData: yes
-Packaged: 2010-09-27 12:01:19 UTC; kpzv097
+Packaged: 2010-10-14 11:47:02 UTC; kpzv097

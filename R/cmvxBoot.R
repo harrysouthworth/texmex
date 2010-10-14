@@ -10,10 +10,10 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
     if ( missing( gth ) ) gth <- quantile( x$gumbel[, which ] , prob=gqu )
 	
 	penalty <- x$penalty
-	gaussianParameters <- x$gaussianParameters
+	priorParameters <- x$priorParameters
 
 	# This is brutal and could be made more efficient
-	innerFun <- function( i, x, which, gth, gqu, penalty, gaussianParameters, pass=1, trace=trace ){
+	innerFun <- function( i, x, which, gth, gqu, penalty, priorParameters, pass=1, trace=trace ){
 
 		# This could be improved by pushing some of the calculations outside the 
 		# function, and by allowing starting values to be passed to the functions
@@ -56,7 +56,7 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
 		dimnames( g )[[ 2 ]] <- names( x$models )
 	
 		# Get GPD parameters
-		ggpd <- migpd( g , th = x$th, penalty=penalty, gaussianParameters=gaussianParameters ) # 
+		ggpd <- migpd( g , th = x$th, penalty=penalty, priorParameters=priorParameters ) # 
 
 		if ( !missing( gqu ) ) gqu <- rep( gqu , length=d )
 		# Get dependence parameters
@@ -71,14 +71,16 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
 		# Need to return GPD parameters and the dependence structure parameters
 		res <- list( GPD=coef( ggpd )[ 3:4,] , dependence=gd$parameters, Z = gd$Z )
 
-		if ( pass == 1 )
-			if ( i %% trace == 0 )
+		if ( pass == 1 ){
+			if ( i %% trace == 0 ){
 				cat( paste( i, "replicates done\n" ) )
+                        }
+                } # Close if ( pass == 1
 		
 		res
 	} # Close innerFun
 	res <- lapply( 1:B, innerFun, x=x, which=which, gth=gth, gqu=gqu,
-				   penalty=penalty, gaussianParameters=gaussianParameters,
+				   penalty=penalty, priorParameters=priorParameters,
 				pass = 1, trace=trace )
 
 	# Re run for non-converged sets
@@ -91,7 +93,7 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
 				cat( "Pass", pass, ":", sum( rerun ), "samples to rerun.\n" )
 				rerun <- ( 1:B )[ rerun ]
 				res[ rerun ] <- lapply( (1:B)[ rerun ], innerFun, x=x, which=which, gth=gth, gqu=gqu,
-						   penalty=penalty, gaussianParameters=gaussianParameters , pass=pass, trace=trace )
+						   penalty=penalty, priorParameters=priorParameters , pass=pass)
 			}
 		} # close for( pass in...
 	} # close if (nPass > 1 )
