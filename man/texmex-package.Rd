@@ -1,6 +1,6 @@
-\name{gpdcmvx-package}
-\alias{gpdcmvx-package}
-\alias{gpdcmvx}
+\name{texmex-package}
+\alias{texmex-package}
+\alias{texmex}
 \docType{package}
 \title{
 Conditional multivariate extreme value modelling
@@ -11,7 +11,7 @@ and the Heffernan-Tawn appraoch to conditional multivariate extremes
 }
 \details{
 \tabular{ll}{
-Package: \tab gpdcmvx\cr
+Package: \tab texmex\cr
 Type: \tab Package\cr
 Version: \tab 0.1\cr
 Date: \tab 2010-06-22\cr
@@ -58,7 +58,7 @@ bmod <- bgpd(alt, th=quantile(alt, .7))
 par(mfrow=c(3, 2))
 plot(bmod)
 
-D <- liver[liver$dose == "D", c("ALT_M", "AST_M", "ALP_M", "TBili_M")]
+D <- liver[liver$dose == "D", c("ALT_M", "AST_M", "ALP_M", "TBL_M")]
 gpdD <- migpd(D, qu=.7) # Use data over 70th percentile
 summary(gpdD)
 cmvxDependence(gpdD)
