@@ -4,11 +4,18 @@ function( x, which , B=100, gth, gqu, nPass = 3, trace=10 ){
 
 	if ( class( x ) != "migpd" ) stop( "object should have class migpd" )
 
+   if (missing(which)) {
+       cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1],
+           "\n")
+       which <- 1
+   }
+
     if (missing(gqu) & missing(gth)){
         gqu <- x$qu[which]
     }
     if ( missing( gth ) ) gth <- quantile( x$gumbel[, which ] , prob=gqu )
-	
+
+
 	penalty <- x$penalty
 	priorParameters <- x$priorParameters
 

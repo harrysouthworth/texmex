@@ -15,10 +15,11 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 
     if (!missing(data)){
         ys <- y
+        y <- data[, y]
         if (missing(th)){
             th <- quantile(y, qu)
         }
-        y <- data[, y]
+#        y <- data[, y]
         X.phi <- model.matrix(phi, data)
         X.xi <- model.matrix(xi, data)
         X.phi <- X.phi[y > th,]
@@ -34,8 +35,6 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
         X.xi <- X.xi[y > th, ]
     }
     
-
-    
     y <- y[y > th]
 
     if (!is.matrix(X.phi)){
@@ -49,10 +48,6 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
         jump.const <- (2.4/sqrt(ncol(X.phi) + ncol(X.xi)))^2
     }
 
-#	if ( !is.element( "package:mvtnorm", search() ) ){
-#		cat( "Attempting to load required package 'mvtrnorm'...\n" )
-#		library( mvtnorm )
-#	}
 	u <- th
 	
 	if ( thin < 1 ) thin <- 1 / thin
@@ -122,6 +117,7 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 #    x <- x[data > u]
 #	data <- data[data > u] - u
 
+        if (!exists(".Random.seed")){ runif(1) }
 	seed <- .Random.seed # Retain and add to output
 
 	for( i in 2:iter ){
