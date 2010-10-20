@@ -6,6 +6,9 @@ function(p , sigma = 1, xi = 1 , u = 0, lower.tail=TRUE, log.p=FALSE ){
     xi <- rep(xi, length=n)
     u <- rep(u, length=n)
 
+    if (log.p) { p <- exp(p) }
+    if (!lower.tail) { p <- 1 - p }
+
     if (all(xi == 0)){
         res <- qexp(p, 1/sigma)
     }
@@ -17,7 +20,9 @@ function(p , sigma = 1, xi = 1 , u = 0, lower.tail=TRUE, log.p=FALSE ){
 
     }
 	else {
-		res <- u + ( sigma * (p^( - xi ) - 1)) / xi
+		res <- u + ( sigma * (p^(xi) - 1)) / xi
+
+        res <- (sigma / xi) * ((1 - p)^(-xi) - 1) + u
 	}
     res
 }
