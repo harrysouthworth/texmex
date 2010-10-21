@@ -57,10 +57,7 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 	prior <- casefold(prior)
 	penalty <- prior
 	# Define the LOG-priors
-	if ( prior == "jeffreys" ){
-        stop("Jeffreys prior not implemented")
-   	}
-	else if ( prior == "gaussian" ){
+	if ( prior == "gaussian" ){
         if ( casefold( penalty ) %in% c( "quadratic" , "gaussian" )  ){
 		    if ( is.null( priorParameters ) ){
 		        priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)),
@@ -72,10 +69,17 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 			dmvnorm(param, m, co, log=TRUE) 
 		}
 	}
-	else if ( prior == "coles-dixon" ){ # log Coles-Dixon
-		stop("Coles-Dixon prior not implemented")
-	}
-	else stop( "prior can be 'jeffreys', 'gaussian' or 'coles-dixon'" )
+	else stop( "only Gaussian priors implemented" )
+
+    if (!is.null(priorParameters)){
+        dimp <- ncol(X.phi) + ncol(X.xi)
+        if (length(priorParameters[[1]]) != dimp){
+            stop("wrong number of parameters in prior (doesn't match phi and xi formulas)")
+        }
+        else if (length(diag(priorParameters[[2]])) != dimp){
+            stop("wrong dimension of prior covariance (doesn't match phi and xi formulas)")
+        }
+    }
 
 	gpdlik <- # Positive loglikelihood
 	function(param, data, X.phi, X.xi){
