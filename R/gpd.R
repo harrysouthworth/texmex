@@ -1,4 +1,4 @@
-`gpd` <-
+gpd <-
 function(y, data, th, qu, phi= ~1, xi= ~1,
          penalty="gaussian", priorParameters=NULL,
          maxit=10000, trace=0) {
@@ -62,11 +62,26 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
                     of length 2, the second element of which should be
                     a diagonal matrix")
           }
-          else if (!is.matrix(priorParameters[[2]])){
+          if (!is.matrix(priorParameters[[2]])){
               # Lasso penalty is a bit unintuitive. Try to help out.
               priorParameters[[2]] <- diag(rep(priorParameters[[2]], ncol(X.phi) + ncol(X.xi)))      
           }
+          if (!all(wh == diag(diag(wh)))){
+              warning("some off-diagonal elements of the covariance are non-zero. Only
+                       the diagonal is used in penalization")
+          }
       }
+
+        if (!is.null(priorParameters)){
+            dimp <- ncol(X.phi) + ncol(X.xi)
+            if (length(priorParameters[[1]]) != dimp){
+                stop("wrong number of parameters in prior (doesn't match phi and xi formulas)")
+            }
+            else if (length(diag(priorParameters[[2]])) != dimp){
+                stop("wrong dimension of prior covariance (doesn't match phi and xi formulas)")
+            }
+
+        }
 
         gpd.lik <- function(par, y, th, X.phi, X.xi,
                             penalty = "none", priorParameters=NULL,
@@ -85,9 +100,6 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
             else l <- sum(sc) + sum(log(y) * (1/xi + 1)) # neg log lik
             if (casefold(penalty) == "none") 
                 l <- l
-            else if (casefold(penalty) == "jeffreys") {
-                stop("Jeffreys prior not implemented in this version")
-            }
             else if (casefold(penalty) %in% c("quadratic", "gaussian")) {
 
                 p <- mahalanobis(matrix(c(keepsc, keepxi), nrow = 1), 
@@ -98,7 +110,7 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
                 p <- sum(abs(c(keepsc, keepxi) - priorParameters[[1]]) * diag(priorParameters[[2]]))
                 l <- l + p
             }
-            else stop("penalty can be 'none', 'jeffreys' or 'gaussian'")
+            else stop("penalty can be 'none', 'lasso' or 'gaussian'")
             l
         }
 
