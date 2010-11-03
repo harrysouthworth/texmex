@@ -154,13 +154,14 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 	param <- param[ wh , ]
 
 	# Simulate probabilities of being over threshold
-	if ( mean( y > u , na.rm = TRUE ) == 1 ) p <-1
-	else
-		p <- rbeta( dim( param )[[ 1 ]], .5 + sum( mod$xdata > u , na.rm=TRUE ),
-											.5 + sum( mod$xdata <= u , na.rm = TRUE)
-					)
+#	if ( mean( y > u , na.rm = TRUE ) == 1 ) p <-1
+#	else
+#		p <- rbeta( dim( param )[[ 1 ]], .5 + sum( mod$xdata > u , na.rm=TRUE ),
+#											.5 + sum( mod$xdata <= u , na.rm = TRUE)
+#					)
 	
-	res <- list( call=theCall, threshold=u , map = mod , p=p,
+	res <- list( call=theCall, threshold=u , map = mod ,
+#                    p=p,
 					burn = burn, thin = thin, 
 					chains=res , param=param,
 					X.phi = X.phi, X.xi = X.xi,
