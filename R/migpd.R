@@ -88,3 +88,27 @@ function (data, th, qu, penalty = "gaussian", maxit = 10000,
    invisible(res)
 }
 
+test(migpd) <- function(){
+
+# values from Heffernan and Tawn (2004) Table 4. 
+# Note values in published Table 4 for u_{Xi} in cols NO2 and NO Winter were reversed.
+
+  htsummer <- rbind(qu=c(43, 43, 66.1, 22, 46),
+    th = c(.9, .7, .7, .85, .7),
+    sigma = c(15.8, 9.1, 32.2, 42.9, 22.8),
+    xi = c(-.29, .01, .02, .08, .02))
+  
+  htwinter <- rbind(qu=c(23, 49, 151.6, 23, 53),
+    th = rep(.7, 5),
+    sigma = c(6.2, 9.3, 117.4, 19.7, 37.5),
+    xi = c(-.37, -.03, -.09, .11, -.2))
+  
+  summer.gpd <- summary(migpd(summer, qu=htsummer[2,],penalty="none"),verbose=FALSE)
+  winter.gpd <- summary(migpd(winter, qu=htwinter[2,],penalty="none"),verbose=FALSE)
+  
+  tol <- c(1,0.05,0.5,0.5)
+  for(i in 1:4){
+    checkEqualsNumeric(summer.gpd[i,],htsummer[i,],tol=tol[i])
+    checkEqualsNumeric(winter.gpd[i,],htwinter[i,],tol=tol[i])
+  }
+}
