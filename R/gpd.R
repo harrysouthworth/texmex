@@ -31,7 +31,6 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
         X.xi <- X.xi[y > th, ]
     }
 
-#    y <- data[, y]
     rate <- mean(y > th)
 
     y <- y[y > th]
@@ -143,6 +142,8 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
 	  if (missing(data)) { data <- NULL }
       o$data <- data
 	  o$loglik <- -gpd.lik(o$mle, y, th, X.phi, X.xi)
+    o$value <- NULL # since this duplicates the $loglik value
+    o$counts <- NULL # not required
 	  oldClass( o ) <- "gpd"
 	  o
     }
