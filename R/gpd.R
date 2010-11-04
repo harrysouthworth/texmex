@@ -130,8 +130,8 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
 	  o$se <- sqrt( diag( o$cov ) )
 	  o$threshold <- th
 	  o$penalty <- penalty
-	  o$mle <- o$par
-      names(o$mle) <- c(paste("phi:", colnames(X.phi)),
+	  o$coefficients <- o$par
+      names(o$coefficients) <- c(paste("phi:", colnames(X.phi)),
                         paste("xi:", colnames(X.xi)))
 	  o$par <- NULL
 	  o$rate <- rate
@@ -141,7 +141,7 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
 	  o$X.xi <- X.xi
 	  if (missing(data)) { data <- NULL }
       o$data <- data
-	  o$loglik <- -gpd.lik(o$mle, y, th, X.phi, X.xi)
+	  o$loglik <- -gpd.lik(o$coefficients, y, th, X.phi, X.xi)
     o$value <- NULL # since this duplicates the $loglik value
     o$counts <- NULL # not required
 	  oldClass( o ) <- "gpd"
