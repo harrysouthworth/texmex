@@ -148,3 +148,155 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
 	  o
     }
 
+test(gpd) <- function(){
+  tol <- 0.01
+  
+###################################################################
+# 1.3 Reproduce loglik, parameter estimates and covariance on page 85
+#    of Coles. Will not be exact because fitting routines differ:
+#    gpd works with phi=log(sigma). Can only reproduce cell [2,2]
+#    of covariance.
+
+  cparas <- c(7.44, 0.184)
+  cse <- c(0.958432, 0.101151)
+  
+  ccov <- matrix(c(.9188, -.0655, -.0655, .0102), nrow=2)
+  cloglik <- -485.1
+
+  mod <- gpd(rain, th=30, penalty="none")
+  mod.coef <- coef(mod)
+  
+  mod.coef[1] <- exp(mod.coef)
+  names(mod.coef)[1] <- "sigma"
+  
+  mod.loglik <- mod$loglik
+  mod.cov22 <- mod$cov[2, 2]
+
+  checkEqualsNumeric(mod.coef, cparas, tolerance = tol)
+  checkEqualsNumeric(mod$se[2], cse[2], tolerance = tol)
+  checkEqualsNumeric(mod$cov[2, 2], ccov[2,2], tolerance = tol)
+  checkEqualsNumeric(mod.loglik, cloglik, tolerance = tol)
+  
+###################################################################
+#   Logical checks on the effect of penalization. The smaller the
+#    variance, the more the parameter should be drawn towards the
+#    mean.
+
+# 2.1 Tests for xi being drawn to 0
+
+  gp1 <- list(c(0, 0), diag(c(10^4, .25)))
+  gp2 <- list(c(0, 0), diag(c(10^4, .05)))
+
+  mod1 <- gpd(rain, th=30, priorParameters=gp1)
+  mod2 <- gpd(rain, th=30, priorParameters=gp2)
+
+  checkTrue(coef(mod)[2] > coef(mod1)[2])
+  checkTrue(coef(mod1)[2] > coef(mod2)[2])
+
+# 2.2 Tests for phi being drawn to 0
+
+  gp3 <- list(c(0, 0), diag(c(1, 10^4)))
+  gp4 <- list(c(0, 0), diag(c(.1, 10^4)))
+
+  mod3 <- gpd(rain, th=30, priorParameters=gp3)
+  mod4 <- gpd(rain, th=30, priorParameters=gp4)
+
+  checkTrue(coef(mod)[1] > coef(mod3)[1])
+  checkTrue(coef(mod3)[1] > coef(mod4)[1])
+  
+# 2.3 Tests for xi being drawn to 1
+  gp5 <- list(c(0, 1), diag(c(10^4, .25)))
+  gp6 <- list(c(0, 1), diag(c(10^4, .05)))
+
+  mod5 <- gpd(rain, th=30, priorParameters=gp5)
+  mod6 <- gpd(rain, th=30, priorParameters=gp6)
+
+  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2])
+  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2])
+  
+# 2.4 Tests for phi being drawn to 4 (greater than mle for phi)
+
+  gp7 <- list(c(4, 0), diag(c(1, 10^4)))
+  gp8 <- list(c(4, 0), diag(c(.1, 10^4)))
+
+  mod7 <- gpd(rain, th=30, priorParameters=gp7)
+  mod8 <- gpd(rain, th=30, priorParameters=gp8)
+
+  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1])
+  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1])  
+  
+########################################################
+# Tests on including covariates. Once more, gpd.fit in ismev
+# works with sigma inside the optimizer, so we need to tolerate
+# some differences and standard errors might be a out.
+
+# 3.0 Reproduce Coles, page 119. Reported log-likelihood is -484.6.
+
+  rtime <- 1:length(rain)
+  d <- data.frame(rainfall = rain, time=rtime)
+  mod <- gpd(rainfall, th=30, data=d, phi= ~ time, penalty="none")
+
+  checkEqualsNumeric(mod$loglik, -484.6, tolerance = tol)
+  
+####################################################################
+# 3.1 Use liver data, compare with ismev. 
+#     These are not necessarily sensible models!
+#     Start with phi alone.
+
+  mod <- gpd(ALT_M, qu=.7, data=liver,
+           phi = ~ ALT_B + dose, xi = ~1,
+           penalty="none")
+
+  m <- model.matrix(~ ALT_B + dose, liver)
+
+  ismod <- gpd.fit(liver$ALT_M, th=quantile(liver$ALT_M, .7), 
+                 ydat = m, sigl=2:ncol(m), siglink=exp)
+
+  checkEqualsNumeric(coef(mod), ismod$mle, tolerance = tol)
+  
+# SEs for phi will not be same as for sigma, but we can test xi
+  checkEqualsNumeric(ismod$se[length(ismod$se)], mod$se[length(mod$se)], tolerance = tol)
+
+######################################################################
+# 3.2 Test xi alone.
+  mod <- gpd(ALT_M, qu=.7, data=liver,
+           phi = ~1, xi = ~ ALT_B + dose,
+           penalty="none")
+
+  m <- model.matrix(~ ALT_B + dose, liver)
+
+
+  ismod <- gpd.fit(liver$ALT_M, th=quantile(liver$ALT_M, .7), 
+                   ydat = m, shl=2:ncol(m))
+  mco <- coef(mod)
+  mco[1] <- exp(mco[1])
+
+  checkEqualsNumeric(mco, ismod$mle, tolerance = tol)
+  
+# SEs for phi will not be same as for sigma, but we can test xi
+  checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol)
+
+######################################################################
+# 3.3 Test phi & xi simultaneously. Use simulated data.
+
+  n <- 500
+  u <- 10
+  a <- seq(0.1,1,len=10)
+  b <- rep(c(-0.5,0.5),each=5)
+  r <- rgpd(n,exp(a),b,u=u)
+  r <- c(runif(n,u-10,u),r)
+
+  data <- as.data.frame(cbind(a=rep(a,40),b=rep(b,40),y=r))
+  m <- model.matrix(~ a+b, data)
+  
+  mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
+  ismod <- gpd.fit(data$y,th=quantile(data$y,0.7),ydat=m,shl=3,sigl=2,siglink=exp)
+
+  checkEqualsNumeric(coef(mod), ismod$mle, "Test phi & xi simultaneously, coefs\n",tolerance = tol)
+  checkEqualsNumeric(sqrt(diag(mod$cov)), ismod$se, "Test phi & xi simultaneously, se\n",tolerance = tol)
+
+####################################################################
+# Check that using priors gives expected behaviour.
+
+
+}
