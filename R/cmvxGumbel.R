@@ -32,8 +32,8 @@ function( x ,
 	
 		Femp <- p
 		if ( method == "mixture" ){
-			sigma <- exp( mod$par[ 1 ] )
-			xi <- mod$par[ 2 ]
+			sigma <- exp( mod$coefficients[ 1 ] )
+			xi <- mod$coefficients[ 2 ]
 			
 			Para <- ( 1 + xi * ( x - th) / sigma ) ^ ( -1 / xi )
 			Para <- 1 - mean( x > th ) * Para
