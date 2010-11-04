@@ -23,7 +23,7 @@ function( object, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05 ){
        
         object$y <- y
         object$threshold <- 0
-        object$mle <- c(0, 0) # phi not sigma, so 0 not 1
+        object$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
         ppgpd( object, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
         qqgpd( object, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
     }
