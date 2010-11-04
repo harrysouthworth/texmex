@@ -278,6 +278,8 @@ test(gpd) <- function(){
 ######################################################################
 # 3.3 Test phi & xi simultaneously. Use simulated data.
 
+  set.seed(25111970)
+  
   makeData <- function(a,b,n=500,u=10)
   # lengths of a and b should divide n exactly
   # returns data set size 2n made up of uniform variates (size n) below threshold u and 
