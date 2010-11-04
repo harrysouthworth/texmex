@@ -250,7 +250,7 @@ test(gpd) <- function(){
   m <- model.matrix(~ ALT_B + dose, liver)
 
   ismod <- gpd.fit(liver$ALT_M, th=quantile(liver$ALT_M, .7), 
-                 ydat = m, sigl=2:ncol(m), siglink=exp)
+                 ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
 
   checkEqualsNumeric(coef(mod), ismod$mle, tolerance = tol)
   
@@ -265,9 +265,8 @@ test(gpd) <- function(){
 
   m <- model.matrix(~ ALT_B + dose, liver)
 
-
   ismod <- gpd.fit(liver$ALT_M, th=quantile(liver$ALT_M, .7), 
-                   ydat = m, shl=2:ncol(m))
+                   ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
 
@@ -279,24 +278,90 @@ test(gpd) <- function(){
 ######################################################################
 # 3.3 Test phi & xi simultaneously. Use simulated data.
 
-  n <- 500
-  u <- 10
+  makeData <- function(a,b,n=500,u=10)
+  # lengths of a and b should divide n exactly
+  # returns data set size 2n made up of uniform variates (size n) below threshold u and 
+  # gpd (size n) with scale parameter exp(a) and shape b above threshold u
+  { 
+    gpd <- rgpd(n,exp(a),b,u=u)
+    unif <- runif(n,u-10,u)
+    as.data.frame(cbind(a=a,b=b,y=c(gpd,unif))) 
+  }
+
   a <- seq(0.1,1,len=10)
   b <- rep(c(-0.5,0.5),each=5)
-  r <- rgpd(n,exp(a),b,u=u)
-  r <- c(runif(n,u-10,u),r)
-
-  data <- as.data.frame(cbind(a=rep(a,40),b=rep(b,40),y=r))
+  data <- makeData(a,b)
   m <- model.matrix(~ a+b, data)
   
   mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
-  ismod <- gpd.fit(data$y,th=quantile(data$y,0.7),ydat=m,shl=3,sigl=2,siglink=exp)
+  ismod <- gpd.fit(data$y,th=quantile(data$y,0.7),
+                   ydat=m,shl=3,sigl=2,siglink=exp, show=FALSE)
 
   checkEqualsNumeric(coef(mod), ismod$mle, "Test phi & xi simultaneously, coefs\n",tolerance = tol)
   checkEqualsNumeric(sqrt(diag(mod$cov)), ismod$se, "Test phi & xi simultaneously, se\n",tolerance = tol)
 
 ####################################################################
-# Check that using priors gives expected behaviour.
+# Check that using priors gives expected behaviour when covariates are included.
 
+# 2.1 Tests for xi being drawn to 0
+
+  b <- rep(c(0.5,1.5),each=5)
+  data <- makeData(a=1,b,n=3000)
+  
+  gp1 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.25)))
+  gp2 <- list(c(0, 0, 0), diag(c(10^4, 0.05, 0.05)))
+
+  mod0 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
+  mod1 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
+  mod2 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
+
+  checkTrue(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3]))
+  checkTrue(abs(coef(mod1)[2:3]) > abs(coef(mod2)[2:3]))
+
+# 2.2 Tests for phi being drawn to 0
+
+  a <- seq(0.1,1,len=10)
+  data <- makeData(-3 + a,b=-0.1,n=3000)
+  data$a <- a
+  
+  gp4 <- list(c(0, 0, 0), diag(c(1, 1, 10^4)))
+  gp5 <- list(c(0, 0, 0), diag(c(0.1, 0.1, 10^4)))
+
+  mod3 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,penalty="none")
+  mod4 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
+  mod5 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
+
+  checkTrue(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2]))
+  checkTrue(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2]))
+
+# 2.3 Tests for xi being drawn to 2
+  b <- rep(c(-0.5,0.5),each=5)
+  data <- makeData(a=1,b,n=3000)
+  
+  gp7 <- list(c(0, 2, 2), diag(c(10^4, 0.25, 0.25)))
+  gp8 <- list(c(0, 2, 2), diag(c(10^4, 0.05, 0.05)))
+
+  mod6 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
+  mod7 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
+  mod8 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
+
+  checkTrue(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3]))
+  checkTrue(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3]))
+
+# 2.4 Tests for phi being drawn to 4 
+
+  a <- seq(0.1,1,len=10)
+  data <- makeData(2 + a,b=-0.1,n=3000)
+  data$a <- a
+  
+  gp10 <- list(c(0, 4, 0), diag(c(10^4, 1,   10^4)))
+  gp11 <- list(c(0, 4, 0), diag(c(10^4, 0.1, 10^4)))
+
+  mod9 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,penalty="none")
+  mod10 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp10)
+  mod11 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp11)
+
+  checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]))
+  checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]))
 
 }
