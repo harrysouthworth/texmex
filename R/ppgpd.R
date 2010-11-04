@@ -3,7 +3,7 @@ function( object , nsim = 1000, alpha = .050,
 		  xlab, ylab,  main, # labels and titles
 		  pch=1, col = 2, cex = .75, linecol = 4 ,
 		  cicol = 0, polycol=15, smooth = TRUE ){
-	a <- object$mle
+	a <- object$coefficients
 	a[ 1 ] <- exp( a[ 1 ] )
 	u <- object$threshold
 	dat <- object$y
