@@ -143,7 +143,9 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 	acc <- length( unique( res[ , 1 ] ) ) / iter
     if (acc < .1){ warning("Acceptance rate is low.") }
 	if ( trace < iter ){
-		cat( "Acceptance rate:", round( acc , 3 ) , "\n" )
+    if(verbose) {
+      cat( "Acceptance rate:", round( acc , 3 ) , "\n" )
+    }
 	}
 	
 	res <- list( call=theCall, threshold=u , map = mod ,
@@ -172,7 +174,7 @@ test(bgpd) <- function(){
 #************************************************************* 
 # 4.1. Test reproducibility
 
-  runif(1)
+  set.seed(20101110)
   save.seed <- .Random.seed
 
   set.seed(save.seed)
@@ -190,14 +192,14 @@ test(bgpd) <- function(){
 #*************************************************************  
 # 4.2. Logical test of burn-in
 
-  checkEqualsNumeric(nrow(bmod$param), nrow(bmod$chains) - bmod$burn)
+  checkEqualsNumeric(nrow(bmod$chains) - bmod$burn, nrow(bmod$param))
 
   iter <- sample(500:1000,1)
   burn <- sample(50,1)
   bmod2 <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
                 iter=iter, burn=burn,verbose=FALSE)
 
-  checkEqualsNumeric(nrow(bmod2$param), iter-burn)
+  checkEqualsNumeric(iter-burn, nrow(bmod2$param))
 
 #*************************************************************
 # 4.3. Logical test of thinning
@@ -207,14 +209,14 @@ test(bgpd) <- function(){
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
                iter=iter, thin = thin,verbose=FALSE)
 
-  checkEqualsNumeric(nrow(bmod$param), (nrow(bmod$chains) - bmod$burn) * thin,msg="1")
+  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param))
 
   thin <- 2
   iter <- 1000
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
                iter=iter, thin = thin,verbose=FALSE)
 
-  checkEqualsNumeric(nrow(bmod$param), (nrow(bmod$chains) - bmod$burn) / thin,msg="2")
+  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param))
 
 #*************************************************************  
 ## Checks of bgpd. Centres of distributions and standard deviations 
@@ -222,18 +224,20 @@ test(bgpd) <- function(){
 ## Posterior means are not the same as MAPs and SEs from Hessian are
 ## approximations, so allow some tolerance.
 
-  tol <- 0.05
-  tol.se <- 0.3
+  tol <- 0.01
+  tol.se <- 0.2
 # 4.4. Compare MAP and posterior summaries for simple model
 
   mod <- gpd(ALT_M, data=liver, qu=.7)
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),verbose=FALSE)
-
-  checkEqualsNumeric(postSum(bmod)[,1],coef(mod), tolerance=tol)
-  checkEqualsNumeric(postSum(bmod)[,2],mod$se, tolerance=tol.se)
+  
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)
 
 #*************************************************************
 # 4.5. Covariates in phi
+  tol <- 0.01
+  tol.se <- 0.2
 
   require(MASS,quiet=TRUE) # Use MASS because is ships with R and has no dependencies
               # that don't ship with R.
@@ -249,22 +253,26 @@ test(bgpd) <- function(){
 
   bmod <- bgpd(resids, data=liver, th=quantile(liver$resids, .7),
                phi = ~ ndose,verbose=FALSE)
-
-  checkEqualsNumeric(postSum(bmod)[,1],coef(mod), tolerance=tol)
-  checkEqualsNumeric(postSum(bmod)[,2],mod$se, tolerance=tol.se)
+              
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)
 
 #*************************************************************
 # 4.6. Covariates in xi
+  tol <- 0.02
+  tol.se <- 0.2
 
   mod <- gpd(resids, data=liver, qu=.7, xi = ~ ndose)
   bmod <- bgpd(resids, data=liver, th=quantile(liver$resids, .7),
                xi = ~ ndose,verbose=FALSE)
 
-  checkEqualsNumeric(postSum(bmod)[,1],coef(mod), tolerance=tol)
-  checkEqualsNumeric(postSum(bmod)[,2],mod$se, tolerance=tol.se)  
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)  
 
 #*************************************************************
 # 4.7. Covariates in xi and phi
+  tol <- 0.02
+  tol.se <- 0.3
 
   mod <- gpd(resids, data=liver, qu=.7,
              xi = ~ ndose, 
@@ -272,8 +280,8 @@ test(bgpd) <- function(){
   bmod <- bgpd(resids, data=liver, th=quantile(liver$resids, .7),
                xi = ~ ndose, 
                phi = ~ ndose,verbose=FALSE)
-
-  checkEqualsNumeric(postSum(bmod)[,1],coef(mod), tolerance=tol)
-  checkEqualsNumeric(postSum(bmod)[,2],mod$se, tolerance=tol)  
+               
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)  
  
 }
