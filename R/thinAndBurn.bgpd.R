@@ -52,24 +52,24 @@ require(svUnit)
 #  test burn in  
   burn <- sample(nrow/2,1)
   burnOnly <- thinAndBurn(x,burn=burn,thin=1)
-  checkEqualsNumeric(burnOnly$param[1,], x$chains[burn+1,])
+  checkEqualsNumeric(x$chains[burn+1,], burnOnly$param[1,])
 
 # test thinning
   thin <- 2
   thinOnly <- thinAndBurn(x,thin=thin,burn=0)
 
-  checkEqualsNumeric(thinOnly$param[,1], seq(thin,nrow,by=thin))
+  checkEqualsNumeric(seq(thin,nrow,by=thin), thinOnly$param[,1])
   
 # test thinning and burning simultaneously
 
   thinBurn <- thinAndBurn(x,thin=thin,burn=burn)
   
-  checkEqualsNumeric(thinBurn$param[,1], seq(burn + thin, nrow,by=thin))
+  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn$param[,1])
   
 # test returned values of thin and burn
 
-  checkEqualsNumeric(thinBurn$thin,thin,burn=0)
-  checkEqualsNumeric(thinBurn$burn,burn,thin=1)
+  checkEqualsNumeric(thin, thinBurn$thin,burn=0)
+  checkEqualsNumeric(burn, thinBurn$burn,thin=1)
   
 # test passing thin and burn via object
 
@@ -77,7 +77,7 @@ require(svUnit)
   x$burn <- burn
   thinBurn1 <- thinAndBurn(x)
   
-  checkEqualsNumeric(thinBurn1$param[,1], seq(burn + thin, nrow,by=thin))
+  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn1$param[,1])
   checkEqualsNumeric(dim(thinBurn$param),dim(thinBurn1$param))
   
 # test thinning and burning a previously thinned and burned object
@@ -86,5 +86,5 @@ require(svUnit)
   burn2 <- 4
   thinBurn2 <- thinAndBurn(thinBurn1,thin=thin2,burn=burn2)
   checkEqualsNumeric(dim(thinBurn1$chains)[2], dim(thinBurn2$chains)[2])
-  checkEqualsNumeric(dim(thinBurn2$param)[1],(nrow - burn2) / thin2)
+  checkEqualsNumeric((nrow - burn2) / thin2, dim(thinBurn2$param)[1])
 }
