@@ -150,7 +150,8 @@ function(y, data, th, qu, phi= ~1, xi= ~1,
 
 test(gpd) <- function(){
   tol <- 0.01
-  
+
+    require(ismev, quiet=TRUE)
 ###################################################################
 # 1.3 Reproduce loglik, parameter estimates and covariance on page 85
 #    of Coles. Will not be exact because fitting routines differ:
@@ -172,10 +173,10 @@ test(gpd) <- function(){
   mod.loglik <- mod$loglik
   mod.cov22 <- mod$cov[2, 2]
 
-  checkEqualsNumeric(mod.coef, cparas, tolerance = tol)
-  checkEqualsNumeric(mod$se[2], cse[2], tolerance = tol)
-  checkEqualsNumeric(mod$cov[2, 2], ccov[2,2], tolerance = tol)
-  checkEqualsNumeric(mod.loglik, cloglik, tolerance = tol)
+  checkEqualsNumeric(cparas, mod.coef, tolerance = tol)
+  checkEqualsNumeric(cse[2], mod$se[2], tolerance = tol)
+  checkEqualsNumeric(ccov[2,2], mod$cov[2, 2], tolerance = tol)
+  checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol)
   
 ###################################################################
 #   Logical checks on the effect of penalization. The smaller the
@@ -236,7 +237,7 @@ test(gpd) <- function(){
   d <- data.frame(rainfall = rain, time=rtime)
   mod <- gpd(rainfall, th=30, data=d, phi= ~ time, penalty="none")
 
-  checkEqualsNumeric(mod$loglik, -484.6, tolerance = tol)
+  checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol)
   
 ####################################################################
 # 3.1 Use liver data, compare with ismev. 
@@ -249,10 +250,10 @@ test(gpd) <- function(){
 
   m <- model.matrix(~ ALT_B + dose, liver)
 
-  ismod <- gpd.fit(liver$ALT_M, th=quantile(liver$ALT_M, .7), 
+  ismod <- gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
                  ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
 
-  checkEqualsNumeric(coef(mod), ismod$mle, tolerance = tol)
+  checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol)
   
 # SEs for phi will not be same as for sigma, but we can test xi
   checkEqualsNumeric(ismod$se[length(ismod$se)], mod$se[length(mod$se)], tolerance = tol)
@@ -265,12 +266,12 @@ test(gpd) <- function(){
 
   m <- model.matrix(~ ALT_B + dose, liver)
 
-  ismod <- gpd.fit(liver$ALT_M, th=quantile(liver$ALT_M, .7), 
+  ismod <- gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
 
-  checkEqualsNumeric(mco, ismod$mle, tolerance = tol)
+  checkEqualsNumeric(ismod$mle, mco, tolerance = tol)
   
 # SEs for phi will not be same as for sigma, but we can test xi
   checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol)
@@ -296,11 +297,11 @@ test(gpd) <- function(){
   m <- model.matrix(~ a+b, data)
   
   mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
-  ismod <- gpd.fit(data$y,th=quantile(data$y,0.7),
+  ismod <- gpd.fit(data$y,threshold=quantile(data$y,0.7),
                    ydat=m,shl=3,sigl=2,siglink=exp, show=FALSE)
 
-  checkEqualsNumeric(coef(mod), ismod$mle, "Test phi & xi simultaneously, coefs\n",tolerance = tol)
-  checkEqualsNumeric(sqrt(diag(mod$cov)), ismod$se, "Test phi & xi simultaneously, se\n",tolerance = tol)
+  checkEqualsNumeric(ismod$mle, coef(mod),tolerance = tol)
+  checkEqualsNumeric(ismod$se, sqrt(diag(mod$cov)),tolerance = tol)
 
 ####################################################################
 # Check that using priors gives expected behaviour when covariates are included.
