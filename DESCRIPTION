@@ -8,7 +8,7 @@ Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 Description: Conditional multivariate extreme value modelling using
              the approach of Heffernan and Tawn.
 License: GPL (>=2) | BSD
-Depends: mvtnorm svUnit ismev
+Depends: mvtnorm, svUnit, ismev
 LazyLoad: yes
 LazyData: yes
 Packaged: 2010-10-14 11:47:02 UTC; kpzv097
