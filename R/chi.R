@@ -1,6 +1,10 @@
 chi <- 
   # Much of the code in here was written by Alec Stephenson
   # and comes from his 'chiplot' function in his 'evd' package.
+  # Minor differences between the evd implementation and this are: 
+  # use of ties.method="first" here as oppsed to the evd method 
+  # which used ties.method="average"; lower bound on chibar wrong 
+  # in evd package.
 function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
     
     theCall <- match.call()
@@ -11,12 +15,15 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
     n <- nrow(data)
 
     # Get the EDFs
-    data <- cbind(rank(data[, 1])/(n + 1), rank(data[, 2])/(n + 1))
+    t.method <- "first"
+    data <- cbind(rank(data[, 1],ties.method = t.method)/(n + 1), 
+                  rank(data[, 2],ties.method = t.method)/(n + 1))
 
     rowmax <- apply(data, 1, max)
     rowmin <- apply(data, 1, min)
 
     qlim2 <- c(min(rowmax) + eps, max(rowmin) - eps)
+
     if (!is.null(qlim)) {
         if (qlim[1] < qlim2[1]){ stop("lower quantile limit is too low") }
         if (qlim[2] > qlim2[2]){ stop("upper quantile limit is too high") }
@@ -27,7 +34,6 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
     }
 
     u <- seq(qlim[1], qlim[2], length = nq)
-    cu <- cbaru <- numeric(nq)
 
     # HS. Replaced 2 for loops with calls to sapply
 
@@ -54,17 +60,16 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
                      chibupp = chibaru + varchibar) # Upper
 
     chiulb <- 2 - log(pmax(2 * u - 1, 0))/log(u)
-    chibarulb <- 2 * log(1 - u)/log(1 - 2 * u + pmax(2 * u - 1, 0)) - 1
 
     if (trunc) {
         chiu[chiu > 1] <- 1
-        chibaru[chibaru > 1] <- 1
         chiu <- apply(chiu, 2, function(x) pmax(x, chiulb))
-        chibaru <- apply(chibaru, 2, function(x) pmax(x, chibarulb))
+        chibaru[chibaru > 1] <- 1
+        chibaru[chibaru < -1] <- -1
     }
 
     res <- list(chi=chiu, chibar = chibaru, quantile=u, call=theCall, 
-                qlim=qlim, chiulb = chiulb, chibarulb=chibarulb)
+                qlim=qlim, chiulb = chiulb)
     oldClass(res) <- "chi"
     res
 } # Close chi <- function
@@ -137,4 +142,82 @@ plot.chi <- function(x, which=1:2, lty = 1, cilty = 2, col = 1, spcases = FALSE,
         }
     }
     invisible()
+}
+
+test(chi) <- function(){
+
+  require(ismev)
+  
+# independent implementation of chi and chibar, Janet Heffernan personal code library
+  .Cfunction <- function(data, nLevels){
+    rowWiseMax <- apply(data, 1, max)
+    rowWiseMin <- apply(data, 1, min)
+    u <- seq(min(rowWiseMax) + 1/(2 * nLevels), max(rowWiseMin) - 1/(2 * nLevels), length = nLevels)
+    Cu <- sapply(1:nLevels,function(i)mean(rowWiseMax < u[i]))
+    CbarU <- sapply(1:nLevels,function(i)mean(rowWiseMin > u[i]))
+    list(u = u, Cu = Cu, CbarU = CbarU)
+  } 
+
+  .ChiFunction <- function(data, nLevels){
+    C <- .Cfunction(TransUniform(data), nLevels = nLevels)
+    u <- C$u
+    Cu <- C$Cu
+    CbarU <- C$CbarU
+    ChiU <- 2 - log(Cu)/log(u)
+    ChiBarU <- (2 * log(1 - u))/log(CbarU) - 1
+    n <- nrow(data)
+    
+#variances of chi and chibar
+    varChi <- ((1/log(u)^2 * 1)/Cu^2 * Cu * (1 - Cu))/n
+    varChiBar <- (((4 * log(1 - u)^2)/(log(CbarU)^4 * CbarU^2)) * CbarU * (1 - CbarU))/n
+  
+#upper and lower 95% conf int bounds for chi and chibar; these are based on normal approx with further functional constraints imposed
+    z.975 <- qnorm(1 - 0.05/2)
+    ChiLower <- ChiU - z.975 * sqrt(varChi)
+    ChiUpper <- ChiU + z.975 * sqrt(varChi)
+  
+    ChiLbound <- numeric(length(u))
+    ChiLbound[u>0.5] <- 2 - log(2 *u[u > 0.5] - 1)/log(u[u > 0.5])
+    ChiLbound[u<=0.5] <- -Inf
+    
+    ChiLower <- apply(cbind(ChiLower, ChiLbound), 1, max)
+    ChiUpper[ChiUpper > 1] <- 1
+  
+    ChiBarLower <- ChiBarU - z.975 * sqrt(varChiBar)
+    ChiBarUpper <- ChiBarU + z.975 * sqrt(varChiBar)
+    ChiBarLower[ChiBarLower < -1] <- -1
+    ChiBarUpper[ChiBarUpper > 1] <- 1
+    
+    list(u = C$u, Cu = C$Cu, CbarU = C$CbarU, 
+         Chi = ChiU, ChiBar = ChiBarU, 
+         ChiLower = ChiLower, ChiUpper = ChiUpper,
+         ChiBarLower = ChiBarLower, ChiBarUpper = ChiBarUpper,
+         n = n)
+  }
+
+  .transUniform <- function(x){
+    rank(x,ties.method="first") / (length(x) + 1) # original version
+  }
+
+  TransUniform <- function(x){
+    if(length(dim(x)) > 0)apply(x,2,.transUniform)
+    else .transUniform(x)
+  } 
+
+#*************************************************************
+
+  data(wavesurge) # from ismev library
+ 
+  nq <- 1000
+  chi.JH <- .ChiFunction(wavesurge,nLevels=nq)
+  chi <- chi(wavesurge,nq=nq,qlim=range(chi.JH$u),trunc= TRUE)
+
+  checkEqualsNumeric(chi.JH$u,chi$quantile)
+  checkEqualsNumeric(chi.JH$Chi,chi$chi[,2])
+  checkEqualsNumeric(chi.JH$ChiLower,chi$chi[,1])
+  checkEqualsNumeric(chi.JH$ChiUpper,chi$chi[,3])
+  checkEqualsNumeric(chi.JH$ChiBar, chi$chibar[,2])
+  checkEqualsNumeric(chi.JH$ChiBarLower, chi$chibar[,1])
+  checkEqualsNumeric(chi.JH$ChiBarUpper, chi$chibar[,3])
+ 
 }
