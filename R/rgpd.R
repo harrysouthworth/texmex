@@ -24,9 +24,6 @@
 test(rgpd) <- function(){
 
   require(evd,quiet=TRUE)
-  edgpd <- get("dgpd",pos=2)
-  eqgpd <- get("qgpd",pos=2)
-  epgpd <- get("pgpd",pos=2)
   ergpd <- get("rgpd",pos=2)
   detach(2)
 
@@ -49,21 +46,21 @@ test(rgpd) <- function(){
   
   myTest(seed,p,thresh=thresh,msg="rgpd: random parameters, zero threshold")
   
- #*************************************************************
+#*************************************************************
 # 6.1a Test rgpd with non-zero threshold. Note that ergpd is NOT vectorized.
 
   nonZeroThresh <- rnorm(nreps)
   myTest(seed,p,thresh=nonZeroThresh,msg="rgpd: Non-zero threshold")
   
-#######################################################################
+#*************************************************************
 # 6.2. Test rgpd when some or all xi == 0. Note that ergpd is NOT vectorized.
 
   p[sample(1:nreps,nreps/2),2] <- 0
   myTest(seed,p,thresh=thresh,msg="rgpd: some zero xi")
   p[,2] <- 0
-  myTest(seed,p,thresh=thresh,msg="rgod: all zero xi")
+  myTest(seed,p,thresh=thresh,msg="rgpd: all zero xi")
 
-#######################################################################
+#*************************************************************
 # 6.3. Test vectorization of rgpd. ergpd is NOT vectorized
 
   sig <- runif(nreps, 0, 2)
