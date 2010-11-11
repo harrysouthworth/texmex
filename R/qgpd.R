@@ -1,5 +1,8 @@
 `qgpd` <-
-function(p , sigma = 1, xi = 1 , u = 0, lower.tail=TRUE, log.p=FALSE ){
+function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
+  if(log.p == FALSE && (any(p<=0) || any(p>=1))){
+    stop("p must lie between 0 and 1 if log.p=FALSE")
+  }
     n <- max(length(p), length(sigma), length(xi), length(u))
     p <- rep(p, length=n)
     sigma <- rep(sigma, length=n)
@@ -27,3 +30,72 @@ function(p , sigma = 1, xi = 1 , u = 0, lower.tail=TRUE, log.p=FALSE ){
     res
 }
 
+test(qgpd) <- function(){
+
+  require(evd,quiet=TRUE)
+  eqgpd <- get("qgpd",pos=2)
+  detach(2)
+
+  myTest <- function(sig,xi,thresh,msg){
+    myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
+    eq <- sapply(1:nreps, function(i) eqgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+    checkEqualsNumeric(eq,myq,msg=msg)
+  }
+
+#*************************************************************
+# 6.4.0 Test exception for out of range probabilties
+  
+  checkException(qgpd(1,1,0,2))
+  checkException(qgpd(1.5,1,0,2))
+  checkException(qgpd(0,1,0,2))
+  checkException(qgpd(-1,1,0,2))
+
+#*************************************************************
+# 6.4. Test qgpd. Note that eqgpd is NOT vectorized.
+
+  nreps <- 100
+  nsim <- 1000
+  p <- matrix(runif(2*nreps, -1, 1),ncol=2) 
+  p[, 1] <- p[, 1] + 1
+  thresh <- rep(0,nreps) 
+  x <- matrix(runif(nreps*nsim), nrow=nsim)
+
+  myTest(sig=p[,1], xi=p[,2],thresh=thresh,msg="qgpd: random xi")
+
+#*************************************************************
+# 6.5. Test qgpd when some or all of xi == 0. Note that eqgpd is NOT vectorized.
+
+  p[sample(1:nreps,nreps/2),2] <- 0
+  myTest(sig=p[,1], xi = p[,2], thresh=thresh,msg="qgpd: some zero xi")
+  p[,2] <-  0
+  myTest(sig=p[,1], xi = p[,2], thresh=thresh,msg="qgpd: all zero xi")
+  
+#*************************************************************
+# 6.6. Test vectorization of qgpd. Note that eqgpd is NOT vectorized.
+
+  sig <- runif(nsim, 0, 2)
+  xi <- runif(nsim)
+  thresh <- rnorm(nsim)
+  
+  x <- runif(nsim)
+
+  myq <- qgpd(x, sig, xi, thresh)
+  eq <- sapply(1:nsim, function(i)eqgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+
+  checkEqualsNumeric(eq,myq,msg="qgpd: vectorisztion")
+  
+#*************************************************************
+# 6.6a Test log.p argument
+  
+  lq <- qgpd(log(x), sig,xi,thresh,log.p=TRUE)
+  
+  checkEqualsNumeric(myq, lq, msg="qgpd: log.p=TRUE")
+  
+#*************************************************************
+# 6.6a Test log.p argument
+  
+   LTq <- qgpd(1-x, sig,xi,thresh, lower.tail=FALSE)
+  
+  checkEqualsNumeric(myq, LTq, msg="qgpd: lower.ail=FALSE")
+   
+}
