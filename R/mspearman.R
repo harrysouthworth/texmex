@@ -1,5 +1,5 @@
 #---------------------------------------------------------------------------
-#Function MCS() evaluates the MCS wrt to Schmid et al. 2006
+#Function MCS() evaluates the MCS wrt to Schmid et al. 2006 equation (17)
 #MCS() uses MCSlower() and MCSupper() according to the 
 #3rd argument user feeds. lower and upper correspond to 
 #the upper and lower extremes. First and second args are
@@ -8,11 +8,10 @@
 #denote dimension and length, respectively.	
 #---------------------------------------------------------------------------
 
-MCSlower <- function(X,p)
+MCSlower <- function(U,p)
   {
-    d <- dim(X)[1]
-    n <- dim(X)[2]
-    U <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
+    d <- dim(U)[1]
+    n <- dim(U)[2]
     res1         <- p-U
     res1[res1<0] <- 0
     res2         <- apply(res1,2,prod)
@@ -23,12 +22,11 @@ MCSlower <- function(X,p)
   }
 
 
-MCSupper <- function(X,p)
+MCSupper <- function(U,p)
   {
-    #Matrix X has to be i*j where i=1,...,d and j=1,...,n
-    d    <- dim(X)[1]
-    n    <- dim(X)[2]
-    U    <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
+    #Matrix U has to be i*j where i=1,...,d and j=1,...,n
+    d    <- dim(U)[1]
+    n    <- dim(U)[2]
     res1 <- ifelse( U<p, (1-p), 1-U )
     res2 <- apply(res1,2,prod)
     res3 <- sum(res2)
@@ -49,11 +47,11 @@ MCS <- function(X,p=seq(.1, .9, by=.1),method="upper") {
     }
     
     X <- t(X) # Yiannis's original code had variables as rows
+    U <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
     n    <- length(p)
     res1 <- vector('list',n)
-    res2 <- NULL
     for(i in 1:n){
-        res1[[i]] <- X
+        res1[[i]] <- U
       }
     res2 <- mapply(method,res1,p)
     res <- list(mcs=res2, p=p, method=method, call=theCall)
@@ -134,4 +132,42 @@ summary.bootMCS <- function(x, alpha=.05){
     res <- cbind(m, t(ci))
     dimnames(res) <- list(x$p, c("Mean", rownames(ci)))
     res
+}
+
+test(MCS) <- function(){
+  myMCS <- function(x,p){
+# First and second args are
+# x (dxn matrix) and p (vector of probabilities).
+
+    n <- dim(x)[2]
+    d <- dim(x)[1]
+    t.method <- "first"
+    u <- t(apply(x,1,rank))/(n+1)# schmid and schmidt use n not n+1
+    
+    rho <- numeric(length(p))
+    for(k in 1:length(p)) {
+      Diff <- p[k] - u
+      Diff[Diff<0] <- 0
+      Prod <- apply(Diff,2,prod)
+      
+      num <- mean(Prod) - ((p[k]^2)/2)^d
+      den <- (p[k]^(d+1)) / (d+1) - (0.5*p[k]^2)^d
+      rho[k] <- num/den
+    }
+
+    rho
+   }
+
+   n <- 1000
+   by <- 0.01
+   p <- seq(by,1-by,by=by)
+   data <- rbind(rnorm(n),rnorm(n))
+   
+   tmRl <- MCS(t(data),p,"lower")
+   tmRu1 <- MCS(t(data),tmRl$p,"upper")
+   myRl <- myMCS(data,tmRl$p)
+   myRu <- myMCS(-data,tmRl$p)
+   
+   checkEqualsNumeric(myRl,tmRl$mcs,msg="MCS: lower tail")
+   checkEqualsNumeric(p,tmRl$p)
 }
