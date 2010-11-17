@@ -54,9 +54,6 @@ summary.MCS <- show.MCS <- print.MCS
 #Bootstrap
 #------------------------------------------------
 
-# XXX HS Rewrite to make it take an object returned
-# by MCS. (Maybe.)
-
 bootMCS <- function(X,p=seq(.1, .9, by=.1),B=100, trace=10) {
    theCall <- match.call()
    bfun <- function(i, data, p){
