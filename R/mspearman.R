@@ -1,10 +1,8 @@
 #---------------------------------------------------------------------------
 #Function MCS() evaluates the MCS wrt to Schmid et al. 2006 equation (17)
-#MCS() uses MCSlower() and MCSupper() according to the 
-#3rd argument user feeds. lower and upper correspond to 
-#the upper and lower extremes. First and second args are
+#First and second args are
 #X (matrix) and p (vector of probabilities).
-#Matrix X has to be i*j where i=1,...,d and j=1,...,n, and d,n
+#Matrix X has to be i*j where i=1,...,n, and j=1,...,d and d,n
 #denote dimension and length, respectively.	
 #---------------------------------------------------------------------------
 
@@ -21,31 +19,9 @@ MCSlower <- function(U,p)
     return(res4)
   }
 
-
-MCSupper <- function(U,p)
-  {
-    #Matrix U has to be i*j where i=1,...,d and j=1,...,n
-    d    <- dim(U)[1]
-    n    <- dim(U)[2]
-    res1 <- ifelse( U<p, (1-p), 1-U )
-    res2 <- apply(res1,2,prod)
-    res3 <- sum(res2)
-    res4 <-  ( (1/n)*res3-((1/2)-(p^2)/2)^(d) )
-    res5 <-  (((-1)^(d))/(d+1))*((p-1)^(d))*(1+d*p)-((1/2)-(p^2)/2)^(d) 
-    res6 <- res4/res5
-    return(res6)
-  }
-
-
-MCS <- function(X,p=seq(.1, .9, by=.1),method="upper") {
+MCS <- function(X,p=seq(.1, .9, by=.1)) {
     theCall <- match.call()
-    method <- ifelse(method == "upper", "MCSupper",
-                 ifelse(method == "lower", "MCSlower", "error")
-              ) # Close ifelse
-    if (method == "error"){
-        stop("method should be \'upper\' or \'lower\'")
-    }
-    
+     
     X <- t(X) # Yiannis's original code had variables as rows
     U <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
     n    <- length(p)
@@ -53,22 +29,20 @@ MCS <- function(X,p=seq(.1, .9, by=.1),method="upper") {
     for(i in 1:n){
         res1[[i]] <- U
       }
-    res2 <- mapply(method,res1,p)
-    res <- list(mcs=res2, p=p, method=method, call=theCall)
+    res2 <- mapply(MCSlower,res1,p)
+    res <- list(mcs=res2, p=p, call=theCall)
     oldClass(res) <- "MCS"
     res
   }
 
-plot.MCS <- function(x, xlab="p", ylab= if(x$method=="MCSupper"){ "Upper MCS" } else{"Lower MCS"}, ...){
+plot.MCS <- function(x, xlab="p", ylab= "MCS", ...){
    plot(x$p, x$mcs, type="l", xlab=xlab, ylab=ylab, ...)
    invisible()
 }
 
 print.MCS <- function(x, ...){
     print(x$call)
-    wh <- ifelse(x$method == "MCSupper", "Upper", "Lower")
-    cat("Multivariate conditional Spearman's rho:\n",
-        wh, " tail method.\n\n", sep = "")
+    cat("Multivariate conditional Spearman's rho.\n\n", sep = "")
     res <- x$mcs
     names(res) <- x$p
     print(res)
@@ -83,21 +57,21 @@ summary.MCS <- show.MCS <- print.MCS
 # XXX HS Rewrite to make it take an object returned
 # by MCS. (Maybe.)
 
-bootMCS <- function(X,p=seq(.1, .9, by=.1),method="upper", B=100, trace=10) {
+bootMCS <- function(X,p=seq(.1, .9, by=.1),B=100, trace=10) {
    theCall <- match.call()
-   bfun <- function(i, data, p, method){
+   bfun <- function(i, data, p){
        if (i %% trace == 0){ cat("Replicate", i, "\n") }
        d <- data[sample(1:nrow(data), replace=TRUE),]
-       MCS(d, p, method)$mcs
+       MCS(d, p)$mcs
    }
 
-   res <- sapply(1:B, bfun, data=X, p=p, method=method)
-   res <- list(replicates=res, p=p, method=method, B=B, call=theCall)
+   res <- sapply(1:B, bfun, data=X, p=p)
+   res <- list(replicates=res, p=p, B=B, call=theCall)
    oldClass(res) <- "bootMCS"
    invisible(res)
 }
 
-plot.bootMCS <- function(x, xlab="p", ylab= if(x$method=="upper"){ "Upper MCS" } else{"Lower MCS"},alpha=.05, ...){
+plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ...){
    m <- rowMeans(x$replicates)
    ci <- apply(x$replicates, 1, quantile, prob=c(1-alpha/2, alpha/2))
    plot(x$p, m, type="l", ylim=range(ci),
@@ -110,9 +84,7 @@ plot.bootMCS <- function(x, xlab="p", ylab= if(x$method=="upper"){ "Upper MCS" }
 
 print.bootMCS <- function(x, ...){
     print(x$call)
-    wh <- ifelse(x$method == "upper", "Upper", "Lower")
-    cat("Multivariate conditional Spearman's rho:\n",
-        wh, " tail method.\n", x$B, " bootstrap samples were performed.\n\n",
+    cat("Multivariate conditional Spearman's rho.\n", x$B, " bootstrap samples were performed.\n\n",
         sep = "")
      
     m <- rowMeans(x$replicates)
@@ -123,9 +95,7 @@ print.bootMCS <- function(x, ...){
 show.bootMCS <- print.bootMCS
 
 summary.bootMCS <- function(x, alpha=.05){
-    wh <- ifelse(x$method == "upper", "Upper", "Lower")
-    cat("Multivariate conditional Spearman's rho:\n",
-        wh, " tail method.\n", x$B, " bootstrap samples were performed.\n\n",
+    cat("Multivariate conditional Spearman's rho.\n", x$B, " bootstrap samples were performed.\n\n",
         sep = "")
     m <- rowMeans(x$replicates)
     ci <- apply(x$replicates, 1, quantile, prob=c(alpha/2, 1 - alpha/2))
@@ -141,7 +111,6 @@ test(MCS) <- function(){
 
     n <- dim(x)[2]
     d <- dim(x)[1]
-    t.method <- "first"
     u <- t(apply(x,1,rank))/(n+1)# schmid and schmidt use n not n+1
     
     rho <- numeric(length(p))
@@ -157,17 +126,25 @@ test(MCS) <- function(){
 
     rho
    }
-
+# simulated data - dimension 2
    n <- 1000
    by <- 0.01
    p <- seq(by,1-by,by=by)
    data <- rbind(rnorm(n),rnorm(n))
-   
-   tmRl <- MCS(t(data),p,"lower")
-   tmRu1 <- MCS(t(data),tmRl$p,"upper")
+
+   tmRl <- MCS(t(data),p)
    myRl <- myMCS(data,tmRl$p)
-   myRu <- myMCS(-data,tmRl$p)
    
-   checkEqualsNumeric(myRl,tmRl$mcs,msg="MCS: lower tail")
-   checkEqualsNumeric(p,tmRl$p)
+   checkEqualsNumeric(myRl,tmRl$mcs,msg="MCS: independent normal data")
+   checkEqualsNumeric(p,tmRl$p, msg="MCS: mathching p argument")
+   
+# winter air pollution data - dimension 5
+   tmWinterMCS <- MCS(winter,p)
+   myWinterMCS <- myMCS(t(winter),p)
+   checkEqualsNumeric(myWinterMCS,tmWinterMCS$mcs,msg="MCS: winter air pollution data")
+   
+# summer airpollution data - dimension 5
+   tmSummerMCS <- MCS(summer,p)
+   mySummerMCS <- myMCS(t(summer),p)
+   checkEqualsNumeric(mySummerMCS,tmSummerMCS$mcs,msg="MCS: summer air pollution data")
 }
