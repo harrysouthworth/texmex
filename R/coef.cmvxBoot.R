@@ -2,13 +2,13 @@
 function( x, which="gpd" ){
 	if ( casefold( which ) == "gpd" | which == 1 ) which <- 1
 	else which <- 2
-	
+
 	d2 <- dim( x$boot[[ 1 ]][[ which ]] )
 	
 	B <- x$B
 	
     if (which == 1){
-        sco <- x$simpleEsts[3:4, ] # Point estimates from (penalized) mle
+        sco <- x$simpleMar[3:4, ] # Point estimates from (penalized) mle
     }
 	else {
 	    sco <- x$simpleDep # Point estimates of dependence structure
