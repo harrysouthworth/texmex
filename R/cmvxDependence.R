@@ -127,3 +127,113 @@ function (x, which, gth, gqu)
    res
 }
 
+test(cmvxDependence) <- function(){
+  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+
+  mySdepO3 <- cmvxDependence(smarmod,which=1,gqu=0.7)
+  myWdepO3 <- cmvxDependence(wmarmod,which=1,gqu=0.7)
+
+  mySdepNO2 <- cmvxDependence(smarmod,which=2,gqu=0.7)
+  myWdepNO2 <- cmvxDependence(wmarmod,which=2,gqu=0.7)
+
+  mySdepNO <- cmvxDependence(smarmod,which=3,gqu=0.7)
+  myWdepNO <- cmvxDependence(wmarmod,which=3,gqu=0.7)
+
+  mySdepSO2 <- cmvxDependence(smarmod,which=4,gqu=0.7)
+  myWdepSO2 <- cmvxDependence(wmarmod,which=4,gqu=0.7)
+
+  mySdepPM10 <- cmvxDependence(smarmod,which=5,gqu=0.7)
+  myWdepPM10 <- cmvxDependence(wmarmod,which=5,gqu=0.7)
+
+  
+jhSdepO3 <- matrix(c(
+0.56627103,  0.37272912, 0.0000000, 0.0000000,
+0.22029334,  0.36865296, 0.0000000, 0.0000000,
+0.28193999, -0.26731823, 0.0000000, 0.0000000,
+0.46293139, -0.23387868, 0.0000000, 0.0000000),byrow=FALSE,nrow=4)
+
+jhSdepNO2 <- matrix(c(
+0.49290567,  0.22236302, 0.0000000, 0.0000000,
+0.38571246,  0.34379705, 0.0000000, 0.0000000,
+0.22026515, -0.17494068, 0.0000000, 0.0000000,
+0.45455612,  0.22411795, 0.0000000, 0.0000000),byrow=FALSE,nrow=4)
+
+jhSdepNO <- matrix(c(
+0.43149222,  0.34033851, 0.0000000, 0.0000000,
+0.49992799,  0.21878814, 0.0000000, 0.0000000,
+0.19724402,  0.23839660, 0.0000000, 0.0000000,
+0.50384850,  0.18227312, 0.0000000, 0.0000000),byrow=FALSE,nrow=4)
+
+jhSdepSO2 <- matrix(c(
+0.24400046, -0.02162792, 0.0000000, 0.0000000,
+0.08769596, -0.14758165, 0.0000000, 0.0000000,
+0.00000000, -0.04461209, 0.6865857, 0.4201682,
+0.35364948,  0.02338747, 0.0000000, 0.0000000), byrow=FALSE,nrow=4)
+
+jhSdepPM10 <- matrix(c(
+0.08302144,  0.16604598, 0.0000000, 0.0000000,
+0.00000000,  0.57387887, 0.0000000, 0.0000000,
+0.15208086,  0.32264497, 0.0000000, 0.0000000,
+0.00000000,  0.43255493, 0.0000000, 0.0000000), byrow=FALSE,nrow=4)
+
+
+  
+jhWdepO3 <- matrix(c(
+0.00000000,  0.008072046,  0.00000000, 0.0000000,
+0.00000000,  0.034283871,  0.00000000, 0.0000000,
+0.00000000, -0.188517544,  5.14775893, 1.0000000,
+0.00000000, -0.026874734,  0.05011460, 0.1075632),byrow=FALSE,nrow=4)
+
+jhWdepNO2 <- matrix(c(
+0.00000000, -0.553608371, -0.06047238, 0.4967213,
+0.81920276,  0.529272235,  0.00000000, 0.0000000,
+0.32246150,  0.335335739,  0.00000000, 0.0000000,
+0.85746906,  0.085265792,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
+
+jhWdepNO <- matrix(c(
+0.00000000, -0.504344703, -1.41890419, 0.0000000,
+0.75819233,  0.378119827,  0.00000000, 0.0000000,
+0.32199902, -0.350339706,  0.00000000, 0.0000000,
+0.73227271, -0.105822435,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
+
+jhWdepSO2 <- matrix(c(
+0.00000000, -0.485253436, -1.27253412, 0.0000000,
+0.00000000, -0.018577905,  0.63501876, 0.3862878,
+0.00000000,  0.000000000,  0.76856266, 0.4916768,
+0.03626605, -0.316472032,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
+
+jhWdepPM10 <- matrix(c(
+0.00000000,  0.064075145,  0.00000000, 0.0000000,
+0.86288696,  0.584629421,  0.00000000, 0.0000000,
+0.59510081,  0.569002154,  0.00000000, 0.0000000,
+0.10412199,  0.207529741,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
+  
+  tol <- 0.11
+  if(FALSE){
+  par(mfrow=c(2,5))
+  plot(jhWdepO3,  myWdepO3$parameters);abline(0,1)
+  plot(jhWdepNO2, myWdepNO2$parameters);abline(0,1)
+  plot(jhWdepNO,  myWdepNO$parameters);abline(0,1)
+  plot(jhWdepSO2, myWdepSO2$parameters);abline(0,1)
+  plot(jhWdepPM10,myWdepPM10$parameters);abline(0,1)
+
+  plot(jhSdepO3,  mySdepO3$parameters);abline(0,1)
+  plot(jhSdepNO2, mySdepNO2$parameters);abline(0,1)
+  plot(jhSdepNO,  mySdepNO$parameters);abline(0,1)
+  plot(jhSdepSO2, mySdepSO2$parameters);abline(0,1)
+  plot(jhSdepPM10,mySdepPM10$parameters);abline(0,1)
+  }
+  
+  checkEqualsNumeric(jhWdepO3,  myWdepO3$parameters,  tol=tol,msg="cmvxDependence: Winter O3")
+  checkEqualsNumeric(jhWdepNO2, myWdepNO2$parameters, tol=tol,msg="cmvxDependence: Winter NO2")
+  checkEqualsNumeric(jhWdepNO,  myWdepNO$parameters,  tol=tol,msg="cmvxDependence: Winter NO")
+  checkEqualsNumeric(jhWdepSO2, myWdepSO2$parameters, tol=tol,msg="cmvxDependence: Winter SO2")
+  checkEqualsNumeric(jhWdepPM10,myWdepPM10$parameters,tol=tol,msg="cmvxDependence: Winter PM10")
+
+  checkEqualsNumeric(jhSdepO3,  mySdepO3$parameters,  tol=tol,msg="cmvxDependence: Summer O3")
+  checkEqualsNumeric(jhSdepNO2, mySdepNO2$parameters, tol=tol,msg="cmvxDependence: Summer NO2")
+  checkEqualsNumeric(jhSdepNO,  mySdepNO$parameters,  tol=tol,msg="cmvxDependence: Summer NO")
+  checkEqualsNumeric(jhSdepSO2, mySdepSO2$parameters, tol=tol,msg="cmvxDependence: Summer SO2")
+  checkEqualsNumeric(jhSdepPM10,mySdepPM10$parameters,tol=tol,msg="cmvxDependence: Summer PM10")
+}
