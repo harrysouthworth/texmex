@@ -5,7 +5,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
 
     getgum <- function(i, x, data, mod, th, qu) {
         x <- c(x[, i])
-        param <- mod[[i]]$par
+        param <- mod[[i]]$coefficients
         th <- th[i]
         qu <- qu[i]
         data <- c(data[, i])
@@ -44,7 +44,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
 
     innerFun <- function(i, x, which, gth, gqu, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getgum=getgum, dependent=dependent) {
-
+        
         g <- sample(1:(dim(x$gumbel)[[1]]), size = n, replace = TRUE)
         g <- x$gumbel[g, ]
         ok <- FALSE
@@ -53,10 +53,12 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
             if (sum(g[, which] > gth) > 1) 
                 ok <- TRUE
         }
+        
         g <- sapply(1:d, getgum, x = g, data = x$data,
                     mod = x$models, th = x$th, qu = x$qu)
-
+                    
         dimnames(g)[[2]] <- names(x$models)
+        
         ggpd <- migpd(g, th = x$th, penalty = penalty, priorParameters = priorParameters)
 
         if (!missing(gqu)) 
@@ -71,7 +73,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
         gd <- cmvxDependence(ggpd, gth = gth, which = which)
 
         res <- list(GPD = coef(ggpd)[3:4, ],
-                    dependence = gd$parameters, 
+                    dependence = gd$coefficients, 
                     Z = gd$Z)
         if (pass == 1) {
             if (i%%trace == 0) {
@@ -89,8 +91,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
     if (nPass > 1) {
         for (pass in 2:nPass) {
             rerun <- sapply(res, function(x) any(sapply(x, function(x) any(is.na(x)))))
-            wh <- !unlist(lapply(res, function(x) dim(x$Z)[[1]] > 
-                0))
+            wh <- !unlist(lapply(res, function(x) dim(x$Z)[[1]] > 0))
             rerun <- apply(cbind(rerun, wh), 1, any)
             if (sum(rerun) > 0) {
                 cat("Pass", pass, ":", sum(rerun), "samples to rerun.\n")
@@ -98,7 +99,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
                 res[rerun] <- lapply((1:B)[rerun], innerFun, 
                   x = x, which = which, gth = gth, gqu = gqu, 
                   penalty = penalty, priorParameters = priorParameters, 
-                  pass = pass)
+                  pass = pass, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
             }
         }
     }
@@ -110,8 +111,32 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
     ans$gqu <- gqu
     ans$which <- which
     ans$B <- B
-    ans$simpleEsts <- coef(x)
-    ans$simpleDep <- cmvxDependence(x, which)$parameters
+    ans$simpleMar <- coef(x)
+    ans$simpleDep <- cmvxDependence(x, gth = gth, which)$coefficients
     oldClass(ans) <- "cmvxBoot"
     ans
+}
+
+test(cmvxBoot) <- function(){ # this is a weak test - it tests the structure of the output but not the correctness of the bootstrap coefficients; it will also catch ERRORs (as opposed to FAILUREs) if the code breaks.
+
+  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+
+  mySdep <- cmvxDependence(smarmod,which=1, gqu=0.7)
+  myWdep <- cmvxDependence(wmarmod,which=1, gqu=0.7)
+
+  B <- 20
+  
+  mySboot <- cmvxBoot(smarmod, B=B, which=1, gqu=.7)
+  myWboot <- cmvxBoot(wmarmod, B=B, which=1, gqu=.7)
+
+  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="cmvxBoot: summer simpleDep")
+  checkEqualsNumeric(coef(smarmod), mySboot$simpleMar, msg="cmvxBoot: summer simpleMar")
+
+  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="cmvxBoot: winter simpleDep")
+  checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="cmvxBoot: winter simpleMar")
+  
+  checkEqualsNumeric(B, length(mySboot$boot))
+  checkEqualsNumeric(B, length(myWboot$boot))
+  
 }
