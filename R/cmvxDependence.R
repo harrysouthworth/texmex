@@ -16,7 +16,7 @@ function (x, which, gth, gqu)
    else if (is.character(which))
        which <- match(which, dimnames(x$gumbel)[[2]])
    if (missing(gth) & missing(gqu)) {
-       cat("Assuming same quantile for thesholding as was used on raw data...\n")
+       cat("Assuming same quantile for thesholding as was used to fit corresponding marginal model...\n")
        gqu <- x$qu[which]
    }
    else if (missing(gqu))
@@ -121,7 +121,7 @@ function (x, which, gth, gqu)
        }
    }
    else dimnames(z)[[2]] <- dimnames(res)[[2]]
-   res <- list(call = theCall, parameters = res, Z = z, gth = gth,
+   res <- list(call = theCall, coefficients = res, Z = z, gth = gth,
        gqu = gqu, which = which)
    oldClass(res) <- "cmvxDependence"
    res
@@ -212,28 +212,28 @@ jhWdepPM10 <- matrix(c(
   tol <- 0.11
   if(FALSE){
   par(mfrow=c(2,5))
-  plot(jhWdepO3,  myWdepO3$parameters);abline(0,1)
-  plot(jhWdepNO2, myWdepNO2$parameters);abline(0,1)
-  plot(jhWdepNO,  myWdepNO$parameters);abline(0,1)
-  plot(jhWdepSO2, myWdepSO2$parameters);abline(0,1)
-  plot(jhWdepPM10,myWdepPM10$parameters);abline(0,1)
+  plot(jhWdepO3,  myWdepO3$coefficients);abline(0,1)
+  plot(jhWdepNO2, myWdepNO2$coefficients);abline(0,1)
+  plot(jhWdepNO,  myWdepNO$coefficients);abline(0,1)
+  plot(jhWdepSO2, myWdepSO2$coefficients);abline(0,1)
+  plot(jhWdepPM10,myWdepPM10$coefficients);abline(0,1)
 
-  plot(jhSdepO3,  mySdepO3$parameters);abline(0,1)
-  plot(jhSdepNO2, mySdepNO2$parameters);abline(0,1)
-  plot(jhSdepNO,  mySdepNO$parameters);abline(0,1)
-  plot(jhSdepSO2, mySdepSO2$parameters);abline(0,1)
-  plot(jhSdepPM10,mySdepPM10$parameters);abline(0,1)
+  plot(jhSdepO3,  mySdepO3$coefficients);abline(0,1)
+  plot(jhSdepNO2, mySdepNO2$coefficients);abline(0,1)
+  plot(jhSdepNO,  mySdepNO$coefficients);abline(0,1)
+  plot(jhSdepSO2, mySdepSO2$coefficients);abline(0,1)
+  plot(jhSdepPM10,mySdepPM10$coefficients);abline(0,1)
   }
   
-  checkEqualsNumeric(jhWdepO3,  myWdepO3$parameters,  tol=tol,msg="cmvxDependence: Winter O3")
-  checkEqualsNumeric(jhWdepNO2, myWdepNO2$parameters, tol=tol,msg="cmvxDependence: Winter NO2")
-  checkEqualsNumeric(jhWdepNO,  myWdepNO$parameters,  tol=tol,msg="cmvxDependence: Winter NO")
-  checkEqualsNumeric(jhWdepSO2, myWdepSO2$parameters, tol=tol,msg="cmvxDependence: Winter SO2")
-  checkEqualsNumeric(jhWdepPM10,myWdepPM10$parameters,tol=tol,msg="cmvxDependence: Winter PM10")
+  checkEqualsNumeric(jhWdepO3,  myWdepO3$coefficients,  tol=tol,msg="cmvxDependence: Winter O3")
+  checkEqualsNumeric(jhWdepNO2, myWdepNO2$coefficients, tol=tol,msg="cmvxDependence: Winter NO2")
+  checkEqualsNumeric(jhWdepNO,  myWdepNO$coefficients,  tol=tol,msg="cmvxDependence: Winter NO")
+  checkEqualsNumeric(jhWdepSO2, myWdepSO2$coefficients, tol=tol,msg="cmvxDependence: Winter SO2")
+  checkEqualsNumeric(jhWdepPM10,myWdepPM10$coefficients,tol=tol,msg="cmvxDependence: Winter PM10")
 
-  checkEqualsNumeric(jhSdepO3,  mySdepO3$parameters,  tol=tol,msg="cmvxDependence: Summer O3")
-  checkEqualsNumeric(jhSdepNO2, mySdepNO2$parameters, tol=tol,msg="cmvxDependence: Summer NO2")
-  checkEqualsNumeric(jhSdepNO,  mySdepNO$parameters,  tol=tol,msg="cmvxDependence: Summer NO")
-  checkEqualsNumeric(jhSdepSO2, mySdepSO2$parameters, tol=tol,msg="cmvxDependence: Summer SO2")
-  checkEqualsNumeric(jhSdepPM10,mySdepPM10$parameters,tol=tol,msg="cmvxDependence: Summer PM10")
+  checkEqualsNumeric(jhSdepO3,  mySdepO3$coefficients,  tol=tol,msg="cmvxDependence: Summer O3")
+  checkEqualsNumeric(jhSdepNO2, mySdepNO2$coefficients, tol=tol,msg="cmvxDependence: Summer NO2")
+  checkEqualsNumeric(jhSdepNO,  mySdepNO$coefficients,  tol=tol,msg="cmvxDependence: Summer NO")
+  checkEqualsNumeric(jhSdepSO2, mySdepSO2$coefficients, tol=tol,msg="cmvxDependence: Summer SO2")
+  checkEqualsNumeric(jhSdepPM10,mySdepPM10$coefficients,tol=tol,msg="cmvxDependence: Summer PM10")
 }
