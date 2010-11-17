@@ -1,5 +1,5 @@
 `plot.cmvxBoot` <-
-function( x , which = "gpd", ... ){
+function( x , which = "gpd", main="", ... ){
 
     # Want to look at the marginal GPD parameters or the
     # dependence structure parameters?
@@ -26,7 +26,7 @@ function( x , which = "gpd", ... ){
     labs <- paste(rep(cn, each=4), rep(rn, length(cn)))
 
 	fun <- function(X, z, label, ...) {
-		hist(z[[X]] , prob=TRUE, xlab=label[X], main="", ...)
+		hist(z[[X]] , prob=TRUE, xlab=label[X], main=main, ...)
 		lines(density( z[[X]], n=100 ))
 		invisible()
 	}
@@ -36,9 +36,9 @@ function( x , which = "gpd", ... ){
   if(which == 2){ # scatterplots of dependence parameters    
     fun <- function(X,z,label, ...){
       offset <- (X-1) * 4
-      plot(lco[[offset + 1]],lco[[offset + 2]],xlab=labs[offset + 1],ylab=labs[offset + 2])
+      plot(lco[[offset + 1]],lco[[offset + 2]],xlab=labs[offset + 1],ylab=labs[offset + 2],main=main, ...)
       points(pointEst[1,X],pointEst[2,X],pch="@",col="red")
-      plot(lco[[offset + 3]],lco[[offset + 4]],xlab=labs[offset + 3],ylab=labs[offset + 4])
+      plot(lco[[offset + 3]],lco[[offset + 4]],xlab=labs[offset + 3],ylab=labs[offset + 4],main=main, ...)
       points(pointEst[3,X],pointEst[4,X],pch="@",col="red")
     }
     lapply(1:d2[2], fun, z=lco,label=labs)
