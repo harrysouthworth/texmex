@@ -12,6 +12,29 @@ function( migpd , boot, pqu = .99, nsim = 1000 ){
 		which <- match( which, dimnames( migpd$data )[[ 2 ]] )
 	
 	################################################################
+  MakeThrowData <- function(dco,z,coxi,coxmi,data){
+    y <- -log( -log( runif( nsim , min=pqu ) ) )
+  	z <- z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,]
+    ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )
+  
+  	ui <- exp( -exp( -y ) )
+    xmi <- apply( ymi, 2, function( x ) exp( -exp( -x ) ) )
+
+    xi <- u2gpd( ui, p = 1 - migpd$qu[ which ], th=migpd$th[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
+	
+  	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
+		  xmi[, i ] <- revGumbel( xmi[ ,i ], data[,-which][, i ],
+								             th = migpd$th[ -which ][ i ],
+								             qu = migpd$qu[ -which ][ i ],
+								             sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )
+	  }
+    
+    sim <- data.frame( xi , xmi )
+    names( sim ) <- c( names( migpd$data )[ which ],names( migpd$data )[ -which ])
+    sim
+  }
+
+	################################################################
   makeYsubMinusI <- function( i, z, v , y ){
 			v <- v[ , i ]
 			z <- z[ , i ]
@@ -32,99 +55,38 @@ function( migpd , boot, pqu = .99, nsim = 1000 ){
 	lfun <- function( i , bo, pqu, nsim , migpd, which ){
 		if ( i %% 10 == 0 ) cat( i, "sets done\n" )
 
-		# Step 1 - get y 
-		y <- -log( -log( runif( nsim , min=pqu ) ) )
-		
-		# Step 2 - get z
-		z <- bo[[ i ]]$Z
-		z <- z[ sample( 1:( dim( z )[[ 1 ]] ), size = nsim, replace = TRUE ), ]
-
-		# Step 3 - get y_{-i}
-		ab <- bo[[ i ]]$dependence
-		
-		ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=ab , y=y ) # y_{-i}
-
-		# Step 4 - transform to original scale
-		# Transform to (0, 1)
-		# Do xi
-    cox <- bo[[i]]$GPD[,which]
-		xth <- migpd$th[ which ]
-    xp <- migpd$qu[ which ]
-		xi <- u2gpd( exp( -exp( -y ) ), p = 1 - xp, th=xth, sigma=cox[ 1 ], xi = cox[ 2 ] )
-
-		xmi <- apply( ymi , 2, function( x ) exp( -exp( -x ) ) )
-
-		# Push through CDF to get to original scale
-		# We're above the original threshold, so use gpd for x
-		for( j in 1:( dim( z )[[ 2 ]] ) ){
-			cox <- bo[[ i ]]$GPD[,-which][, j ]
-			xmi[, j ] <- revGumbel( xmi[, j ], migpd$data[,-which][, j ],
-								  th=migpd$th[ -which ][ j ],
-								  qu = migpd$qu[-which][ j ],
-								  sigma=cox[ 1 ], xi=cox[ 2 ] )
-		}# Close for j
-		dimnames( xmi )[[ 2 ]] <- dimnames( coef( migpd ) )[[ 2 ]][ -which ]
-		res <- data.frame( xi , xmi )
-		names( res ) <- c( dimnames( coef( migpd ) )[[ 2 ]][ which ] , dimnames( xmi )[[ 2 ]] )
+    res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
+                         coxmi = bo[[ i ]]$GPD[,-which], 
+                         data = bo[[i]]$Y)
 		res
-	} # Close lfun
-
+	} 
 	bootRes <- lapply( 1:length( boot$boot ) , lfun ,
 				   migpd=migpd, pqu=pqu, bo = boot$boot, nsim=nsim,
 				   which = which )
 	
-	# bootRes contains the bootstrap simulated complete vectors X on the original scale of the data, conditional on having the _which_ component above the pqu quantile.
+	# bootRes contains the bootstrap simulated complete vectors X on the original 
+  # scale of the data, conditional on having the _which_ component above the pqu quantile.
   
 	##########################################################################
 	# Also get a sample using the point estimates of the parameters
 	# that are suggested by the data
-	y <- -log( -log( runif( nsim , min=pqu ) ) )
-		
-	# Step 2 - get z
-	dall <- cmvxDependence( migpd , which=which , gqu=boot$gqu )
-	dco <- dall$coefficients
-	z <- dall$Z
-	# Resample rows of Z
-	z <- z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,]
-
-	# Step 3 - get y_{-i}
-	ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )
-	
-	# Step 4 - transform to original scale
-	# Transform to (0, 1)
-	xi <- exp( -exp( -y ) )
-	xmi <- apply( ymi, 2, function( x ) exp( -exp( -x ) ) )
-
-	# Do xi
-	#xp <- pqu * ( 1 - migpd$qu[ which ] )
-	cox <- coef( migpd )[, which ]
-	m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
+  
+  dall <- cmvxDependence( migpd , which=which , gqu=boot$gqu )
+  cox <- coef( migpd )[3:4, which ]
+  coxmi <- coef( migpd )[3:4, -which ]
+  
+  sim <- MakeThrowData(dco=dall$coefficients,z=dall$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
+                
+  m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
  	zeta <- 1 - migpd$qu[ which ] # Coles, page 81
 	xth <- migpd$th[ which ] + cox[ 3 ] / cox[ 4 ] * ( ( m*zeta )^cox[ 4 ] - 1 )
-	xi <- u2gpd( xi, p = 1 - migpd$qu[ which ], th=migpd$th[ which ], sigma=cox[ 3 ], xi = cox[ 4 ] )
-	
-	# Now need to transform each column of xmi
-	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
-		cox <- coef( migpd )[ , -which ][ , i ]
-		xmi[, i ] <- revGumbel( xmi[ ,i ], migpd$data[,-which][, i ],
-								  th=migpd$th[ -which ][ i ],
-								  qu = migpd$qu[-which][ i ],
-								  sigma=cox[ 3 ], xi=cox[ 4 ] )
-	}
 
-	sim <- data.frame( xi , xmi )
-	names( sim ) <- c( names( migpd$data )[ which ],
-					   names( migpd$data )[ -which ]
-					  )
-	
-	# Wrap up and return to the user
 	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ) ,
-				  simulated = sim, pth=xth
-				 )
+				        simulated = sim, pth=xth)
 
 	res <- list( call = theCall , replicates = bootRes, data = data,
-				 which = which, pqu = pqu,
-				 th=c( migpd$th[ which ], migpd$th[ -which ] ) )
+				       which = which, pqu = pqu,
+				       th=c( migpd$th[ which ], migpd$th[ -which ] ) )
 	
 	oldClass( res ) <- "cmvxPrediction"
 
@@ -151,14 +113,19 @@ test(cmvxPrediction) <- function(){
   dimnames(Table5winter) <- dimnames(Table5summer) <- list(c("E(x)", "SE"),
                             c("O3", "NO2", "NO", "SO2", "PM10"))
                         
-# Put in same order as we're about get out of my model
   Table5summer <- Table5summer[, c("NO", "O3", "NO2", "SO2", "PM10")]
   Table5winter <- Table5winter[, c("NO", "O3", "NO2", "SO2", "PM10")]
 
   resSummer <- summary(NOpredSummer)$ans[1:2,]
   resWinter <- summary(NOpredWinter)$ans[1:2,]
 
+  pointEstSummer <- apply(NOpredSummer$data$sim,2,mean)
+  pointEstWinter <- apply(NOpredWinter$data$sim,2,mean)
+
   tol <- 0.05
   checkEqualsNumeric(Table5summer, resSummer,tol=tol,msg="cmvxPrediction: Table 5 summer data")
   checkEqualsNumeric(Table5winter, resWinter,tol=tol,msg="cmvxPrediction: Table 5 winter data")
+  
+  checkEqualsNumeric(pointEstSummer, resSummer[1,],tol=tol,msg="cmvxPrediction: point est vs boot, summer data")
+  checkEqualsNumeric(pointEstWinter, resWinter[1,],tol=tol,msg="cmvxPrediction: point est vs boot, winter data")
 }
