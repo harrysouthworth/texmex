@@ -120,9 +120,10 @@ function (x, which, gth, gqu)
            z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
        }
    }
-   else dimnames(z)[[2]] <- dimnames(res)[[2]]
-   res <- list(call = theCall, coefficients = res, Z = z, gth = gth,
-       gqu = gqu, which = which)
+   
+   dimnames(z)[[2]] <- dimnames(res)[[2]]
+   res <- list(call = theCall, coefficients = res, Z = z, migpd=x, gth = gth,
+       gqu = gqu, which = which, conditioningVariable= names(x$data)[which])
    oldClass(res) <- "cmvxDependence"
    res
 }
