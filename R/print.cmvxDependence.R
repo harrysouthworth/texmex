@@ -5,6 +5,6 @@ function( x, ... ){
 	cat( "\nThresholding quantiles for Gumbel-transformed data:\n" )
 	print( x$gqu, ... )
 	cat( "\nDependence structure parameter estimates:\n" )
-	print( x$parameters, ... )
+	print( x$coefficients, ... )
 }
 
