@@ -74,7 +74,9 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
 
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
-                    Z = gd$Z)
+                    Z = gd$Z,
+                    Y = g)
+                    
         if (pass == 1) {
             if (i%%trace == 0) {
                 cat(paste(i, "replicates done\n"))
@@ -117,7 +119,10 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
     ans
 }
 
-test(cmvxBoot) <- function(){ # this is a weak test - it tests the structure of the output but not the correctness of the bootstrap coefficients; it will also catch ERRORs (as opposed to FAILUREs) if the code breaks.
+test(cmvxBoot) <- function(){ # this is a weak test - it tests the structure 
+# of the output but not the correctness of the bootstrap coefficients; it will 
+# also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
+# testing of this function, run test(cmvxPrediction)
 
   smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, qu=.7,  penalty="none")
@@ -136,7 +141,9 @@ test(cmvxBoot) <- function(){ # this is a weak test - it tests the structure of 
   checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="cmvxBoot: winter simpleDep")
   checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="cmvxBoot: winter simpleMar")
   
-  checkEqualsNumeric(B, length(mySboot$boot))
-  checkEqualsNumeric(B, length(myWboot$boot))
+  checkEqualsNumeric(B, length(mySboot$boot),msg="cmvxBoot: number of bootstrap samples")
+  checkEqualsNumeric(B, length(myWboot$boot),msg="cmvxBoot: number of bootstrap samples")
   
+  checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
+  checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
 }
