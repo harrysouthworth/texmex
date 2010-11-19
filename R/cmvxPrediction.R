@@ -131,3 +131,34 @@ function( migpd , boot, pqu = .99, nsim = 1000 ){
 	invisible( res )
 }
 
+test(cmvxPrediction) <- function(){
+  # reproduce Table 5 in Heffernan and Tawn 2004
+  
+  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+
+  NOmodWinter <- cmvxBoot(wmarmod, wh="NO", gqu=.7)
+  NOpredWinter <- cmvxPrediction(wmarmod, NOmodWinter, nsim = 500) # matches sample size in H+T2004
+
+  NOmodSummer <- cmvxBoot(smarmod, wh="NO", gqu=.7)
+  NOpredSummer <- cmvxPrediction(smarmod, NOmodSummer, nsim = 500)
+
+  Table5winter <- rbind(c(8.3, 75.4, 569.9, 44.6, 132.3),
+                      c(1.2, 4.4, 45.2, 6.7, 8.2))
+  Table5summer <- rbind(c(39.6,62.2,213.5,48.5,83.7),
+                        c(4.3,4.3,17.5,11.8, 7.9))
+                      
+  dimnames(Table5winter) <- dimnames(Table5summer) <- list(c("E(x)", "SE"),
+                            c("O3", "NO2", "NO", "SO2", "PM10"))
+                        
+# Put in same order as we're about get out of my model
+  Table5summer <- Table5summer[, c("NO", "O3", "NO2", "SO2", "PM10")]
+  Table5winter <- Table5winter[, c("NO", "O3", "NO2", "SO2", "PM10")]
+
+  resSummer <- summary(NOpredSummer)$ans[1:2,]
+  resWinter <- summary(NOpredWinter)$ans[1:2,]
+
+  tol <- 0.05
+  checkEqualsNumeric(Table5summer, resSummer,tol=tol,msg="cmvxPrediction: Table 5 summer data")
+  checkEqualsNumeric(Table5winter, resWinter,tol=tol,msg="cmvxPrediction: Table 5 winter data")
+}
