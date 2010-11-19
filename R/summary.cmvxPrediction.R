@@ -2,18 +2,16 @@
 function( object, th, probs=c( .05, .5, .95 ) ){
 
 	if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
-
 	if ( missing( th ) ) th <- object$th
 
 	res <- t( sapply( object$replicates , function ( x ) apply( x, 2, mean ) ) )
-
 
 	sumfun <- function( x , probs){
 		c( mean=mean( x ), se=stdev( x ) , quantile( x, probs=probs ) )
     }
 
 	ans <- apply( res, 2, sumfun, probs ) # Summary of expected values
-	dn <- paste( "E(", dimnames( object$replicates[[ 1 ]] )[[ 2 ]] ,"|", object$which , ">Q",100*object$pqu,")", sep="" )
+	dn <- paste( "E(", dimnames( object$replicates[[ 1 ]] )[[ 2 ]] ,"|", names( object$data$simulated )[[ 1 ]] , ">Q",100*object$pqu,")", sep="" )
 	dimnames( ans )[[ 2 ]] <- dn
 
 	thres <- t( sapply( 1:( dim( object$replicates[[ 1 ]] )[[ 2 ]] ) ,
