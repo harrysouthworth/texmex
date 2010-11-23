@@ -1,50 +1,45 @@
 \name{summary.gpd}
 \alias{summary.gpd}
+\alias{print.gpd}
+\alias{print.summary.gpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Summarize a \code{gpd} object. }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+ Summaries of an object of class \code{gpd}.
 }
 \usage{
 summary.gpd(x, nsim = 1000, alpha = 0.05)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
-  \item{nsim}{ ~~Describe \code{nsim} here~~ }
-  \item{alpha}{ ~~Describe \code{alpha} here~~ }
+  \item{x}{ An object of class \code{gpd}. }
+  \item{nsim}{ Number of simulated datasets to use to compute a simulated envelope. }
+  \item{alpha}{ The size of the simulation envelope - i.e. a (1 - alpha)\% pointwise
+        simulated confidence interval is created. }
 }
 \details{
-  ~~ If necessary, more details than the description above ~~
+  A simulation envelope is produced the data, based on quantiles of the fitted
+  model. This represents a pointwise (1 - alpha)\%   simulated confidence interval.
+  Since the ordered observations will be correlated, if any observation is outside
+  the envelope, it is likely that a chain of observations will be outside the
+  envelope. Therefore, if the number outside the envelope is a little more than
+  alpha\%, that does not immediately imply a serious shortcoming of the fitted model.
 }
 \value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
+  \item{model}{The \code{gpd} object.}
+  \item{envelope }{The simulated envelope.}
+  \item{nsim}{The number of simulations.}
+  \item{alpha}{The size of the envelope.}
   ...
 }
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
 
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\author{ Harry Southworth }
+\seealso{ \code{\link{gpd}}, \code{\link{plot.gpd}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function( x , nsim = 1000 , alpha = .050 ){
-	env = qqgpd( x, plot = FALSE, nsim = nsim, alpha = alpha )
-	res = list( model = x, envelope = env , nsim = nsim, alpha = alpha )
-	oldClass( res ) = "summary.gpd"
-	res
-  }
+x <- rnorm(1000)
+mod <- gpd(x, qu = 0.7)
+mod
+summary(mod)
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ models }
+

@@ -15,7 +15,7 @@ gpd(y, data, th, phi = ~1, xi = ~1, penalty = "gaussian", priorParameters = NULL
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
   \item{data}{ A data object containing \code{y} and any covariates. }
   \item{th}{ The threshold for \code{y} }
-  \item{qu}{An alternative to \code{th}, specifying the quantile of the \code{y}
+  \item{qu}{An alternative to \code{th}, specifying the quantile of the \code{y}}
   \item{phi}{ Formula for the log of the scale parameter. Defaults to
       \code{phi = ~ 1} - i.e. no covariates. }
   \item{xi}{ Formula for the shape parameter. Defaults to
@@ -37,8 +37,8 @@ gpd(y, data, th, phi = ~1, xi = ~1, penalty = "gaussian", priorParameters = NULL
   A quadratic penalty can be thought of as a Gaussian prior distribution, whence
   the terminology of the function.
   
-  Some of the internal code has been taken from the \code{gpd.fit} function
-  in the \code{ismev} package and is due to Janet E Heffernan.
+  Some of the internal code is based on the \code{gpd.fit} function
+  in the \code{ismev} package and is due to Stuart Coles.
 }
 \value{
     \item{convergence}{Output from \code{optim} relating to whether or

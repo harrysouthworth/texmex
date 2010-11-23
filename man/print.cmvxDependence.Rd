@@ -1,50 +1,28 @@
 \name{print.cmvxDependence}
 \alias{print.cmvxDependence}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ ~~function to do ... ~~ }
+\title{ Print the parameters in a multivariate conditional dependence extreme value model. }
 \description{
-  ~~ A concise (1-5 lines) description of what the function does. ~~
+Show dependence structure parameters from an object of class \code{cmvxDependence}.
 }
 \usage{
 print.cmvxDependence(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ ~~Describe \code{x} here~~ }
+  \item{x}{ An object of class \code{cmvxDependence}. }
 }
 \details{
-  ~~ If necessary, more details than the description above ~~
+    The parameters in the dependence structure of a multivariate extreme value
+    model, as described by Heffernan and Tawn, 2004.
 }
-\value{
-  ~Describe the value returned
-  If it is a LIST, use
-  \item{comp1 }{Description of 'comp1'}
-  \item{comp2 }{Description of 'comp2'}
-  ...
-}
-\references{ ~put references to the literature/web site here ~ }
-\author{ ~~who you are~~ }
-\note{ ~~further notes~~ 
-
- ~Make other sections like Warning with \section{Warning }{....} ~
-}
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
+\value{NULL}
+\references{ J. E. Heffernan and J. A. Tawn, A conditional approach for multivariate
+extreme values, Journal of the Royal Statistical Society (B), 66, 497 -- 546, 2004. }
+\author{ Harry Southworth }
+\seealso{ \code{\link{migpd}}, \code{\link{cmvxBoot}}, \code{\link{cmvxPrediction}} }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
 
-## The function is currently defined as
-function( x ){
-	print( x$call )
-	names( x$gqu ) <- dimnames( x$parameters )[[ 2 ]]
-	cat( "\nThresholding quantiles for Gumbel-transformed data:\n" )
-	print( x$gqu )
-	cat( "\nDependence structure parameter estimates:\n" )
-	print( x$parameters )
-  }
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ models }
+\keyword{ multivariate }

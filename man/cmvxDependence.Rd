@@ -12,18 +12,18 @@ cmvxDependence(x, which, gth, gqu)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ An object of class 'migpd' as returned by \code{migpd} }
+  \item{x}{ An object of class 'migpd' as returned by \code{migpd}. }
   \item{which}{ The name of the variable on which to condition. This is
-		the name of a column of the data that was passed into
+		the name of a column of the data that was passed into.
 		\code{migpd}}
   \item{gth}{ A single number specifying a threshold on the Gumbel
 			  scale. The model will be conditional on the \code{which}
 			  variable being over this value. Only one of \code{gth}
-			  or \code{gqu} should be given }
+			  or \code{gqu} should be given. }
   \item{gqu}{ A single number specifying a quantile on the Gumbel
 			  scale. The model will be conditional on the \code{which}
 			  variable being over this quantile. Only one of \code{gth}
-			  or \code{gqu} should be given }
+			  or \code{gqu} should be given. }
 }
 \details{
   The parameters a, b, c and d in the dependence structure described
@@ -33,7 +33,7 @@ cmvxDependence(x, which, gth, gqu)
   be fixed at zero.
 }
 \value{
-  An object of class 'cmvxDependence'. There is a \code{print}
+  An object of class \code{cmvxDependence}. There is a \code{print}
   function available.
 }
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach

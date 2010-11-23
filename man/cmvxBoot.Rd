@@ -57,16 +57,7 @@ bias into the resulting bootstrap distributions.
 \value{
  An object of class 'cmvxBoot'. A print function is available.
 }
-\warning{
-The print method displayes the means of the bootstrap samples. This
-is wrong! They should be the values adjusted for the bootstrap
-estimate of bias.
 
-The plot method displayes histogrames of parameter estimates, but
-there are not labels to indicate what is being displayed. 
-
-It is intended that these functions will be fixed in a future release.
-}
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
