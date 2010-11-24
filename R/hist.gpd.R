@@ -1,6 +1,6 @@
 `hist.gpd` <-
 function( x , xlab, ylab, main, ... ){
-	a <- x$mle
+	a <- x$coefficients
 	a[ 1 ] <- exp( a[ 1 ] )
 	u <- x$threshold
 	dat <- x$y
