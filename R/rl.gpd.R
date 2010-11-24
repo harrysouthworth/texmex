@@ -32,7 +32,7 @@ function(object, alpha = .050,
 
     } # Close gpd.delta
 
-    a <- object$mle
+    a <- object$coefficients
     u <- object$threshold
     la <- object$rate
     n <- length(object$y) / la # Number of obs prior to thresholding
