@@ -41,7 +41,7 @@ rgpd(n, sigma = 1, xi = 1, u = 0)
   hist(x)
   x <- rgpd(1000, sigma=exp(rnorm(1000, 1, .25)), xi=rnorm(1000, .5, .2))
   hist(x)
-  plot(pgpd(x))
+  plot(pgpd(x, sigma=1, xi=.5))
 }
 \keyword{ models }
 
