@@ -4,12 +4,49 @@ edf <- function(x, na.last=NA){
     invisible(res)
 }
 
-copula <- function(x, na.last=NA){
-    stopifnot(is.numeric(x))  
+copula <- 
+function (x, na.last = NA) {
+    theCall <- match.call()
+    
+    if (is.data.frame(x)){
+        really.numeric <- function(x){
+            if (! class(x) %in% c("integer", "numeric")){ FALSE }
+            else { TRUE }
+        }
+
+        wh <- sapply(x, really.numeric)
+    
+        if (sum(wh) == 0){
+            stop("x contains no numeric columns")
+        }
+    
+        if (sum(wh) < length(wh)){
+            warning(paste("Some variables have been dropped:", paste(colnames(x)[!wh], collapse=", ")))
+        }
+
+        x <- as.matrix(x[, wh])
+    } # Close if
+    
+    else if (!is.matrix(x)){
+        stop("x should be a matrix or a data.frame with some numeric columns")
+    }
+    
     res <- apply(x, 2, edf)
+
+    res <- list(call=theCall, copula=res)
     oldClass(res) <- "copula"
     res
 }
+
+
+print.copula <- function(x, ...){
+    print(x$call)
+    cat("A copula of", ncol(x$copula), "variables.\n")
+    invisible()
+}
+
+show.copula <- print.copula
+summary.copula <- print.copula
 
 plot.copula <- function(x, jitter.=FALSE, ...){
     if (jitter.){
