@@ -1,7 +1,7 @@
 `gpdRangeFit` <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
           nint = 10, show = FALSE,
-          penalty="gaussian", priorParameters=NULL,
+          penalty="gaussian", priorParameters=NULL, alpha=.05,
           xlab="Threshold", ylab=NULL,
 		  main=NULL, ... ) {
 	if ( missing( ylab ) ){
@@ -17,16 +17,18 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
 
     m <- s <- up <- ul <- matrix(0, nrow = nint, ncol = 2)
     u <- seq(umin, umax, length = nint)
+    qz <- qnorm(1-alpha/2)
     for (i in 1:nint) {
         z <- gpd(data, th=u[i], penalty=penalty, priorParameters=priorParameters)
-        m[i, ] <- z$mle
+        m[i, ] <- z$coefficients
         m[i, 1] <- m[i, 1] - m[i, 2] * u[i]
         d <- matrix(c(1, -u[i]), ncol = 1)
         v <- t(d) %*% z$cov %*% d
         s[i, ] <- sqrt( diag( z$cov ) )
         s[i, 1] <- sqrt(v)
-        up[i, ] <- m[i, ] + 1.96 * s[i, ]
-        ul[i, ] <- m[i, ] - 1.96 * s[i, ]
+        
+        up[i, ] <- m[i, ] + qz * s[i, ]
+        ul[i, ] <- m[i, ] - qz * s[i, ]
     }
     names <- c("Modified Scale", "Shape")
     for (i in 1:2) {
