@@ -9,7 +9,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
         }
     }
     if (!missing(data)) {
-        y <- formula(paste(y, "~ ."))
+        y <- formula(paste(y, "~ 1"))
         y <- model.response(model.frame(y, data=data))
 #        y <- data[, y]
         if (missing(th)) {
