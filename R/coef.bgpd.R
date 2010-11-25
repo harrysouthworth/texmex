@@ -1,3 +1,3 @@
-coef.bgpd <- function(x){
-    apply( x$param, 2, mean )
+coef.bgpd <- function(object, ...){
+    apply( object$param, 2, mean )
 }

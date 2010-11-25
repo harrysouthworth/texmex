@@ -1,8 +1,8 @@
 `coefficients.gpd` <-
-function( x ) {
-								res = x$coefficients
+function( object, ... ) {
+								res <- object$coefficients
 								if ( length( res ) == 2 )
-									names( res ) = c( "log(sigma)", "xi" )
+									names( res ) <- c( "log(sigma)", "xi" )
 								res
 							   }
 

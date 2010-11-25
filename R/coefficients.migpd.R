@@ -1,9 +1,9 @@
 `coefficients.migpd` <-
-function( x ){
-	co <- sapply( x$models, function( x ) x$coefficients )
-	co <- rbind( x$th, x$qu, co )
+function( object, ... ){
+	co <- sapply( object$models, function( x ) x$coefficients )
+	co <- rbind( object$th, object$qu, co )
 	dimnames( co ) <- list( c( "Threshold", "P(X < threshold)", "sigma", "xi" ) ,
-							names( x$models ) )
+							names( object$models ) )
 	co[ 3, ] <- exp( co[ 3 , ] )
 	co
 }

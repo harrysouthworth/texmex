@@ -1,5 +1,5 @@
 `coef.migpd` <-
-function( x ){
-  coefficients.migpd(x)
+function( object, ... ){
+  coefficients.migpd(object)
 }
 

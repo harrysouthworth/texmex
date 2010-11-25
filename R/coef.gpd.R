@@ -1,5 +1,5 @@
 `coef.gpd` <-
-function( x ) {
-  coefficients.gpd(x)
+function( object, ... ) {
+  coefficients.gpd(object)
 							   }
 

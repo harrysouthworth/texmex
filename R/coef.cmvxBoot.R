@@ -1,29 +1,29 @@
 `coef.cmvxBoot` <-
-function( x ){
-	d2 <- dim( x$boot[[ 1 ]][[ 2 ]] )
+function( object, ... ){
+	d2 <- dim( object$boot[[ 1 ]][[ 2 ]] )
 	
-	B <- x$B
+	B <- object$B
 	
-  sco <- x$simpleDep # Point estimates of dependence structure
+  sco <- object$simpleDep # Point estimates of dependence structure
 	
-	x <- x$boot
-	wh <- unlist( lapply( x , function( z ) dim( z$Z )[[ 1 ]] == dim( na.omit( z$Z ) )[[ 1 ]] ) )
-	x <- x[ wh ]
+	object <- object$boot
+	wh <- unlist( lapply( object , function( z ) dim( z$Z )[[ 1 ]] == dim( na.omit( z$Z ) )[[ 1 ]] ) )
+	object <- object[ wh ]
 	
 	eff <- sum( wh )
 	
-	co <- unlist( lapply( x , function( z ) z[[ 2 ]]) )
+	co <- unlist( lapply( object , function( z ) z[[ 2 ]]) )
 	co <- array( co, dim = c( d2[ 1 ] , d2[ 2 ] , length( co ) / prod( d2 ) ) )
 	mco <- apply( co, c( 1, 2 ), mean )
-	seco <- apply( co, c( 1 , 2 ), function( x ) sqrt( var( x ) ) )
+	seco <- apply( co, c( 1 , 2 ), function( object ) sqrt( var( object ) ) )
 
 	res <- list( bPoint = mco , se = seco )
 
-	res <- lapply( res , function( x, nms ){
-							dimnames( x ) <- nms
-							x
+	res <- lapply( res , function( object, nms ){
+							dimnames( object ) <- nms
+							object
 						 } ,
-						 nms = dimnames( x[[ 1 ]][[ 2 ]] )
+						 nms = dimnames( object[[ 1 ]][[ 2 ]] )
 				 )
 
 	attr( res , "Samples generated" ) <- B
