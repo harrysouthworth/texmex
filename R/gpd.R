@@ -3,11 +3,11 @@ function (y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     start=NULL,
     priorParameters = NULL, maxit = 10000, trace = 0) {
     theCall <- match.call()
-    if (class(try(y, silent = TRUE)) == "try-error") {
+#    if (class(try(y, silent = TRUE)) == "try-error") {
         if (!missing(data)) {
             y <- deparse(substitute(y))
         }
-    }
+#    }
     if (!missing(data)) {
         y <- formula(paste(y, "~ 1"))
         y <- model.response(model.frame(y, data=data))
