@@ -1,3 +1,7 @@
 coef.bgpd <- function(object, ...){
-    apply( object$param, 2, mean )
+    res <- apply( object$param, 2, mean )
+    names(res) <- c(paste("phi:", colnames(object$X.phi)), 
+        paste("xi:", colnames(object$X.xi)))
+    res
 }
+

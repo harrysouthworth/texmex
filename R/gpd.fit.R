@@ -1,5 +1,5 @@
 gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
-        priorParameters = NULL, maxit = maxit, trace = trace) {
+        priorParameters = NULL, maxit = 10000, trace = 0) {
 
     gpd.lik <- function(par, y, th, X.phi, X.xi, penalty = "none", 
         priorParameters = NULL, maxit = maxit, trace = trace) {

@@ -5,13 +5,17 @@ function( x , print.seed=FALSE, ...){
 	if ( print.seed ){
 		cat( "Random seed:", x$seed, "\n" )
 	}
-	cat( "Acceptance rate: " )
-	print(x$acc, ... )
-	cat( "\n\nMAP estimates using", x$map$penalty, "prior:\n" )
-	print( coef( x$map ) , ... )
+	cat( "Acceptance rate: ", format(x$acc) )
+
+	cat( "\n\nMAP estimates:\n" )
+    co <- coef(x)
+    map <- x$map$par
+    names(map) <- names(co)
+
+	print( map , ... )
 	cat( "\nPosterior means:\n" )
-	m <- c( apply( x$param, 2, mean ) )
-	names( m ) = names( coef( x$map ) )
+	m <- coef(x)
+#	names( m ) = names( coef( x$map ) )
 	print( m , ... )
 	
 	invisible()

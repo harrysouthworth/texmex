@@ -10,15 +10,17 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
   
 	theCall <- match.call()
 
-    if (class(try(y, silent=TRUE)) == "try-error"){
+#    if (class(try(y, silent=TRUE)) == "try-error"){
         if (!missing(data)){
             y <- deparse(substitute(y))
         }
-    }
+#    }
 
     if (!missing(data)){
         ys <- y
-        y <- data[, y]
+        y <- formula(paste(y, "~ 1"))
+        y <- model.response(model.frame(y, data=data))
+#       y <- data[, y]
         if (missing(th)){
             th <- quantile(y, qu)
         }
@@ -101,10 +103,14 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
         ys <- "y"
     }
 
-  mod <- do.call("gpd", list(ys, data, u, phi=phi, xi=xi, penalty=penalty,
-    			priorParameters=priorParameters))
+mod <- do.call("gpd.fit", list(y=y, th=th, X.xi=X.xi, X.phi=X.phi,
+               penalty=penalty,
+               priorParameters=priorParameters))
 
-  # Need to check for convergence failure here. Otherwise, end up simulating
+#  mod <- do.call("gpd", list(y, data, u, phi=phi, xi=xi, penalty=penalty,
+#    			priorParameters=priorParameters))
+
+ # Need to check for convergence failure here. Otherwise, end up simulating
   # proposals from distribution with zero variance in 1 dimension.
   checkNA <- any( is.na( sqrt( diag( mod$cov ) ) ) )
   if ( checkNA ){
@@ -114,7 +120,8 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
 	res <- matrix( ncol=ncol(X.phi) + ncol(X.xi), nrow=iter )
 
   if ( missing( start ) ) 
-    res[ 1 , ] <- coef( mod )
+#    res[ 1 , ] <- coef( mod )
+    res[1,] <- mod$par
 	else 
     res[ 1 , ] <- start
 
@@ -125,11 +132,12 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
     if( verbose){
       if( i %% trace == 0 ) cat(i, " steps taken\n" )
     }
+        cov <- solve(mod$hessian)
 		if ( exists("is.R") && is.function(is.R) && is.R() ){
-			prop <- c(rmvnorm( 1 , mean = coef(mod), sigma = mod$cov * jump.const ))
+			prop <- c(rmvnorm( 1 , mean = mod$par, sigma = cov * jump.const ))
 		}
 		else {
-			prop <- c(rmvnorm( 1 , mean = coef(mod), cov = mod$cov * jump.const ))
+			prop <- c(rmvnorm( 1 , mean = mod$par, cov = cov * jump.const ))
 		}
 		bottom <- prior( res[ i - 1 ,], priorParameters[[1]], priorParameters[[2]] ) +
 		            gpdlik( res[ i - 1 , ] , y-u, X.phi, X.xi)

@@ -2,7 +2,7 @@
 function( x, which.plots=1:3, density.adjust=2,
 							print.seed = FALSE , ...){
 
-    varnames <- names(coef(x$map))
+    varnames <- names(coef(x))
 
 	if ( 1 %in% which.plots ){
         kdes <- list()
