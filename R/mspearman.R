@@ -48,7 +48,16 @@ print.MCS <- function(x, ...){
     print(res)
     invisible(res)
 }
-summary.MCS <- show.MCS <- print.MCS
+show.MCS <- print.MCS
+
+summary.MCS <-  function(object, ...){
+    print(object$call)
+    cat("Multivariate conditional Spearman's rho.\n\n", sep = "")
+    res <- object$mcs
+    names(res) <- object$p
+    print(res)
+    invisible(res)
+}
 
 #------------------------------------------------
 #Bootstrap
