@@ -46,9 +46,15 @@ print.copula <- function(x, ...){
 }
 
 show.copula <- print.copula
-summary.copula <- print.copula
+
+summary.copula <- function(object, ...){
+    print(object$call)
+    cat("A copula of", ncol(object$copula), "variables.\n")
+    invisible()
+}
 
 plot.copula <- function(x, jitter.=FALSE, ...){
+    x <- x$copula
     if (jitter.){
         x <- apply(x, 2, jitter)
     }

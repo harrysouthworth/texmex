@@ -82,20 +82,20 @@ print.chi <- function(x, ...){
     invisible()
 }
 
-summary.chi <- function(x, digits=3, ...){
-    print(x$call)
+summary.chi <- function(object, digits=3, ...){
+    print(object$call)
     cat("Values of chi and chi-bar obtained and",
-         length(x$quantile), "quantiles.\n")
+         length(object$quantile), "quantiles.\n")
 
-    wh <- quantile(x$quantile, prob=c(.05, .5, .95))
+    wh <- quantile(object$quantile, prob=c(.05, .5, .95))
     wh <- sapply(wh, function(i, u){
                         d <- abs(u - i)
                         u[d == min(d)]
-                     }, u=x$quantile)
+                     }, u=object$quantile)
 
-    chiQ <- x$chi[x$quantile %in% wh, 2]
+    chiQ <- object$chi[object$quantile %in% wh, 2]
 
-    chibarQ <- x$chibar[x$quantile %in% wh, 2]
+    chibarQ <- object$chibar[object$quantile %in% wh, 2]
 
     res <- rbind(wh, chiQ, chibarQ)
     dimnames(res) <- list(c("quantile", "chi", "chi-bar"), rep("", 3))

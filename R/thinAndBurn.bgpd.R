@@ -1,38 +1,38 @@
 thinAndBurn <- function (object, ...)
   UseMethod("thinAndBurn")
 
-thinAndBurn.bgpd <- function(obj,burn,thin){
+thinAndBurn.bgpd <- function(object,burn,thin){
 
   if(missing(burn)){
-    burn <- obj$burn
+    burn <- object$burn
   } else {
-    obj$burn <- burn
+    object$burn <- burn
   }
   if(missing(thin)){
-    thin <- obj$thin
+    thin <- object$thin
   } else {
-    obj$thin <- thin
+    object$thin <- thin
   }
-  if(is.null(obj$thin)){
+  if(is.null(object$thin)){
     stop("thin or its reciprocal must be a positive integer, for no thinning use thin=1")
   }     
-  if(is.null(obj$burn)){
+  if(is.null(object$burn)){
     stop("burn must be a non-negative integer, for no burn in use burn=0")
   }     
   
  	if ( thin < 1 ) thin <- 1 / thin
 	if ( thin %% 1 > 10^(-6) ) stop("thin, or its reciprocal, should be an integer" )
-	if ( burn > dim(obj$chains)[1] ) stop( "burn-in is longer that the whole chain" )
+	if ( burn > dim(object$chains)[1] ) stop( "burn-in is longer that the whole chain" )
 
   if (burn > 0){
-     obj$param <- obj$chains[ -( 1:burn ) , ] # Remove burn-in
+     object$param <- object$chains[ -( 1:burn ) , ] # Remove burn-in
   } else {
-     obj$param <- obj$chains
+     object$param <- object$chains
   }
-	wh <- 1:dim( obj$param )[[ 1 ]] %% thin == 0
-	obj$param <- obj$param[ wh , ]
+	wh <- 1:dim( object$param )[[ 1 ]] %% thin == 0
+	object$param <- object$param[ wh , ]
 
-  invisible(obj)
+  invisible(object)
 }
 
 test(thinAndBurn.bgpd) <- function(){

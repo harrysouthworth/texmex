@@ -91,13 +91,13 @@ print.bootMCS <- function(x, ...){
 }
 show.bootMCS <- print.bootMCS
 
-summary.bootMCS <- function(x, alpha=.05){
-    cat("Multivariate conditional Spearman's rho.\n", x$B, " bootstrap samples were performed.\n\n",
+summary.bootMCS <- function(object, alpha=.05, ...){
+    cat("Multivariate conditional Spearman's rho.\n", object$B, " bootstrap samples were performed.\n\n",
         sep = "")
-    m <- rowMeans(x$replicates)
-    ci <- apply(x$replicates, 1, quantile, prob=c(alpha/2, 1 - alpha/2))
+    m <- rowMeans(object$replicates)
+    ci <- apply(object$replicates, 1, quantile, prob=c(alpha/2, 1 - alpha/2))
     res <- cbind(m, t(ci))
-    dimnames(res) <- list(x$p, c("Mean", rownames(ci)))
+    dimnames(res) <- list(object$p, c("Mean", rownames(ci)))
     res
 }
 

@@ -1,5 +1,5 @@
 `summary.cmvxPrediction` <-
-function( object, th, probs=c( .05, .5, .95 ) ){
+function( object, th, probs=c( .05, .5, .95 ), ... ){
 
 	if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
 	if ( missing( th ) ) th <- object$th
