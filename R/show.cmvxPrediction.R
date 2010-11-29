@@ -1,1 +1,1 @@
-`show.cmvxPrediction` <- print.cmvxPrediction
+`show.mexPrediction` <- print.mexPrediction

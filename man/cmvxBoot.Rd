@@ -1,17 +1,17 @@
-\name{cmvxBoot}
-\alias{cmvxBoot}
-\alias{print.cmvxBoot}
-\alias{plot.cmvxBoot}
+\name{mexBoot}
+\alias{mexBoot}
+\alias{print.mexBoot}
+\alias{plot.mexBoot}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Bootstrap a conditional multivariate extreme values model }
 \description{
   Bootstrap a conditional multivariate extreme values model following
 the method of Heffernan and Tawn, 2004. I'm grateful to Jan Heffernan
-for advice. The methods for the object returned by \code{cmvxBoot}
+for advice. The methods for the object returned by \code{mexBoot}
 are currently flawed!
 }
 \usage{
-cmvxBoot(x, which, B = 100, gth, gqu, nPass=3)
+mexBoot(x, which, B = 100, gth, gqu, nPass=3)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -47,15 +47,15 @@ variables in the dependence structure of these variables are then estimated.
 
 Note that maximum likelihood estimation will often fail for small samples when the generalized
 Pareto distribution is being fit. Therefore it will often be useful to use penalized likelihood
-estimation. \code{cmvxBoot} does whatever was done in the call to \code{migpd}.
+estimation. \code{mexBoot} does whatever was done in the call to \code{migpd}.
 
 Also note that sometimes (again, usually with small data sets) all of the simulated Gumbel
 random numbers will be beneath the threshold for the conditioning variable. Such samples are
-abandoned by \code{cmvxBoot} and a new sample is generated. This probably introduces some
+abandoned by \code{mexBoot} and a new sample is generated. This probably introduces some
 bias into the resulting bootstrap distributions.
 }
 \value{
- An object of class 'cmvxBoot'. A print function is available.
+ An object of class 'mexBoot'. A print function is available.
 }
 
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
@@ -63,14 +63,14 @@ bias into the resulting bootstrap distributions.
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions. }
-\seealso{ \code{\link{migpd}} , \code{link{cmvxDependence} },
-	\code{\link{cmvxBoot}}, \code{\link{cmvxPrediction}},
+\seealso{ \code{\link{migpd}} , \code{link{mexDependence} },
+	\code{\link{mexBoot}}, \code{\link{mexPrediction}},
 		    }
 \seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 data( winter )
 mygpd <- migpd( winter , qu = .7 )
-myboot <- cmvxBoot( mygpd, which = "NO", gqu=.7 )
+myboot <- mexBoot( mygpd, which = "NO", gqu=.7 )
 myboot
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the

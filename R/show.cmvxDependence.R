@@ -1,2 +1,2 @@
-`show.cmvxDependence` <- print.cmvxDependence
+`show.mexDependence` <- print.mexDependence
 

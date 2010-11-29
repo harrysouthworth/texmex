@@ -1,4 +1,4 @@
-`summary.cmvxPrediction` <-
+`summary.mexPrediction` <-
 function( object, th, probs=c( .05, .5, .95 ), ... ){
 
 	if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
@@ -38,7 +38,7 @@ function( object, th, probs=c( .05, .5, .95 ), ... ){
 				 statistic=deparse( substitute( statistic ) )
 				 )
 
-	oldClass( ans ) <- "summary.cmvxPrediction"
+	oldClass( ans ) <- "summary.mexPrediction"
 	ans
 }
 

@@ -22,8 +22,8 @@ LazyData: \tab yes\cr
 Fit generalized Pareto distributions by (penalized) maximum likelihood
 (\code{gpd}), perform Bayesian inference via Markov chain Monte Carlo
 (\code{bgpd}), perform conditional multivariate extreme value modelling
-following the approach of Heffernan and Tawn (\code{cmvxDependece},
-\code{cmvxBoot}, \code{cmvxDependence}).
+following the approach of Heffernan and Tawn (\code{mexDependece},
+\code{mexBoot}, \code{mexDependence}).
 }
 \author{
 Harry Southworth
@@ -61,10 +61,10 @@ plot(bmod)
 D <- liver[liver$dose == "D", c("ALT_M", "AST_M", "ALP_M", "TBL_M")]
 gpdD <- migpd(D, qu=.7) # Use data over 70th percentile
 summary(gpdD)
-cmvxDependence(gpdD)
-bootD <- cmvxBoot(gpdD, which="ALT_M", gqu=.7)
+mexDependence(gpdD)
+bootD <- mexBoot(gpdD, which="ALT_M", gqu=.7)
 bootD
-predD <- cmvxPrediction(gpdD, bootD)
+predD <- mexPrediction(gpdD, bootD)
 predD
 par(mfrow=c(2, 2))
 plot(predD)

@@ -1,16 +1,16 @@
-\name{print.cmvxDependence}
-\alias{print.cmvxDependence}
+\name{print.mexDependence}
+\alias{print.mexDependence}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Print the parameters in a multivariate conditional dependence extreme value model. }
 \description{
-Show dependence structure parameters from an object of class \code{cmvxDependence}.
+Show dependence structure parameters from an object of class \code{mexDependence}.
 }
 \usage{
-print.cmvxDependence(x)
+print.mexDependence(x)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ An object of class \code{cmvxDependence}. }
+  \item{x}{ An object of class \code{mexDependence}. }
 }
 \details{
     The parameters in the dependence structure of a multivariate extreme value
@@ -20,7 +20,7 @@ print.cmvxDependence(x)
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach for multivariate
 extreme values, Journal of the Royal Statistical Society (B), 66, 497 -- 546, 2004. }
 \author{ Harry Southworth }
-\seealso{ \code{\link{migpd}}, \code{\link{cmvxBoot}}, \code{\link{cmvxPrediction}} }
+\seealso{ \code{\link{migpd}}, \code{\link{mexBoot}}, \code{\link{mexPrediction}} }
 \examples{
 
 }

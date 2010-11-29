@@ -1,11 +1,11 @@
-`cmvxDependence` <-
+`mexDependence` <-
 function (x, which, gth, gqu)
 {
    theCall <- match.call()
    if (class(x) != "migpd")
-       stop("you need to use an object created by migpd and passed through cmvxGumbel")
+       stop("you need to use an object created by migpd and passed through mexGumbel")
    else if (is.null(x$gumbel))
-       stop("you need to pass the object through cmvxGumbel")
+       stop("you need to pass the object through mexGumbel")
    if (missing(which)) {
        cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1],
            "\n")
@@ -41,7 +41,7 @@ function (x, which, gth, gqu)
                if (is.infinite(res)){
                        if (res < 0){ res <- -(10^8) }
                        else res <- 10^8
-                       warning("Infinite value of Q in cmvxDependence")
+                       warning("Infinite value of Q in mexDependence")
                }
            res
        }
@@ -55,7 +55,7 @@ function (x, which, gth, gqu)
 
 
        if (class(o) == "try-error" || o$convergence != 0) {
-           warning("Non-convergence in cmvxDependence")
+           warning("Non-convergence in mexDependence")
            o$par <- rep(NA, 4)
        }
        if (!is.na(o$par[1]))
@@ -82,7 +82,7 @@ function (x, which, gth, gqu)
                  10^8, 10^8, 1 - 10^(-8), Inf, Inf), method = "L-BFGS-B",
                  yex = yex[wh], ydep = X[wh]))
                if (class(o) == "try-error" || o$convergence != 0) {
-                 warning("Non-convergence in cmvxDependence")
+                 warning("Non-convergence in mexDependence")
                  o$par <- rep(NA, 4)
                }
            }
@@ -124,28 +124,28 @@ function (x, which, gth, gqu)
    dimnames(z)[[2]] <- dimnames(res)[[2]]
    res <- list(call = theCall, coefficients = res, Z = z, migpd=x, gth = gth,
        gqu = gqu, which = which, conditioningVariable= names(x$data)[which])
-   oldClass(res) <- "cmvxDependence"
+   oldClass(res) <- "mexDependence"
    res
 }
 
-test(cmvxDependence) <- function(){
+test(mexDependence) <- function(){
   smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
-  mySdepO3 <- cmvxDependence(smarmod,which=1,gqu=0.7)
-  myWdepO3 <- cmvxDependence(wmarmod,which=1,gqu=0.7)
+  mySdepO3 <- mexDependence(smarmod,which=1,gqu=0.7)
+  myWdepO3 <- mexDependence(wmarmod,which=1,gqu=0.7)
 
-  mySdepNO2 <- cmvxDependence(smarmod,which=2,gqu=0.7)
-  myWdepNO2 <- cmvxDependence(wmarmod,which=2,gqu=0.7)
+  mySdepNO2 <- mexDependence(smarmod,which=2,gqu=0.7)
+  myWdepNO2 <- mexDependence(wmarmod,which=2,gqu=0.7)
 
-  mySdepNO <- cmvxDependence(smarmod,which=3,gqu=0.7)
-  myWdepNO <- cmvxDependence(wmarmod,which=3,gqu=0.7)
+  mySdepNO <- mexDependence(smarmod,which=3,gqu=0.7)
+  myWdepNO <- mexDependence(wmarmod,which=3,gqu=0.7)
 
-  mySdepSO2 <- cmvxDependence(smarmod,which=4,gqu=0.7)
-  myWdepSO2 <- cmvxDependence(wmarmod,which=4,gqu=0.7)
+  mySdepSO2 <- mexDependence(smarmod,which=4,gqu=0.7)
+  myWdepSO2 <- mexDependence(wmarmod,which=4,gqu=0.7)
 
-  mySdepPM10 <- cmvxDependence(smarmod,which=5,gqu=0.7)
-  myWdepPM10 <- cmvxDependence(wmarmod,which=5,gqu=0.7)
+  mySdepPM10 <- mexDependence(smarmod,which=5,gqu=0.7)
+  myWdepPM10 <- mexDependence(wmarmod,which=5,gqu=0.7)
 
   
 jhSdepO3 <- matrix(c(
@@ -226,15 +226,15 @@ jhWdepPM10 <- matrix(c(
   plot(jhSdepPM10,mySdepPM10$coefficients);abline(0,1)
   }
   
-  checkEqualsNumeric(jhWdepO3,  myWdepO3$coefficients,  tol=tol,msg="cmvxDependence: Winter O3")
-  checkEqualsNumeric(jhWdepNO2, myWdepNO2$coefficients, tol=tol,msg="cmvxDependence: Winter NO2")
-  checkEqualsNumeric(jhWdepNO,  myWdepNO$coefficients,  tol=tol,msg="cmvxDependence: Winter NO")
-  checkEqualsNumeric(jhWdepSO2, myWdepSO2$coefficients, tol=tol,msg="cmvxDependence: Winter SO2")
-  checkEqualsNumeric(jhWdepPM10,myWdepPM10$coefficients,tol=tol,msg="cmvxDependence: Winter PM10")
+  checkEqualsNumeric(jhWdepO3,  myWdepO3$coefficients,  tol=tol,msg="mexDependence: Winter O3")
+  checkEqualsNumeric(jhWdepNO2, myWdepNO2$coefficients, tol=tol,msg="mexDependence: Winter NO2")
+  checkEqualsNumeric(jhWdepNO,  myWdepNO$coefficients,  tol=tol,msg="mexDependence: Winter NO")
+  checkEqualsNumeric(jhWdepSO2, myWdepSO2$coefficients, tol=tol,msg="mexDependence: Winter SO2")
+  checkEqualsNumeric(jhWdepPM10,myWdepPM10$coefficients,tol=tol,msg="mexDependence: Winter PM10")
 
-  checkEqualsNumeric(jhSdepO3,  mySdepO3$coefficients,  tol=tol,msg="cmvxDependence: Summer O3")
-  checkEqualsNumeric(jhSdepNO2, mySdepNO2$coefficients, tol=tol,msg="cmvxDependence: Summer NO2")
-  checkEqualsNumeric(jhSdepNO,  mySdepNO$coefficients,  tol=tol,msg="cmvxDependence: Summer NO")
-  checkEqualsNumeric(jhSdepSO2, mySdepSO2$coefficients, tol=tol,msg="cmvxDependence: Summer SO2")
-  checkEqualsNumeric(jhSdepPM10,mySdepPM10$coefficients,tol=tol,msg="cmvxDependence: Summer PM10")
+  checkEqualsNumeric(jhSdepO3,  mySdepO3$coefficients,  tol=tol,msg="mexDependence: Summer O3")
+  checkEqualsNumeric(jhSdepNO2, mySdepNO2$coefficients, tol=tol,msg="mexDependence: Summer NO2")
+  checkEqualsNumeric(jhSdepNO,  mySdepNO$coefficients,  tol=tol,msg="mexDependence: Summer NO")
+  checkEqualsNumeric(jhSdepSO2, mySdepSO2$coefficients, tol=tol,msg="mexDependence: Summer SO2")
+  checkEqualsNumeric(jhSdepPM10,mySdepPM10$coefficients,tol=tol,msg="mexDependence: Summer PM10")
 }

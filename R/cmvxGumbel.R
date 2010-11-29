@@ -1,4 +1,4 @@
-`cmvxGumbel` <-
+`mexGumbel` <-
 function( x ,
 		  method = "mixture",
 		  divisor = "n+1",

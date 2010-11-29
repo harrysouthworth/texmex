@@ -1,4 +1,4 @@
-`print.cmvxBoot` <-
+`print.mexBoot` <-
 function( x , ... ){
 	print( x$call )
 	cat( paste( "\n", x$B, " bootstrap samples created.\n\n" , sep = "" ) )

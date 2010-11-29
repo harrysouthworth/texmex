@@ -1,12 +1,12 @@
-\name{plot.cmvxBoot}
-\alias{plot.cmvxBoot}
+\name{plot.mexBoot}
+\alias{plot.mexBoot}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ ~~function to do ... ~~ }
 \description{
   ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-plot.cmvxBoot(x, which = "gpd")
+plot.mexBoot(x, which = "gpd")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

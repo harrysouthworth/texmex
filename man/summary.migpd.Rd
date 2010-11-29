@@ -27,7 +27,7 @@ A matrix containing the marginal point estimates and the thresholds.
 
 \author{ Harry Southworth }
 \seealso{
-    \code{\link{gpd}}, \code{\link{cmvxDependence}}, \code{\link{migpdCoefs}}
+    \code{\link{gpd}}, \code{\link{mexDependence}}, \code{\link{migpdCoefs}}
 }
 \examples{
 mod <- migpd(winter, qu=.7)

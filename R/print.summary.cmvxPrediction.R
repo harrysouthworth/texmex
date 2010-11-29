@@ -1,4 +1,4 @@
-`print.summary.cmvxPrediction` <-
+`print.summary.mexPrediction` <-
 function( x, ... ){
 	print( x$call, ... )
   cat( "\nResults from", x$B, "bootstrap runs.\n" )

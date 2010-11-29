@@ -74,7 +74,7 @@ migpd(data, th, qu, penalty = "gaussian", maxit = 10000, verbose = FALSE, gaussi
   directly, however, take care to be sure what scale the results
   are on.
   
-  The \code{cmvx} library contains no functions to help select
+  The \code{mex} library contains no functions to help select
   appropriate thresholds or perform diagnostic checks. You should
   use one of the other available extreme values packages to do
   those operations.
@@ -93,8 +93,8 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the genralized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
 }
 \author{ Harry Southworth }
-\seealso{ \code{\link{cmvxDependence}}, \code{\link{cmvxBoot}},
-	\code{\link{cmvxPrediction}}
+\seealso{ \code{\link{mexDependence}}, \code{\link{mexBoot}},
+	\code{\link{mexPrediction}}
 		  }
 \examples{
 data( winter )

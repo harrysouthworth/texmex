@@ -1,4 +1,4 @@
-`print.cmvxPrediction` <-
+`print.mexPrediction` <-
 function( x, ... ){
 	if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
 

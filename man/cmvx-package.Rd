@@ -1,6 +1,6 @@
-\name{cmvx-package}
-\alias{cmvx-package}
-\alias{cmvx}
+\name{mex-package}
+\alias{mex-package}
+\alias{mex}
 \docType{package}
 \title{
 Conditional multivariate extreme values modelling.
@@ -12,7 +12,7 @@ of Heffernan and Tawn, 2004.
 }
 \details{
 \tabular{ll}{
-Package: \tab cmvx\cr
+Package: \tab mex\cr
 Type: \tab Package\cr
 Version: \tab 1.0\cr
 Date: \tab 2008-12-06\cr
@@ -20,12 +20,12 @@ License: \tab To be decided\cr
 }
 \code{migpd}: Fit multiple, independent generalized Pareto models to the columns of a data set.
 
-\code{cmvxDependence}: Estimate the parameters in the dependence structure.
+\code{mexDependence}: Estimate the parameters in the dependence structure.
 
-\code{cmvxBoot}: Bootstrap estimation for parameters in generalized Pareto models
+\code{mexBoot}: Bootstrap estimation for parameters in generalized Pareto models
 and in the dependence structure.
 
-\code{cmvxPrediction}: Predict values of dependent variables given that one
+\code{mexPrediction}: Predict values of dependent variables given that one
 variable is extreme.
 
 }
@@ -46,8 +46,8 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu=.7, penalty="none" )
-myboot <- cmvxBoot( mygpd , wh="NO", gqu=.7 )
-mypred <- cmvxPrediction( mygpd, myboot , nsim=500 )
+myboot <- mexBoot( mygpd , wh="NO", gqu=.7 )
+mypred <- mexPrediction( mygpd, myboot , nsim=500 )
 plot( mypred )
 summary( mypred )
 }

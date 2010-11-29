@@ -1,16 +1,16 @@
-\name{coef.cmvxBoot}
-\alias{coef.cmvxBoot}
+\name{coef.mexBoot}
+\alias{coef.mexBoot}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Extract bootstrap parameter estimates from an object of class 'cmvxBoot' }
+\title{ Extract bootstrap parameter estimates from an object of class 'mexBoot' }
 \description{
-Extract bootstrap parameter estimates from an object of class 'cmvxBoot'.
+Extract bootstrap parameter estimates from an object of class 'mexBoot'.
 }
 \usage{
-coef.cmvxBoot(x, which = "gpd")
+coef.mexBoot(x, which = "gpd")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ An object of class 'cmvxBoot' as returned by \code{cmvxBoot}. }
+  \item{x}{ An object of class 'mexBoot' as returned by \code{mexBoot}. }
   \item{which}{ Which set of parameters to return: the parameters from
 the generalized Pareto distribution (the default), or the parameters in the 
 dependence structure (\code{which="dependence"}). Note that the means
@@ -31,14 +31,14 @@ Matrix containing the parameter estimates.
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
-\seealso{ \code{\link{migpd}} , \code{\link{cmvxDependence} },
-	\code{\link{cmvxBoot}}, \code{\link{print.cmvxPrediction}},
-	\code{\link{summary.cmvxPrediction}}, \code{plot.cmvxPrediction}
+\seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
+	\code{\link{mexBoot}}, \code{\link{print.mexPrediction}},
+	\code{\link{summary.mexPrediction}}, \code{plot.mexPrediction}
 }
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu=.7, penalty="none" )
-myboot <- cmvxBoot( mygpd , wh="NO", gqu=.7 )
+myboot <- mexBoot( mygpd , wh="NO", gqu=.7 )
 coef( myboot )
 
 }

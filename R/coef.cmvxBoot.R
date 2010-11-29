@@ -1,4 +1,4 @@
-`coef.cmvxBoot` <-
+`coef.mexBoot` <-
 function( object, ... ){
 	d2 <- dim( object$boot[[ 1 ]][[ 2 ]] )
 	

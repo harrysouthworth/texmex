@@ -1,4 +1,4 @@
-cmvxBoot <- 
+mexBoot <- 
     # Bootstrap inference for a conditional multivaratiate extremes model.
 function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
     theCall <- match.call()
@@ -70,7 +70,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
 
         gth <- quantile(c(x$gumbel[, which]), gqu[which])
 
-        gd <- cmvxDependence(ggpd, gth = gth, which = which)
+        gd <- mexDependence(ggpd, gth = gth, which = which)
 
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
@@ -114,35 +114,35 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
     ans$which <- which
     ans$B <- B
     ans$simpleMar <- coef(x)
-    ans$simpleDep <- cmvxDependence(x, gth = gth, which)$coefficients
-    oldClass(ans) <- "cmvxBoot"
+    ans$simpleDep <- mexDependence(x, gth = gth, which)$coefficients
+    oldClass(ans) <- "mexBoot"
     ans
 }
 
-test(cmvxBoot) <- function(){ # this is a weak test - it tests the structure 
+test(mexBoot) <- function(){ # this is a weak test - it tests the structure 
 # of the output but not the correctness of the bootstrap coefficients; it will 
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
-# testing of this function, run test(cmvxPrediction)
+# testing of this function, run test(mexPrediction)
 
   smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
-  mySdep <- cmvxDependence(smarmod,which=1, gqu=0.7)
-  myWdep <- cmvxDependence(wmarmod,which=1, gqu=0.7)
+  mySdep <- mexDependence(smarmod,which=1, gqu=0.7)
+  myWdep <- mexDependence(wmarmod,which=1, gqu=0.7)
 
   B <- 20
   
-  mySboot <- cmvxBoot(smarmod, B=B, which=1, gqu=.7)
-  myWboot <- cmvxBoot(wmarmod, B=B, which=1, gqu=.7)
+  mySboot <- mexBoot(smarmod, B=B, which=1, gqu=.7)
+  myWboot <- mexBoot(wmarmod, B=B, which=1, gqu=.7)
 
-  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="cmvxBoot: summer simpleDep")
-  checkEqualsNumeric(coef(smarmod), mySboot$simpleMar, msg="cmvxBoot: summer simpleMar")
+  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="mexBoot: summer simpleDep")
+  checkEqualsNumeric(coef(smarmod), mySboot$simpleMar, msg="mexBoot: summer simpleMar")
 
-  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="cmvxBoot: winter simpleDep")
-  checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="cmvxBoot: winter simpleMar")
+  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="mexBoot: winter simpleDep")
+  checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="mexBoot: winter simpleMar")
   
-  checkEqualsNumeric(B, length(mySboot$boot),msg="cmvxBoot: number of bootstrap samples")
-  checkEqualsNumeric(B, length(myWboot$boot),msg="cmvxBoot: number of bootstrap samples")
+  checkEqualsNumeric(B, length(mySboot$boot),msg="mexBoot: number of bootstrap samples")
+  checkEqualsNumeric(B, length(myWboot$boot),msg="mexBoot: number of bootstrap samples")
   
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")

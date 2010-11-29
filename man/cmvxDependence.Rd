@@ -1,5 +1,5 @@
-\name{cmvxDependence}
-\alias{cmvxDependence}
+\name{mexDependence}
+\alias{mexDependence}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Estimate the dependence parameters in a conditional multivariate extreme values model }
 \description{
@@ -8,7 +8,7 @@
   Many thanks to Janet Heffernan for answering lots of questions.
 }
 \usage{
-cmvxDependence(x, which, gth, gqu)
+mexDependence(x, which, gth, gqu)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -33,7 +33,7 @@ cmvxDependence(x, which, gth, gqu)
   be fixed at zero.
 }
 \value{
-  An object of class \code{cmvxDependence}. There is a \code{print}
+  An object of class \code{mexDependence}. There is a \code{print}
   function available.
 }
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
@@ -41,12 +41,12 @@ cmvxDependence(x, which, gth, gqu)
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions }
-\seealso{ \code{\link{migpd}}, \code{\link{cmvxBoot}}, \code{\link{cmvxPrediction}}
+\seealso{ \code{\link{migpd}}, \code{\link{mexBoot}}, \code{\link{mexPrediction}}
 		   }
 \examples{
 data( winter )
 mygpd <- migpd( winter , qu=.7, penalty="none" )
-cmvxDependence( mygpd , which = "NO", gqu=.7 )
+mexDependence( mygpd , which = "NO", gqu=.7 )
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

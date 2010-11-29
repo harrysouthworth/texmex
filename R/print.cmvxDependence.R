@@ -1,4 +1,4 @@
-`print.cmvxDependence` <-
+`print.mexDependence` <-
 function( x, ... ){
 	print( x$call, ... )
   cat("\nConditioning on ",x$conditioningVariable," variable.\n", sep="")

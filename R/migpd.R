@@ -52,7 +52,7 @@ function (data, th, qu, penalty = "gaussian", maxit = 10000,
    names(th) <- names(qu) <- dimnames(data)[[2]]
    res <- list(call = theCall, models = modlist, data = data,
        th = th, qu = qu, penalty = penalty, priorParameters = priorParameters)
-   res <- cmvxGumbel(res)
+   res <- mexGumbel(res)
    oldClass(res) <- "migpd"
    invisible(res)
 }

@@ -1,4 +1,4 @@
-`plot.cmvxBoot` <-
+`plot.mexBoot` <-
 function( x , which = "gpd", main="", ... ){
 
     # Want to look at the marginal GPD parameters or the
