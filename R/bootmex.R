@@ -1,6 +1,6 @@
-mexBoot <- 
+bootmex <- 
     # Bootstrap inference for a conditional multivaratiate extremes model.
-function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
+function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     theCall <- match.call()
 
     getgum <- function(i, x, data, mod, th, qu) {
@@ -14,10 +14,15 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
         res
     }
 
-    if (class(x) != "migpd") 
+    if (class(x) == "mex"){
+        x <- x[[1]]
+        which <- x[[2]]$which
+    }
+    else if (class(x) != "migpd"){
         stop("object should have class migpd")
+    }
 
-    if (missing(which)) {
+    else if (missing(which)) {
         cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], 
             "\n")
         which <- 1
@@ -85,7 +90,7 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
         res
     } # Close innerFun 
     
-    res <- lapply(1:B, innerFun, x = x, which = which, gth = gth, 
+    res <- lapply(1:R, innerFun, x = x, which = which, gth = gth, 
         gqu = gqu, penalty = penalty, priorParameters = priorParameters, 
         pass = 1, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
 
@@ -97,8 +102,8 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
             rerun <- apply(cbind(rerun, wh), 1, any)
             if (sum(rerun) > 0) {
                 cat("Pass", pass, ":", sum(rerun), "samples to rerun.\n")
-                rerun <- (1:B)[rerun]
-                res[rerun] <- lapply((1:B)[rerun], innerFun, 
+                rerun <- (1:R)[rerun]
+                res[rerun] <- lapply((1:R)[rerun], innerFun, 
                   x = x, which = which, gth = gth, gqu = gqu, 
                   penalty = penalty, priorParameters = priorParameters, 
                   pass = pass, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
@@ -112,14 +117,14 @@ function (x, which, B = 100, gth, gqu, nPass = 3, trace = 10) {
     ans$call <- theCall
     ans$gqu <- gqu
     ans$which <- which
-    ans$B <- B
+    ans$R <- R
     ans$simpleMar <- coef(x)
     ans$simpleDep <- mexDependence(x, gth = gth, which)$coefficients
-    oldClass(ans) <- "mexBoot"
+    oldClass(ans) <- "bootmex"
     ans
 }
 
-test(mexBoot) <- function(){ # this is a weak test - it tests the structure 
+test(bootmex) <- function(){ # this is a weak test - it tests the structure 
 # of the output but not the correctness of the bootstrap coefficients; it will 
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
 # testing of this function, run test(mexPrediction)
@@ -130,19 +135,19 @@ test(mexBoot) <- function(){ # this is a weak test - it tests the structure
   mySdep <- mexDependence(smarmod,which=1, gqu=0.7)
   myWdep <- mexDependence(wmarmod,which=1, gqu=0.7)
 
-  B <- 20
+  R <- 20
   
-  mySboot <- mexBoot(smarmod, B=B, which=1, gqu=.7)
-  myWboot <- mexBoot(wmarmod, B=B, which=1, gqu=.7)
+  mySboot <- bootmex(smarmod, R=R, which=1, gqu=.7)
+  myWboot <- bootmex(wmarmod, R=R, which=1, gqu=.7)
 
-  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="mexBoot: summer simpleDep")
-  checkEqualsNumeric(coef(smarmod), mySboot$simpleMar, msg="mexBoot: summer simpleMar")
+  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep")
+  checkEqualsNumeric(coef(smarmod), mySboot$simpleMar, msg="bootmex: summer simpleMar")
 
-  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="mexBoot: winter simpleDep")
-  checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="mexBoot: winter simpleMar")
+  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep")
+  checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="bootmex: winter simpleMar")
   
-  checkEqualsNumeric(B, length(mySboot$boot),msg="mexBoot: number of bootstrap samples")
-  checkEqualsNumeric(B, length(myWboot$boot),msg="mexBoot: number of bootstrap samples")
+  checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
+  checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
   
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")

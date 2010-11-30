@@ -63,7 +63,7 @@ summary.MCS <-  function(object, ...){
 #Bootstrap
 #------------------------------------------------
 
-bootMCS <- function(X,p=seq(.1, .9, by=.1),B=100, trace=10) {
+bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    theCall <- match.call()
    bfun <- function(i, data, p){
        if (i %% trace == 0){ cat("Replicate", i, "\n") }
@@ -71,8 +71,8 @@ bootMCS <- function(X,p=seq(.1, .9, by=.1),B=100, trace=10) {
        MCS(d, p)$mcs
    }
 
-   res <- sapply(1:B, bfun, data=X, p=p)
-   res <- list(replicates=res, p=p, B=B, call=theCall)
+   res <- sapply(1:R, bfun, data=X, p=p)
+   res <- list(replicates=res, p=p, R=R, call=theCall)
    oldClass(res) <- "bootMCS"
    invisible(res)
 }
@@ -82,7 +82,7 @@ plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ...){
    ci <- apply(x$replicates, 1, quantile, prob=c(1-alpha/2, alpha/2))
    plot(x$p, m, type="l", ylim=range(ci),
         xlab=xlab, ylab=ylab,
-        sub=paste(100*(1-alpha), "% interval. ", x$B, " bootstrap samples were performed", sep=""))
+        sub=paste(100*(1-alpha), "% interval. ", x$R, " bootstrap samples were performed", sep=""))
    lines(x$p, ci[1,], lty=2)
    lines(x$p, ci[2,], lty=2)
    invisible(ci)
@@ -90,7 +90,7 @@ plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ...){
 
 print.bootMCS <- function(x, ...){
     print(x$call)
-    cat("Multivariate conditional Spearman's rho.\n", x$B, " bootstrap samples were performed.\n\n",
+    cat("Multivariate conditional Spearman's rho.\n", x$R, " bootstrap samples were performed.\n\n",
         sep = "")
      
     m <- rowMeans(x$replicates)
@@ -101,7 +101,7 @@ print.bootMCS <- function(x, ...){
 show.bootMCS <- print.bootMCS
 
 summary.bootMCS <- function(object, alpha=.05, ...){
-    cat("Multivariate conditional Spearman's rho.\n", object$B, " bootstrap samples were performed.\n\n",
+    cat("Multivariate conditional Spearman's rho.\n", object$R, " bootstrap samples were performed.\n\n",
         sep = "")
     m <- rowMeans(object$replicates)
     ci <- apply(object$replicates, 1, quantile, prob=c(alpha/2, 1 - alpha/2))

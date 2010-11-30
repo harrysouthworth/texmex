@@ -1,7 +1,7 @@
-`print.mexBoot` <-
+`print.bootmex` <-
 function( x , ... ){
 	print( x$call )
-	cat( paste( "\n", x$B, " bootstrap samples created.\n\n" , sep = "" ) )
+	cat( paste( "\n", x$R, " bootstrap samples created.\n\n" , sep = "" ) )
 
   co <- coef( x )
   eff <- attributes( co )$"Effective samples"
