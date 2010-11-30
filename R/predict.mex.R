@@ -1,15 +1,21 @@
-`mexPrediction` <-
-function( migpd , boot, pqu = .99, nsim = 1000 ){
+`predict.mex` <-
+function( object, which, pqu = .99, nsim = 1000, trace=10 ){
 	theCall <- match.call()
 	
-	if ( class( migpd ) != "migpd" )
-		stop( "you need to use an object with class 'migpd'" )
-	if ( class( boot ) != "bootmex" )
-		stop( "you need to provide a bootmex object" )
+    # Class can be either mex or bootmex
+    theClass <- class(object)[1]
+    if (! theClass %in% c("mex", "bootmex")){
+        stop("object must have class 'mex' or 'bootmex'")
+    }
 		
-	which <- boot$which
-	if ( is.character( which ) )
-		which <- match( which, dimnames( migpd$data )[[ 2 ]] )
+	if (theClass == "bootmex" ){
+        which <- object$which
+        migpd <- object$simpleMar
+    }
+    else {
+        which <- object[[2]]$which
+        migpd <- object[[1]]
+    }
 	
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
@@ -50,34 +56,39 @@ function( migpd , boot, pqu = .99, nsim = 1000 ){
 			a + ( y^v[ 2 ] ) * z
 		}
   
-	################################################################
-	# The function lfun does most of the work
-	lfun <- function( i , bo, pqu, nsim , migpd, which ){
-		if ( i %% 10 == 0 ) cat( i, "sets done\n" )
-
-    res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
-                         coxmi = bo[[ i ]]$GPD[,-which], 
-                         data = bo[[i]]$Y)
-		res
-	} 
-	bootRes <- lapply( 1:length( boot$boot ) , lfun ,
-				   migpd=migpd, pqu=pqu, bo = boot$boot, nsim=nsim,
-				   which = which )
-	
-	# bootRes contains the bootstrap simulated complete vectors X on the original 
-  # scale of the data, conditional on having the _which_ component above the pqu quantile.
+    if (theClass == "bootmex"){
+    	################################################################
+	    # The function lfun does most of the work
+    	lfun <- function( i , bo, pqu, nsim , migpd, which ){
+	    	if ( i %% trace == 0 ) cat( i, "sets done\n" )
+    
+            res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
+                                 coxmi = bo[[ i ]]$GPD[,-which], 
+                                 data = bo[[i]]$Y)
+	    	res
+    	} 
+	    bootRes <- lapply( 1:length( object$boot ) , lfun ,
+	        			   migpd=migpd, pqu=pqu, bo = object$boot, nsim=nsim,
+	        			   which = which )
+	    # bootRes contains the bootstrap simulated complete vectors X on the original 
+        # scale of the data, conditional on having the _which_ component above the pqu quantile.
+	} # Close if (theClass == "bootmex"
+    else { bootRes <- NULL }
   
 	##########################################################################
-	# Also get a sample using the point estimates of the parameters
+	# Get a sample using the point estimates of the parameters
 	# that are suggested by the data
   
-  dall <- mexDependence( migpd , which=which , gqu=boot$gqu )
-  cox <- coef( migpd )[3:4, which ]
-  coxmi <- coef( migpd )[3:4, -which ]
-  
-  sim <- MakeThrowData(dco=dall$coefficients,z=dall$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
+    cox <- coef(migpd)[3:4, which]
+    coxmi <- coef(migpd)[3:4, -which]
+
+    dall <- if (theClass == "mex") { object[[2]] }
+            else { mexDependence( object$simpleMar , which=which , gqu=object$gqu ) }
+
+
+    sim <- MakeThrowData(dco=dall$coefficients,z=dall$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
                 
-  m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
+    m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
  	zeta <- 1 - migpd$qu[ which ] # Coles, page 81
 	xth <- migpd$th[ which ] + cox[ 3 ] / cox[ 4 ] * ( ( m*zeta )^cox[ 4 ] - 1 )
 
