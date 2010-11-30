@@ -101,7 +101,7 @@ function( object, which, pqu = .99, nsim = 1000, trace=10 ){
 	
 	oldClass( res ) <- "predict.mex"
 
-	invisible( res )
+	res
 }
 
 test(predict.mex) <- function(){
