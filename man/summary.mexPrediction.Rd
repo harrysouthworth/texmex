@@ -1,18 +1,18 @@
-\name{summary.mexPrediction}
-\alias{summary.mexPrediction}
+\name{summary.predict.mex}
+\alias{summary.predict.mex}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Summarize a 'mexPrediction' object. }
+\title{ Summarize a 'predict.mex' object. }
 \description{
-  Summarize a 'mexPrediction' object. Expected values and probabilities
+  Summarize a 'predict.mex' object. Expected values and probabilities
 of threshold excesses are computed.
 }
 \usage{
-summary.mexPrediction(x, th, probs = c(0.05, 0.5, 0.95))
+summary.predict.mex(x, th, probs = c(0.05, 0.5, 0.95))
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ An object of class 'mexPrediction', as returned by function
-\code{mexPrediction}. }
+  \item{x}{ An object of class 'predict.mex', as returned by function
+\code{predict.mex}. }
   \item{th}{ Thresholds for the dependent variables. The simulated probability
 of excesses over these thresholds will be computed. If omitted, the thresholds
 used in the marginal generalized Pareto distributions will be used (i.e. those
@@ -23,20 +23,18 @@ median and 90\% confidence interval. }
 }
 
 \value{
-An object of class 'summary.mexPrediction'. There is a \code{print} function
+An object of class 'summary.predict.mex'. There is a \code{print} function
 available.}
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
-\seealso{ \code{\link{mexPrediction}}, \code{\link{plot.mexPrediction}} }
+\seealso{ \code{\link{predict.mex}}, \code{\link{plot.predict.mex}} }
 \examples{
-data( winter )
-mygpd <- migpd( winter, qu = .7, penalty="none" )
-myboot <- bootmex( mygpd, gqu=.7, which = "NO" )
-mypred <- mexPrediction( mygpd, myboot , pqu=.95 )
+mymex <- mex( winter, qu = .7, penalty="none" )
+myboot <- bootmex( mymex, gqu=.7, which = "NO" )
+mypred <- predict( mymex,  pqu=.95 )
 summary( mypred , probs = c( .025, .5, .975 ) )
-
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

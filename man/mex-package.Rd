@@ -25,7 +25,7 @@ License: \tab To be decided\cr
 \code{bootmex}: Bootstrap estimation for parameters in generalized Pareto models
 and in the dependence structure.
 
-\code{mexPrediction}: Predict values of dependent variables given that one
+\code{predict.mex}: Predict values of dependent variables given that one
 variable is extreme.
 
 }
@@ -44,10 +44,10 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 \keyword{multivariate}
 \keyword{ package }
 \examples{
-data( winter )
-mygpd <- migpd( winter, qu=.7, penalty="none" )
-myboot <- bootmex( mygpd , wh="NO", gqu=.7 )
-mypred <- mexPrediction( mygpd, myboot , nsim=500 )
-plot( mypred )
-summary( mypred )
+mymex <- mex( winter, qu = .7, penalty="none" )
+plot(mymex)
+myboot <- bootmex( mymex, gqu=.7, which = "NO" )
+mypred <- predict( mymex,  pqu=.95 )
+summary( mypred , probs = c( .025, .5, .975 ) )
 }
+

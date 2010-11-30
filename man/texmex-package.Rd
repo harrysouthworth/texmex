@@ -64,7 +64,7 @@ summary(gpdD)
 mexDependence(gpdD)
 bootD <- bootmex(gpdD, which="ALT_M", gqu=.7)
 bootD
-predD <- mexPrediction(gpdD, bootD)
+predD <- predict.mex(gpdD, bootD)
 predD
 par(mfrow=c(2, 2))
 plot(predD)

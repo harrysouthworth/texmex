@@ -94,7 +94,7 @@ J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the gen
 }
 \author{ Harry Southworth }
 \seealso{ \code{\link{mexDependence}}, \code{\link{bootmex}},
-	\code{\link{mexPrediction}}
+	\code{\link{predict.mex}}
 		  }
 \examples{
 data( winter )

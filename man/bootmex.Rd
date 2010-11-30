@@ -64,7 +64,7 @@ bias into the resulting bootstrap distributions.
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions. }
 \seealso{ \code{\link{migpd}} , \code{link{mexDependence} },
-	\code{\link{bootmex}}, \code{\link{mexPrediction}},
+	\code{\link{bootmex}}, \code{\link{predict.mex}},
 		    }
 \seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{

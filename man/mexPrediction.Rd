@@ -1,5 +1,5 @@
-\name{mexPrediction}
-\alias{mexPrediction}
+l\name{predict.mex}
+\alias{predict.mex}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Prediction for a conditional multivariate exteme values model }
 \description{
@@ -7,7 +7,7 @@
 the approach of Heffernan and Tawn, 2004.
 }
 \usage{
-mexPrediction(migpd, boot, pqu = 0.99, nsim = 1000)
+predict.mex(migpd, boot, pqu = 0.99, nsim = 1000)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -24,7 +24,7 @@ data, simulated values of the dependent variables are created, given that the
 conditioning variable is above its 100\code{pqu} quantile.
 }
 \value{
-An object of class 'mexPrediction'. There are \code{print}, \code{summary} and
+An object of class 'predict.mex'. There are \code{print}, \code{summary} and
 \code{plot} functions available. The simulated values based on the actual data
 and point estimates appear in component \code{object$data$simulated}. The
 simulated data from the bootstrap estimates appears in \code{object$replicates}.
@@ -32,19 +32,17 @@ simulated data from the bootstrap estimates appears in \code{object$replicates}.
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
-\author{ Harry Southworth }
-\note{ Many thanks to Janet Heffernan for answering lots of questions. }
+\author{ Harry Southworth, Janet E. Heffernan }
 \seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
-	\code{\link{bootmex}}, \code{\link{print.mexPrediction}},
-	\code{\link{summary.mexPrediction}}, \code{plot.mexPrediction}
+	\code{\link{bootmex}}, \code{\link{print.predict.mex}},
+	\code{\link{summary.predict.mex}}, \code{plot.predict.mex}
 }
 \examples{
-data( winter )
-mygpd <- migpd( winter, qu=.7 )
-myboot <- bootmex( mygpd , which = "NO", gqu=.7 )
-mypred <- mexPrediction( mygpd, myboot , pqu=.95 )
+mymex <- mex( winter, qu=.7 )
+myboot <- bootmex( mymex , which = "NO", gqu=.7 )
+mypred <- predict( myboot, pqu=.95 )
+mypred
 summary( mypred )
-plot( mypred )
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

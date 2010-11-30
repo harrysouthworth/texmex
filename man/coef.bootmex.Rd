@@ -32,8 +32,8 @@ Matrix containing the parameter estimates.
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
 \seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
-	\code{\link{bootmex}}, \code{\link{print.mexPrediction}},
-	\code{\link{summary.mexPrediction}}, \code{plot.mexPrediction}
+	\code{\link{bootmex}}, \code{\link{print.predict.mex}},
+	\code{\link{summary.predict.mex}}, \code{plot.predict.mex}
 }
 \examples{
 data( winter )

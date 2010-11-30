@@ -20,7 +20,7 @@ print.mexDependence(x)
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach for multivariate
 extreme values, Journal of the Royal Statistical Society (B), 66, 497 -- 546, 2004. }
 \author{ Harry Southworth }
-\seealso{ \code{\link{migpd}}, \code{\link{bootmex}}, \code{\link{mexPrediction}} }
+\seealso{ \code{\link{migpd}}, \code{\link{bootmex}}, \code{\link{predict.mex}} }
 \examples{
 
 }
