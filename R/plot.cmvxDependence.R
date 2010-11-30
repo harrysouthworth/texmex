@@ -1,6 +1,6 @@
-'plot.cmvxDependence' <- function(x,quantiles=seq(0.1,by=0.2,len=5),col="grey",...){
-   if ( class( x ) != "cmvxDependence" )
-		 stop( "you need to use an object with class 'cmvxDependence'" )
+'plot.mexDependence' <- function(x,quantiles=seq(0.1,by=0.2,len=5),col="grey",...){
+   if ( class( x ) != "mexDependence" )
+		 stop( "you need to use an object with class 'mexDependence'" )
    
    z <- x$Z
    n <- dim(z)[1]
@@ -52,21 +52,21 @@
     }
 }
 
-test(plot.cmvxDependence) <- function(){
+test(plot.mexDependence) <- function(){
 
 smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
 wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
-mySdep1 <- cmvxDependence(smarmod,which=1, gqu=0.7)
-myWdep1 <- cmvxDependence(wmarmod,which=1, gqu=0.8)
-mySdep2 <- cmvxDependence(smarmod,which=2, gqu=0.9)
-myWdep2 <- cmvxDependence(wmarmod,which=2, gqu=0.75)
-mySdep3 <- cmvxDependence(smarmod,which=3, gqu=0.75)
-myWdep3 <- cmvxDependence(wmarmod,which=3, gqu=0.85)
-mySdep4 <- cmvxDependence(smarmod,which=4, gqu=0.85)
-myWdep4 <- cmvxDependence(wmarmod,which=4, gqu=0.73)
-mySdep5 <- cmvxDependence(smarmod,which=5, gqu=0.73)
-myWdep5 <- cmvxDependence(wmarmod,which=5, gqu=0.71)
+mySdep1 <- mexDependence(smarmod,which=1, gqu=0.7)
+myWdep1 <- mexDependence(wmarmod,which=1, gqu=0.8)
+mySdep2 <- mexDependence(smarmod,which=2, gqu=0.9)
+myWdep2 <- mexDependence(wmarmod,which=2, gqu=0.75)
+mySdep3 <- mexDependence(smarmod,which=3, gqu=0.75)
+myWdep3 <- mexDependence(wmarmod,which=3, gqu=0.85)
+mySdep4 <- mexDependence(smarmod,which=4, gqu=0.85)
+myWdep4 <- mexDependence(wmarmod,which=4, gqu=0.73)
+mySdep5 <- mexDependence(smarmod,which=5, gqu=0.73)
+myWdep5 <- mexDependence(wmarmod,which=5, gqu=0.71)
 
 # check plots produced for variety of thresholds and parameter combinations
 par(mfrow=c(2,2))
@@ -81,7 +81,7 @@ plot(myWdep4,main="Winter")
 plot(mySdep5,main="Summer")
 plot(myWdep5,main="Winter")
    
-   checkException(plot.cmvxDependence(smarmod))
-   checkException(plot.cmvxDependence(TRUE))
+   checkException(plot.mexDependence(smarmod))
+   checkException(plot.mexDependence(TRUE))
  
 }
