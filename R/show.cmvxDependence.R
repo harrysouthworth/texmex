@@ -1,2 +1,0 @@
-`show.mexDependence` <- print.mexDependence
-
