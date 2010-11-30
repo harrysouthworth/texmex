@@ -1,16 +1,16 @@
-\name{coef.mexBoot}
-\alias{coef.mexBoot}
+\name{coef.bootmex}
+\alias{coef.bootmex}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Extract bootstrap parameter estimates from an object of class 'mexBoot' }
+\title{ Extract bootstrap parameter estimates from an object of class 'bootmex' }
 \description{
-Extract bootstrap parameter estimates from an object of class 'mexBoot'.
+Extract bootstrap parameter estimates from an object of class 'bootmex'.
 }
 \usage{
-coef.mexBoot(x, which = "gpd")
+coef.bootmex(x, which = "gpd")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{ An object of class 'mexBoot' as returned by \code{mexBoot}. }
+  \item{x}{ An object of class 'bootmex' as returned by \code{bootmex}. }
   \item{which}{ Which set of parameters to return: the parameters from
 the generalized Pareto distribution (the default), or the parameters in the 
 dependence structure (\code{which="dependence"}). Note that the means
@@ -32,13 +32,13 @@ Matrix containing the parameter estimates.
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
 \seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
-	\code{\link{mexBoot}}, \code{\link{print.mexPrediction}},
+	\code{\link{bootmex}}, \code{\link{print.mexPrediction}},
 	\code{\link{summary.mexPrediction}}, \code{plot.mexPrediction}
 }
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu=.7, penalty="none" )
-myboot <- mexBoot( mygpd , wh="NO", gqu=.7 )
+myboot <- bootmex( mygpd , wh="NO", gqu=.7 )
 coef( myboot )
 
 }

@@ -4,8 +4,8 @@ function( migpd , boot, pqu = .99, nsim = 1000 ){
 	
 	if ( class( migpd ) != "migpd" )
 		stop( "you need to use an object with class 'migpd'" )
-	if ( class( boot ) != "mexBoot" )
-		stop( "you need to provide a mexBoot object" )
+	if ( class( boot ) != "bootmex" )
+		stop( "you need to provide a bootmex object" )
 		
 	which <- boot$which
 	if ( is.character( which ) )
@@ -99,10 +99,10 @@ test(mexPrediction) <- function(){
   smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
-  NOmodWinter <- mexBoot(wmarmod, wh="NO", gqu=.7)
+  NOmodWinter <- bootmex(wmarmod, wh="NO", gqu=.7)
   NOpredWinter <- mexPrediction(wmarmod, NOmodWinter, nsim = 500) # matches sample size in H+T2004
 
-  NOmodSummer <- mexBoot(smarmod, wh="NO", gqu=.7)
+  NOmodSummer <- bootmex(smarmod, wh="NO", gqu=.7)
   NOpredSummer <- mexPrediction(smarmod, NOmodSummer, nsim = 500)
 
   Table5winter <- rbind(c(8.3, 75.4, 569.9, 44.6, 132.3),

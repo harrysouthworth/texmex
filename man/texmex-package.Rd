@@ -23,7 +23,7 @@ Fit generalized Pareto distributions by (penalized) maximum likelihood
 (\code{gpd}), perform Bayesian inference via Markov chain Monte Carlo
 (\code{bgpd}), perform conditional multivariate extreme value modelling
 following the approach of Heffernan and Tawn (\code{mexDependece},
-\code{mexBoot}, \code{mexDependence}).
+\code{bootmex}, \code{mexDependence}).
 }
 \author{
 Harry Southworth
@@ -62,7 +62,7 @@ D <- liver[liver$dose == "D", c("ALT_M", "AST_M", "ALP_M", "TBL_M")]
 gpdD <- migpd(D, qu=.7) # Use data over 70th percentile
 summary(gpdD)
 mexDependence(gpdD)
-bootD <- mexBoot(gpdD, which="ALT_M", gqu=.7)
+bootD <- bootmex(gpdD, which="ALT_M", gqu=.7)
 bootD
 predD <- mexPrediction(gpdD, bootD)
 predD

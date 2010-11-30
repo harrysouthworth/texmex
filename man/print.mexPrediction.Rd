@@ -27,12 +27,12 @@ variable was above its 100\code{pqu} threshold (specifed in the call to
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
 \seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
-	\code{\link{mexBoot}}, \code{\link{mexPrediction}},
+	\code{\link{bootmex}}, \code{\link{mexPrediction}},
 	\code{\link{summary.mexPrediction}}, \code{plot.mexPrediction}	    }
 \examples{
 data( winter )
 mygpd <- migpd( winter , qu=.7 )
-myboot <- mexBoot( mygpd, which = "NO", gqu=.7 )
+myboot <- bootmex( mygpd, which = "NO", gqu=.7 )
 mypred <- mexPrediction( mygpd, myboot, pqu=.95 )
 mypred
 }

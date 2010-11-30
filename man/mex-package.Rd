@@ -22,7 +22,7 @@ License: \tab To be decided\cr
 
 \code{mexDependence}: Estimate the parameters in the dependence structure.
 
-\code{mexBoot}: Bootstrap estimation for parameters in generalized Pareto models
+\code{bootmex}: Bootstrap estimation for parameters in generalized Pareto models
 and in the dependence structure.
 
 \code{mexPrediction}: Predict values of dependent variables given that one
@@ -46,7 +46,7 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu=.7, penalty="none" )
-myboot <- mexBoot( mygpd , wh="NO", gqu=.7 )
+myboot <- bootmex( mygpd , wh="NO", gqu=.7 )
 mypred <- mexPrediction( mygpd, myboot , nsim=500 )
 plot( mypred )
 summary( mypred )

@@ -33,7 +33,7 @@ available.}
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu = .7, penalty="none" )
-myboot <- mexBoot( mygpd, gqu=.7, which = "NO" )
+myboot <- bootmex( mygpd, gqu=.7, which = "NO" )
 mypred <- mexPrediction( mygpd, myboot , pqu=.95 )
 summary( mypred , probs = c( .025, .5, .975 ) )
 

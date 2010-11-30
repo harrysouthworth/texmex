@@ -41,7 +41,7 @@ mexDependence(x, which, gth, gqu)
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions }
-\seealso{ \code{\link{migpd}}, \code{\link{mexBoot}}, \code{\link{mexPrediction}}
+\seealso{ \code{\link{migpd}}, \code{\link{bootmex}}, \code{\link{mexPrediction}}
 		   }
 \examples{
 data( winter )

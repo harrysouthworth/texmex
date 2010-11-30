@@ -38,14 +38,14 @@ Observed and simulated data are differentiated by plotting character and colour 
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions. }
 \seealso{ \code{\link{migpd}} , \code{link{mexDependence} },
-	\code{\link{mexBoot}}, \code{\link{mexPrediction}},
+	\code{\link{bootmex}}, \code{\link{mexPrediction}},
 	\code{\link{print.mexPrediction}},
 	\code{\link{summary.mexPrediction}}
 }
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu=.7 )
-myboot <- mexBoot( mygpd , which = "NO", gqu=.7 )
+myboot <- bootmex( mygpd , which = "NO", gqu=.7 )
 mypred <- mexPrediction( mygpd, myboot , pqu=.95 )
 summary( mypred )
 plot( mypred , cex = c( 1, .5 ), col=c( "grey", "blue" ))

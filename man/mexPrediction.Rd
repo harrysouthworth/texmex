@@ -12,7 +12,7 @@ mexPrediction(migpd, boot, pqu = 0.99, nsim = 1000)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{migpd}{ An object of class 'migpd' as returned by function \code{migpd}. }
-  \item{boot}{ An object of class 'mexBoot' as returned by function \code{mexBoot}. }
+  \item{boot}{ An object of class 'bootmex' as returned by function \code{bootmex}. }
   \item{pqu}{ The quantile of the conditioning variable over which it will be
 thresholded. Defaults to \code{pqu = .99 }. }
   \item{nsim}{ The number of simulated observations to be generated for each
@@ -35,13 +35,13 @@ simulated data from the bootstrap estimates appears in \code{object$replicates}.
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions. }
 \seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
-	\code{\link{mexBoot}}, \code{\link{print.mexPrediction}},
+	\code{\link{bootmex}}, \code{\link{print.mexPrediction}},
 	\code{\link{summary.mexPrediction}}, \code{plot.mexPrediction}
 }
 \examples{
 data( winter )
 mygpd <- migpd( winter, qu=.7 )
-myboot <- mexBoot( mygpd , which = "NO", gqu=.7 )
+myboot <- bootmex( mygpd , which = "NO", gqu=.7 )
 mypred <- mexPrediction( mygpd, myboot , pqu=.95 )
 summary( mypred )
 plot( mypred )

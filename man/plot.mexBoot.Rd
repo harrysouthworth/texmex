@@ -1,12 +1,12 @@
-\name{plot.mexBoot}
-\alias{plot.mexBoot}
+\name{plot.bootmex}
+\alias{plot.bootmex}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ ~~function to do ... ~~ }
 \description{
   ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-plot.mexBoot(x, which = "gpd")
+plot.bootmex(x, which = "gpd")
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

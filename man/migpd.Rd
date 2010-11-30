@@ -93,7 +93,7 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the genralized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
 }
 \author{ Harry Southworth }
-\seealso{ \code{\link{mexDependence}}, \code{\link{mexBoot}},
+\seealso{ \code{\link{mexDependence}}, \code{\link{bootmex}},
 	\code{\link{mexPrediction}}
 		  }
 \examples{
