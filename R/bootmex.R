@@ -117,9 +117,9 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     ans$gqu <- gqu
     ans$which <- which
     ans$R <- R
-    ans$simpleMar <- coef(x)
+    ans$simpleMar <- x
     ans$simpleDep <- mexDependence(x, gth = gth, which)$coefficients
-    oldClass(ans) <- "bootmex"
+    oldClass(ans) <- c("bootmex", "mex")
     ans
 }
 
@@ -140,10 +140,10 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
   myWboot <- bootmex(wmarmod, R=R, which=1, gqu=.7)
 
   checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep")
-  checkEqualsNumeric(coef(smarmod), mySboot$simpleMar, msg="bootmex: summer simpleMar")
+  checkEqualsNumeric(coef(smarmod), coef(mySboot$simpleMar), msg="bootmex: summer simpleMar")
 
   checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep")
-  checkEqualsNumeric(coef(wmarmod), myWboot$simpleMar, msg="bootmex: winter simpleMar")
+  checkEqualsNumeric(coef(wmarmod), coef(myWboot$simpleMar), msg="bootmex: winter simpleMar")
   
   checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
   checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
