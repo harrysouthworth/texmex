@@ -15,13 +15,12 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     }
 
     if (class(x) == "mex"){
-        x <- x[[1]]
         which <- x[[2]]$which
+        x <- x[[1]]
     }
     else if (class(x) != "migpd"){
         stop("object should have class migpd")
     }
-
     else if (missing(which)) {
         cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], 
             "\n")
