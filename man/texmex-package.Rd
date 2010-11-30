@@ -59,12 +59,11 @@ par(mfrow=c(3, 2))
 plot(bmod)
 
 D <- liver[liver$dose == "D", c("ALT_M", "AST_M", "ALP_M", "TBL_M")]
-gpdD <- migpd(D, qu=.7) # Use data over 70th percentile
-summary(gpdD)
-mexDependence(gpdD)
-bootD <- bootmex(gpdD, which="ALT_M", gqu=.7)
+Dmex <- mex(D, qu=.7) # Use data over 70th percentile
+summary(Dmex)
+bootD <- bootmex(Dmex, which="ALT_M", gqu=.7)
 bootD
-predD <- predict.mex(gpdD, bootD)
+predD <- predict(bootD, pqu=.9)
 predD
 par(mfrow=c(2, 2))
 plot(predD)
