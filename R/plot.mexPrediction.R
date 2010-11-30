@@ -1,4 +1,4 @@
-`plot.mexPrediction` <-
+`plot.predict.mex` <-
 function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 
     if ( is.R() ) { 

@@ -1,4 +1,4 @@
-`summary.mexPrediction` <-
+`summary.predict.mex` <-
 function( object, th, probs=c( .05, .5, .95 ), ... ){
 
 	if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
@@ -59,11 +59,11 @@ function( object, th, probs=c( .05, .5, .95 ), ... ){
 				 statistic=deparse( substitute( statistic ) )
 				 )
 
-	oldClass( ans ) <- "summary.mexPrediction"
+	oldClass( ans ) <- "summary.predict.mex"
 	ans
 }
 
-`print.summary.mexPrediction` <-
+`print.summary.predict.mex` <-
 function( x, ... ){
 	print( x$call, ... )
 

@@ -18,13 +18,13 @@ function (data, th, qu, penalty = "gaussian", maxit = 10000,
    if (missing(th))
        th <- sapply(1:d, function(i, x, prob) quantile(x[, i],
            prob = prob[i]), x = data, prob = qu)
-   if (penalty %in% c("quadratic", "gaussian") & missing(priorParameters)) {
+   if (penalty %in% c("quadratic", "gaussian") & is.null(priorParameters)) {
        gp = list(c(0, 0), matrix(c(100^2, 0, 0, 0.25), nrow = 2))
        priorParameters <- vector("list", length = length(th))
        for (i in 1:length(th)) priorParameters[[i]] <- gp
        names(priorParameters) <- dimnames(data)[[2]]
    }
-   if (penalty %in% c("quadratic", "gaussian")) {
+   else if (penalty %in% c("quadratic", "gaussian")) {
        nm <- names(priorParameters)
        if (is.null(nm))
            stop("priorParameters must be a named list")

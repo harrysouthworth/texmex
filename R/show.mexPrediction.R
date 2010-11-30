@@ -1,1 +1,1 @@
-`show.mexPrediction` <- print.mexPrediction
+`show.predict.mex` <- print.predict.mex

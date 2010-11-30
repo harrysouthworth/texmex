@@ -99,22 +99,22 @@ function( object, which, pqu = .99, nsim = 1000, trace=10 ){
 				       which = which, pqu = pqu,
 				       th=c( migpd$th[ which ], migpd$th[ -which ] ) )
 	
-	oldClass( res ) <- "mexPrediction"
+	oldClass( res ) <- "predict.mex"
 
 	invisible( res )
 }
 
-test(mexPrediction) <- function(){
+test(predict.mex) <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
   
   smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
   NOmodWinter <- bootmex(wmarmod, wh="NO", gqu=.7)
-  NOpredWinter <- mexPrediction(wmarmod, NOmodWinter, nsim = 500) # matches sample size in H+T2004
+  NOpredWinter <- predict.mex(wmarmod, NOmodWinter, nsim = 500) # matches sample size in H+T2004
 
   NOmodSummer <- bootmex(smarmod, wh="NO", gqu=.7)
-  NOpredSummer <- mexPrediction(smarmod, NOmodSummer, nsim = 500)
+  NOpredSummer <- predict.mex(smarmod, NOmodSummer, nsim = 500)
 
   Table5winter <- rbind(c(8.3, 75.4, 569.9, 44.6, 132.3),
                       c(1.2, 4.4, 45.2, 6.7, 8.2))
@@ -134,9 +134,9 @@ test(mexPrediction) <- function(){
   pointEstWinter <- apply(NOpredWinter$data$sim,2,mean)
 
   tol <- 0.05
-  checkEqualsNumeric(Table5summer, resSummer,tol=tol,msg="mexPrediction: Table 5 summer data")
-  checkEqualsNumeric(Table5winter, resWinter,tol=tol,msg="mexPrediction: Table 5 winter data")
+  checkEqualsNumeric(Table5summer, resSummer,tol=tol,msg="predict.mex: Table 5 summer data")
+  checkEqualsNumeric(Table5winter, resWinter,tol=tol,msg="predict.mex: Table 5 winter data")
   
-  checkEqualsNumeric(pointEstSummer, resSummer[1,],tol=tol,msg="mexPrediction: point est vs boot, summer data")
-  checkEqualsNumeric(pointEstWinter, resWinter[1,],tol=tol,msg="mexPrediction: point est vs boot, winter data")
+  checkEqualsNumeric(pointEstSummer, resSummer[1,],tol=tol,msg="predict.mex: point est vs boot, summer data")
+  checkEqualsNumeric(pointEstWinter, resWinter[1,],tol=tol,msg="predict.mex: point est vs boot, winter data")
 }
