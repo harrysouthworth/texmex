@@ -67,7 +67,7 @@ test(migpd) <- function(){
     sigma = c(15.8, 9.1, 32.2, 42.9, 22.8),
     xi = c(-.29, .01, .02, .08, .02))
   
-  htwinter <- rbind(qu=c(23, 49, 151.6, 23, 53),
+  htwinter <- rbind(qu=c(28, 49, 151.6, 23, 53),
     th = rep(.7, 5),
     sigma = c(6.2, 9.3, 117.4, 19.7, 37.5),
     xi = c(-.37, -.03, -.09, .11, -.2))
@@ -75,7 +75,7 @@ test(migpd) <- function(){
   summer.gpd <- summary(migpd(summer, qu=htsummer[2,],penalty="none"),verbose=FALSE)
   winter.gpd <- summary(migpd(winter, qu=htwinter[2,],penalty="none"),verbose=FALSE)
   
-  tol <- c(1,0.05,0.5,0.5)
+  tol <- c(1, 0.05, .5, 0.5)
   for(i in 1:4){
     checkEqualsNumeric(htsummer[i,], summer.gpd[i,],tol=tol[i])
     checkEqualsNumeric(htwinter[i,], winter.gpd[i,],tol=tol[i])
