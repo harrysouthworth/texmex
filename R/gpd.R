@@ -211,7 +211,8 @@ test(gpd) <- function(){
 
   m <- model.matrix(~ ALT_B + dose, liver)
 
-  ismod <- gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
+  igpd.fit <- get("gpd.fit", "package:ismev")
+  ismod <- igpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
                  ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
 
   checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol)
@@ -227,7 +228,7 @@ test(gpd) <- function(){
 
   m <- model.matrix(~ ALT_B + dose, liver)
 
-  ismod <- gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
+  ismod <- igpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
@@ -258,7 +259,7 @@ test(gpd) <- function(){
   m <- model.matrix(~ a+b, data)
   
   mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
-  ismod <- gpd.fit(data$y,threshold=quantile(data$y,0.7),
+  ismod <- igpd.fit(data$y,threshold=quantile(data$y,0.7),
                    ydat=m,shl=3,sigl=2,siglink=exp, show=FALSE)
 
   checkEqualsNumeric(ismod$mle, coef(mod),tolerance = tol)
