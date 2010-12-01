@@ -102,7 +102,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     }
     o$data <- data
 
-    o$loglik <- o$value
+    o$loglik <- -o$value
     o$value <- NULL
     o$counts <- NULL
     oldClass(o) <- "gpd"
