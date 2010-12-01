@@ -16,6 +16,10 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
 
     if (class(x) == "mex"){
         which <- x[[2]]$which
+        if (!missing(gqu)){
+            warning("gqu given, but already applied to 'mex' object. Using 'mex' value")
+        }
+        gqu <- x[[2]]$gqu
         x <- x[[1]]
     }
     else if (class(x) != "migpd"){
@@ -51,9 +55,10 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         g <- sample(1:(dim(x$gumbel)[[1]]), size = n, replace = TRUE)
         g <- x$gumbel[g, ]
         ok <- FALSE
+
         while (!ok) {
             for (j in 1:(dim(g)[[2]])) g[order(g[, j]), j] <- sort(-log(-log(runif(dim(g)[[1]]))))
-            if (sum(g[, which] > gth[which]) > 1){ ok <- TRUE }
+            if (sum(g[, which] > gth) > 1){ ok <- TRUE }
         }
         
         g <- sapply(1:d, getgum, x = g, data = x$data,
@@ -63,18 +68,7 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         
         ggpd <- migpd(g, th = x$th, penalty = penalty, priorParameters = priorParameters)
 
-#        if (!missing(gqu)) {
-#            gqu <- rep(gqu, length = d)
-#        }
-
-        gth <- unlist(lapply(1:d, function(i, d, qu) {
-                                               quantile(d[, i], qu[i])
-                                            }, d = x$gumbel, qu = gqu))
-
-        gth <- quantile(c(x$gumbel[, which]), gqu[which])
-
         gd <- mexDependence(ggpd, gth = gth, which = which)
-
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
                     Z = gd$Z,
@@ -87,10 +81,8 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         }
         res
     } # Close innerFun 
-#browser()
 
-    if (length(gqu) == 1){ gqu <- rep(gqu, d) }
-    if (length(gth) == 1){ gth <- rep(gth, d) }
+    gqu <- rep(gqu, d) 
 
     res <- lapply(1:R, innerFun, x = x, which = which, gth = gth, 
         gqu = gqu, penalty = penalty, priorParameters = priorParameters, 
@@ -131,15 +123,8 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
 # testing of this function, run test(predict.mex)
 
-#  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
-#  wmarmod <- migpd(winter, qu=.7,  penalty="none")
-
-  smarmod <- mex(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
-  wmarmod <- mex(winter, qu=.7,  penalty="none")
-
-
-  mySdep <- mexDependence(smarmod, which=1, gqu=0.7)
-  myWdep <- mexDependence(wmarmod, which=1, gqu=0.7)
+  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
   R <- 20
   
@@ -157,4 +142,23 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
   
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
+
+  smarmod <- mex(summer, qu=c(.9, .7, .7, .85, .7), penalty="none", gqu=.7)
+  wmarmod <- mex(winter, qu=.7,  penalty="none")
+
+  mySboot <- bootmex(smarmod, R=R)
+  myWboot <- bootmex(wmarmod, R=R)
+
+  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep")
+  checkEqualsNumeric(coef(smarmod)[[1]], coef(mySboot$simpleMar), msg="bootmex: summer simpleMar")
+
+  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep")
+  checkEqualsNumeric(coef(wmarmod)[[1]], coef(myWboot$simpleMar), msg="bootmex: winter simpleMar")
+  
+  checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
+  checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
+  
+  checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
+  checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
+
 }

@@ -3,12 +3,11 @@ function (x, which, gth, gqu)
 {
    theCall <- match.call()
    if (class(x) != "migpd")
-       stop("you need to use an object created by migpd and passed through mexGumbel")
+       stop("you need to use an object created by migpd")
    else if (is.null(x$gumbel))
        stop("you need to pass the object through mexGumbel")
    if (missing(which)) {
-       cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1],
-           "\n")
+       cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], "\n")
        which <- 1
    }
    else if (length(which) > 1)
@@ -50,7 +49,7 @@ function (x, which, gth, gqu)
 
        o <- try(optim(c(0.5, 0, 0, 1), Q, lower = c(10^(-8), -(10^8),
            -(10^8), 10^(-8)), upper = c(1, 10^8, 10^8, 10^8), method = "L-BFGS-B",
-           yex = yex[wh], ydep = X[wh]))
+           yex = yex[wh], ydep = X[wh]), silent=TRUE)
 
 
 
@@ -67,20 +66,18 @@ function (x, which, gth, gqu)
                  d <- param[3]
                  m <- param[4]
                  s <- param[5]
-                 obj <- function(yex, ydep, a, b, cee, d, m,
-                   s) {
+                 obj <- function(yex, ydep, a, b, cee, d, m, s) {
                    mu <- cee - d * log(yex) + m * yex^b
                    sig <- s * yex^b
                    log(sig) + 0.5 * ((ydep - mu)/sig)^2
                  }
-                 res <- sum(obj(yex, ydep, a, b, cee, d, m,
-                   s))
+                 res <- sum(obj(yex, ydep, a, b, cee, d, m, s))
                  res
                }
                o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, lower = c(10^(-8),
                  -Inf, -Inf, 10^(-8), -Inf, 10^(-8)), upper = c(1,
                  10^8, 10^8, 1 - 10^(-8), Inf, Inf), method = "L-BFGS-B",
-                 yex = yex[wh], ydep = X[wh]))
+                 yex = yex[wh], ydep = X[wh]), silent=TRUE)
                if (class(o) == "try-error" || o$convergence != 0) {
                  warning("Non-convergence in mexDependence")
                  o$par <- rep(NA, 4)
@@ -110,8 +107,7 @@ function (x, which, gth, gqu)
        }
    }
    z <- try(sapply(1:(dim(gdata)[[2]]), tfun, data = gdata,
-       yex = yex[wh], a = res[1, ], b = res[2, ], cee = res[3,
-           ], d = res[4, ]))
+       yex = yex[wh], a = res[1, ], b = res[2, ], cee = res[3, ], d = res[4, ]))
    if (class(z) %in% c("Error", "try-error")) {
        z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
    }
@@ -122,8 +118,8 @@ function (x, which, gth, gqu)
    }
    
    dimnames(z)[[2]] <- dimnames(res)[[2]]
-   res <- list(call = theCall, coefficients = res, Z = z, migpd=x, gth = gth,
-       gqu = gqu, which = which, conditioningVariable= names(x$data)[which])
+   res <- list(call = theCall, coefficients = res, Z = z, migpd=x, gth = unique(gth),
+       gqu = unique(gqu), which = which, conditioningVariable= names(x$data)[which])
    oldClass(res) <- "mexDependence"
    res
 }
