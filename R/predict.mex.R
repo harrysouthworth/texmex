@@ -107,14 +107,14 @@ function( object, which, pqu = .99, nsim = 1000, trace=10 ){
 test(predict.mex) <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
   
-  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
-  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+  smarmod <- mex(summer, qu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", gqu=.7)
+  wmarmod <- mex(winter, qu=.7,  penalty="none", which="NO")
 
-  NOmodWinter <- bootmex(wmarmod, wh="NO", gqu=.7)
-  NOpredWinter <- predict.mex(wmarmod, NOmodWinter, nsim = 500) # matches sample size in H+T2004
+  NOmodWinter <- bootmex(wmarmod)
+  NOpredWinter <- predict(NOmodWinter, nsim = 500) # matches sample size in H+T2004
 
-  NOmodSummer <- bootmex(smarmod, wh="NO", gqu=.7)
-  NOpredSummer <- predict.mex(smarmod, NOmodSummer, nsim = 500)
+  NOmodSummer <- bootmex(smarmod)
+  NOpredSummer <- predict(NOmodSummer, nsim = 500)
 
   Table5winter <- rbind(c(8.3, 75.4, 569.9, 44.6, 132.3),
                       c(1.2, 4.4, 45.2, 6.7, 8.2))

@@ -55,6 +55,7 @@ function (x, which, gth, gqu)
 
        if (class(o) == "try-error" || o$convergence != 0) {
            warning("Non-convergence in mexDependence")
+           o <- as.list(o)
            o$par <- rep(NA, 4)
        }
        if (!is.na(o$par[1]))
@@ -80,6 +81,7 @@ function (x, which, gth, gqu)
                  yex = yex[wh], ydep = X[wh]), silent=TRUE)
                if (class(o) == "try-error" || o$convergence != 0) {
                  warning("Non-convergence in mexDependence")
+                 o <- as.list(o)
                  o$par <- rep(NA, 4)
                }
            }
@@ -87,7 +89,7 @@ function (x, which, gth, gqu)
        o$par[1:4]
    }
    yex <- c(x$gumbel[, which])
-   wh <- yex > gth
+   wh <- yex > unique(gth)
    res <- apply(x$gumbel[, dependent], 2, qfun, yex = yex, wh = wh)
    dimnames(res)[[1]] <- letters[1:4]
    gdata <- x$gumbel[wh, -which]

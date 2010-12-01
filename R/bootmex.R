@@ -15,6 +15,9 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     }
 
     if (class(x) == "mex"){
+        if (!missing(which)){
+            warning("which given, but already applied to 'mex' object. Using 'mex' value")
+        }
         which <- x[[2]]$which
         if (!missing(gqu)){
             warning("gqu given, but already applied to 'mex' object. Using 'mex' value")
