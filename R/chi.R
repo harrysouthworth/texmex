@@ -146,7 +146,7 @@ plot.chi <- function(x, which=1:2, lty = 1, cilty = 2, col = 1, spcases = FALSE,
 
 test(chi) <- function(){
 
-  require(ismev)
+#  require(ismev)
   
 # independent implementation of chi and chibar, Janet Heffernan personal code library
   .Cfunction <- function(data, nLevels){
@@ -206,7 +206,7 @@ test(chi) <- function(){
 
 #*************************************************************
 
-  data(wavesurge) # from ismev library
+#  data(wavesurge) # from ismev library
  
   nq <- 1000
   chi.JH <- .ChiFunction(wavesurge,nLevels=nq)

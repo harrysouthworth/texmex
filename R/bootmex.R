@@ -22,8 +22,7 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         stop("object should have class migpd")
     }
     else if (missing(which)) {
-        cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], 
-            "\n")
+        cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], "\n")
         which <- 1
     }
 
@@ -41,10 +40,10 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     n <- dim(x$gumbel)[[1]]
     d <- dim(x$gumbel)[[2]]
 
-    if (is.character(which)) 
+    if (is.character(which)) {
         which <- (1:d)[dimnames(x$data)[[2]] == which]
+    }
     dependent <- (1:d)[-which]
-
 
     innerFun <- function(i, x, which, gth, gqu, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getgum=getgum, dependent=dependent) {
@@ -54,8 +53,7 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         ok <- FALSE
         while (!ok) {
             for (j in 1:(dim(g)[[2]])) g[order(g[, j]), j] <- sort(-log(-log(runif(dim(g)[[1]]))))
-            if (sum(g[, which] > gth) > 1) 
-                ok <- TRUE
+            if (sum(g[, which] > gth[which]) > 1){ ok <- TRUE }
         }
         
         g <- sapply(1:d, getgum, x = g, data = x$data,
@@ -65,10 +63,11 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         
         ggpd <- migpd(g, th = x$th, penalty = penalty, priorParameters = priorParameters)
 
-        if (!missing(gqu)) 
-            gqu <- rep(gqu, length = d)
+#        if (!missing(gqu)) {
+#            gqu <- rep(gqu, length = d)
+#        }
 
-        gth <- unlist(lapply(1:length(gqu), function(i, d, qu) {
+        gth <- unlist(lapply(1:d, function(i, d, qu) {
                                                quantile(d[, i], qu[i])
                                             }, d = x$gumbel, qu = gqu))
 
@@ -88,7 +87,11 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         }
         res
     } # Close innerFun 
-    
+#browser()
+
+    if (length(gqu) == 1){ gqu <- rep(gqu, d) }
+    if (length(gth) == 1){ gth <- rep(gth, d) }
+
     res <- lapply(1:R, innerFun, x = x, which = which, gth = gth, 
         gqu = gqu, penalty = penalty, priorParameters = priorParameters, 
         pass = 1, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
@@ -128,11 +131,15 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
 # testing of this function, run test(predict.mex)
 
-  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
-  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+#  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
+#  wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
-  mySdep <- mexDependence(smarmod,which=1, gqu=0.7)
-  myWdep <- mexDependence(wmarmod,which=1, gqu=0.7)
+  smarmod <- mex(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- mex(winter, qu=.7,  penalty="none")
+
+
+  mySdep <- mexDependence(smarmod, which=1, gqu=0.7)
+  myWdep <- mexDependence(wmarmod, which=1, gqu=0.7)
 
   R <- 20
   
