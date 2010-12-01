@@ -32,13 +32,13 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 
 test(qgpd) <- function(){
 
-  require(evd,quiet=TRUE)
-  eqgpd <- get("qgpd",pos=2)
-  detach(2)
+#  require(evd,quiet=TRUE)
+#  eqgpd <- get("qgpd",pos=2)
+#  detach(2)
 
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
-    eq <- sapply(1:nreps, function(i) eqgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+    eq <- sapply(1:nreps, function(i) .evd.qgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
     checkEqualsNumeric(eq,myq,msg=msg)
   }
 
@@ -51,7 +51,7 @@ test(qgpd) <- function(){
   checkException(qgpd(-1,1,0,2))
 
 #*************************************************************
-# 6.4. Test qgpd. Note that eqgpd is NOT vectorized.
+# 6.4. Test qgpd. Note that .evd.qgpd is NOT vectorized.
 
   nreps <- 100
   nsim <- 1000
@@ -63,7 +63,7 @@ test(qgpd) <- function(){
   myTest(sig=p[,1], xi=p[,2],thresh=thresh,msg="qgpd: random xi")
 
 #*************************************************************
-# 6.5. Test qgpd when some or all of xi == 0. Note that eqgpd is NOT vectorized.
+# 6.5. Test qgpd when some or all of xi == 0. Note that .evd.qgpd is NOT vectorized.
 
   p[sample(1:nreps,nreps/2),2] <- 0
   myTest(sig=p[,1], xi = p[,2], thresh=thresh,msg="qgpd: some zero xi")
@@ -71,7 +71,7 @@ test(qgpd) <- function(){
   myTest(sig=p[,1], xi = p[,2], thresh=thresh,msg="qgpd: all zero xi")
   
 #*************************************************************
-# 6.6. Test vectorization of qgpd. Note that eqgpd is NOT vectorized.
+# 6.6. Test vectorization of qgpd. Note that .evd.qgpd is NOT vectorized.
 
   sig <- runif(nsim, 0, 2)
   xi <- runif(nsim)
@@ -80,9 +80,9 @@ test(qgpd) <- function(){
   x <- runif(nsim)
 
   myq <- qgpd(x, sig, xi, thresh)
-  eq <- sapply(1:nsim, function(i)eqgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+  eq <- sapply(1:nsim, function(i).evd.qgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
 
-  checkEqualsNumeric(eq,myq,msg="qgpd: vectorisztion")
+  checkEqualsNumeric(eq,myq,msg="qgpd: vectorisation")
   
 #*************************************************************
 # 6.6a Test log.p argument
