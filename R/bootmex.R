@@ -129,6 +129,9 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
   smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, qu=.7,  penalty="none")
 
+  mySdep <- mexDependence(smarmod, gqu=.7)
+  myWdep <- mexDependence(wmarmod)
+
   R <- 20
   
   mySboot <- bootmex(smarmod, R=R, which=1, gqu=.7)
@@ -152,10 +155,10 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
   mySboot <- bootmex(smarmod, R=R)
   myWboot <- bootmex(wmarmod, R=R)
 
-  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep")
+  checkEqualsNumeric(coef(smarmod)[[2]], mySboot$simpleDep, msg="bootmex: summer simpleDep")
   checkEqualsNumeric(coef(smarmod)[[1]], coef(mySboot$simpleMar), msg="bootmex: summer simpleMar")
 
-  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep")
+  checkEqualsNumeric(coef(wmarmod)[[2]], myWboot$simpleDep, msg="bootmex: winter simpleDep")
   checkEqualsNumeric(coef(wmarmod)[[1]], coef(myWboot$simpleMar), msg="bootmex: winter simpleMar")
   
   checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
