@@ -38,20 +38,20 @@ function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 
 test(pgpd) <- function(){
 
-  require(evd,quiet=TRUE)
-  epgpd <- get("pgpd",pos=2)
-  detach(2)
+#  require(evd,quiet=TRUE)
+#  epgpd <- get("pgpd",pos=2)
+#  detach(2)
 
   myTest <- function(sig,xi,thresh,msg){
     myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
-    ep <- sapply(1:nreps, function(i) epgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+    ep <- sapply(1:nreps, function(i) .evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
     checkEqualsNumeric(ep,myp,msg=msg)
     }
 
   set.seed(20101111)
   
 #*************************************************************
-# 6.7. Test pgpd. Note that epgpd is NOT vectorized.
+# 6.7. Test pgpd. Note that .evd.pgpd is NOT vectorized.
 
   nreps <- 100
   nsim <- 1000
@@ -84,7 +84,7 @@ test(pgpd) <- function(){
   x <- rgpd(nsim, sig, xi,u=thresh)
   myp <- pgpd(x, sig, xi,u=thresh)
   
-  ep <- sapply(1:nsim, function(i)epgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+  ep <- sapply(1:nsim, function(i).evd.pgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
   checkEqualsNumeric(ep,myp,msg="pgpd: vectorisation")
 
 #*************************************************************
@@ -99,3 +99,4 @@ test(pgpd) <- function(){
   sp <- pgpd(x,sig,xi,u=thresh,lower.tail=FALSE)
   checkEqualsNumeric(myp,1-sp,msg="pgpd: lower tail")
 }
+

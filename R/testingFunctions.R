@@ -115,3 +115,61 @@ function (xdat, threshold, npy = 365, ydat = NULL, sigl = NULL,
     class(z) <- "gpd.fit"
     invisible(z)
 }
+
+.evd.rgpd <-
+function (n, loc = 0, scale = 1, shape = 0) 
+{
+    if (min(scale) < 0) 
+        stop("invalid scale")
+    if (length(shape) != 1) 
+        stop("invalid shape")
+    if (shape == 0) 
+        return(loc + scale * rexp(n))
+    else return(loc + scale * (runif(n)^(-shape) - 1)/shape)
+}
+
+
+.evd.pgpd <-
+function (q, loc = 0, scale = 1, shape = 0, lower.tail = TRUE) 
+{
+    if (min(scale) <= 0) 
+        stop("invalid scale")
+    if (length(shape) != 1) 
+        stop("invalid shape")
+    q <- pmax(q - loc, 0)/scale
+    if (shape == 0) 
+        p <- 1 - exp(-q)
+    else {
+        p <- pmax(1 + shape * q, 0)
+        p <- 1 - p^(-1/shape)
+    }
+    if (!lower.tail) 
+        p <- 1 - p
+    p
+}
+
+.evd.dgpd <-
+function (x, loc = 0, scale = 1, shape = 0, log = FALSE) 
+{
+    if (min(scale) <= 0) 
+        stop("invalid scale")
+    if (length(shape) != 1) 
+        stop("invalid shape")
+    d <- (x - loc)/scale
+    nn <- length(d)
+    scale <- rep(scale, length.out = nn)
+    index <- (d > 0 & ((1 + shape * d) > 0)) | is.na(d)
+    if (shape == 0) {
+        d[index] <- log(1/scale[index]) - d[index]
+        d[!index] <- -Inf
+    }
+    else {
+        d[index] <- log(1/scale[index]) - (1/shape + 1) * log(1 + 
+            shape * d[index])
+        d[!index] <- -Inf
+    }
+    if (!log) 
+        d <- exp(d)
+    d
+}
+

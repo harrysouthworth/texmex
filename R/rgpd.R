@@ -23,20 +23,20 @@
 
 test(rgpd) <- function(){
 
-  require(evd,quiet=TRUE)
-  ergpd <- get("rgpd",pos=2)
-  detach(2)
+#  require(evd,quiet=TRUE)
+#  ergpd <- get("rgpd",pos=2)
+#  detach(2)
 
   myTest <- function(seed,p, thresh,msg=""){
       set.seed(seed)
       x <- sapply(1:nreps, function(i)rgpd(nsim, p[i,1], p[i,2], u=thresh[i]))
       set.seed(seed)  
-      ex <- sapply(1:nreps, function(i)ergpd(nsim, loc=thresh[i], scale=p[i,1],shape=p[i,2]))
+      ex <- sapply(1:nreps, function(i).evd.rgpd(nsim, loc=thresh[i], scale=p[i,1],shape=p[i,2]))
       checkEqualsNumeric(ex,x,msg=msg)
       }
   seed <- 20101111
 #*************************************************************
-# 6.1. Test rgpd. Note that ergpd is NOT vectorized.
+# 6.1. Test rgpd. Note that .evd.rgpd is NOT vectorized.
 
   nreps <- 100
   nsim <- 1000
@@ -47,13 +47,13 @@ test(rgpd) <- function(){
   myTest(seed,p,thresh=thresh,msg="rgpd: random parameters, zero threshold")
   
 #*************************************************************
-# 6.1a Test rgpd with non-zero threshold. Note that ergpd is NOT vectorized.
+# 6.1a Test rgpd with non-zero threshold. Note that .evd.rgpd is NOT vectorized.
 
   nonZeroThresh <- rnorm(nreps)
   myTest(seed,p,thresh=nonZeroThresh,msg="rgpd: Non-zero threshold")
   
 #*************************************************************
-# 6.2. Test rgpd when some or all xi == 0. Note that ergpd is NOT vectorized.
+# 6.2. Test rgpd when some or all xi == 0. Note that .evd.rgpd is NOT vectorized.
 
   p[sample(1:nreps,nreps/2),2] <- 0
   myTest(seed,p,thresh=thresh,msg="rgpd: some zero xi")
@@ -61,7 +61,7 @@ test(rgpd) <- function(){
   myTest(seed,p,thresh=thresh,msg="rgpd: all zero xi")
 
 #*************************************************************
-# 6.3. Test vectorization of rgpd. ergpd is NOT vectorized
+# 6.3. Test vectorization of rgpd. .evd.rgpd is NOT vectorized
 
   sig <- runif(nreps, 0, 2)
   xi <- runif(nreps)
@@ -69,7 +69,8 @@ test(rgpd) <- function(){
   set.seed(seed)
   x <- rgpd(nreps, sig, xi)
   set.seed(seed)
-  ex <- sapply(1:nreps, function(i)ergpd(1, loc=0, scale=sig[i], shape=xi[i]))
+  ex <- sapply(1:nreps, function(i).evd.rgpd(1, loc=0, scale=sig[i], shape=xi[i]))
   
   checkEqualsNumeric(ex, x, msg="rgpd: vectorisation")
 }
+
