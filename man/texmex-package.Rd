@@ -1,70 +1,114 @@
-\name{texmex-package}
-\alias{texmex-package}
-\alias{texmex}
+\name{mex-package}
+\alias{mex-package}
+\alias{mex}
 \docType{package}
 \title{
-Conditional multivariate extreme value modelling
+Conditional multivariate extreme values modelling.
 }
 \description{
-Modelling extreme values using generalized Pareto distributions
-and the Heffernan-Tawn appraoch to conditional multivariate extremes
+Conditional multivariate extreme values modelling following the approach
+of Heffernan and Tawn, 2004.
 }
 \details{
 \tabular{ll}{
-Package: \tab texmex\cr
+Package: \tab mex\cr
 Type: \tab Package\cr
-Version: \tab 0.1\cr
-Date: \tab 2010-06-22\cr
+Version: \tab 1.0\cr
+Date: \tab 2008-12-06\cr
 License: \tab GPL (>=2) | BSD\cr
-LazyLoad: \tab yes\cr
-LazyData: \tab yes\cr
 }
-Fit generalized Pareto distributions by (penalized) maximum likelihood
-(\code{gpd}), perform Bayesian inference via Markov chain Monte Carlo
-(\code{bgpd}), perform conditional multivariate extreme value modelling
-following the approach of Heffernan and Tawn (\code{mexDependece},
-\code{bootmex}, \code{mexDependence}).
+\code{gpd}: Fit generalized Pareto distributions to data, possibly with
+            covariates. Use maximum likelihood estimation or maximum
+            penalized likelihood estimation.
+\code{bgpd}: Fit generalized Pareto distributions to data, possibly with
+            covariates, using Markov chain Monte Carlo.
+            Gaussian prior distributions are used, and the posterior 
+            distributions are simulated from using a Metropolis algorithm.
+\code{mex}: Fit multiple, independent generalized Pareto models
+            to the columns of a data set, and estimate the conditional
+            dependence structure using the method of Heffernan and
+            Tawn.
+\code{bootmex}: Bootstrap estimation for parameters in generalized Pareto models
+                and in the dependence structure.
+
 }
 \author{
-Harry Southworth
+Harry Southworth, Janet E. Heffernan
 
-Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
+Maintainer: Harry Southworth <harry.southworht@astrazeneca.com>
 
 }
 \references{
-
-S. Coles, An Introduction to Statistical Modeling of Extreme Values,
-    Springer, 2001
-    
-J. E. Heffernan and J. A. Tawn, A conditional approach for multivariate
-    extreme values, Journal of the Royal Statistical Society B, 66, 497 -- 546, 
-    2004
+J. E. Heffernan and J. A. Tawn, A conditional approach
+	for multivariate extreme values, Journal of the Royal Statistical
+	society B, 66, 497 -- 546, 2004
 }
-
-\keyword{ package }
-
+\keyword{models}
+\keyword{multivariate}
+\keyword{package}
 \examples{
+# Analyse the winter data used by Heffernan and Tawn
+mymex <- mex(winter, qu = .7, penalty="none")
+plot(mymex)
+myboot <- bootmex(mymex, gqu=.7, which = "NO")
+plot(myboot)
+mypred <- predict(myboot,  pqu=.95)
+summary(mypred , probs = c( .025, .5, .975 ))
 
-alt <- log(liver$ALT_M[liver$dose == "D"])
+# Analyse the liver data included in the package
+library(MASS) # For the rlm function
 
-# Do plots to aid threshold selection
-par(mfrow=c(2, 2))
-mrlPlot(alt)
-gpdRangeFit(alt, umin=quantile(alt, .25), umax=quantile(alt, .9))
+liver <- liver[liver$ALP_M > 1,] # Get rid of outlier
+liver$ndose <- as.numeric(liver$dose)
 
-mod <- gpd(alt, th=quantile(alt, .7))
-summary(mod)
-bmod <- bgpd(alt, th=quantile(alt, .7))
-par(mfrow=c(3, 2))
-plot(bmod)
+alt <- resid(rlm(log(ALT_M) ~ log(ALT_B) + ndose, data=liver, method="MM"))
+ast <- resid(rlm(log(AST_M) ~ log(AST_B) + ndose, data=liver, method="MM"))
+alp <- resid(rlm(log(ALP_M) ~ log(ALP_B) + ndose, data=liver, method="MM"))
+tbl <- resid(rlm(log(TBL_M) ~ log(TBL_B) + ndose, data=liver, method="MM"))
 
-D <- liver[liver$dose == "D", c("ALT_M", "AST_M", "ALP_M", "TBL_M")]
-Dmex <- mex(D, qu=.7) # Use data over 70th percentile
-summary(Dmex)
-bootD <- bootmex(Dmex, which="ALT_M", gqu=.7)
-bootD
-predD <- predict(bootD, pqu=.9)
-predD
-par(mfrow=c(2, 2))
-plot(predD)
+r <- data.frame(alt=alt, ast=ast, alp=alp, tbl=tbl)
+
+Amex <- mex(r[liver$dose == "A",], qu=.7)
+Bmex <- mex(r[liver$dose == "B",], qu=.7)
+Cmex <- mex(r[liver$dose == "C",], qu=.7)
+Dmex <- mex(r[liver$dose == "D",], qu=.7)
+
+par(mfcol=c(2,3))
+plot(Amex)
+
+plot(Dmex, col="blue")
+
+## Take a closer look at ALT
+
+r$ndose <- liver$ndose
+
+altmod1 <- gpd(alt, qu=.7, phi = ~ ndose, xi = ~ ndose, data=r)
+altmod2 <- gpd(alt, qu=.7, phi = ~ ndose, data=r)
+altmod3 <- gpd(alt, qu=.7, xi = ~ ndose, data=r)
+altmod4 <- gpd(alt, qu=.7, data=r)
+
+# Prefer model 3, with term for xi on basis of AIC
+
+balt3 <- bgpd(alt, qu=.7, xi = ~ ndose, data=r)
+par(mfrow=c(3,3))
+plot(balt3)
+
+# Get some simulated values for dose D
+
+Dphi <- balt3$param[, 1]
+Dxi <- balt3$param[, 2] + 4 * balt3$param[, 3]
+
+simD <- rgpd(nrow(balt3$param), sigma=exp(Dphi), xi=Dxi, u=quantile(alt, .7))
+
+# Those are simulated residuals. Get some baselines and transform all
+# to raw scale
+
+b <- sample(log(liver$ALT_M), size=nrow(balt3$param), replace=TRUE)
+res <- exp(b + simD)
+
+quantile(res, prob=c(.5, .75, .9, .95, .99))
+
+mean(res > 36 * 3) # 36 is the upper limit of normal for ALT
+
 }
+
