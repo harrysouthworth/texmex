@@ -4,11 +4,15 @@
    
    z <- x$Z
    n <- dim(z)[1]
+
    for(i in 1:(dim(z)[2])){
-      p <- seq(x$gqu[i],1-1/n,length=n)
+      p <- seq(x$gqu,1-1/n,length=n)
       plot(p,z[,i],xlab=paste("F(",x$conditioningVariable,")",sep=""),
            ylab=paste("Z   ",colnames(z)[i],"|",x$conditioningVariable,sep=""),col=col,...)
-    abline(h=c(-2,0,2),lty=2)
+      lines(lowess(p,z[,i]),col="red")
+      plot(p,abs(z[,i] - mean(z[,i])),xlab=paste("F(",x$conditioningVariable,")",sep=""),
+           ylab=paste("|Z - mean(Z)|   ",colnames(z)[i],"|",x$conditioningVariable,sep=""),col=col,...)
+      lines(lowess(p,abs(z[,i] - mean(z[,i]))),col="blue")
    }
 
    xmax <- max(x$migpd$data[,x$which])
@@ -20,7 +24,7 @@
    len <- 1001
 
   for(i in 1:(dim(z)[2])){
-      depThr <- c(quantile(x$migpd$data[,x$which],x$gqu[i]))
+      depThr <- c(quantile(x$migpd$data[,x$which],x$gqu))
       d <- xmax-depThr
       xlim <- c(depThr-0.1*d, depThr + 1.5*d)
       names(xlim) <- NULL
@@ -33,8 +37,8 @@
       }
       
       if( SetPlim ) plim <- pgpd(xlim[2],sigma=sig,xi=xi,u=marThr)
-
-      plotp <- seq(x$gqu[i],plim,len=len)[-len] # take out largest point to avoid Inf in next line if xlim[2]==upperEnd
+      
+      plotp <- seq(x$gqu,plim,len=len)[-len] # take out largest point to avoid Inf in next line if xlim[2]==upperEnd
       co <- coef(x)[,i]
       xq <- -log(-log(plotp))
       zq <- quantile(x$Z[,i],quantiles)
@@ -81,7 +85,6 @@ plot(myWdep4,main="Winter")
 plot(mySdep5,main="Summer")
 plot(myWdep5,main="Winter")
    
-   checkException(plot.mexDependence(smarmod))
-   checkException(plot.mexDependence(TRUE))
- 
+   checkException(plot.mexDependence(smarmod),msg="mexDependence: exception handle")
+   checkException(plot.mexDependence(TRUE),msg="mexDependence: exception handle")
 }
