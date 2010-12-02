@@ -6,7 +6,7 @@
 #denote dimension and length, respectively.	
 #---------------------------------------------------------------------------
 
-MCSlower <- function(U,p)
+.MCSlower <- function(U,p)
   {
     d <- dim(U)[1]
     n <- dim(U)[2]
@@ -29,7 +29,7 @@ MCS <- function(X,p=seq(.1, .9, by=.1)) {
     for(i in 1:n){
         res1[[i]] <- U
       }
-    res2 <- mapply(MCSlower,res1,p)
+    res2 <- mapply(.MCSlower,res1,p)
     res <- list(mcs=res2, p=p, call=theCall)
     oldClass(res) <- "MCS"
     res
