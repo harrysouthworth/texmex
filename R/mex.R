@@ -12,24 +12,22 @@ mex <- function(data, which, mth, mqu, dth, dqu,
     res
 }
 
-
 print.mex <- function(x, ...){
-    print(summary(x[[1]]))
-    print(x[[2]])
-    invisible()
+   summary(x[[1]], ...)
+   print(x[[2]], ...)
+   invisible()
 }
 show.mex <- print.mex
 summary.mex <- function(object, ...){
-    print(summary(object[[1]]))
-    print(object[[2]])
-    invisible(coef(object))
+   summary(object[[1]]))
+   print(object[[2]])
+   invisible(coef(object))
 }
 
 plot.mex <- function(x, ...){
-    plot(x[[2]])
-    invisible()
+   plot(x[[2]], ...)
+   invisible()
 }
-
 coefficients.mex <- function(x, ...){
     res1 <- coef(x[[1]])
     res2 <- coef(x[[2]])
