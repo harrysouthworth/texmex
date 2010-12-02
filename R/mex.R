@@ -12,25 +12,37 @@ mex <- function(data, which, mth, mqu, dth, dqu,
     res
 }
 
+
 print.mex <- function(x, ...){
-   summary(x[[1]], ...)
-   print(x[[2]], ...)
-   invisible()
+    print(summary(x[[1]]))
+    print(x[[2]])
+    invisible()
 }
 show.mex <- print.mex
 summary.mex <- function(object, ...){
-   summary(object[[1]]))
-   print(object[[2]])
-   invisible(coef(object))
+    print(summary(object[[1]]))
+    print(object[[2]])
+    invisible(coef(object))
 }
 
 plot.mex <- function(x, ...){
-   plot(x[[2]], ...)
-   invisible()
+    plot(x[[2]])
+    invisible()
 }
+
 coefficients.mex <- function(x, ...){
     res1 <- coef(x[[1]])
     res2 <- coef(x[[2]])
     list(margins=res1, dependence=res2)
 }
+
 coef.mex <- coefficients.mex
+
+
+plot.mex <- function(x,quantiles=seq(0.1,by=0.2,len=5),col="grey",...){
+   if ( class( x ) != "mex" )
+		 stop( "you need to use an object with class 'mex'" )
+
+   plot(x$dependence,quantiles=quantiles,col=col,...)
+}
+ 
