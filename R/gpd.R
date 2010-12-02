@@ -134,10 +134,10 @@ test(gpd) <- function(){
   mod.loglik <- mod$loglik
   mod.cov22 <- mod$cov[2, 2]
 
-  checkEqualsNumeric(cparas, mod.coef, tolerance = tol)
-  checkEqualsNumeric(cse[2], mod$se[2], tolerance = tol)
-  checkEqualsNumeric(ccov[2,2], mod$cov[2, 2], tolerance = tol)
-  checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol)
+  checkEqualsNumeric(cparas, mod.coef, tolerance = tol,msg="gpd: parameter ests page 85 Coles")
+  checkEqualsNumeric(cse[2], mod$se[2], tolerance = tol,msg="gpd: standard errors page 85 Coles")
+  checkEqualsNumeric(ccov[2,2], mod$cov[2, 2], tolerance = tol,msg="gpd: Covariance page 85 Coles")
+  checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol,msg="gpd: loglik page 85 Coles")
   
 ###################################################################
 #   Logical checks on the effect of penalization. The smaller the
@@ -152,8 +152,8 @@ test(gpd) <- function(){
   mod1 <- gpd(rain, th=30, priorParameters=gp1)
   mod2 <- gpd(rain, th=30, priorParameters=gp2)
 
-  checkTrue(coef(mod)[2] > coef(mod1)[2])
-  checkTrue(coef(mod1)[2] > coef(mod2)[2])
+  checkTrue(coef(mod)[2] > coef(mod1)[2],msg="gpd:penalization xi being drawn to 0")
+  checkTrue(coef(mod1)[2] > coef(mod2)[2],msg="gpd:penalization xi being drawn to 0")
 
 # 2.2 Tests for phi being drawn to 0
 
@@ -163,8 +163,8 @@ test(gpd) <- function(){
   mod3 <- gpd(rain, th=30, priorParameters=gp3)
   mod4 <- gpd(rain, th=30, priorParameters=gp4)
 
-  checkTrue(coef(mod)[1] > coef(mod3)[1])
-  checkTrue(coef(mod3)[1] > coef(mod4)[1])
+  checkTrue(coef(mod)[1] > coef(mod3)[1],msg="gpd:penalization phi being drawn to 0")
+  checkTrue(coef(mod3)[1] > coef(mod4)[1],msg="gpd:penalization phi being drawn to 0")
   
 # 2.3 Tests for xi being drawn to 1
   gp5 <- list(c(0, 1), diag(c(10^4, .25)))
@@ -173,8 +173,8 @@ test(gpd) <- function(){
   mod5 <- gpd(rain, th=30, priorParameters=gp5)
   mod6 <- gpd(rain, th=30, priorParameters=gp6)
 
-  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2])
-  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2])
+  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],msg="gpd:penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],msg="gpd:penalization xi being drawn to 1")
   
 # 2.4 Tests for phi being drawn to 4 (greater than mle for phi)
 
@@ -184,8 +184,8 @@ test(gpd) <- function(){
   mod7 <- gpd(rain, th=30, priorParameters=gp7)
   mod8 <- gpd(rain, th=30, priorParameters=gp8)
 
-  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1])
-  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1])  
+  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd:penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd:penalization phi being drawn to 4")
   
 ########################################################
 # Tests on including covariates. Once more, gpd.fit in ismev
@@ -198,7 +198,7 @@ test(gpd) <- function(){
   d <- data.frame(rainfall = rain, time=rtime)
   mod <- gpd(rainfall, th=30, data=d, phi= ~ time, penalty="none")
 
-  checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol)
+  checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol,msg="gpd: loglik Coles page 119")
   
 ####################################################################
 # 3.1 Use liver data, compare with ismev. 
@@ -214,10 +214,10 @@ test(gpd) <- function(){
   ismod <- .ismev.gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
                  ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
 
-  checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol)
+  checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol,msg="gpd: covariates in phi only, point ests")
   
 # SEs for phi will not be same as for sigma, but we can test xi
-  checkEqualsNumeric(ismod$se[length(ismod$se)], mod$se[length(mod$se)], tolerance = tol)
+  checkEqualsNumeric(ismod$se[length(ismod$se)], mod$se[length(mod$se)], tolerance = tol,msg="gpd: covariates in phi only, standard errors")
 
 ######################################################################
 # 3.2 Test xi alone.
@@ -232,10 +232,10 @@ test(gpd) <- function(){
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
 
-  checkEqualsNumeric(ismod$mle, mco, tolerance = tol)
+  checkEqualsNumeric(ismod$mle, mco, tolerance = tol,msg="gpd: covariates in xi only: point ests")
   
 # SEs for phi will not be same as for sigma, but we can test xi
-  checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol)
+  checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol,msg="gpd: covariates in xi only: standard errors")
 
 ######################################################################
 # 3.3 Test phi & xi simultaneously. Use simulated data.
@@ -261,8 +261,8 @@ test(gpd) <- function(){
   ismod <- .ismev.gpd.fit(data$y,threshold=quantile(data$y,0.7),
                    ydat=m,shl=3,sigl=2,siglink=exp, show=FALSE)
 
-  checkEqualsNumeric(ismod$mle, coef(mod),tolerance = tol)
-  checkEqualsNumeric(ismod$se, sqrt(diag(mod$cov)),tolerance = tol)
+  checkEqualsNumeric(ismod$mle, coef(mod),tolerance = tol,msg="gpd: covariates in phi and xi: point ests")
+  checkEqualsNumeric(ismod$se, sqrt(diag(mod$cov)),tolerance = tol,msg="gpd: covariates in phi and xi: std errs")
 
 ####################################################################
 # Check that using priors gives expected behaviour when covariates are included.
@@ -279,8 +279,8 @@ test(gpd) <- function(){
   mod1 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
   mod2 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
 
-  checkTrue(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3]))
-  checkTrue(abs(coef(mod1)[2:3]) > abs(coef(mod2)[2:3]))
+  checkTrue(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3]),msg="gpd: with covariates, xi drawn to zero")
+  checkTrue(abs(coef(mod1)[2:3]) > abs(coef(mod2)[2:3]),msg="gpd: with covariates, xi drawn to zero")
 
 # 2.2 Tests for phi being drawn to 0
 
@@ -295,8 +295,8 @@ test(gpd) <- function(){
   mod4 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
   mod5 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
 
-  checkTrue(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2]))
-  checkTrue(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2]))
+  checkTrue(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2]),msg="gpd: with covariates, phi being drawn to 0")
+  checkTrue(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2]),msg="gpd: with covariates, phi being drawn to 0")
 
 # 2.3 Tests for xi being drawn to 2
   b <- rep(c(-0.5,0.5),each=5)
@@ -309,8 +309,8 @@ test(gpd) <- function(){
   mod7 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
   mod8 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
 
-  checkTrue(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3]))
-  checkTrue(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3]))
+  checkTrue(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3]),msg="gpd: with covariates, xi drawn to 2")
+  checkTrue(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3]),msg="gpd: with covariates, xi drawn to 2")
 
 # 2.4 Tests for phi being drawn to 4 
 
@@ -325,8 +325,7 @@ test(gpd) <- function(){
   mod10 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp10)
   mod11 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp11)
 
-  checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]))
-  checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]))
-
+  checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]),msg="gpd: with covariates, phi drawn to 4")
+  checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]),msg="gpd: with covariates, phi drawn to 4")
 }
 
