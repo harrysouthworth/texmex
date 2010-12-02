@@ -38,17 +38,19 @@ test(qgpd) <- function(){
 
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
+    myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))
     eq <- sapply(1:nreps, function(i) .evd.qgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-    checkEqualsNumeric(eq,myq,msg=msg)
+    checkEqualsNumeric(eq,myq,msg=paste(msg,"test using .evd.qgpd"))
+    checkEqualsNumeric(x,myp,msg=paste(msg,"test using qgpd"))
   }
 
 #*************************************************************
 # 6.4.0 Test exception for out of range probabilties
   
-  checkException(qgpd(1,1,0,2))
-  checkException(qgpd(1.5,1,0,2))
-  checkException(qgpd(0,1,0,2))
-  checkException(qgpd(-1,1,0,2))
+  checkException(qgpd(1,1,0,2),msg="qgpd: exception for out of range prob")
+  checkException(qgpd(1.5,1,0,2),msg="qgpd: exception for out of range prob")
+  checkException(qgpd(0,1,0,2),msg="qgpd: exception for out of range prob")
+  checkException(qgpd(-1,1,0,2),msg="qgpd: exception for out of range prob")
 
 #*************************************************************
 # 6.4. Test qgpd. Note that .evd.qgpd is NOT vectorized.
@@ -96,6 +98,6 @@ test(qgpd) <- function(){
   
    LTq <- qgpd(1-x, sig,xi,thresh, lower.tail=FALSE)
   
-  checkEqualsNumeric(myq, LTq, msg="qgpd: lower.ail=FALSE")
+  checkEqualsNumeric(myq, LTq, msg="qgpd: lower.tail=FALSE")
    
 }
