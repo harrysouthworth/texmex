@@ -71,9 +71,9 @@ test(copula) <- function(){
 
   u3 <- cbind(sample(n),sample(n),sample(n))
   d3 <- fun(u3)
-  
-  checkEqualsNumeric(d2,copula(u2))
-  checkEqualsNumeric(d3,copula(u3))
-  checkException(copula(TRUE))
-  checkException(copula("text"))
+
+  checkEqualsNumeric(d2,copula(u2)$copula,msg="copula: 2 dimensional")
+  checkEqualsNumeric(d3,copula(u3)$copula,msg="copula: 3 dimensional")
+  checkException(copula(TRUE),msg="copula: exception")
+  checkException(copula("text"),msg="copula: exception")
 }
