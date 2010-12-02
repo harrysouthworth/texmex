@@ -36,7 +36,6 @@ thinAndBurn.bgpd <- function(object,burn,thin){
 }
 
 test(thinAndBurn.bgpd) <- function(){
-require(svUnit)
 
 # generate data to use for checking
   d <- sample(3:10,1)
@@ -46,30 +45,30 @@ require(svUnit)
 
 # test appropriate errors for misspecification of thin and burn
 
-  checkException(thinAndBurn(x,burn=2))
-  checkException(thinAndBurn(x,thin=1))
+  checkException(thinAndBurn(x,burn=2),msg="thinAndBurn.bgpd: errors for misspecification of thin and burn")
+  checkException(thinAndBurn(x,thin=1),msg="thinAndBurn.bgpd: errors for misspecification of thin and burn")
   
 #  test burn in  
   burn <- sample(nrow/2,1)
   burnOnly <- thinAndBurn(x,burn=burn,thin=1)
-  checkEqualsNumeric(x$chains[burn+1,], burnOnly$param[1,])
+  checkEqualsNumeric(x$chains[burn+1,], burnOnly$param[1,],msg="thinAndBurn.bgpd: burn in  ")
 
 # test thinning
   thin <- 2
   thinOnly <- thinAndBurn(x,thin=thin,burn=0)
 
-  checkEqualsNumeric(seq(thin,nrow,by=thin), thinOnly$param[,1])
+  checkEqualsNumeric(seq(thin,nrow,by=thin), thinOnly$param[,1],msg="thinAndBurn.bgpd: thinning  ")
   
 # test thinning and burning simultaneously
 
   thinBurn <- thinAndBurn(x,thin=thin,burn=burn)
   
-  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn$param[,1])
+  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn$param[,1],msg="thinAndBurn.bgpd: thinning and burning simultaneously")
   
 # test returned values of thin and burn
 
-  checkEqualsNumeric(thin, thinBurn$thin,burn=0)
-  checkEqualsNumeric(burn, thinBurn$burn,thin=1)
+  checkEqualsNumeric(thin, thinBurn$thin,burn=0,msg="thinAndBurn.bgpd: test returned value of thin")
+  checkEqualsNumeric(burn, thinBurn$burn,thin=1,msg="thinAndBurn.bgpd: test returned value of burn")
   
 # test passing thin and burn via object
 
@@ -77,14 +76,14 @@ require(svUnit)
   x$burn <- burn
   thinBurn1 <- thinAndBurn(x)
   
-  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn1$param[,1])
-  checkEqualsNumeric(dim(thinBurn$param),dim(thinBurn1$param))
+  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn1$param[,1],msg="thinAndBurn.bgpd: test passing thin and burn via object")
+  checkEqualsNumeric(dim(thinBurn$param),dim(thinBurn1$param),msg="thinAndBurn.bgpd: test passing thin and burn via object")
   
 # test thinning and burning a previously thinned and burned object
 
   thin2 <- 4
   burn2 <- 4
   thinBurn2 <- thinAndBurn(thinBurn1,thin=thin2,burn=burn2)
-  checkEqualsNumeric(dim(thinBurn1$chains)[2], dim(thinBurn2$chains)[2])
-  checkEqualsNumeric((nrow - burn2) / thin2, dim(thinBurn2$param)[1])
+  checkEqualsNumeric(dim(thinBurn1$chains)[2], dim(thinBurn2$chains)[2],msg="thinAndBurn.bgpd: thinning and burning a previously thinned and burned object")
+  checkEqualsNumeric((nrow - burn2) / thin2, dim(thinBurn2$param)[1],msg="thinAndBurn.bgpd: thinning and burning a previously thinned and burned object")
 }
