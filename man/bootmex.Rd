@@ -7,15 +7,20 @@
 \description{
   Bootstrap a conditional multivariate extreme values model following
 the method of Heffernan and Tawn, 2004. I'm grateful to Jan Heffernan
-for advice. The methods for the object returned by \code{bootmex}
-are currently flawed!
+for advice.
 }
 \usage{
 bootmex(x, which, B = 100, gth, gqu, nPass=3)
 }
-%- maybe also 'usage' for other objects documented here.
+\usage{
+plot(y, plots = "gpd", main = "", ...)
+}
+\usage{
+print(y, ...)
+}
 \arguments{
   \item{x}{ An object of class 'migpd' as returned by function \code{migpd}. }
+  \item{y}{ An object of class 'bootmex' as returned by function \code{bootmex}. }
   \item{which}{ The name of the variable on which the conditioning is done. This should
 be the name of one of the columns in the data set that was passed to \code{migpd}. }
   \item{B}{ The number of bootstrap runs to perform. Defaults to B=100. }
@@ -29,6 +34,7 @@ variable at. Only one of \code{gth} or \code{gqu} should be provided. }
           fail and takes additional bootstrap samples in an attempt to get
           parameter estimates. By default, it has nPass=3 attempts at this
           before giving up.}
+  \item{plots}{ Whether to do diagnostic plots of gpd parameter estimates or dependence parameter estimates.  Defaults to "gpd". }
 }
 \details{
  Details of the bootstrap method are given by Heffernan and Tawn (2004). Firstly, Gumbel
@@ -53,9 +59,11 @@ Also note that sometimes (again, usually with small data sets) all of the simula
 random numbers will be beneath the threshold for the conditioning variable. Such samples are
 abandoned by \code{bootmex} and a new sample is generated. This probably introduces some
 bias into the resulting bootstrap distributions.
+
+The plot method produces histograms of bootstrap gpd parameters (the default) or scatterplots of dependence parameters with the point estimates for the original data shown.
 }
 \value{
- An object of class 'bootmex'. A print function is available.
+ An object of class 'bootmex'. Print and plot functions are available.
 }
 
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
@@ -64,14 +72,15 @@ bias into the resulting bootstrap distributions.
 \author{ Harry Southworth }
 \note{ Many thanks to Janet Heffernan for answering lots of questions. }
 \seealso{ \code{\link{migpd}} , \code{link{mexDependence} },
-	\code{\link{bootmex}}, \code{\link{predict.mex}},
+	\code{\link{bootmex}}, \code{\link{predict.mex}}.
 		    }
-\seealso{ ~~objects to See Also as \code{\link{help}}, ~~~ }
 \examples{
 data( winter )
 mygpd <- migpd( winter , qu = .7 )
 myboot <- bootmex( mygpd, which = "NO", gqu=.7 )
 myboot
+plot(myboot,plots="gpd")
+plot(myboot,plots="dependence")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
