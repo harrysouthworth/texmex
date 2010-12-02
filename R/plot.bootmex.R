@@ -1,9 +1,9 @@
 `plot.bootmex` <-
-function( x , which = "gpd", main="", ... ){
+function( x , plots = "gpd", main="", ... ){
 
     # Want to look at the marginal GPD parameters or the
     # dependence structure parameters?
-	if ( casefold( which ) == "gpd" ) { which <- 1 }
+	if ( casefold( plots ) == "gpd" ) { which <- 1 }
 	else { which <- 2 }
 	
 	d2 <- dim(x$boot[[1]][[which]])
@@ -19,11 +19,11 @@ function( x , which = "gpd", main="", ... ){
 	  for (j in 1:d2[1]){ # loop over parameters
 	    lco[[ j + d2[1]*(i - 1) ]] <- co[j, i, ]
 	  } # close j
-    } # close i
+  } # close i
 	
-    cn <- colnames(x[[1]][[which]]) # variable names
-    rn <- rownames(x[[1]][[which]]) # parameter names
-    labs <- paste(rep(cn, each=4), rep(rn, length(cn)))
+  cn <- colnames(x[[1]][[which]]) # variable names
+  rn <- rownames(x[[1]][[which]]) # parameter names
+  labs <- paste(rep(cn, each=which*2), rep(rn, length(cn)))
 
 	fun <- function(X, z, label, ...) {
 		hist(z[[X]] , prob=TRUE, xlab=label[X], main=main, ...)
@@ -31,7 +31,9 @@ function( x , which = "gpd", main="", ... ){
 		invisible()
 	}
 
-  wh <- lapply(1:prod(d2), fun, z=lco, label=labs, ...)
+  if(which == 1){
+    lapply(1:prod(d2), fun, z=lco, label=labs, ...)
+  }
 
   if(which == 2){ # scatterplots of dependence parameters    
     fun <- function(X,z,label, ...){
