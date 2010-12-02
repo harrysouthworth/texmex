@@ -1,6 +1,6 @@
 bootmex <- 
     # Bootstrap inference for a conditional multivaratiate extremes model.
-function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
+function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     theCall <- match.call()
 
     getgum <- function(i, x, data, mod, th, qu) {
@@ -19,10 +19,10 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
             warning("which given, but already applied to 'mex' object. Using 'mex' value")
         }
         which <- x[[2]]$which
-        if (!missing(gqu)){
-            warning("gqu given, but already applied to 'mex' object. Using 'mex' value")
+        if (!missing(dqu)){
+            warning("dqu given, but already applied to 'mex' object. Using 'mex' value")
         }
-        gqu <- x[[2]]$gqu
+        dqu <- x[[2]]$dqu
         x <- x[[1]]
     }
     else if (class(x) != "migpd"){
@@ -33,12 +33,12 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         which <- 1
     }
 
-    if (missing(gqu) & missing(gth)) {
-        gqu <- x$qu[which]
+    if (missing(dqu) & missing(dth)) {
+        dqu <- x$mqu[which]
     }
 
-    if (missing(gth)) {
-        gth <- quantile(x$gumbel[, which], prob = gqu)
+    if (missing(dth)) {
+        dth <- quantile(x$gumbel[, which], prob = dqu)
     }
 
     penalty <- x$penalty
@@ -52,7 +52,7 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     }
     dependent <- (1:d)[-which]
 
-    innerFun <- function(i, x, which, gth, gqu, penalty, priorParameters, 
+    innerFun <- function(i, x, which, dth, dqu, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getgum=getgum, dependent=dependent) {
         
         g <- sample(1:(dim(x$gumbel)[[1]]), size = n, replace = TRUE)
@@ -61,17 +61,17 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
 
         while (!ok) {
             for (j in 1:(dim(g)[[2]])) g[order(g[, j]), j] <- sort(-log(-log(runif(dim(g)[[1]]))))
-            if (sum(g[, which] > gth) > 1){ ok <- TRUE }
+            if (sum(g[, which] > dth) > 1){ ok <- TRUE }
         }
         
         g <- sapply(1:d, getgum, x = g, data = x$data,
-                    mod = x$models, th = x$th, qu = x$qu)
+                    mod = x$models, th = x$mth, qu = x$mqu)
                     
         dimnames(g)[[2]] <- names(x$models)
-        
-        ggpd <- migpd(g, th = x$th, penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, gth = gth, which = which)
+        ggpd <- migpd(g, mth = x$mth, penalty = penalty, priorParameters = priorParameters)
+
+        gd <- mexDependence(ggpd, dth = dth, which = which)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
                     Z = gd$Z,
@@ -85,10 +85,10 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
         res
     } # Close innerFun 
 
-    gqu <- rep(gqu, d) 
+    dqu <- rep(dqu, d) 
 
-    res <- lapply(1:R, innerFun, x = x, which = which, gth = gth, 
-        gqu = gqu, penalty = penalty, priorParameters = priorParameters, 
+    res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, 
+        dqu = dqu, penalty = penalty, priorParameters = priorParameters, 
         pass = 1, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
 
     # Sometimes samples contain no extreme values. Need to have another pass or two
@@ -101,7 +101,7 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
                 cat("Pass", pass, ":", sum(rerun), "samples to rerun.\n")
                 rerun <- (1:R)[rerun]
                 res[rerun] <- lapply((1:R)[rerun], innerFun, 
-                  x = x, which = which, gth = gth, gqu = gqu, 
+                  x = x, which = which, dth = dth, dqu = dqu, 
                   penalty = penalty, priorParameters = priorParameters, 
                   pass = pass, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
             }
@@ -112,11 +112,11 @@ function (x, which, R = 100, gth, gqu, nPass = 3, trace = 10) {
     ans <- list()
     ans$boot <- res
     ans$call <- theCall
-    ans$gqu <- gqu
+    ans$dqu <- dqu
     ans$which <- which
     ans$R <- R
     ans$simpleMar <- x
-    ans$simpleDep <- mexDependence(x, gth = gth, which)$coefficients
+    ans$simpleDep <- mexDependence(x, dth = dth, which)$coefficients
     oldClass(ans) <- c("bootmex", "mex")
     ans
 }
@@ -126,16 +126,16 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
 # testing of this function, run test(predict.mex)
 
-  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
-  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+  smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 
-  mySdep <- mexDependence(smarmod, gqu=.7)
+  mySdep <- mexDependence(smarmod, dqu=.7)
   myWdep <- mexDependence(wmarmod)
 
   R <- 20
   
-  mySboot <- bootmex(smarmod, R=R, which=1, gqu=.7)
-  myWboot <- bootmex(wmarmod, R=R, which=1, gqu=.7)
+  mySboot <- bootmex(smarmod, R=R, which=1, dqu=.7)
+  myWboot <- bootmex(wmarmod, R=R, which=1, dqu=.7)
 
   checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep")
   checkEqualsNumeric(coef(smarmod), coef(mySboot$simpleMar), msg="bootmex: summer simpleMar")
@@ -149,8 +149,8 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
 
-  smarmod <- mex(summer, qu=c(.9, .7, .7, .85, .7), penalty="none", gqu=.7)
-  wmarmod <- mex(winter, qu=.7,  penalty="none")
+  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7)
+  wmarmod <- mex(winter, mqu=.7,  penalty="none")
 
   mySboot <- bootmex(smarmod, R=R)
   myWboot <- bootmex(wmarmod, R=R)

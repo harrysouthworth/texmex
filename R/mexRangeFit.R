@@ -2,8 +2,8 @@
 function (x, which, quantiles=seq(0.5,0.9,length=9), nboot=10,
           col="red",bootcol="grey",...)
 {
-  ests <- lapply(quantiles,function(qu)mexDependence(x,which,gqu=qu))
-  boot <- lapply(quantiles,function(qu)bootmex(x,which,R=nboot,gqu=qu))
+  ests <- lapply(quantiles,function(qu)mexDependence(x,which,dqu=qu))
+  boot <- lapply(quantiles,function(qu)bootmex(x,which,R=nboot,dqu=qu))
   
   PointEsts <- sapply(ests,coef)
   cof <- coef(ests[[1]])
@@ -24,7 +24,7 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), nboot=10,
 
 test(mexRangeFit) <- function(){
 
-  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+  wmarmod <- migpd(winter, mqu=.7,  penalty="none")
   
   par(mfrow=c(2,2))
   mexRangeFit(wmarmod,which=1,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5)

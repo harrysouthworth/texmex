@@ -46,7 +46,7 @@ function( x ,
 	} # Close transfun
 	
 	res <- sapply( 1:( dim( x$data )[[ 2 ]] ), transFun,
-				      x = x$data, mod = x$models, th = x$th,
+				      x = x$data, mod = x$models, th = x$mth,
 				      divisor = divisor, method=method
 				     )
 	dimnames( res ) <- list( NULL, names( x$models ) )

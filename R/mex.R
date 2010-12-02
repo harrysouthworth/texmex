@@ -1,11 +1,11 @@
-mex <- function(data, which, th, qu, gth, gqu,
+mex <- function(data, which, mth, mqu, dth, dqu,
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
-    res1 <- migpd(data=data, th=th, qu=qu, penalty=penalty,
+    res1 <- migpd(data=data, mth=mth, mqu=mqu, penalty=penalty,
                   maxit=maxit, trace=trace, verbose=verbose,
                   priorParameters=priorParameters)
-    res2 <- mexDependence(x= res1, which=which, gth=gth, gqu=gqu)
+    res2 <- mexDependence(x= res1, which=which, dth=dth, dqu=dqu)
     
     res <- list(margins=res1, dependence=res2)
     oldClass(res) <- "mex"

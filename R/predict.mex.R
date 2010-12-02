@@ -26,12 +26,12 @@ function( object, which, pqu = .99, nsim = 1000, trace=10 ){
   	ui <- exp( -exp( -y ) )
     xmi <- apply( ymi, 2, function( x ) exp( -exp( -x ) ) )
 
-    xi <- u2gpd( ui, p = 1 - migpd$qu[ which ], th=migpd$th[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
+    xi <- u2gpd( ui, p = 1 - migpd$mqu[ which ], th=migpd$mth[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
 	
   	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
 		  xmi[, i ] <- revGumbel( xmi[ ,i ], data[,-which][, i ],
-								             th = migpd$th[ -which ][ i ],
-								             qu = migpd$qu[ -which ][ i ],
+								             th = migpd$mth[ -which ][ i ],
+								             qu = migpd$mqu[ -which ][ i ],
 								             sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )
 	  }
     
@@ -83,21 +83,21 @@ function( object, which, pqu = .99, nsim = 1000, trace=10 ){
     coxmi <- coef(migpd)[3:4, -which]
 
     dall <- if (theClass == "mex") { object[[2]] }
-            else { mexDependence( object$simpleMar , which=which , gqu=object$gqu ) }
+            else { mexDependence( object$simpleMar , which=which , dqu=object$dqu ) }
 
 
     sim <- MakeThrowData(dco=dall$coefficients,z=dall$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
                 
     m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
- 	zeta <- 1 - migpd$qu[ which ] # Coles, page 81
-	xth <- migpd$th[ which ] + cox[ 3 ] / cox[ 4 ] * ( ( m*zeta )^cox[ 4 ] - 1 )
+ 	zeta <- 1 - migpd$mqu[ which ] # Coles, page 81
+	xth <- migpd$mth[ which ] + cox[ 3 ] / cox[ 4 ] * ( ( m*zeta )^cox[ 4 ] - 1 )
 
 	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ) ,
 				        simulated = sim, pth=xth)
 
 	res <- list( call = theCall , replicates = bootRes, data = data,
 				       which = which, pqu = pqu,
-				       th=c( migpd$th[ which ], migpd$th[ -which ] ) )
+				       mth=c( migpd$mth[ which ], migpd$mth[ -which ] ) )
 	
 	oldClass( res ) <- "predict.mex"
 
@@ -106,9 +106,9 @@ function( object, which, pqu = .99, nsim = 1000, trace=10 ){
 
 test(predict.mex) <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
-  
-  smarmod <- mex(summer, qu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", gqu=.7)
-  wmarmod <- mex(winter, qu=.7,  penalty="none", which="NO")
+  browser()
+  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7)
+  wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO")
 
   NOmodWinter <- bootmex(wmarmod)
   NOpredWinter <- predict(NOmodWinter, nsim = 500) # matches sample size in H+T2004

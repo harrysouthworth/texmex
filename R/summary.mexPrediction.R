@@ -48,7 +48,6 @@ function( object, th, probs=c( .05, .5, .95 ), ... ){
 
 	wn <- dimnames( object$data$simulated )[[ 2 ]][ 1 ]
 	wth <- paste( "Q", 100*object$pqu, sep = "" )
-#	dn <- paste( "P(", dimnames( object$replicates[[ 1 ]] )[[ 2 ]] , ">", th[ -1 ],"|", wn, ">", wth, ")", sep = "" )
 	dn <- paste( "P(", dimnames( object$data$simulated )[[ 2 ]] , ">", th,"|", wn, ">", wth, ")", sep = "" )
 
 	dimnames( thres ) <- list( "", dn )

@@ -1,5 +1,5 @@
 `mexDependence` <-
-function (x, which, gth, gqu)
+function (x, which, dth, dqu)
 {
    theCall <- match.call()
    if (class(x) != "migpd")
@@ -14,17 +14,17 @@ function (x, which, gth, gqu)
        stop("which must be of length 1")
    else if (is.character(which))
        which <- match(which, dimnames(x$gumbel)[[2]])
-   if (missing(gth) & missing(gqu)) {
+   if (missing(dth) & missing(dqu)) {
        cat("Assuming same quantile for thesholding as was used to fit corresponding marginal model...\n")
-       gqu <- x$qu[which]
+       dqu <- x$mqu[which]
    }
-   else if (missing(gqu))
-       gqu <- x$qu[which]
-   if (missing(gth))
-       gth <- quantile(x$gumbel[, which], gqu)
+   else if (missing(dqu))
+       dqu <- x$mqu[which]
+   if (missing(dth))
+       dth <- quantile(x$gumbel[, which], dqu)
    dependent <- (1:(dim(x$data)[[2]]))[-which]
-   if (length(gqu) < length(dependent))
-       gqu <- rep(gqu, length = length(dependent))
+   if (length(dqu) < length(dependent))
+       dqu <- rep(dqu, length = length(dependent))
    qfun <- function(X, yex, wh) {
        Q <- function(yex, ydep, param) {
            a <- param[1]
@@ -89,7 +89,7 @@ function (x, which, gth, gqu)
        o$par[1:4]
    }
    yex <- c(x$gumbel[, which])
-   wh <- yex > unique(gth)
+   wh <- yex > unique(dth)
    res <- apply(x$gumbel[, dependent], 2, qfun, yex = yex, wh = wh)
    dimnames(res)[[1]] <- letters[1:4]
    gdata <- x$gumbel[wh, -which]
@@ -120,30 +120,30 @@ function (x, which, gth, gqu)
    }
    
    dimnames(z)[[2]] <- dimnames(res)[[2]]
-   res <- list(call = theCall, coefficients = res, Z = z, migpd=x, gth = unique(gth),
-       gqu = unique(gqu), which = which, conditioningVariable= names(x$data)[which])
+   res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
+       dqu = unique(dqu), which = which, conditioningVariable= names(x$data)[which])
    oldClass(res) <- "mexDependence"
    res
 }
 
 test(mexDependence) <- function(){
-  smarmod <- migpd(summer, qu=c(.9, .7, .7, .85, .7), penalty="none")
-  wmarmod <- migpd(winter, qu=.7,  penalty="none")
+  smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
+  wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 
-  mySdepO3 <- mexDependence(smarmod,which=1,gqu=0.7)
-  myWdepO3 <- mexDependence(wmarmod,which=1,gqu=0.7)
+  mySdepO3 <- mexDependence(smarmod,which=1,dqu=0.7)
+  myWdepO3 <- mexDependence(wmarmod,which=1,dqu=0.7)
 
-  mySdepNO2 <- mexDependence(smarmod,which=2,gqu=0.7)
-  myWdepNO2 <- mexDependence(wmarmod,which=2,gqu=0.7)
+  mySdepNO2 <- mexDependence(smarmod,which=2,dqu=0.7)
+  myWdepNO2 <- mexDependence(wmarmod,which=2,dqu=0.7)
 
-  mySdepNO <- mexDependence(smarmod,which=3,gqu=0.7)
-  myWdepNO <- mexDependence(wmarmod,which=3,gqu=0.7)
+  mySdepNO <- mexDependence(smarmod,which=3,dqu=0.7)
+  myWdepNO <- mexDependence(wmarmod,which=3,dqu=0.7)
 
-  mySdepSO2 <- mexDependence(smarmod,which=4,gqu=0.7)
-  myWdepSO2 <- mexDependence(wmarmod,which=4,gqu=0.7)
+  mySdepSO2 <- mexDependence(smarmod,which=4,dqu=0.7)
+  myWdepSO2 <- mexDependence(wmarmod,which=4,dqu=0.7)
 
-  mySdepPM10 <- mexDependence(smarmod,which=5,gqu=0.7)
-  myWdepPM10 <- mexDependence(wmarmod,which=5,gqu=0.7)
+  mySdepPM10 <- mexDependence(smarmod,which=5,dqu=0.7)
+  myWdepPM10 <- mexDependence(wmarmod,which=5,dqu=0.7)
 
   
 jhSdepO3 <- matrix(c(

@@ -36,7 +36,7 @@ test(migpdCoefs) <- function(){
 
   rliver <- data.frame(alt=ralt, ast=rast, alp=ralp, tbl=rtbl, ndose=liver$ndose)
 
-  Dmod <- migpd(rliver[rliver$ndose == 4, 1:4], qu=.7) # Model for dose D
+  Dmod <- migpd(rliver[rliver$ndose == 4, 1:4], mqu=.7) # Model for dose D
 
   oldALTco <- coef(Dmod)[3:4, 1]
 
