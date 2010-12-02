@@ -8,23 +8,25 @@
   approach of Heffernan and Tawn, 2004.
 }
 \usage{
-migpd(data, th, qu, penalty = "gaussian", maxit = 10000, verbose = FALSE, gaussianParameters = NULL)
+migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
+      trace = 0, verbose = FALSE, priorParameters = NULL)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
-  \item{th}{ Thresholds above which to fit the models. Only one of
+  \item{mth}{ Thresholds above which to fit the models. Only one of
 				\code{th} and \code{qu} should be supplied. }
-  \item{qu}{ Quantiles above which to fit the models. Only one of
+  \item{mqu}{ Quantiles above which to fit the models. Only one of
 				\code{th} and \code{qu} should be supplied. }
   \item{penalty}{ How the likelihood should be penalized. Defaults to
 		'gaussian'. Alternatives are 'none' (resulting in maximum
 		likelihood estimation) and 'jeffreys'. }
   \item{maxit}{ The maximum number of iterations to be used by the
 		optimizer.}
+  \item{trace}{Whether or not to tell the user how the optimizer is getting on.}
   \item{verbose}{ Controls whether or not the function print to screen
 		every time it fits a model. Defaults to FALSE.}
-  \item{gaussianParameters}{ A named list, each element of which contains
+  \item{priorParameters}{ A named list, each element of which contains
 			two components: the first should be a vector of length 2
 			corresponding to the location of the Gaussian distribution;
 			the second should be 2 by 2 matrix corresponding to the 
@@ -98,7 +100,7 @@ J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the gen
 		  }
 \examples{
 data( winter )
-mygpd <- migpd( winter, qu=.7, penalty = "none" )
+mygpd <- migpd( winter, mqu=.7, penalty = "none" )
 mygpd
 
 }

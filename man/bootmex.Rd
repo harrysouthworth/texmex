@@ -10,12 +10,8 @@ the method of Heffernan and Tawn, 2004. I'm grateful to Jan Heffernan
 for advice.
 }
 \usage{
-bootmex(x, which, B = 100, gth, gqu, nPass=3)
-}
-\usage{
-plot(y, plots = "gpd", main = "", ...)
-}
-\usage{
+bootmex(x, which, R = 100, dth, dqu, nPass=3, trace=10)
+plot(x, plots = "gpd", main = "", ...)
 print(y, ...)
 }
 \arguments{
@@ -23,18 +19,24 @@ print(y, ...)
   \item{y}{ An object of class 'bootmex' as returned by function \code{bootmex}. }
   \item{which}{ The name of the variable on which the conditioning is done. This should
 be the name of one of the columns in the data set that was passed to \code{migpd}. }
-  \item{B}{ The number of bootstrap runs to perform. Defaults to B=100. }
-  \item{gth}{ The threshold on the Gumbel scale to apply to the specified conditioning
-variable. Only one of \code{gth} or \code{gqu} should be provided. }
-  \item{gqu}{ The quantile on the Gumbel scale to threshold to the specified conditioning
-variable at. Only one of \code{gth} or \code{gqu} should be provided. }
+  \item{R}{ The number of bootstrap runs to perform. Defaults to B=100. }
+  \item{dth}{ The threshold on the Gumbel scale to apply to the specified conditioning
+variable. Only one of \code{dth} or \code{dqu} should be provided. If \code{x} has
+        class \code{mex}, the value is read from the object and need not be
+        provided.}
+  \item{dqu}{ The quantile on the Gumbel scale to threshold to the specified conditioning
+variable at. Only one of \code{dth} or \code{dqu} should be provided. If \code{x} has
+        class \code{mex}, the value is read from the object and need not be
+        provided.}
   \item{nPass}{An integer. Sometimes, particularly with small samples,
           the estimation process fails with
           some bootstrap samples. The function has a look to see which runs
           fail and takes additional bootstrap samples in an attempt to get
           parameter estimates. By default, it has nPass=3 attempts at this
           before giving up.}
-  \item{plots}{ Whether to do diagnostic plots of gpd parameter estimates or dependence parameter estimates.  Defaults to "gpd". }
+  \item{trace}{How often the inform the user of progress. Defaults to \code{trace=10}.}
+  \item{plots}{ Whether to do diagnostic plots of gpd parameter estimates or
+      dependence parameter estimates.  Defaults to "gpd". }
 }
 \details{
  Details of the bootstrap method are given by Heffernan and Tawn (2004). Firstly, Gumbel
@@ -60,7 +62,9 @@ random numbers will be beneath the threshold for the conditioning variable. Such
 abandoned by \code{bootmex} and a new sample is generated. This probably introduces some
 bias into the resulting bootstrap distributions.
 
-The plot method produces histograms of bootstrap gpd parameters (the default) or scatterplots of dependence parameters with the point estimates for the original data shown.
+The plot method produces histograms of bootstrap gpd parameters (the default)
+or scatterplots of dependence parameters with the point estimates for the
+original data shown.
 }
 \value{
  An object of class 'bootmex'. Print and plot functions are available.
@@ -75,9 +79,9 @@ The plot method produces histograms of bootstrap gpd parameters (the default) or
 	\code{\link{bootmex}}, \code{\link{predict.mex}}.
 		    }
 \examples{
-data( winter )
-mygpd <- migpd( winter , qu = .7 )
-myboot <- bootmex( mygpd, which = "NO", gqu=.7 )
+data(winter)
+mygpd <- migpd(winter , mqu = .7)
+myboot <- bootmex(mygpd, which = "NO", dqu=.7)
 myboot
 plot(myboot,plots="gpd")
 plot(myboot,plots="dependence")

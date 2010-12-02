@@ -8,7 +8,8 @@
     (penalized) likelihood, possibly with explanatory variables.
 }
 \usage{
-gpd(y, data, th, phi = ~1, xi = ~1, penalty = "gaussian", priorParameters = NULL, maxit = 10000, trace = 0)
+gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
+    start = NULL, priorParameters = NULL, maxit = 10000, trace = 0)
 \method{print}{gpd}(x, ...)
 \method{summary}{gpd}(object, ...)
 \method{coef}{gpd}(object, ...)
@@ -26,6 +27,9 @@ gpd(y, data, th, phi = ~1, xi = ~1, penalty = "gaussian", priorParameters = NULL
       \code{phi = ~ 1} - i.e. no covariates. }
   \item{penalty}{ How to penalize the likelhood. Currently, either
      ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments. }
+  \item{start}{Starting values for the parameters, to be passed to \code{optim}.
+           If not provided, an exponential distribution is assumed as the starting
+           point.}
   \item{priorParameters}{  A list with two components. The first should be 
                 a vector of means, the second should be a covariance matrix.
                 These represent the parameters in the Gaussian prior distribution.

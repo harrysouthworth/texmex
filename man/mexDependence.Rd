@@ -8,7 +8,7 @@
   Many thanks to Janet Heffernan for answering lots of questions.
 }
 \usage{
-mexDependence(x, which, gth, gqu)
+mexDependence(x, which, dth, dqu)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -16,14 +16,16 @@ mexDependence(x, which, gth, gqu)
   \item{which}{ The name of the variable on which to condition. This is
 		the name of a column of the data that was passed into.
 		\code{migpd}}
-  \item{gth}{ A single number specifying a threshold on the Gumbel
-			  scale. The model will be conditional on the \code{which}
-			  variable being over this value. Only one of \code{gth}
-			  or \code{gqu} should be given. }
-  \item{gqu}{ A single number specifying a quantile on the Gumbel
-			  scale. The model will be conditional on the \code{which}
-			  variable being over this quantile. Only one of \code{gth}
-			  or \code{gqu} should be given. }
+  \item{dth}{ A single number specifying a threshold on the transformed
+			  scale; i.e. the threshold to use when estimating the dependence
+              structure. The model will be conditional on the \code{which}
+			  variable being over this value. Only one of \code{dth}
+			  or \code{dqu} should be given. }
+  \item{dqu}{ A single number specifying a quantile on the transformed
+			  scale; i.e. the threshold to use when estimating the dependence
+              structure. The model will be conditional on the \code{which}
+			  variable being over this quantile. Only one of \code{dth}
+			  or \code{dqu} should be given. }
 }
 \details{
   The parameters a, b, c and d in the dependence structure described
@@ -45,8 +47,8 @@ mexDependence(x, which, gth, gqu)
 		   }
 \examples{
 data( winter )
-mygpd <- migpd( winter , qu=.7, penalty="none" )
-mexDependence( mygpd , which = "NO", gqu=.7 )
+mygpd <- migpd(winter , mqu=.7, penalty="none")
+mexDependence(mygpd , which = "NO", dqu=.7)
 }
 
 % Add one or more standard keywords, see file 'KEYWORDS' in the

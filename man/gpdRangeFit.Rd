@@ -7,7 +7,9 @@
   maximum (penalized) likelihood.
 }
 \usage{
-gpdRangeFit(data, umin, umax, nint = 10, show = FALSE, xlab = "Threshold", ylab = NULL, main = NULL, ...)
+gpdRangeFit(data, umin, umax, nint = 10, 
+            penalty = "gaussian", priorParameters = NULL, alpha=0.05,
+xlab = "Threshold", ylab = NULL, main = NULL, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -15,7 +17,13 @@ gpdRangeFit(data, umin, umax, nint = 10, show = FALSE, xlab = "Threshold", ylab 
   \item{umin}{ The minimum threshold to esimate the parameters over. }
   \item{umax}{ The maximum threshold to esimate the parameters over. }
   \item{nint}{ The number of points at which to perform the estimation. }
-  \item{show}{ ~~Describe \code{show} here~~ }
+  \item{penalty}{The type of penalty to be used in the maximum penalized
+               likelihood estimation. Should be either ``gaussian'' or 
+               ``none''. Defaults to ``gaussian''.}
+  \item{priorParameters}{Parameters to be used for the penalty function.
+                 See the help for \code{\link{gpd}} for more informaiton.}
+  \item{alpha}{(1 - alpha)\% confidence intervals will be plotted with the 
+               point estimates. Defaults to \code{alpha = 0.05}.}
   \item{xlab}{ Label for the x-axis. }
   \item{ylab}{ Label for the y-axis. }
   \item{main}{ The main title. }

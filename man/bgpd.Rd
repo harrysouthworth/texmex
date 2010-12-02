@@ -7,7 +7,8 @@
   Pareto distribution, optionally with explanatory variables
 }
 \usage{
-bgpd(y, data, th, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = NULL, iter = 10500, burn = 500, thin = 1, jump.const, start, trace = 1000)
+bgpd(y, data, th, qu, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = NULL,
+     iter = 10500, burn = 500, thin = 1, jump.const, start, trace = 1000, verbose=TRUE)
 \method{print}{bgpd}(x, print.seed=FALSE, ...)
 \method{summary}{bgpd}(object, ...)
 \method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
@@ -41,8 +42,10 @@ bgpd(y, data, th, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = NULL,
                every other step being discarded. }
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{start}{ Starting values for the parameters. }
-  \item{trace}{ Whether or not to print progress to screen. }
-
+  \item{trace}{ The size of the interval of numbers of iterations at which to
+                inform the user of progress. Defaults to \code{trace=1000}. }
+  \item{verbose}{Whether or not to print progress to screen. Defaults to
+                \code{verbose=TRUE}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
                     \codee{print.seed=FALSE}.}
