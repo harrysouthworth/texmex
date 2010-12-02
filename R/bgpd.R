@@ -173,7 +173,6 @@ mod <- do.call("gpd.fit", list(y=y, th=th, X.xi=X.xi, X.phi=X.phi,
 # TESTING ROUTINE
 
 test(bgpd) <- function(){
-  require(svUnit,quiet=TRUE)
   
   postSum <- function(x){
     t(apply(x$param, 2, function(o){ c(mean=mean(o), se=sd(o)) }))
@@ -191,23 +190,23 @@ test(bgpd) <- function(){
   set.seed(save.seed)
   bmod2 <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7), iter=1000,verbose=FALSE)
   
-  checkEqualsNumeric(bmod$param,bmod2$param)
+  checkEqualsNumeric(bmod$param,bmod2$param,msg="bgpd: test reproducibility 1")
 
   set.seed(bmod$seed)
   bmod3 <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7), iter=1000,verbose=FALSE)
-  checkEqualsNumeric(bmod$param, bmod3$param)
+  checkEqualsNumeric(bmod$param, bmod3$param,msg="bgpd: test reproducibility 2")
 
 #*************************************************************  
 # 4.2. Logical test of burn-in
 
-  checkEqualsNumeric(nrow(bmod$chains) - bmod$burn, nrow(bmod$param))
+  checkEqualsNumeric(nrow(bmod$chains) - bmod$burn, nrow(bmod$param),msg="bgpd: Logical test of burn-in 1")
 
   iter <- sample(500:1000,1)
   burn <- sample(50,1)
   bmod2 <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
                 iter=iter, burn=burn,verbose=FALSE)
 
-  checkEqualsNumeric(iter-burn, nrow(bmod2$param))
+  checkEqualsNumeric(iter-burn, nrow(bmod2$param),msg="bgpd: Logical test of burn-in 2")
 
 #*************************************************************
 # 4.3. Logical test of thinning
@@ -217,14 +216,14 @@ test(bgpd) <- function(){
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
                iter=iter, thin = thin,verbose=FALSE)
 
-  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param))
+  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param),msg="bgpd: Logical test of thinning 1")
 
   thin <- 2
   iter <- 1000
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
                iter=iter, thin = thin,verbose=FALSE)
 
-  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param))
+  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),msg="bgpd: Logical test of thinning 1")
 
 #*************************************************************  
 ## Checks of bgpd. Centres of distributions and standard deviations 
@@ -239,8 +238,8 @@ test(bgpd) <- function(){
   mod <- gpd(ALT_M, data=liver, qu=.7)
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),verbose=FALSE)
   
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="bgpd: Compare MAP and posterior summaries for simple model - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="bgpd: Compare MAP and posterior summaries for simple model - std errs")
 
 #*************************************************************
 # 4.5. Covariates in phi
@@ -262,8 +261,8 @@ test(bgpd) <- function(){
   bmod <- bgpd(resids, data=liver, th=quantile(liver$resids, .7),
                phi = ~ ndose,verbose=FALSE)
               
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="bgpd: Compare MAP and posterior summaries for Covariates in phi - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="bgpd: Compare MAP and posterior summaries for Covariates in phi - std errs")
 
 #*************************************************************
 # 4.6. Covariates in xi
@@ -274,8 +273,8 @@ test(bgpd) <- function(){
   bmod <- bgpd(resids, data=liver, th=quantile(liver$resids, .7),
                xi = ~ ndose,verbose=FALSE)
 
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)  
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="bgpd: Compare MAP and posterior summaries for Covariates in xi - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="bgpd: Compare MAP and posterior summaries for Covariates in xi - std errs")  
 
 #*************************************************************
 # 4.7. Covariates in xi and phi
@@ -289,7 +288,6 @@ test(bgpd) <- function(){
                xi = ~ ndose, 
                phi = ~ ndose,verbose=FALSE)
                
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol)
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se)  
- 
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="bgpd: Compare MAP and posterior summaries for Covariates in phi and xi - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="bgpd: Compare MAP and posterior summaries for Covariates in phi and xi - std errs")  
 }
