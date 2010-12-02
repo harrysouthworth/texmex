@@ -215,7 +215,7 @@ test(bgpd) <- function(){
   thin <- 2
   iter <- 1000
   bmod <- bgpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
-               iter=iter, thin = thin,verbose=FALSE)
+               iter=iter, thin = thimn,verbose=FALSE)
 
   checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),msg="bgpd: Logical test of thinning 1")
 

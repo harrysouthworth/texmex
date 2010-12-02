@@ -10,6 +10,9 @@
 \usage{
 migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
       trace = 0, verbose = FALSE, priorParameters = NULL)
+\method{print}{migpd}(x, ...)
+\method{summary}{migpd}(object, ...)
+\method{coef}{migpd}(x, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

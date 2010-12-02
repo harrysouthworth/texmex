@@ -37,8 +37,8 @@ Matrix containing the parameter estimates.
 }
 \examples{
 data( winter )
-mygpd <- migpd( winter, qu=.7, penalty="none" )
-myboot <- bootmex( mygpd , wh="NO", gqu=.7 )
+mygpd <- migpd( winter, mqu=.7, penalty="none" )
+myboot <- bootmex( mygpd , wh="NO", dqu=.7 )
 coef( myboot )
 
 }

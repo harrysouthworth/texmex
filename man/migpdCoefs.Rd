@@ -35,7 +35,7 @@ d <- data.frame(alt = resid(rlm(log(ALT_M) ~ log(ALT_B) + ndose, data=liver)),
                 alp = resid(rlm(log(ALP_M) ~ log(ALP_B) + ndose, data=liver)),
                 tbl = resid(rlm(log(TBL_M) ~ log(TBL_B) + ndose, data=liver)))
 
-Dgpds <- migpd(d[liver$dose == "D", 1:4], qu=.7)
+Dgpds <- migpd(d[liver$dose == "D", 1:4], mqu=.7)
 
 d$ndose <- liver$ndose
 galt <- gpd(alt, data=d, qu=.7, xi = ~ ndose)

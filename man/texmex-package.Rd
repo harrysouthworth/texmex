@@ -1,6 +1,6 @@
-\name{mex-package}
-\alias{mex-package}
-\alias{mex}
+\name{texmex-package}
+\alias{texmex-package}
+\alias{texmex}
 \docType{package}
 \title{
 Conditional multivariate extreme values modelling.
@@ -48,9 +48,9 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 \keyword{package}
 \examples{
 # Analyse the winter data used by Heffernan and Tawn
-mymex <- mex(winter, qu = .7, penalty="none")
+mymex <- mex(winter, mqu = .7, penalty="none")
 plot(mymex)
-myboot <- bootmex(mymex, gqu=.7, which = "NO")
+myboot <- bootmex(mymex, dqu=.7, which = "NO")
 plot(myboot)
 mypred <- predict(myboot,  pqu=.95)
 summary(mypred , probs = c( .025, .5, .975 ))
@@ -68,10 +68,10 @@ tbl <- resid(rlm(log(TBL_M) ~ log(TBL_B) + ndose, data=liver, method="MM"))
 
 r <- data.frame(alt=alt, ast=ast, alp=alp, tbl=tbl)
 
-Amex <- mex(r[liver$dose == "A",], qu=.7)
-Bmex <- mex(r[liver$dose == "B",], qu=.7)
-Cmex <- mex(r[liver$dose == "C",], qu=.7)
-Dmex <- mex(r[liver$dose == "D",], qu=.7)
+Amex <- mex(r[liver$dose == "A",], mqu=.7)
+Bmex <- mex(r[liver$dose == "B",], mqu=.7)
+Cmex <- mex(r[liver$dose == "C",], mqu=.7)
+Dmex <- mex(r[liver$dose == "D",], mqu=.7)
 
 par(mfcol=c(2,3))
 plot(Amex)

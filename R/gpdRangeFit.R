@@ -1,6 +1,6 @@
 `gpdRangeFit` <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
-          nint = 10, show = FALSE,
+          nint = 10, 
           penalty="gaussian", priorParameters=NULL, alpha=.05,
           xlab="Threshold", ylab=NULL,
 		  main=NULL, ... ) {
