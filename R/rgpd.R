@@ -23,10 +23,6 @@
 
 test(rgpd) <- function(){
 
-#  require(evd,quiet=TRUE)
-#  ergpd <- get("rgpd",pos=2)
-#  detach(2)
-
   myTest <- function(seed,p, thresh,msg=""){
       set.seed(seed)
       x <- sapply(1:nreps, function(i)rgpd(nsim, p[i,1], p[i,2], u=thresh[i]))

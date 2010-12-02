@@ -32,10 +32,6 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 
 test(qgpd) <- function(){
 
-#  require(evd,quiet=TRUE)
-#  eqgpd <- get("qgpd",pos=2)
-#  detach(2)
-
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))

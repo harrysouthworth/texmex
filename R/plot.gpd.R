@@ -8,8 +8,6 @@ function( object, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... 
     }
     
     if (ncol(object$X.phi) == 1 && ncol(object$X.xi) == 1){
-#        n <- ncol(object$X.phi)
-#        x <- (1:n)/(n + 1)
         ppgpd( object, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
         qqgpd( object, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
         rl.gpd( object, main=main[3], xlab=xlab[3] )

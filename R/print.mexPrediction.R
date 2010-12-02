@@ -5,7 +5,6 @@ function( x, ... ){
 	print( x$call, ... )
 
 	cv <- names( x$data$simulated )[ 1 ]
-# 	dn <- paste( "E(", dimnames( x$replicates[[ 1 ]] )[[ 2 ]] ,"|", cv , ">Q",100*x$pqu,")", sep="" )
     dn <- paste( "E(", dimnames(x$data$simulated)[[ 2 ]] ,"|", cv , ">Q",100*x$pqu,")", sep="" )
 
     if (!is.null(x$replicates)){

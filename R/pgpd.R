@@ -38,10 +38,6 @@ function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 
 test(pgpd) <- function(){
 
-#  require(evd,quiet=TRUE)
-#  epgpd <- get("pgpd",pos=2)
-#  detach(2)
-
   myTest <- function(sig,xi,thresh,msg){
     myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
     ep <- sapply(1:nreps, function(i) .evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))

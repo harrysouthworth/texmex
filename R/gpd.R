@@ -3,15 +3,12 @@ function (y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     start=NULL,
     priorParameters = NULL, maxit = 10000, trace = 0) {
     theCall <- match.call()
-#    if (class(try(y, silent = TRUE)) == "try-error") {
-        if (!missing(data)) {
-            y <- deparse(substitute(y))
-        }
-#    }
+    if (!missing(data)) {
+      y <- deparse(substitute(y))
+    }
     if (!missing(data)) {
         y <- formula(paste(y, "~ 1"))
         y <- model.response(model.frame(y, data=data))
-#        y <- data[, y]
         if (missing(th)) {
             th <- quantile(y, qu)
         }
@@ -112,7 +109,6 @@ function (y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 test(gpd) <- function(){
   tol <- 0.01
 
-#    require(ismev, quiet=TRUE)
 ###################################################################
 # 1.3 Reproduce loglik, parameter estimates and covariance on page 85
 #    of Coles. Will not be exact because fitting routines differ:

@@ -17,8 +17,8 @@ function( object, nsim=1000, alpha=.050,
 	x <- qgpd( 1 - (1:length(dat)/(length(dat) + 1)), a[ 1 ], a[ 2 ] , u )
 
     x <- qgpd(ppoints(dat), a[1], a[2], u)
-#browser()
-	# If doing the envelope, simulate, sort and get the quantiles
+
+# If doing the envelope, simulate, sort and get the quantiles
 	if ( nsim > 0 ){
 		n <- length( dat )
 		sim <- matrix( rgpd( nsim * n, a[ 1 ], a[ 2 ], u ), ncol = nsim )

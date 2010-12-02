@@ -15,7 +15,6 @@ function( x , print.seed=FALSE, ...){
 	print( map , ... )
 	cat( "\nPosterior means:\n" )
 	m <- coef(x)
-#	names( m ) = names( coef( x$map ) )
 	print( m , ... )
 	
 	invisible()

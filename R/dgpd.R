@@ -30,10 +30,6 @@ function(x, sigma, xi, u = 0, log.d=FALSE ){
 
 test(dgpd) <- function(){
 
-#  require(evd,quiet=TRUE)
-#  edgpd <- get("dgpd",pos=2)
-#  detach(2)
-
   myTest <- function(sig,xi,thresh,msg){
     myd <- sapply(1:nreps,function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
     ed <- sapply(1:nreps, function(i) .evd.dgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))

@@ -10,17 +10,14 @@ function(y, data, th, qu, phi = ~ 1, xi = ~ 1, prior="gaussian",
   
 	theCall <- match.call()
 
-#    if (class(try(y, silent=TRUE)) == "try-error"){
         if (!missing(data)){
             y <- deparse(substitute(y))
         }
-#    }
 
     if (!missing(data)){
         ys <- y
         y <- formula(paste(y, "~ 1"))
         y <- model.response(model.frame(y, data=data))
-#       y <- data[, y]
         if (missing(th)){
             th <- quantile(y, qu)
         }
@@ -107,8 +104,6 @@ mod <- do.call("gpd.fit", list(y=y, th=th, X.xi=X.xi, X.phi=X.phi,
                penalty=penalty,
                priorParameters=priorParameters))
 
-#  mod <- do.call("gpd", list(y, data, u, phi=phi, xi=xi, penalty=penalty,
-#    			priorParameters=priorParameters))
 
  # Need to check for convergence failure here. Otherwise, end up simulating
   # proposals from distribution with zero variance in 1 dimension.
@@ -120,7 +115,6 @@ mod <- do.call("gpd.fit", list(y=y, th=th, X.xi=X.xi, X.phi=X.phi,
 	res <- matrix( ncol=ncol(X.phi) + ncol(X.xi), nrow=iter )
 
   if ( missing( start ) ) 
-#    res[ 1 , ] <- coef( mod )
     res[1,] <- mod$par
 	else 
     res[ 1 , ] <- start
