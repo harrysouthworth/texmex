@@ -8,10 +8,10 @@
    for(i in 1:(dim(z)[2])){
       p <- seq(x$dqu,1-1/n,length=n)
       plot(p,z[,i],xlab=paste("F(",x$conditioningVariable,")",sep=""),
-           ylab=paste("Z   ",colnames(z)[i],"|",x$conditioningVariable,sep=""),col=col,...)
+           ylab=paste("Z   ",colnames(z)[i]," | ",x$conditioningVariable,sep=""),col=col,...)
       lines(lowess(p,z[,i]),col="red")
       plot(p,abs(z[,i] - mean(z[,i])),xlab=paste("F(",x$conditioningVariable,")",sep=""),
-           ylab=paste("|Z - mean(Z)|   ",colnames(z)[i],"|",x$conditioningVariable,sep=""),col=col,...)
+           ylab=paste("|Z - mean(Z)|   ",colnames(z)[i]," | ",x$conditioningVariable,sep=""),col=col,...)
       lines(lowess(p,abs(z[,i] - mean(z[,i]))),col="blue")
    }
 
@@ -56,6 +56,7 @@
     }
 }
 
+  
 test(plot.mexDependence) <- function(){
 
 smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
