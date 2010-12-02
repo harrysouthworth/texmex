@@ -212,12 +212,11 @@ test(chi) <- function(){
   chi.JH <- .ChiFunction(wavesurge,nLevels=nq)
   chi <- chi(wavesurge,nq=nq,qlim=range(chi.JH$u),trunc= TRUE)
 
-  checkEqualsNumeric(chi.JH$u,chi$quantile)
-  checkEqualsNumeric(chi.JH$Chi,chi$chi[,2])
-  checkEqualsNumeric(chi.JH$ChiLower,chi$chi[,1])
-  checkEqualsNumeric(chi.JH$ChiUpper,chi$chi[,3])
-  checkEqualsNumeric(chi.JH$ChiBar, chi$chibar[,2])
-  checkEqualsNumeric(chi.JH$ChiBarLower, chi$chibar[,1])
-  checkEqualsNumeric(chi.JH$ChiBarUpper, chi$chibar[,3])
- 
+  checkEqualsNumeric(chi.JH$u,chi$quantile,msg="chi: u")
+  checkEqualsNumeric(chi.JH$Chi,chi$chi[,2],msg="chi: Chi")
+  checkEqualsNumeric(chi.JH$ChiLower,chi$chi[,1],msg="chi: ChiLower")
+  checkEqualsNumeric(chi.JH$ChiUpper,chi$chi[,3],msg="chi: ChiUpper")
+  checkEqualsNumeric(chi.JH$ChiBar, chi$chibar[,2],msg="chi: ChiBar")
+  checkEqualsNumeric(chi.JH$ChiBarLower, chi$chibar[,1],msg="chi: ChiBarLower")
+  checkEqualsNumeric(chi.JH$ChiBarUpper, chi$chibar[,3],msg="chi: ChiBarUpper")
 }
