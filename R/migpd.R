@@ -77,7 +77,7 @@ test(migpd) <- function(){
   
   tol <- c(1, 0.05, .5, 0.5)
   for(i in 1:4){
-    checkEqualsNumeric(htsummer[i,], summer.gpd[i,],tol=tol[i])
-    checkEqualsNumeric(htwinter[i,], winter.gpd[i,],tol=tol[i])
+    checkEqualsNumeric(htsummer[i,], summer.gpd[i,],tol=tol[i],msg=paste("migpd: Table 4 summer",i))
+    checkEqualsNumeric(htwinter[i,], winter.gpd[i,],tol=tol[i],msg=paste("migpd: Table 4 winter",i))
   }
 }
