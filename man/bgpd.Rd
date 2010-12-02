@@ -8,6 +8,10 @@
 }
 \usage{
 bgpd(y, data, th, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = NULL, iter = 10500, burn = 500, thin = 1, jump.const, start, trace = 1000)
+\method{print}{bgpd}(x, print.seed=FALSE, ...)
+\method{summary}{bgpd}(object, ...)
+\method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{coef}{bgpd}(object, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -38,11 +42,35 @@ bgpd(y, data, th, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = NULL,
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{start}{ Starting values for the parameters. }
   \item{trace}{ Whether or not to print progress to screen. }
+
+  \item{print.seed}{Whether or not to print the seed used in the simulations,
+                    or to annotate the plots with it. Defaults to
+                    \codee{print.seed=FALSE}.}
+  \item{which.plots}{Which plots to produce. Option 1 gives kernel density estimates,
+                     2 gives traces of the Markov chains with superimposed
+                     cumulative means, 3 gives autocorrelation functions.
+                     Defaults to \code{which.plots=1:3}.}
+  \item{density.adjust}{Passed into \code{density}. Controls the amount of
+                     smoothing of the kernel density estimate. Defaults to
+                     \code{density.adjust=2}.}
+
 }
 \details{
   If \code{start} is not provided, the maximum penalized likelhood point
   estimates are computed and used. The simulation is done by a Metropolis
   algorithm.
+
+  When plotting the object, f the chains have converged on the posterior distributions, the trace
+        plots should look like `fat hairy caterpillars' and their cumulative 
+        means should converge rapidly. Moreover, the autocorrelation functions
+        should converge quickly to zero.
+
+  When printing or summarizing the object, 
+  posterior means and standard deviations are computed. Posterior means
+are also returned by the \code{coef} method. Depending on what you
+  want to do and what the posterior distributions look like (try using \code{plot.bgpd})
+  you might want to work with quantiles of the poseterior distributions instead.
+
 }
 \value{
     \item{call}{The call to \code{bgpd} that produced the object.}
