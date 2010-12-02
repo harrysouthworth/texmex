@@ -1,9 +1,9 @@
 `print.bootmex` <-
-function( x , ... ){
-	print( x$call )
-	cat( paste( "\n", x$R, " bootstrap samples created.\n\n" , sep = "" ) )
+function( y , ... ){
+	print( y$call )
+	cat( paste( "\n", y$R, " bootstrap samples created.\n\n" , sep = "" ) )
 
-  co <- coef( x )
+  co <- coef( y )
   eff <- attributes( co )$"Effective samples"
   cat( paste("Dependence structure estimation successful for", eff, "effective samples.\n" ) )
   cat( paste("Dependence structure bootstrap mean parameter estimates:\n" ))
