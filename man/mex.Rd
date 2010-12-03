@@ -1,5 +1,13 @@
 \name{mex}
 \alias{mex}
+\alias{print.mex}
+\alias{summary.mex}
+\alias{coef.mex}
+\alias{plot.mex}
+\alias{predict.mex}
+\alias{print.predict.mex}
+\alias{summary.predict.mex}
+\alias{plot.predict.mex}
 \title{
 Conditional multivariate extreme values modelling
 }
@@ -10,17 +18,26 @@ Fit the conditional multivariate extreme value model of Heffernan and Tawn
 mex(data, which, mth, mqu, gth, gqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
 \method{summary}{mex}(object, ...)
-\method{plot}{mex}(x, ...)
+\method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
 \method{coef}{mex}(object, ...)
+\method{predict}
+\method{print}{predict.mex}
+\method{summary}{predict.mex}
+\method{plot}{predict.mex}
 }
 
 \arguments{
   \item{data}{A numeric matrix or data.frame, the columns of which are to be modelled.}
   \item{which}{The variable on which to condition.}
-  \item{mth}{The threshold above which to fit generalized Pareto distributions.
+  \item{mth}{In \code{mex}, the threshold above which to fit generalized Pareto distributions.
             If this is a vector of length 1, the same threshold will be used for
             each variable. Otherwise, it should be a vector whose length is
-            equal to the number of columns in \code{data}.}
+            equal to the number of columns in \code{data}.
+
+            In \code{summary.predict.mex}, the thresholds over which to simulate
+            data from the fitted multivariate model. If not supplied, it is
+            taken to be the thresholds that were used to fit the model on the
+            scale of the original data.}
   \item{mqu}{As an alternative to specifying the thresholds via th, you can
             specify the quantile above which to fit generalized Pareto
             distributions. If this is a vector of length 1, the same quantile
@@ -49,11 +66,32 @@ mex(data, which, mth, mqu, gth, gqu, penalty = "gaussian", maxit = 10000, trace 
             the names of the columns of \code{data}. If not provided, it defaults to
             being centred at zero, with variance 10000 for log(sigma) and 0.25
             for xi. See the details section.}
+  \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
+  the quantiles of the conditional distributions which will be plotted.}
+  \item{col}{The color for points on scatterplots of residuals and original data.}
+  \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning variable over which it will be
+thresholded. Defaults to \code{pqu = .99 }. }
+  \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations to be generated for each
+set of bootstrap parameter estimates. }
+
+
 }
 \details{The parameters in the generalized Pareto distribution are estimated for
          each column of the data in turn, independently of all other columns.
          Then, the conditional multivariate approach of Heffernan and Tawn is
          used to model the dependence between variables.}
+
+         The \code{predict} method for \code{mex} works as follows.
+         For each set of parameter estimates and normalized conditional Gumbel
+         data, simulated values of the dependent variables are created, given that the
+         conditioning variable is above its 100\code{pqu} quantile.
+
+         The returned object has class 'predict.mex'. There are \code{print}, \code{summary} and
+         \code{plot} functions available. The simulated values based on the actual data
+         and point estimates appear in component \code{object$data$simulated}. The
+         simulated data from the bootstrap estimates appears in \code{object$replicates}.
+
+
 \value{
   \item{margins}{An object of class \code{\link{migpd}}.}
   \item{dependence}{An object of class \code{\link{mexDependence}}.}

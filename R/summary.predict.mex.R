@@ -1,8 +1,8 @@
 `summary.predict.mex` <-
-function( object, th, probs=c( .05, .5, .95 ), ... ){
+function( object, mth, probs=c( .05, .5, .95 ), ... ){
 
 	if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
-	if ( missing( th ) ) th <- object$th
+	if ( missing( mth ) ) mth <- object$mth
 
     if (!is.null(object$replicates)){
     	res <- t( sapply( object$replicates , function ( x ) apply( x, 2, mean ) ) )
@@ -30,25 +30,25 @@ function( object, th, probs=c( .05, .5, .95 ), ... ){
     # Get the threshold exceedence probabilities
     if (!is.null(object$replicates)){
     	thres <- t( sapply( 1:( dim( object$replicates[[ 1 ]] )[[ 2 ]] ) ,
-						function( i, x, th ){
+						function( i, x, mth ){
 							x <- sapply( x , function( x, i ) x[,i], i=i )
-							th <- th[ i ]
-							apply( x , 2, function( x, th )
-											mean( x > th ),
-										th = th )
-						}, x=object$replicates, th = th ) )
+							mth <- mth[ i ]
+							apply( x , 2, function( x, mth )
+											mean( x > mth ),
+										mth = mth )
+						}, x=object$replicates, mth = mth ) )
 	    thres <- apply( thres, 1, mean )
     	thres <- matrix( thres, nrow=1 )
     }
     else {
-        thres <- sapply(1:dim(object$data$simulated)[[2]], function(i, x, th){ mean(x[,i] > th[i]) },
-                            x = object$data$simulated, th=th)
+        thres <- sapply(1:dim(object$data$simulated)[[2]], function(i, x, mth){ mean(x[,i] > mth[i]) },
+                            x = object$data$simulated, mth=mth)
         thres <- matrix(thres, nrow=1)
     }
 
 	wn <- dimnames( object$data$simulated )[[ 2 ]][ 1 ]
 	wth <- paste( "Q", 100*object$pqu, sep = "" )
-	dn <- paste( "P(", dimnames( object$data$simulated )[[ 2 ]] , ">", th,"|", wn, ">", wth, ")", sep = "" )
+	dn <- paste( "P(", dimnames( object$data$simulated )[[ 2 ]] , ">", mth,"|", wn, ">", wth, ")", sep = "" )
 
 	dimnames( thres ) <- list( "", dn )
 	

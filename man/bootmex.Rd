@@ -36,6 +36,7 @@ variable at. Only one of \code{dth} or \code{dqu} should be provided. If \code{x
   \item{trace}{How often the inform the user of progress. Defaults to \code{trace=10}.}
   \item{plots}{ Whether to do diagnostic plots of gpd parameter estimates or
       dependence parameter estimates.  Defaults to "gpd". }
+  \item{main}{Title for plots.}
 }
 \details{
  Details of the bootstrap method are given by Heffernan and Tawn (2004). Firstly, Gumbel

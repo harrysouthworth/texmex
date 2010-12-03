@@ -16,7 +16,7 @@
 gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     start = NULL, priorParameters = NULL, maxit = 10000, trace = 0)
 \method{print}{gpd}(x, ...)
-\method{summary}{gpd}(object, ...)
+\method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
 \method{coef}{gpd}(object, ...)
 \method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
 \method{AIC}{gpd}(object, ..., k=2)
@@ -44,6 +44,8 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
                 are zero.  }
   \item{maxit}{ The number of iterations allowed in \code{optim} }
   \item{trace}{ Whether or not to print progress to screen. }
+  \item{main}{Titles for plots. Should be a vector of length 4.}
+  \itme{xlab}{X-axis labels for plots. Should be a vector of length 4.}
   \item{nsim}{The number of simulations to use to produce the simulation
               envelope. Defaults to \code{nsim = 1000}}.
   \item{alpha}{A (1 - alpha)\% simulation envelope is produced. Defaults

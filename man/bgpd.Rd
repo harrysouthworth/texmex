@@ -1,5 +1,9 @@
 \name{bgpd}
 \alias{bgpd}
+\alias{print.bgpd}
+\alias{summary.bgpd}
+\alias{plot.bgpd}
+\alias{coef.bgpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Bayesian inference for the generalized Pareto distribution }
 \description{
