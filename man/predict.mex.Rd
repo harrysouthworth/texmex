@@ -1,4 +1,4 @@
-l\name{predict.mex}
+\name{predict.mex}
 \alias{predict.mex}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Prediction for a conditional multivariate exteme values model }
