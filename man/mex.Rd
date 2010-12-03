@@ -10,8 +10,8 @@ Fit the conditional multivariate extreme value model of Heffernan and Tawn
 mex(data, which, th, qu, gth, gqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
 \method{summary}{mex}(object, ...)
-\method{plot}{mex}{x, ...}
-\method{coef}{mex}{object, ...}
+\method{plot}{mex}(x, ...)
+\method{coef}{mex}(object, ...)
 }
 
 \arguments{

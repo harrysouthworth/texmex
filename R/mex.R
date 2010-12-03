@@ -30,7 +30,7 @@ plot.mex <- function(x, ...){
     invisible()
 }
 
-coefficients.mex <- function(x, ...){
+coefficients.mex <- function(object, ...){
     res1 <- coef(x[[1]])
     res2 <- coef(x[[2]])
     list(margins=res1, dependence=res2)

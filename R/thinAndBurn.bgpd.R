@@ -1,7 +1,7 @@
 thinAndBurn <- function (object, ...)
   UseMethod("thinAndBurn")
 
-thinAndBurn.bgpd <- function(object,burn,thin){
+thinAndBurn.bgpd <- function(object, burn, thin, ...){
 
   if(missing(burn)){
     burn <- object$burn

@@ -1,5 +1,5 @@
 `plot.gpd` <-
-function( object, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
+function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
     if ( !missing( main ) ){
         if ( length( main ) != 1 & length( main ) != 4 ){
             stop( "main should have length 1 or 4" )
