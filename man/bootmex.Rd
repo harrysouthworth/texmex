@@ -11,12 +11,11 @@ for advice.
 }
 \usage{
 bootmex(x, which, R = 100, dth, dqu, nPass=3, trace=10)
-plot(x, plots = "gpd", main = "", ...)
-print(y, ...)
+\method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
+\method{print}{bootmex}(x, ...)
 }
 \arguments{
   \item{x}{ An object of class 'migpd' as returned by function \code{migpd}. }
-  \item{y}{ An object of class 'bootmex' as returned by function \code{bootmex}. }
   \item{which}{ The name of the variable on which the conditioning is done. This should
 be the name of one of the columns in the data set that was passed to \code{migpd}. }
   \item{R}{ The number of bootstrap runs to perform. Defaults to B=100. }
@@ -62,9 +61,13 @@ random numbers will be beneath the threshold for the conditioning variable. Such
 abandoned by \code{bootmex} and a new sample is generated. This probably introduces some
 bias into the resulting bootstrap distributions.
 
-The plot method produces histograms of bootstrap gpd parameters (the default)
+The \code{plot} method produces histograms of bootstrap gpd parameters (the default)
 or scatterplots of dependence parameters with the point estimates for the
 original data shown.
+
+By design, there is no \code{coef} method. The bootstrapping is done to account
+for uncertainty. It is not obvious that adjusting the parameters for the
+{\emph mean} bias is the correct thing to do.
 }
 \value{
  An object of class 'bootmex'. Print and plot functions are available.
