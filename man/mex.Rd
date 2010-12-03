@@ -3,27 +3,25 @@
 \alias{print.mex}
 \alias{summary.mex}
 \alias{coef.mex}
+\alias{coefficients.mex}
 \alias{plot.mex}
 \alias{predict.mex}
 \alias{print.predict.mex}
 \alias{summary.predict.mex}
 \alias{plot.predict.mex}
-\title{
-Conditional multivariate extreme values modelling
-}
-\description{
-Fit the conditional multivariate extreme value model of Heffernan and Tawn
-}
+\title{Conditional multivariate extreme values modelling}
+\description{Fit the conditional multivariate extreme value model of Heffernan and Tawn}
 \usage{
-mex(data, which, mth, mqu, gth, gqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
+mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
 \method{summary}{mex}(object, ...)
 \method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
 \method{coef}{mex}(object, ...)
-\method{predict}
-\method{print}{predict.mex}
-\method{summary}{predict.mex}
-\method{plot}{predict.mex}
+\method{coefficients}{mex}(object, ...)
+\method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, ...)
+\method{print}{predict.mex}(x, ...)
+\method{summary}{predict.mex}(object, mth, probs=c(0.05, 0.5, 0.95), ...)
+\method{plot}{predict.mex}(x, pch=c(1, 3), col=c(2, 8), cex=c(1, 1), ask=TRUE, ...)
 }
 
 \arguments{
@@ -38,7 +36,7 @@ mex(data, which, mth, mqu, gth, gqu, penalty = "gaussian", maxit = 10000, trace 
             data from the fitted multivariate model. If not supplied, it is
             taken to be the thresholds that were used to fit the model on the
             scale of the original data.}
-  \item{mqu}{As an alternative to specifying the thresholds via th, you can
+  \item{mqu}{As an alternative to specifying the thresholds via mth, you can
             specify the quantile above which to fit generalized Pareto
             distributions. If this is a vector of length 1, the same quantile
             will be used for each variable. Otherwise, it should be a vector
@@ -68,18 +66,25 @@ mex(data, which, mth, mqu, gth, gqu, penalty = "gaussian", maxit = 10000, trace 
             for xi. See the details section.}
   \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
   the quantiles of the conditional distributions which will be plotted.}
-  \item{col}{The color for points on scatterplots of residuals and original data.}
+  \item{col}{The color for points on scatterplots of residuals and original data.
+             In \code{plot.predict.mex}, the colours of points for observed and
+             simulated data.}
   \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning variable over which it will be
 thresholded. Defaults to \code{pqu = .99 }. }
   \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations to be generated for each
 set of bootstrap parameter estimates. }
+  \item{pch, cex}{Plotting characters, colours and symbol expansion. The
+       observed and simulated data are plotted using different symbols, conrolled
+       by these arguments and \code{col}, each of which should be of length 2.}
+  \item{ask}{Whether or not to ask before changing the plot. Defaults to
+        \code{ask = TRUE}.}
 
 
 }
 \details{The parameters in the generalized Pareto distribution are estimated for
          each column of the data in turn, independently of all other columns.
          Then, the conditional multivariate approach of Heffernan and Tawn is
-         used to model the dependence between variables.}
+         used to model the dependence between variables.
 
          The \code{predict} method for \code{mex} works as follows.
          For each set of parameter estimates and normalized conditional Gumbel
@@ -90,7 +95,7 @@ set of bootstrap parameter estimates. }
          \code{plot} functions available. The simulated values based on the actual data
          and point estimates appear in component \code{object$data$simulated}. The
          simulated data from the bootstrap estimates appears in \code{object$replicates}.
-
+}
 
 \value{
   \item{margins}{An object of class \code{\link{migpd}}.}

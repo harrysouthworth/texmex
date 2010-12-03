@@ -68,7 +68,7 @@ original data shown.
 
 By design, there is no \code{coef} method. The bootstrapping is done to account
 for uncertainty. It is not obvious that adjusting the parameters for the
-{\emph mean} bias is the correct thing to do.
+mean bias is the correct thing to do.
 }
 \value{
  An object of class 'bootmex'. Print and plot functions are available.

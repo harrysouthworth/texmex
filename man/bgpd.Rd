@@ -4,6 +4,7 @@
 \alias{summary.bgpd}
 \alias{plot.bgpd}
 \alias{coef.bgpd}
+\alias{coefficients.bgpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Bayesian inference for the generalized Pareto distribution }
 \description{
@@ -17,6 +18,7 @@ bgpd(y, data, th, qu, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = N
 \method{summary}{bgpd}(object, ...)
 \method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
 \method{coef}{bgpd}(object, ...)
+\method{coefficients}{bgpd}(object, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

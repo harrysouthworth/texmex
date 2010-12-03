@@ -5,6 +5,7 @@
 \alias{plot.gpd}
 \alias{coef.gpd}
 \alias{AIC.gpd}
+\alias{coefficients.gpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Fit a generlized Pareto distribution by maximum
     (penalized) likelihood }
@@ -20,6 +21,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \method{coef}{gpd}(object, ...)
 \method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
 \method{AIC}{gpd}(object, ..., k=2)
+\method{coefficients}{gpd}(object, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -45,7 +47,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{maxit}{ The number of iterations allowed in \code{optim} }
   \item{trace}{ Whether or not to print progress to screen. }
   \item{main}{Titles for plots. Should be a vector of length 4.}
-  \itme{xlab}{X-axis labels for plots. Should be a vector of length 4.}
+  \item{xlab}{X-axis labels for plots. Should be a vector of length 4.}
   \item{nsim}{The number of simulations to use to produce the simulation
               envelope. Defaults to \code{nsim = 1000}}.
   \item{alpha}{A (1 - alpha)\% simulation envelope is produced. Defaults
