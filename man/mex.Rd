@@ -1,8 +1,7 @@
 \name{mex}
 \alias{mex}
-Conditional multivariate extreme values modelling
 \title{
-%%  ~~function to do ... ~~
+Conditional multivariate extreme values modelling
 }
 \description{
 Fit the conditional multivariate extreme value model of Heffernan and Tawn
