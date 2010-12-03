@@ -14,7 +14,6 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 \method{summary}{migpd}(object, ...)
 \method{coef}{migpd}(x, ...)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
   \item{mth}{ Thresholds above which to fit the models. Only one of
@@ -51,8 +50,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   which is the same as maximum a posteriori estimation from a 
   Bayesian point of view. 
   
-  The Jeffreys prior (the default) is discussed by Castellanos
-  and Cabras. An alternative is to use quadratic penalization,
+  By default quadratic penalization is used,
   corresponding to using a Gaussian prior. If no genuine
   prior information is available, the following argument can
   be used. If xi = -1, the generalized Pareto distribution 
@@ -89,8 +87,6 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   and \code{summary} functions available.
 }
 \references{
-M. E. Castellanos and S. Cabras, A default Bayesian procedure for the generalized Pareto distribution, Journal of Statistical Planning and Inference, 137, 473 -- 483, 2007
-
 J. E. Heffernan and J. A. Tawn, A conditional approach
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004
@@ -102,10 +98,9 @@ J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the gen
 	\code{\link{predict.mex}}
 		  }
 \examples{
-data( winter )
-mygpd <- migpd( winter, mqu=.7, penalty = "none" )
+data(winter)
+mygpd <- migpd(winter, mqu=.7, penalty = "none")
 mygpd
-
 }
 \keyword{ models }
 \keyword{ multivariate }
