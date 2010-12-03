@@ -48,7 +48,7 @@ bgpd(y, data, th, qu, phi = ~1, xi = ~1, prior = "gaussian", priorParameters = N
                 \code{verbose=TRUE}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
-                    \codee{print.seed=FALSE}.}
+                    \code{print.seed=FALSE}.}
   \item{which.plots}{Which plots to produce. Option 1 gives kernel density estimates,
                      2 gives traces of the Markov chains with superimposed
                      cumulative means, 3 gives autocorrelation functions.

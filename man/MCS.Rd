@@ -8,20 +8,17 @@
   range of quantiles.
 }
 \usage{
-MCS(X, p = seq(0.1, 0.9, by = 0.1), method = "upper")
-bootMCS(X, p = seq(0.1, 0.9, by = 0.1), method = "upper", B = 100, trace = 10)
+MCS(X, p = seq(0.1, 0.9, by = 0.1))
+bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{X}{ A matrix of numeric variables. }
   \item{p}{ The quantiles at which to evaluate. }
-  \item{method}{ If "upper", the evalation is done for all data
-                 above the lowest value of \code{p}, then the
-                 next lowest value, and so on. Thus, the result
-                 shows how the correlation changes as we move
-                 further into the upper tail. If method is "lower",
-                 the reverse is done and it is lower tail
-                 dependence that is being explored. }
+  \item{R}{The number of bootstrap samples to run. Defaults to
+          \code{R = 100}.}
+  \item{trace}{How often to inform the user of progress. Defaults to
+          \code{trace = 10}.}
 }
 \details{
   The method is described in detail by Schmid and Schmidt (2007).

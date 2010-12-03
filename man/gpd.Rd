@@ -1,5 +1,10 @@
 \name{gpd}
 \alias{gpd}
+\alias{print.gpd}
+\alias{summary.gpd}
+\alias{plot.gpd}
+\alias{coef.gpd}
+\alias{AIC.gpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Fit a generlized Pareto distribution by maximum
     (penalized) likelihood }
@@ -14,6 +19,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \method{summary}{gpd}(object, ...)
 \method{coef}{gpd}(object, ...)
 \method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{AIC}{gpd}(object, ..., k=2)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

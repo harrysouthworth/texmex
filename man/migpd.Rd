@@ -1,5 +1,8 @@
 \name{migpd}
 \alias{migpd}
+\alias{print.migpd}
+\alias{summary.migpd}
+\alias{coef.migpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Fit multiple independent generalized Pareto models }
 \description{
@@ -12,7 +15,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
       trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{migpd}(x, ...)
 \method{summary}{migpd}(object, ...)
-\method{coef}{migpd}(x, ...)
+\method{coef}{migpd}(object, ...)
 }
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }

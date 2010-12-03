@@ -1,5 +1,5 @@
 `predict.mex` <-
-function( object, which, pqu = .99, nsim = 1000, trace=10 ){
+function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	theCall <- match.call()
 	
     # Class can be either mex or bootmex

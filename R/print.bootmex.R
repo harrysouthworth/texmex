@@ -1,7 +1,7 @@
 `print.bootmex` <-
 function(x , ... ){
   print(x$call )
-  cat(paste( "\n", y$R, " bootstrap samples created.\n\n" , sep = "" ) )
+  cat(paste( "\n", x$R, " bootstrap samples created.\n\n" , sep = "" ) )
 
   # Sometimes bootstrap samples fail to get convergence of the optimizer.
   # Check to see how many effective bootstrap samples were performed.

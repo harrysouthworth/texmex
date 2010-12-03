@@ -57,7 +57,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
             priorParameters[[2]] <- diag(rep(priorParameters[[2]], 
                 ncol(X.phi) + ncol(X.xi)))
         }
-        if (!all(wh == diag(diag(wh)))) {
+        if (!all(priorParameters[[2]] == diag(diag(priorParameters[[2]])))) {
             warning("some off-diagonal elements of the covariance are non-zero. Only the diagonal is used in penalization")
         }
     }

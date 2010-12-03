@@ -7,7 +7,7 @@ Conditional multivariate extreme values modelling
 Fit the conditional multivariate extreme value model of Heffernan and Tawn
 }
 \usage{
-mex(data, which, th, qu, gth, gqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
+mex(data, which, mth, mqu, gth, gqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
 \method{summary}{mex}(object, ...)
 \method{plot}{mex}(x, ...)
@@ -67,7 +67,7 @@ Harry Southworth, Janet E. Heffernan
 
 \seealso{\code{\link{migpd}}, \code{\link{mexDependence}}, \code{\link{bootmex}}}
 \examples{
-w <- mex(winter, qu=.7)
+w <- mex(winter, mqu=.7)
 w
 par(mfcol=c(4, 2))
 plot(w)

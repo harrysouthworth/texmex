@@ -31,8 +31,8 @@ plot.mex <- function(x, ...){
 }
 
 coefficients.mex <- function(object, ...){
-    res1 <- coef(x[[1]])
-    res2 <- coef(x[[2]])
+    res1 <- coef(object[[1]])
+    res2 <- coef(object[[2]])
     list(margins=res1, dependence=res2)
 }
 
