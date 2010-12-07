@@ -80,4 +80,12 @@ test(migpd) <- function(){
     checkEqualsNumeric(htsummer[i,], summer.gpd[i,],tol=tol[i],msg=paste("migpd: Table 4 summer",i))
     checkEqualsNumeric(htwinter[i,], winter.gpd[i,],tol=tol[i],msg=paste("migpd: Table 4 winter",i))
   }
+  
+# check excecution for 2-d data
+
+  wavesurge.fit <- migpd(wavesurge,mq=.7)
+  checkEqualsNumeric(dim(wavesurge.fit$gumbel),dim(wavesurge),msg="migpd: 2-d data, gumbel data dimension")
+  checkEqualsNumeric(wavesurge.fit$models$wave$loglik,gpd(wavesurge$wave,qu=0.7)$loglik,
+                     tol=0.001,msg="migpd: 2-d data gpd fit wave")
+  
 }
