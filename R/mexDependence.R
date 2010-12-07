@@ -48,7 +48,7 @@ function (x, which, dth, dqu)
 
 
        o <- try(optim(c(0.5, 0, 0, 1), Q, lower = c(10^(-8), -(10^8),
-           -(10^8), 10^(-8)), upper = c(1, 10^8, 10^8, 10^8), method = "L-BFGS-B",
+           -(10^8), 10^(-8)), upper = c(1, 1, 10^8, 10^8), method = "L-BFGS-B",
            yex = yex[wh], ydep = X[wh]), silent=TRUE)
 
 
@@ -77,7 +77,7 @@ function (x, which, dth, dqu)
                }
                o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, lower = c(10^(-8),
                  -Inf, -Inf, 10^(-8), -Inf, 10^(-8)), upper = c(1,
-                 10^8, 10^8, 1 - 10^(-8), Inf, Inf), method = "L-BFGS-B",
+                 1, 10^8, 1 - 10^(-8), Inf, Inf), method = "L-BFGS-B",
                  yex = yex[wh], ydep = X[wh]), silent=TRUE)
                if (class(o) == "try-error" || o$convergence != 0) {
                  warning("Non-convergence in mexDependence")
@@ -90,9 +90,9 @@ function (x, which, dth, dqu)
    }
    yex <- c(x$gumbel[, which])
    wh <- yex > unique(dth)
-   res <- apply(x$gumbel[, dependent], 2, qfun, yex = yex, wh = wh)
+   res <- apply(as.matrix(x$gumbel[, dependent]), 2, qfun, yex = yex, wh = wh)
    dimnames(res)[[1]] <- letters[1:4]
-   gdata <- x$gumbel[wh, -which]
+   gdata <- as.matrix(x$gumbel[wh, -which])
    tfun <- function(i, data, yex, a, b, cee, d) {
        data <- data[, i]
        a <- a[i]
