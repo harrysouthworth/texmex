@@ -14,15 +14,17 @@ mex <- function(data, which, mth, mqu, dth, dqu,
 
 
 print.mex <- function(x, ...){
-    print(summary(x[[1]]))
+    cat("Marginal models:\n\n")
+    summary(x[[1]])
+    cat("Dependence model:\n\n")
     print(x[[2]])
     invisible()
 }
 show.mex <- print.mex
-summary.mex <- function(object, ...){
-    print(summary(object[[1]]))
-    print(object[[2]])
-    invisible(coef(object))
+summary.mex <- function(x, ...){
+    print(summary(x[[1]]))
+    print(x[[2]])
+    invisible(coef(x))
 }
 
 plot.mex <- function(x, ...){
@@ -30,9 +32,9 @@ plot.mex <- function(x, ...){
     invisible()
 }
 
-coefficients.mex <- function(object, ...){
-    res1 <- coef(object[[1]])
-    res2 <- coef(object[[2]])
+coefficients.mex <- function(x, ...){
+    res1 <- coef(x[[1]])
+    res2 <- coef(x[[2]])
     list(margins=res1, dependence=res2)
 }
 
