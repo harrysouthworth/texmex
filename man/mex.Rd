@@ -14,13 +14,14 @@
 \usage{
 mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
-\method{summary}{mex}(object, ...)
+\method{show}{mex}(x, ...)
+\method{summary}{mex}(x, ...)
 \method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
-\method{coef}{mex}(object, ...)
-\method{coefficients}{mex}(object, ...)
-\method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, ...)
+\method{coef}{mex}(x, ...)
+\method{coefficients}{mex}(x, ...)
+\method{predict}{mex}(x, which, pqu=0.99, nsim=1000, trace=10, ...)
 \method{print}{predict.mex}(x, ...)
-\method{summary}{predict.mex}(object, mth, probs=c(0.05, 0.5, 0.95), ...)
+\method{summary}{predict.mex}(x, mth, probs=c(0.05, 0.5, 0.95), ...)
 \method{plot}{predict.mex}(x, pch=c(1, 3), col=c(2, 8), cex=c(1, 1), ask=TRUE, ...)
 }
 
