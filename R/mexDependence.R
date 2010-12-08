@@ -92,6 +92,7 @@ function (x, which, dth, dqu)
    wh <- yex > unique(dth)
    res <- apply(as.matrix(x$gumbel[, dependent]), 2, qfun, yex = yex, wh = wh)
    dimnames(res)[[1]] <- letters[1:4]
+   dimnames(res)[[2]] <- dimnames(x$gumbel)[[2]][dependent]
    gdata <- as.matrix(x$gumbel[wh, -which])
    tfun <- function(i, data, yex, a, b, cee, d) {
        data <- data[, i]
@@ -118,8 +119,7 @@ function (x, which, dth, dqu)
            z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
        }
    }
-   
-   dimnames(z)[[2]] <- dimnames(res)[[2]]
+   dimnames(z) <- list(NULL,dimnames(x$gumbel)[[2]][dependent])
    res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
        dqu = unique(dqu), which = which, conditioningVariable= names(x$data)[which])
    oldClass(res) <- "mexDependence"
