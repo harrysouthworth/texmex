@@ -4,4 +4,5 @@ coef.bgpd <- function(object, ...){
         paste("xi:", colnames(object$X.xi)))
     res
 }
+coefficients.bgpd <- coef.bgpd
 
