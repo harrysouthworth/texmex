@@ -104,7 +104,7 @@ set of bootstrap parameter estimates. }
 }
 \references{J. E. Heffernan and J. A. Tawn, A conditional approach for
             multivariate extreme values, Journal of the Royal Statistical
-            Society B, 66, 497 – 546, 2004}
+            Society B, 66, 497 - 546, 2004}
 \author{
 Harry Southworth, Janet E. Heffernan
 }

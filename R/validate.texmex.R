@@ -7,7 +7,8 @@ validate.texmex <- function(){
    res <- svSuiteList(pos=where)
    cat("Running over 100 tests, including MCMC and bootstrap implementations.\n
         This will take some time...\n")
-   res <- runTest(res)
-   res
+   clearLog()
+   runTest(res)
+   Log()
 }
 
