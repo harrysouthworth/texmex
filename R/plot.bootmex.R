@@ -9,6 +9,7 @@ function( x , plots = "gpd", main="", ... ){
 	d2 <- dim(x$boot[[1]][[which]])
 	pointEst <- x$simpleDep
   
+  condVar <- names(x$simpleMar$data)[x$which]
 	x <- x$boot
 	co <- unlist( lapply( x , function( z, wh ) z[[ wh ]], wh=which ) )
 	co <- array(co, dim = c( d2[1] , d2[2] , length(co) / prod(d2)))
@@ -23,7 +24,10 @@ function( x , plots = "gpd", main="", ... ){
 	
   cn <- colnames(x[[1]][[which]]) # variable names
   rn <- rownames(x[[1]][[which]]) # parameter names
-  labs <- paste(rep(cn, each=which*2), rep(rn, length(cn)))
+  if(which == 2){
+    cn <- paste(cn, "|", condVar)
+  }
+  labs <- paste(rep(rn, length(cn)), rep(cn, each=which*2),sep="  ")
 
 	fun <- function(X, z, label, ...) {
 		hist(z[[X]] , prob=TRUE, xlab=label[X], main=main, ...)
@@ -43,7 +47,7 @@ function( x , plots = "gpd", main="", ... ){
       plot(lco[[offset + 3]],lco[[offset + 4]],xlab=labs[offset + 3],ylab=labs[offset + 4],main=main, ...)
       points(pointEst[3,X],pointEst[4,X],pch="@",col="red")
     }
-    lapply(1:d2[2], fun, z=lco,label=labs)
+    lapply(1:d2[2], fun, z=lco,label=labs, ...)
   }
 	invisible()
 }
