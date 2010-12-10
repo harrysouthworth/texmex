@@ -19,7 +19,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
                    ylab2=expression(bar(chi)),
                    ask=nb.fig < length(which) && dev.interactive(), )))
 }
-
+}
 \arguments{
   \item{data}{ A matrix containing 2 numeric columns. }
   \item{nq}{ The number of quantiles at which to evaluate the
