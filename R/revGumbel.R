@@ -5,7 +5,7 @@ function (x, data, qu, th = 0, sigma = 1, xi = 0, method = "mixture") {
    p <- 1 - qu
    n <- length(data)
    probs <- (1:n)/(n + 1)
-   px <- sapply(x, function(x, p) p[abs(x - p) == min(abs(x - p))], p = probs)
+   px <- sapply(x, function(x, p) p[abs(x - p) == min(abs(x - p))][1], p = probs) # take 1st item in case of ties
    px <- as.integer(round(px * (1 + n)))
    res <- sort(data)[px]
    if (method == "mixture") {
