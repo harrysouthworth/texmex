@@ -20,7 +20,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
     y <- -log( -log( runif( nsim , min=pqu ) ) )
-  	z <- z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,]
+  	z <- as.matrix(z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,])
     ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )
   
   	ui <- exp( -exp( -y ) )
@@ -29,7 +29,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
     xi <- u2gpd( ui, p = 1 - migpd$mqu[ which ], th=migpd$mth[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
 	
   	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
-		  xmi[, i ] <- revGumbel( xmi[ ,i ], data[,-which][, i ],
+		  xmi[, i ] <- revGumbel( xmi[ ,i ], as.matrix(data[,-which])[, i ],
 								             th = migpd$mth[ -which ][ i ],
 								             qu = migpd$mqu[ -which ][ i ],
 								             sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )
@@ -63,7 +63,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	    	if ( i %% trace == 0 ) cat( i, "sets done\n" )
     
             res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
-                                 coxmi = bo[[ i ]]$GPD[,-which], 
+                                 coxmi = as.matrix(bo[[ i ]]$GPD[,-which]),
                                  data = bo[[i]]$Y)
 	    	res
     	} 
@@ -71,7 +71,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	        			   migpd=migpd, pqu=pqu, bo = object$boot, nsim=nsim,
 	        			   which = which )
 	    # bootRes contains the bootstrap simulated complete vectors X on the original 
-        # scale of the data, conditional on having the _which_ component above the pqu quantile.
+      # scale of the data, conditional on having the _which_ component above the pqu quantile.
 	} # Close if (theClass == "bootmex"
     else { bootRes <- NULL }
   
@@ -80,7 +80,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	# that are suggested by the data
   
     cox <- coef(migpd)[3:4, which]
-    coxmi <- coef(migpd)[3:4, -which]
+    coxmi <- as.matrix(coef(migpd)[3:4, -which])
 
     dall <- if (theClass == "mex") { object[[2]] }
             else { mexDependence( object$simpleMar , which=which , dqu=object$dqu ) }
@@ -106,7 +106,6 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 
 test(predict.mex) <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
-
   smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7)
   wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO")
 
@@ -139,4 +138,17 @@ test(predict.mex) <- function(){
   
   checkEqualsNumeric(pointEstSummer, resSummer[1,],tol=tol,msg="predict.mex: point est vs boot, summer data")
   checkEqualsNumeric(pointEstWinter, resWinter[1,],tol=tol,msg="predict.mex: point est vs boot, winter data")
-}
+
+# check execution for 2-d data
+
+  R <- 20
+  nsim <- 100
+  wavesurge.fit <- migpd(wavesurge,mq=.7)
+  wavesurge.boot <- bootmex(wavesurge.fit,which=1,R=R)
+  wavesurge.pred <- predict(wavesurge.boot,nsim=nsim)
+
+  checkEqualsNumeric(length(wavesurge.pred$replicates),R,msg="predict.mex execution for 2-d data")
+  checkEqualsNumeric(dim(wavesurge.pred$replicates[[3]]),c(nsim,2))
+  checkEquals(names(wavesurge.pred$replicates[[4]]),names(wavesurge),msg="predict.mex execution for 2-d data")
+  
+  }
