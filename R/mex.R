@@ -22,8 +22,7 @@ print.mex <- function(x, ...){
 }
 show.mex <- print.mex
 summary.mex <- function(x, ...){
-    print(summary(x[[1]]))
-    print(x[[2]])
+    print(x, ...)
     invisible(coef(x))
 }
 
