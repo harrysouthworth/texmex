@@ -235,4 +235,16 @@ jhWdepPM10 <- matrix(c(
   checkEqualsNumeric(jhSdepNO,  mySdepNO$coefficients,  tol=tol,msg="mexDependence: Summer NO")
   checkEqualsNumeric(jhSdepSO2, mySdepSO2$coefficients, tol=tol,msg="mexDependence: Summer SO2")
   checkEqualsNumeric(jhSdepPM10,mySdepPM10$coefficients,tol=tol,msg="mexDependence: Summer PM10")
+  
+# test functionality with 2-d data
+
+  wavesurge.fit <- migpd(wavesurge,mq=.7)
+  dqu <- 0.8
+  which <- 1
+  wavesurge.mex <- mexDependence(wavesurge.fit,which=which,dqu=dqu)
+
+  checkEqualsNumeric(dim(wavesurge.mex$Z),c(578,1),msg="mexDependence: execution for 2-d data")
+  checkEqualsNumeric(wavesurge.mex$dqu, dqu, msg="mexDependence: execution for 2-d data")
+  checkEqualsNumeric(wavesurge.mex$which,which,msg="mexDependence: execution for 2-d data")
+  
 }
