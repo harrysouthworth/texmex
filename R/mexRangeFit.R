@@ -31,4 +31,10 @@ test(mexRangeFit) <- function(){
   
   checkException(mexRangeFit(TRUE,which=2),msg="mexRangeFit: exception handle")
   checkException(mexRangeFit(5,which=1),msg="mexRangeFit: exception handle")
+  
+# now 2-d data
+
+  wavesurge.fit <- migpd(wavesurge,mq=.7)
+  mexRangeFit(wavesurge.fit,which=1,main="Dependence threshold selection,\nwave and surge data, Coles 2001")
+  
 }
