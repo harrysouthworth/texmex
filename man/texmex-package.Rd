@@ -17,20 +17,22 @@ Version: \tab 1.0\cr
 Date: \tab 2008-12-06\cr
 License: \tab GPL (>=2) | BSD\cr
 }
-\code{gpd}: Fit generalized Pareto distributions to data, possibly with
+\item{\code{\link{gpd}}}: Fit generalized Pareto distributions to data, possibly with
             covariates. Use maximum likelihood estimation or maximum
             penalized likelihood estimation.
-\code{bgpd}: Fit generalized Pareto distributions to data, possibly with
+\item{\code{\link{bgpd}}}: Fit generalized Pareto distributions to data, possibly with
             covariates, using Markov chain Monte Carlo.
             Gaussian prior distributions are used, and the posterior 
             distributions are simulated from using a Metropolis algorithm.
-\code{mex}: Fit multiple, independent generalized Pareto models
+\item{\code{\link{mex}}}: Fit multiple, independent generalized Pareto models
             to the columns of a data set, and estimate the conditional
             dependence structure using the method of Heffernan and
             Tawn.
-\code{bootmex}: Bootstrap estimation for parameters in generalized Pareto models
+\item{\code{\link{bootmex}}}: Bootstrap estimation for parameters in generalized Pareto models
                 and in the dependence structure.
-
+\item{\code{\link{validate.texmex}}}: Use the \code{svUnit} package to run lots of tests to
+            establish a high degree of confidence that the functions do what
+            they are supposed to.
 }
 \author{
 Harry Southworth, Janet E. Heffernan

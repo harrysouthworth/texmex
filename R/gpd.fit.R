@@ -12,7 +12,7 @@ gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         y <- 1 + xi * y
         if (min(y) <= 0) {
             l <- 10^6
-        {
+        }
         else {
             l <- sum(sc) + sum(log(y) * (1/xi + 1))
         }
