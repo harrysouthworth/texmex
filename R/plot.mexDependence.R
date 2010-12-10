@@ -44,11 +44,11 @@
       zq <- quantile(x$Z[,i],quantiles)
       yq <- sapply(zq, function(z)co["a"] * xq + co["c"] - co["d"]*log(xq) + xq^co["b"] * z)
       plotx <- revGumbel(plotp,data=x$migpd$data[,x$which],qu=marP,th=marThr,sigma=sig,xi=xi)
-      ploty <- apply(exp(-exp(-yq)),2,revGumbel,data=x$migpd$data[,-x$which][,i],
+      ploty <- apply(exp(-exp(-yq)),2,revGumbel,data=as.matrix(x$migpd$data[,-x$which])[,i],
                      qu=x$migpd$mqu[-x$which][i],th=x$migpd$mth[-x$which][i],
                      sigma=coef(x$migpd)[3,-x$which][i],xi=coef(x$migpd)[4,-x$which][i])
       
-      plot(x$migpd$data[,x$which],x$migpd$data[,-x$which][,i], xlab=x$conditioningVariable,ylab=colnames(z)[i],col=col,...)
+      plot(x$migpd$data[,x$which],as.matrix(x$migpd$data[,-x$which])[,i], xlab=x$conditioningVariable,ylab=colnames(z)[i],col=col,...)
       abline(v=depThr)
       for(j in 1:length(quantiles)){
         lines(plotx,ploty[,j],lty=2)
@@ -88,4 +88,10 @@ plot(myWdep5,main="Winter")
    
    checkException(plot.mexDependence(smarmod),msg="mexDependence: exception handle")
    checkException(plot.mexDependence(TRUE),msg="mexDependence: exception handle")
+   
+# check execution for 2-d data
+wavesurge.fit <- migpd(wavesurge,mqu=0.8)
+wavesurge.mex <- mexDependence(wavesurge.fit,dqu=0.8,which=2)
+plot(wavesurge.mex,main="Wave surge data")
+
 }
