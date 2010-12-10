@@ -17,20 +17,20 @@ Version: \tab 1.0\cr
 Date: \tab 2008-12-06\cr
 License: \tab GPL (>=2) | BSD\cr
 }
-\item{\code{\link{gpd}}}: Fit generalized Pareto distributions to data, possibly with
-            covariates. Use maximum likelihood estimation or maximum
-            penalized likelihood estimation.
-\item{\code{\link{bgpd}}}: Fit generalized Pareto distributions to data, possibly with
-            covariates, using Markov chain Monte Carlo.
-            Gaussian prior distributions are used, and the posterior 
-            distributions are simulated from using a Metropolis algorithm.
-\item{\code{\link{mex}}}: Fit multiple, independent generalized Pareto models
+\code{\link{gpd}}: Fit generalized Pareto distributions to data, possibly with
+            covariates. Use maximum likelihood estimation, maximum
+            penalized likelihood estimation or simulate from the posterior
+            distribution.
+
+\code{\link{mex}}: Fit multiple, independent generalized Pareto models
             to the columns of a data set, and estimate the conditional
             dependence structure using the method of Heffernan and
             Tawn.
-\item{\code{\link{bootmex}}}: Bootstrap estimation for parameters in generalized Pareto models
+
+\code{\link{bootmex}}: Bootstrap estimation for parameters in generalized Pareto models
                 and in the dependence structure.
-\item{\code{\link{validate.texmex}}}: Use the \code{svUnit} package to run lots of tests to
+
+\code{\link{validate.texmex}}: Use the \code{svUnit} package to run lots of tests to
             establish a high degree of confidence that the functions do what
             they are supposed to.
 }
@@ -91,7 +91,7 @@ altmod4 <- gpd(alt, qu=.7, data=r)
 
 # Prefer model 3, with term for xi on basis of AIC
 
-balt3 <- bgpd(alt, qu=.7, xi = ~ ndose, data=r)
+balt3 <- gpd(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
 par(mfrow=c(3,3))
 plot(balt3)
 

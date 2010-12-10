@@ -114,7 +114,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     }
 
     #### If priorParameters given but of wrong dimension, kill
-    if (!missing(priorParameters)) {
+    if (!is.null(priorParameters)) {
         dimp <- ncol(X.phi) + ncol(X.xi)
         if (length(priorParameters[[1]]) != dimp) {
             stop("wrong number of parameters in prior (doesn't match phi and xi formulas)")

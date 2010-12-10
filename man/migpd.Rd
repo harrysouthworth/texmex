@@ -101,7 +101,6 @@ J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the gen
 	\code{\link{predict.mex}}
 		  }
 \examples{
-data(winter)
 mygpd <- migpd(winter, mqu=.7, penalty = "none")
 mygpd
 }
