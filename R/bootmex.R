@@ -167,4 +167,14 @@ test(bootmex) <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
 
+# check execution of for 2-d data
+
+  wavesurge.fit <- migpd(wavesurge,mq=.7)
+  R <- 20
+  wavesurge.boot <- bootmex(wavesurge.fit,which=1,R=R,dqu=0.8)
+
+  checkEqualsNumeric(dim(wavesurge.boot$boot[[1]]$Z)[2],1,msg="bootmex: execution for 2-d data")
+  checkEquals(dimnames(wavesurge.boot$boot[[1]]$Z)[[2]],names(wavesurge)[2],msg="bootmex: execution for 2-d data")
+  checkEqualsNumeric(length(wavesurge.boot$boot),R,msg="bootmex: execution for 2-d data")
+  
 }
