@@ -162,7 +162,7 @@ are also returned by the \code{coef} method. Depending on what you
     \item{loglik}{The value of the optimized log-likelihood.}
 
     If \code{method = "simulate"}, an object of class \code{bgpd}.
-    \item{call}{The call to \code{bgpd} that produced the object.}
+    \item{call}{The call to \code{gpd} that produced the object.}
     \item{threshold}{The threshold above which the model was fit.}
     \item{map}{The point estimates found by maximum penalized likelihood
                and which were used as the starting point for the Markov
