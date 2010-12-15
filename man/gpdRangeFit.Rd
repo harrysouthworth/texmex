@@ -30,13 +30,13 @@ xlab = "Threshold", ylab = NULL, main = NULL, ...)
   \item{\dots}{ Arguments to \code{plot} }
 }
 \details{
-  This is Janet E Heffernan's \code{gpd.fitrange}, as it appears in the
+  This is Stuart Coles's \code{gpd.fitrange}, as it appears in the
   \code{ismev} package, with some fairly minor changes. The function uses
   \code{gpd} internally and uses the default options for that function.
   
 }
 
-\author{ Janet E Heffernan, Harry Southworth }
+\author{ Stuart Coles, Janet E Heffernan, Harry Southworth }
 \seealso{ gpd }
 \examples{
 
