@@ -18,12 +18,12 @@ bootmex(x, which, R = 100, dth, dqu, nPass=3, trace=10)
   \item{x}{ An object of class 'migpd' as returned by function \code{migpd}. }
   \item{which}{ The name of the variable on which the conditioning is done. This should
 be the name of one of the columns in the data set that was passed to \code{migpd}. }
-  \item{R}{ The number of bootstrap runs to perform. Defaults to B=100. }
+  \item{R}{ The number of bootstrap runs to perform. Defaults to \code{R}=100. }
   \item{dth}{ The threshold on the Gumbel scale to apply to the specified conditioning
 variable. Only one of \code{dth} or \code{dqu} should be provided. If \code{x} has
         class \code{mex}, the value is read from the object and need not be
         provided.}
-  \item{dqu}{ The quantile on the Gumbel scale to threshold to the specified conditioning
+  \item{dqu}{ The quantile to threshold to the specified conditioning
 variable at. Only one of \code{dth} or \code{dqu} should be provided. If \code{x} has
         class \code{mex}, the value is read from the object and need not be
         provided.}
