@@ -44,12 +44,9 @@ function( x, which.plots=1:3, density.adjust=2,
 	
 	if(3 %in% which.plots){
         # Plot ACFs
-    
-    	if ( x$burn > 0 ) skip <- 1:x$burn
-	    else skip <- NULL
 
         for(i in 1:length(varnames)){
-    		acf( x$chains[ -skip , i] , main = paste("ACF for", varnames[i]))
+    		acf( x$param[ , i] , main = paste("ACF for", varnames[i], "\n(thin =",x$thin,")"))
     		if ( print.seed )
     			title( sub = paste( c( "Seed: ", x$seed ) , collapse = " " ), adj=0 )
         }
