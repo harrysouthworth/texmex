@@ -61,7 +61,8 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
            If not provided, an exponential distribution is assumed as the starting
            point.}
   \item{priorParameters}{  A list with two components. The first should be 
-                a vector of means, the second should be a covariance matrix.
+                a vector of means, the second should be a covariance matrix if the 
+                penalty/prior is "gaussian" and a precision matrix is the penalty is "lasso".
                 These represent the parameters in the Gaussian prior distribution.
                 If not supplied: all default prior means are zero;
                 all default prior variances are $10^4$;all covariances
