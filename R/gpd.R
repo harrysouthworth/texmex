@@ -286,7 +286,7 @@ test(gpd) <- function(){
   checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol,msg="gpd: loglik page 85 Coles")
   
 ###################################################################
-#   Logical checks on the effect of penalization. The smaller the
+#   Logical checks on the effect of Gaussian penalization. The smaller the
 #    variance, the more the parameter should be drawn towards the
 #    mean.
 
@@ -298,8 +298,8 @@ test(gpd) <- function(){
   mod1 <- gpd(rain, th=30, priorParameters=gp1)
   mod2 <- gpd(rain, th=30, priorParameters=gp2)
 
-  checkTrue(coef(mod)[2] > coef(mod1)[2],msg="gpd:penalization xi being drawn to 0")
-  checkTrue(coef(mod1)[2] > coef(mod2)[2],msg="gpd:penalization xi being drawn to 0")
+  checkTrue(coef(mod)[2] > coef(mod1)[2],msg="gpd: Gaussian penalization xi being drawn to 0")
+  checkTrue(coef(mod1)[2] > coef(mod2)[2],msg="gpd: Gaussian penalization xi being drawn to 0")
 
 # 2.2 Tests for phi being drawn to 0
 
@@ -309,8 +309,8 @@ test(gpd) <- function(){
   mod3 <- gpd(rain, th=30, priorParameters=gp3)
   mod4 <- gpd(rain, th=30, priorParameters=gp4)
 
-  checkTrue(coef(mod)[1] > coef(mod3)[1],msg="gpd:penalization phi being drawn to 0")
-  checkTrue(coef(mod3)[1] > coef(mod4)[1],msg="gpd:penalization phi being drawn to 0")
+  checkTrue(coef(mod)[1] > coef(mod3)[1],msg="gpd: Gaussian penalization phi being drawn to 0")
+  checkTrue(coef(mod3)[1] > coef(mod4)[1],msg="gpd: Gaussian penalization phi being drawn to 0")
   
 # 2.3 Tests for xi being drawn to 1
   gp5 <- list(c(0, 1), diag(c(10^4, .25)))
@@ -319,8 +319,8 @@ test(gpd) <- function(){
   mod5 <- gpd(rain, th=30, priorParameters=gp5)
   mod6 <- gpd(rain, th=30, priorParameters=gp6)
 
-  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],msg="gpd:penalization xi being drawn to 1")
-  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],msg="gpd:penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],msg="gpd: Gaussian penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],msg="gpd: Gaussian penalization xi being drawn to 1")
   
 # 2.4 Tests for phi being drawn to 4 (greater than mle for phi)
 
@@ -330,9 +330,57 @@ test(gpd) <- function(){
   mod7 <- gpd(rain, th=30, priorParameters=gp7)
   mod8 <- gpd(rain, th=30, priorParameters=gp8)
 
-  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd:penalization phi being drawn to 4")
-  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd:penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd: Gaussian penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd: Gaussian penalization phi being drawn to 4")
   
+###################################################################
+#   Logical checks on the effect of penalization using lasso or L1 penalization. The smaller the
+#    variance, the more the parameter should be drawn towards the
+#    mean.
+
+# 2a.1 Tests for xi being drawn to 0
+
+  gp1 <- list(c(0, 0), solve(diag(c(10^4, .25))))
+  gp2 <- list(c(0, 0), solve(diag(c(10^4, .05))))
+
+  mod1 <- gpd(rain, th=30, priorParameters=gp1, penalty="lasso")
+  mod2 <- gpd(rain, th=30, priorParameters=gp2, penalty="lasso")
+
+  checkTrue(coef(mod)[2] > coef(mod1)[2],msg="gpd: lasso penalization xi being drawn to 0")
+  checkTrue(coef(mod1)[2] > coef(mod2)[2],msg="gpd: lasso penalization xi being drawn to 0")
+
+# 2a.2 Tests for phi being drawn to 0
+
+  gp3 <- list(c(0, 0), solve(diag(c(1, 10^4))))
+  gp4 <- list(c(0, 0), solve(diag(c(.1, 10^4))))
+
+  mod3 <- gpd(rain, th=30, priorParameters=gp3, penalty="lasso")
+  mod4 <- gpd(rain, th=30, priorParameters=gp4, penalty="lasso")
+
+  checkTrue(coef(mod)[1] > coef(mod3)[1],msg="gpd: lasso penalization phi being drawn to 0")
+  checkTrue(coef(mod3)[1] > coef(mod4)[1],msg="gpd: lasso penalization phi being drawn to 0")
+  
+# 2a.3 Tests for xi being drawn to 1
+  gp5 <- list(c(0, 1), solve(diag(c(10^4, .25))))
+  gp6 <- list(c(0, 1), solve(diag(c(10^4, .05))))
+
+  mod5 <- gpd(rain, th=30, priorParameters=gp5, penalty="lasso")
+  mod6 <- gpd(rain, th=30, priorParameters=gp6, penalty="lasso")
+
+  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],msg="gpd: lasso penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],msg="gpd: lasso penalization xi being drawn to 1")
+  
+# 2a.4 Tests for phi being drawn to 4 (greater than mle for phi)
+
+  gp7 <- list(c(4, 0), solve(diag(c(1, 10^4))))
+  gp8 <- list(c(4, 0), solve(diag(c(.1, 10^4))))
+
+  mod7 <- gpd(rain, th=30, priorParameters=gp7, penalty="lasso")
+  mod8 <- gpd(rain, th=30, priorParameters=gp8, penalty="lasso")
+
+  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd: lasso penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd: lasso penalization phi being drawn to 4")
+ 
 ########################################################
 # Tests on including covariates. Once more, gpd.fit in ismev
 # works with sigma inside the optimizer, so we need to tolerate
