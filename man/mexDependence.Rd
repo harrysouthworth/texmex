@@ -11,8 +11,8 @@
 }
 \usage{
 mexDependence(x, which, dth, dqu)
-\method{print}{mexDependence}(x, ...)
-\method{plot}{mexDependence}(x, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...)
+\method{print}{mexDependence}(object, ...)
+\method{plot}{mexDependence}(object, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,7 +30,7 @@ mexDependence(x, which, dth, dqu)
               structure. The model will be conditional on the \code{which}
 			  variable being over this quantile. Only one of \code{dth}
 			  or \code{dqu} should be given.}
-  \item{x}{An object returned by \code{mexDependence}.}
+  \item{object}{An object returned by \code{mexDependence}.}
   \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
   the quantiles of the conditional distributions which will be plotted.}
   \item{col}{The color for points on scatterplots of residuals and original data.}
@@ -60,8 +60,8 @@ mexDependence(x, which, dth, dqu)
 
 }
 \value{
-  An object of class \code{mexDependence}. There is a \code{print}
-  function available.
+  An object of class \code{mexDependence}. There are \code{print} and \code{plot}
+  functions available.
 }
 \references{ J. E. Heffernan and J. A. Tawn, A conditional approach
 	for multivariate extreme values, Journal of the Royal Statistical
