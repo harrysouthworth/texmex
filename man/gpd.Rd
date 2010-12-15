@@ -21,17 +21,17 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     prior = "gaussian", method = "optimize", start = NULL, priorParameters = NULL,
     maxit = 10000, trace = NULL,
     iter = 10500, burn = 500, thin = 1, jump.const, verbose = TRUE)
-\method{print}{gpd}(x, ...)
+\method{print}{gpd}(object, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
 \method{coef}{gpd}(object, ...)
-\method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{plot}{gpd}(object, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
 \method{AIC}{gpd}(object, ..., k=2)
 \method{coefficients}{gpd}(object, ...)
-\method{print}{bgpd}(x, print.seed=FALSE, ...)
-\method{summary}{bgpd}(object, ...)
-\method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
-\method{coef}{bgpd}(object, ...)
-\method{coefficients}{bgpd}(object, ...)
+\method{print}{bgpd}(b.object, print.seed=FALSE, ...)
+\method{summary}{bgpd}(b.object, ...)
+\method{plot}{bgpd}(b.object, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{coef}{bgpd}(b.object, ...)
+\method{coefficients}{bgpd}(b.object, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -72,6 +72,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
        function. If \code{method = "simulate"}, the argument determines at
        how many steps of the Markov chain the function should tell the user, and
        in this case it defaults to \code{trace = 1000}. }
+  \item{iter}{Number of simulations to generate under \code{method = "simulate"}.}
   \item{burn}{ The number of initial steps to be discarded. }
   \item{thin}{ The degree of thinning of the resulting Markov chains. Defaults
                to 1 (no thinning). A value of 0.5 (for example) would result in
@@ -79,12 +80,16 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
+  \item{object}{Object of class \code{gpd} returned by \code{gpd} using \code{method="optimize".}}
+  \item{b.object}{Object of class \code{bgpd} returned by \code{gpd} using \code{method="simulate".}}
+  \item{digits}{Number of digits for printing.}
   \item{main}{Titles for plots. Should be a vector of length 4.}
   \item{xlab}{X-axis labels for plots. Should be a vector of length 4.}
   \item{nsim}{The number of simulations to use to produce the simulation
               envelope. Defaults to \code{nsim = 1000}}.
   \item{alpha}{A (1 - alpha)\% simulation envelope is produced. Defaults
                to \code{alpha = 0.05}}
+  \item{k}{Constant used in calculation of AIC=-2*loglik + k*p, defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
                     \code{print.seed=FALSE}.}
