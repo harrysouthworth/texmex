@@ -20,7 +20,6 @@ Object of class 'bgpd' as returned by \code{gpd} called with \code{method="simul
   \item{burn}{
 The number of observations from the simulated Markov Chain to be discarded as burn-in. Must be a non-negative integer, for no burn in use \code{burn=0}.
 }
-\item{...}{Arguments \code{thin} and \code{burn} can be passed via \code{...} .}
 }
 
 \value{
