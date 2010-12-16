@@ -34,6 +34,7 @@ mexDependence(x, which, dth, dqu)
   \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
   the quantiles of the conditional distributions which will be plotted.}
   \item{col}{The color for points on scatterplots of residuals and original data.}
+  \item{...}{Further arguments to be passed to methods.}
 }
 \details{
   The parameters a, b, c and d in the dependence structure described

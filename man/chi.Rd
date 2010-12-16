@@ -31,14 +31,16 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{trunc}{ Logical flag indicating whether the estimates
                 should be truncated at their theoretical bounds.
                 Defaults to \code{trunc = TRUE}. }
+  \item{digits}{ Number of digits for printing. }
   \item{which}{Which plot to do: 1 results in a plot of chi, 2 in a 
                plot of chi bar. Defaults to \code{which = 1:2}.}
   \item{lty, cilty, col, cicol}{Line types and colours for the the
                estimated quantities and thier confidence intervals.}
-  \item{xlim, ylim}{Limits for the axes.}
+  \item{xlim, ylim1, ylim2}{Limits for the axes.}
   \item{main1, main2}{Main titles for the plots.}
   \item{xlab, ylab1, ylab2}{Axis labels for the plots.}
   \item{ask}{Whether or not to ask before reusing the graphics device.}
+  \item{...}{Further arguments to be passed to methods.}
 }
 \details{
   Computes the values chi and chi-bar described by Coles,

@@ -7,6 +7,10 @@ Returns the copula of several random variables.
 }
 \usage{
 copula(x, na.last = NA)
+\method{print}{copula}(object, ...)
+\method{show}{copula}(object, ...)
+\method{summary}{copula}(object, ...)
+\method{plot}{copula}(object, jitter=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -14,7 +18,9 @@ copula(x, na.last = NA)
   \item{na.last}{ How to treat missing values. See \code{rank} for details. }
   \item{jitter}{In the call to \code{plot.copula}, if \code{jitter=TRUE},
                 the values are jittered before plotting. Defaults
-                to \code{jitter=FALSE}}.
+                to \code{jitter=FALSE}.}
+  \item{object}{Object of class \code{copula} as returned by function \code{copula}.}
+  \item{...}{Further arguments to be passed to methods.}                
 }
 \details{
   The result is obtained by applying \code{\link{edf}} to each

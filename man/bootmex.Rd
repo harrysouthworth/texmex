@@ -37,6 +37,7 @@ variable at. Only one of \code{dth} or \code{dqu} should be provided. If \code{x
   \item{plots}{ Whether to do diagnostic plots of gpd parameter estimates or
       dependence parameter estimates.  Defaults to "gpd". }
   \item{main}{Title for plots.}
+  \item{...}{Further arguments to be passed to methods.}
 }
 \details{
  Details of the bootstrap method are given by Heffernan and Tawn (2004). Firstly, Gumbel

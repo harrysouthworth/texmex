@@ -40,6 +40,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 			it defaults to being centred at zero, with variance
 			10000 for log(sigma) and 0.25 for xi. See the details section.}
   \item{object}{ Object of class \code{migpd} as returned by function \code{migpd}.}
+  \item{...}{Further arguments to be passed to methods.}
 }
 \details{
   The parameters in the generalized Pareto distribution are

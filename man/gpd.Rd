@@ -101,7 +101,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{density.adjust}{Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
-
+  \item{...}{Further arguments to be passed to methods.}
 }
 \details{
   Working with the log of the scale parameter was found to improve the

@@ -1,6 +1,7 @@
 \name{mex}
 \alias{mex}
 \alias{print.mex}
+\alias{show.mex}
 \alias{summary.mex}
 \alias{coef.mex}
 \alias{coefficients.mex}
@@ -70,18 +71,21 @@ mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace 
   \item{col}{The color for points on scatterplots of residuals and original data.
              In \code{plot.predict.mex}, the colours of points for observed and
              simulated data.}
-  \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning variable over which it will be
-thresholded. Defaults to \code{pqu = .99 }. }
-  \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations to be generated for each
-set of bootstrap parameter estimates. }
+  \item{x}{Object of class \code{mex} as returned by function \code{mex}.}
+  \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning 
+  variable over which it will be thresholded. Defaults to \code{pqu = .99 }. }
+  \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations 
+  to be generated for each set of bootstrap parameter estimates. }
+  \item{probs}{In \code{summary.predict.mex} the quantiles of the conditional 
+  distribution(s) to calculate.  Defaults to 5\%, 50\% and 95\%.}
   \item{pch, cex}{Plotting characters, colours and symbol expansion. The
        observed and simulated data are plotted using different symbols, conrolled
        by these arguments and \code{col}, each of which should be of length 2.}
   \item{ask}{Whether or not to ask before changing the plot. Defaults to
         \code{ask = TRUE}.}
-
-
+  \item{...}{Further arguments to be passed to methods.}
 }
+
 \details{The parameters in the generalized Pareto distribution are estimated for
          each column of the data in turn, independently of all other columns.
          Then, the conditional multivariate approach of Heffernan and Tawn is

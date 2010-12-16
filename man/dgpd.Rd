@@ -24,6 +24,7 @@ rgpd(n, sigma, xi, u = 0)
   \item{sigma}{ Scale parameter. }
   \item{xi}{ Shape parameter. }
   \item{u}{ Threshold }
+  \item{la}{Rate at which threshold is exceeded.}
   \item{log.d, log.p}{Whether or not to work on the log scale.}
   \item{lower.tail}{Whether to return the lower tail.}
 }
