@@ -5,8 +5,7 @@ validate.texmex <- function(){
    }
    where <- (1:length(search()))[search() == "package:texmex"]
    res <- svSuiteList(pos=where)
-   cat("Running over 100 tests, including MCMC and bootstrap implementations.\n
-        This will take some time...\n")
+   cat("Running over 100 tests, including MCMC and bootstrap implementations.\nThis will take some time...\n\n")
    clearLog()
    runTest(res)
    Log()
