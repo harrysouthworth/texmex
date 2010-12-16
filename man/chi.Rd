@@ -62,7 +62,13 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
 measures for extreme values analyses, Extremes, 2, 339 -- 365, 1999 }
 \author{ Janet E. Heffernan, Alec Stephenson, Harry Southworth }
 
-\seealso{ \code{\link{MCS}} }
+\note{When the data contain ties, the values of chi and chibar are calculated by 
+assigning distinct ranks to tied values using the \code{rank} function with 
+argument \code{ties.method = "first"}.  This results in the values of chi 
+and chibar being sensitive to the order in which the tied values appear 
+in the data.}
+
+\seealso{ \code{\link{MCS}}, \code{\link{rank}} }
 \examples{
 
 D <- liver[liver$dose == "D",]
