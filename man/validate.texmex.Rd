@@ -16,7 +16,7 @@ validate.texmex()
 The function uses functionality in the \code{svUnit} package to perform many
 tests to ensure that \code{texmex} behaves as expected. These include tests
 to make sure that \code{texmex} can reproduce published results (often parameter
-estimates and model summaries that appear in Coles (2000) or in Heffernan
+estimates and model summaries that appear in Coles (2001) or in Heffernan
 and Tawn (2004)), logical tests (for
 example, to ensure that penalizing the likelihood has the expected effect on
 parameter estimates), tests of the structure of objects, tests of proper
@@ -24,7 +24,7 @@ vectorization, tests to ensure that simulated posterior means are close to
 MAP estimates, and tests to ensure that the code gives the same results as
 independently coded calculations (sometimes using code that appears in the
 \code{ismev} and \code{evd} packages, sometimes using code written by someone
-else and without reference to the \code{texmex} version.
+else and without reference to the \code{texmex} version).
 
 If all is well, the result should indicate that no errors or fails have
 occurred.
