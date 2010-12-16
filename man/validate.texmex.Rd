@@ -2,7 +2,7 @@
 \alias{validate.texmex}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
-Validate the \code{texmex} package
+Validate the texmex package
 }
 \description{
 Using \code{svUnit}, run tests to compare behaviour of \code{texmex} with
@@ -24,20 +24,27 @@ vectorization, tests to ensure that simulated posterior means are close to
 MAP estimates, and tests to ensure that the code gives the same results as
 independently coded calculations (sometimes using code that appears in the
 \code{ismev} and \code{evd} packages, sometimes using code written by someone
-else and without reference to the \code{texmex} version).
+else and without reference to the \code{texmex} version).  A further side 
+effect is the production of plots, many of which can be compared with their 
+original published versions to further check that the \code{texmex} reproduces 
+expected output.
 
 If all is well, the result should indicate that no errors or fails have
 occurred.
 }
 \value{
 An object of class \code{svSuiteData}. See the help for \code{svUnit} for
-details.
+details.  
+
+Plots are also produced on the active plotting device; those plots 
+that reproduce figures in the referenced material are labelled with the Figure 
+numbers of the plot which they emulate.
 }
 \references{
-S. Coles, An Introduction to the Statistical Modeling of Extreme Values, Springer, 2000
+S. Coles, An Introduction to the Statistical Modeling of Extreme Values, Springer, 2001
 
 J. E. Heffernan and J. A. Tawn, A conditional approach for multivariate extreme
-values. Journal of the Royal Statistical Society, Series B, volume 66, 2004
+values (with discussion). Journal of the Royal Statistical Society, Series B, volume 66, 2004
 }
 \author{
 Janet E. Heffernan, Harry Southworth
@@ -53,9 +60,15 @@ As a result, the function takes a while to run.
 \code{\link{texmex}}
 }
 \examples{
+## open device to save plotted output
+pdf("texmexPlots.pdf")
+
 val <- validate.texmex()
 summary(val)
 val
+
+## finish writing to device
+dev.off()
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
