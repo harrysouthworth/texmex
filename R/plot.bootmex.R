@@ -58,7 +58,7 @@ test(plot.bootmex) <- function(){
 
   wavesurge.fit <- migpd(wavesurge,mqu=0.7) 
   wavesurge.boot <- bootmex(wavesurge.fit,which=1,R=50)
-  par(mfrow=c(3,2))
+  par(mfrow=c(3,2),pty="m")
   check1 <- plot(wavesurge.boot,main="Marginal parameters\nWave surge data of Coles 2001")
   check2 <- plot(wavesurge.boot,plots="dep",main="Dependence parameters\nWave surge data of Coles 2001")
   
@@ -81,19 +81,18 @@ test(plot.bootmex) <- function(){
   Wboot.PM10 <- bootmex(wmarmod, which=5, dqu=Qu, R=R)
 
   par(mfrow=c(4,2))
-  check3 <- plot(Sboot.O3,plots="dep",main="Summer air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Wboot.O3,plots="dep",main="Winter air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Sboot.NO2,plots="dep",main="Summer air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Wboot.NO2,plots="dep",main="Winter air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Sboot.NO,plots="dep",main="Summer air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Wboot.NO,plots="dep",main="Winter air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Sboot.SO2,plots="dep",main="Summer air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Wboot.SO2,plots="dep",main="Winter air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Sboot.PM10,plots="dep",main="Summer air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
-  plot(Wboot.PM10,plots="dep",main="Winter air pollution data\nHeffernan & Tawn 2004 Fig. 5",xlim=c(0,1),ylim=c(-1,1))
+  check3 <- plot(Sboot.O3,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Wboot.O3,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Sboot.NO2,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Wboot.NO2,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Sboot.NO,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Wboot.NO,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Sboot.SO2,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Wboot.SO2,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Sboot.PM10,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
+  plot(Wboot.PM10,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
 
   checkEquals(check1,NULL,msg="plot.bootmex successful execution of plotting code 2-d data")
   checkEquals(check2,NULL,msg="plot.bootmex successful execution of plotting code 2-d data")
   checkEquals(check3,NULL,msg="plot.bootmex successful execution of plotting code 3-d data")
-
 } 
