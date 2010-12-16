@@ -92,10 +92,16 @@ set of bootstrap parameter estimates. }
          data, simulated values of the dependent variables are created, given that the
          conditioning variable is above its 100\code{pqu} quantile.
 
-         The returned object has class 'predict.mex'. There are \code{print}, \code{summary} and
-         \code{plot} functions available. The simulated values based on the actual data
+         The returned object has class 'predict.mex'. The simulated values based on the actual data
          and point estimates appear in component \code{object$data$simulated}. The
          simulated data from the bootstrap estimates appears in \code{object$replicates}.
+         
+         There are \code{print}, \code{summary} and
+         \code{plot} methods available. The \code{plot} method displays both the original 
+         data and the simulated data generated above the threshold for prediction; it 
+         shows the threshold for prediction (vertical line) and also the curve joining equal quantiles 
+         of the marginal distributions -- this is for reference, since variables that 
+         are perfectly dependent will lie exactly on this curve.
 }
 
 \value{
