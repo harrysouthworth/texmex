@@ -1,7 +1,7 @@
 \name{migpdCoefs}
 \alias{migpdCoefs}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Change values of parameters in a \code{migpd} object }
+\title{ Change values of parameters in a migpd object }
 \description{
   Change the values of parameters in a \code{migpd} object. You
   might want to do this after modelling marginal distributions
