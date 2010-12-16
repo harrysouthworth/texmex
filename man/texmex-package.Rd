@@ -37,7 +37,7 @@ License: \tab GPL (>=2) | BSD\cr
 \author{
 Harry Southworth, Janet E. Heffernan
 
-Maintainer: Harry Southworth <harry.southworht@astrazeneca.com>
+Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 
 }
 \references{
