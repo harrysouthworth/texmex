@@ -522,13 +522,7 @@ test(gpd) <- function(){
   checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]),msg="gpd: with covariates, phi drawn to 4")
   checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]),msg="gpd: with covariates, phi drawn to 4")
 
-
-
-
-
-
-
-
+#*************************************************************
   postSum <- function(x){
     t(apply(x$param, 2, function(o){ c(mean=mean(o), se=sd(o)) }))
   } 
