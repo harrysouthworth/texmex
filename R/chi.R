@@ -216,3 +216,10 @@ test(chi) <- function(){
   checkEqualsNumeric(chi.JH$ChiBarLower, chi$chibar[,1],msg="chi: ChiBarLower")
   checkEqualsNumeric(chi.JH$ChiBarUpper, chi$chibar[,3],msg="chi: ChiBarUpper")
 }
+
+test(plot.chi) <- function(){
+  chi <- chi(wavesurge)
+  par(mfrow=c(1,2),pty="m")
+  res <- plot(chi,main1="Figure 8.11 of Coles (2001)\nChi")
+  checkEquals(res,NULL,msg = "plot.chi: check successful execution")
+}
