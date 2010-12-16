@@ -9,8 +9,7 @@ function (x, data, qu, th = 0, sigma = 1, xi = 0, method = "mixture") {
    px <- as.integer(round(px * (1 + n)))
    res <- sort(data)[px]
    if (method == "mixture") {
-       hi <- u2gpd(x[res > th], p, th = th, sigma = sigma, xi = xi)
-       res[res > th] <- hi
+       res[res > th] <- u2gpd(x[res > th], p, th = th, sigma = sigma, xi = xi)
    }
    res[order(x)] <- sort(res)
    res
