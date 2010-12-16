@@ -76,7 +76,7 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
 
 
 print.chi <- function(x, ...){
-    print(x$call)
+    print(x$call,...)
     cat("Values of chi and chi-bar obtained and",
          length(x$quantile), "quantiles.\n")
     invisible()
