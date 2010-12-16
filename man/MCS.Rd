@@ -44,8 +44,8 @@ Multivariate Analysis, 98, 1123 -- 1140, 2007 }
 \examples{
 D <- liver[liver$dose == "D",]
 Dmcs <- bootMCS(D[, 5:6])
+Dmcs
 plot(Dmcs)
-
 }
 \keyword{ multivariate }
 
