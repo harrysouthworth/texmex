@@ -85,19 +85,20 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
     dall <- if (theClass == "mex") { object[[2]] }
             else { mexDependence( object$simpleMar , which=which , dqu=object$dqu ) }
 
-
     sim <- MakeThrowData(dco=dall$coefficients,z=dall$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
                 
     m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
  	zeta <- 1 - migpd$mqu[ which ] # Coles, page 81
-	xth <- migpd$mth[ which ] + cox[ 3 ] / cox[ 4 ] * ( ( m*zeta )^cox[ 4 ] - 1 )
+	pth <- migpd$mth[ which ] + cox[ 1 ] / cox[ 2 ] * ( ( m*zeta )^cox[ 2 ] - 1 )
 
 	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ) ,
-				        simulated = sim, pth=xth)
-
-	res <- list( call = theCall , replicates = bootRes, data = data,
+				        simulated = sim, pth=pth)
+  names(data$real)[1] <- names(migpd$data)[which] 
+  
+  res <- list( call = theCall , replicates = bootRes, data = data,
 				       which = which, pqu = pqu,
-				       mth=c( migpd$mth[ which ], migpd$mth[ -which ] ) )
+				       mth=c( migpd$mth[ which ], migpd$mth[ -which ] ),
+               gpd.coef = coef(migpd)[,c(which,(1:dim(data$real)[2])[-which])])
 	
 	oldClass( res ) <- "predict.mex"
 
