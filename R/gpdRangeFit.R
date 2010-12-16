@@ -41,3 +41,8 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     invisible()
 }
 
+test(gpdRangeFit) <- function(){
+  par(mfrow=c(2,1))
+  res <- gpdRangeFit(rain, umin=0, umax=50, nint=20, pch=16, main=c("Figure 4.2 of Coles (2001)",""))
+  checkEquals(res,NULL,msg="gpdRangeFit: check execution")
+}
