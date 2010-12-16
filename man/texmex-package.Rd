@@ -95,6 +95,11 @@ balt3 <- gpd(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
 par(mfrow=c(3,3))
 plot(balt3)
 
+# use longer burn-in and also thin the output
+
+balt3 <- thinAndBurn(balt3,burn=1000,thin=5)
+plot(balt3)
+
 # Get some simulated values for dose D
 
 Dphi <- balt3$param[, 1]
@@ -108,8 +113,10 @@ simD <- rgpd(nrow(balt3$param), sigma=exp(Dphi), xi=Dxi, u=quantile(alt, .7))
 b <- sample(log(liver$ALT_M), size=nrow(balt3$param), replace=TRUE)
 res <- exp(b + simD)
 
+# estimate quantiles on raw scale
 quantile(res, prob=c(.5, .75, .9, .95, .99))
 
+# estimate proportion exceeding 3*upper limit of normal
 mean(res > 36 * 3) # 36 is the upper limit of normal for ALT
 
 }
