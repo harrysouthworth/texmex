@@ -7,26 +7,31 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
         else if ( length( main ) == 1 ){ main <- rep( main, 4 ) }
     }
     
-    if (ncol(object$X.phi) == 1 && ncol(object$X.xi) == 1){
-        ppgpd( object, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
-        qqgpd( object, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
-        rl.gpd( object, main=main[3], xlab=xlab[3] )
-        hist.gpd( object, main=main[4], xlab=xlab[4] )
+    if (ncol(x$X.phi) == 1 && ncol(x$X.xi) == 1){
+        ppgpd( x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
+        qqgpd( x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
+        rl.gpd( x, main=main[3], xlab=xlab[3] )
+        hist.gpd( x, main=main[4], xlab=xlab[4] )
     }
     else { # Covariates in the model
-        sigma <- exp(coef(object)[1:ncol(object$X.phi)] %*% t(object$X.phi))
-        xi <- coef(object)[(ncol(object$X.phi) + 1):length(coef(object))] %*% t(object$X.xi)
-        y <- xi * (object$y - object$threshold) / sigma
+        sigma <- exp(coef(x)[1:ncol(x$X.phi)] %*% t(x$X.phi))
+        xi <- coef(x)[(ncol(x$X.phi) + 1):length(coef(x))] %*% t(x$X.xi)
+        y <- xi * (x$y - x$threshold) / sigma
         y <- 1/xi * log(1 + y) # Standard exponential
        
-        object$y <- y
-        object$threshold <- 0
-        object$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
-        ppgpd( object, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
-        qqgpd( object, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
+        x$y <- y
+        x$threshold <- 0
+        x$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
+        ppgpd( x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
+        qqgpd( x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
     }
 
     invisible()
 }
 
-
+test(plot.gpd) <- function(){
+  par(mfrow=c(2,2))
+  mod <- gpd(rain, th=30, penalty="none")
+  res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot","\nDensity Plot")))
+  checkEquals(res,NULL,msg="plot.gpd: successful execution")
+} 
