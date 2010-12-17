@@ -1,8 +1,8 @@
 Package: texmex
 Type: Package
 Title: Threshold exceedences and multivariate extremes
-Version: 0.4
-Date: 2010-12-10
+Version: 1.0
+Date: 2010-12-17
 Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 Description: Conditional multivariate extreme value modelling using
