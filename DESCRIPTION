@@ -1,14 +1,15 @@
 Package: texmex
 Type: Package
 Title: Threshold exceedences and multivariate extremes
-Version: 1.01
-Date: 2010-12-17
+Version: 1.0
+Date: 2010-12-20
 Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 Description: Conditional multivariate extreme value modelling using
              the approach of Heffernan and Tawn.
 License: GPL (>=2) | BSD
 Depends: mvtnorm
+Suggests: MASS, RUnit
 LazyLoad: yes
 LazyData: yes
 Packaged: 2010-10-14 11:47:02 UTC; kpzv097
