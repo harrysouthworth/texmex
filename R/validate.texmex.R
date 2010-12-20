@@ -7,7 +7,7 @@ validate.texmex <- function(testDir){
       }
    }
    if (missing(testDir)){
-       testDir <- paste(.path.package("texmex"), "tests", sep = "/")
+       testDir <- paste(.path.package("texmex"), "R", sep = "/")
    }
    
    res <- defineTestSuite("texmex", dirs=testDir,
