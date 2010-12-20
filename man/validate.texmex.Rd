@@ -32,14 +32,8 @@ Using \code{RUnit}, run tests to compare behaviour of \code{texmex} with
 expected behaviour
 }
 \usage{
-validate.texmex(testDir)
+validate.texmex()
 }
-\arguments{
-\item{testDir}{The location of the tests. If not provided, defaults to being the
-  R subdirectory of the package tree. Only developers would ever want to use this
-  argument.}
-}
-%- maybe also 'usage' for other objects documented here.
 \details{
 The function uses functionality in the \code{RUnit} package to perform many
 tests to ensure that \code{texmex} behaves as expected. These include tests
@@ -85,7 +79,7 @@ As a result, the function takes a while to run.
 %% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-\code{\link{texmex}}
+\code{\link{texmex-package}}
 }
 \examples{
 # Uncomment the following lines to run - commented out to make CRAN robots happy
@@ -96,7 +90,6 @@ As a result, the function takes a while to run.
 ## finish writing to device
 #dev.off()
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ models }
+\keyword{multivariate}
+
