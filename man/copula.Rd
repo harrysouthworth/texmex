@@ -1,5 +1,8 @@
 \name{copula}
 \alias{copula}
+\alias{print.copula}
+\alias{show.copula}
+\alias{summary.copula}
 \alias{plot.copula}
 \title{ Get the copula of a matrix of variables }
 \description{
@@ -7,16 +10,16 @@ Returns the copula of several random variables.
 }
 \usage{
 copula(x, na.last = NA)
-\method{print}{copula}(object, ...)
-\method{show}{copula}(object, ...)
+\method{print}{copula}(x, ...)
+\method{show}{copula}(x, ...)
 \method{summary}{copula}(object, ...)
-\method{plot}{copula}(object, jitter=FALSE, ...)
+\method{plot}{copula}(x, jitter. = FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{ A matrix or data.frame containing numeric variables. }
   \item{na.last}{ How to treat missing values. See \code{rank} for details. }
-  \item{jitter}{In the call to \code{plot.copula}, if \code{jitter=TRUE},
+  \item{jitter.}{In the call to \code{plot.copula}, if \code{jitter=TRUE},
                 the values are jittered before plotting. Defaults
                 to \code{jitter=FALSE}.}
   \item{object}{Object of class \code{copula} as returned by function \code{copula}.}

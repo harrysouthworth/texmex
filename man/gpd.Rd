@@ -1,6 +1,7 @@
 \name{gpd}
 \alias{gpd}
 \alias{print.gpd}
+\alias{show.gpd}
 \alias{summary.gpd}
 \alias{plot.gpd}
 \alias{coef.gpd}
@@ -11,6 +12,9 @@
 \alias{plot.bgpd}
 \alias{coef.bgpd}
 \alias{coefficients.bgpd}
+\alias{print.summary.bgpd}
+\alias{print.summary.gpd}
+\alias{show.summary.gpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Generalized Pareto distribution modelling }
 \description{Likelihood based modelling and inference for the generalized
@@ -21,17 +25,21 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     prior = "gaussian", method = "optimize", start = NULL, priorParameters = NULL,
     maxit = 10000, trace = NULL,
     iter = 10500, burn = 500, thin = 1, jump.const, verbose = TRUE)
-\method{print}{gpd}(object, digits=max(3, getOption("digits") - 3), ...)
+\method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
 \method{coef}{gpd}(object, ...)
-\method{plot}{gpd}(object, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
 \method{AIC}{gpd}(object, ..., k=2)
 \method{coefficients}{gpd}(object, ...)
-\method{print}{bgpd}(b.object, print.seed=FALSE, ...)
-\method{summary}{bgpd}(b.object, ...)
-\method{plot}{bgpd}(b.object, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
-\method{coef}{bgpd}(b.object, ...)
-\method{coefficients}{bgpd}(b.object, ...)
+\method{print}{bgpd}(x, print.seed=FALSE, ...)
+\method{summary}{bgpd}(object, ...)
+\method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{coef}{bgpd}(object, ...)
+\method{coefficients}{bgpd}(object, ...)
+\method{print}{summary.gpd}(x, dig=3, ...)
+\method{print}{summary.bgpd}(x, ...)
+\method{show}{summary.gpd}(x, dig=3, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -81,11 +89,11 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
-  \item{object}{Object of class \code{gpd} returned by \code{gpd} using \code{method="optimize".}}
-  \item{b.object}{Object of class \code{bgpd} returned by \code{gpd} using \code{method="simulate".}}
+  \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
+                   or \code{summary.bgpd} returned by \code{gpd} or \code{summary.gpd}.}
   \item{digits}{Number of digits for printing.}
   \item{main}{Titles for plots. Should be a vector of length 4.}
-  \item{xlab}{X-axis labels for plots. Should be a vector of length 4.}
+  \item{xlab}{In \code{plot.gpd}, x-axis labels for plots. Should be a vector of length 4.}
   \item{nsim}{The number of simulations to use to produce the simulation
               envelope. Defaults to \code{nsim = 1000}}.
   \item{alpha}{A (1 - alpha)\% simulation envelope is produced. Defaults
@@ -101,6 +109,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{density.adjust}{Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
+  \item{dig}{Number of digits to print.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
@@ -194,11 +203,13 @@ are also returned by the \code{coef} method. Depending on what you
   x <- rnorm(1000)
   mod <- gpd(x, qu = 0.7)
   mod
-
-  mod <- gpd(x, qu=.7, method="sim")
-  mod
-  par(mfrow=c(3, 2))
+  par(mfrow=c(2, 2))
   plot(mod)
+# Following lines commented out to keep CRAN robots happy
+#  mod <- gpd(x, qu=.7, method="sim")
+#  mod
+#  par(mfrow=c(3, 2))
+#  plot(mod)
 }
 \keyword{ models }
 

@@ -12,13 +12,12 @@
 chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
 \method{print}{chi}(x, ...)
 \method{summary}{chi}(object, digits=3, ...)
-\method{plot}{chi}{x, which=1:2, lty=1, cilty=2, col=1, spcases=FALSE,
+\method{plot}{chi}(x, which=1:2, lty=1, cilty=2, col=1, spcases=FALSE,
                    cicol=1, xlim=c(0, 1), ylim1=c(-1, 1), ylim2=c(-1, 1),
                    main1="Chi", main2="Chi Bar", xlab="Quantile",
                    ylab1=expression(chi),
                    ylab2=expression(bar(chi)),
-                   ask=nb.fig < length(which) && dev.interactive(), )))
-}
+                   ask=nb.fig < length(which) && dev.interactive(), ...)
 }
 \arguments{
   \item{data}{ A matrix containing 2 numeric columns. }
@@ -31,6 +30,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{trunc}{ Logical flag indicating whether the estimates
                 should be truncated at their theoretical bounds.
                 Defaults to \code{trunc = TRUE}. }
+  \item{x, object}{An object of class \code{chi}.}
   \item{digits}{ Number of digits for printing. }
   \item{which}{Which plot to do: 1 results in a plot of chi, 2 in a 
                plot of chi bar. Defaults to \code{which = 1:2}.}
@@ -39,6 +39,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{xlim, ylim1, ylim2}{Limits for the axes.}
   \item{main1, main2}{Main titles for the plots.}
   \item{xlab, ylab1, ylab2}{Axis labels for the plots.}
+  \item{spcases}{Whether or not to plot special cases. Defaults to \code{FALSE}.}
   \item{ask}{Whether or not to ask before reusing the graphics device.}
   \item{...}{Further arguments to be passed to methods.}
 }

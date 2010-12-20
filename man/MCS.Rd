@@ -1,6 +1,14 @@
 \name{MCS}
 \alias{MCS}
 \alias{bootMCS}
+\alias{print.MCS}
+\alias{show.MCS}
+\alias{plot.MCS}
+\alias{summary.MCS}
+\alias{print.bootMCS}
+\alias{show.bootMCS}
+\alias{summary.bootMCS}
+\alias{plot.bootMCS}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Multivariate conditional Spearman's rho }
 \description{
@@ -10,6 +18,14 @@
 \usage{
 MCS(X, p = seq(0.1, 0.9, by = 0.1))
 bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
+\method{print}{MCS}(x, ...)
+\method{show}{MCS}(x, ...)
+\method{summary}{MCS}(object, ...)
+\method{plot}{MCS}(x, xlab="p", ylab="MCS", ...)
+\method{print}{bootMCS}(x, ...)
+\method{show}{bootMCS}(x, ...)
+\method{summary}{bootMCS}(object, alpha=0.05, ...)
+\method{plot}{bootMCS}(x, xlab="p", ylab="MCS", alpha=0.05, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -19,6 +35,11 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
           \code{R = 100}.}
   \item{trace}{How often to inform the user of progress. Defaults to
           \code{trace = 10}.}
+  \item{x, object}{An object of class \code{MCS} or \code{bootMCS}.}
+  \item{xlab, ylab}{Axis labels.}
+  \item{alpha}{A (1 - alpha)\% pointwise confidence interval will be produced.
+               Defaults to \code{alpha = 0.05}.}
+  \item{...}{Optional arguments to be passed into methods.}
 }
 \details{
   The method is described in detail by Schmid and Schmidt (2007).
@@ -43,9 +64,11 @@ Multivariate Analysis, 98, 1123 -- 1140, 2007 }
 \seealso{ \code{\link{chi}} }
 \examples{
 D <- liver[liver$dose == "D",]
-Dmcs <- bootMCS(D[, 5:6])
-Dmcs
-plot(Dmcs)
+plot(D)
+# Following lines commented out to keep CRAN robots happy
+#Dmcs <- bootMCS(D[, 5:6])
+#Dmcs
+#plot(Dmcs)
 }
 \keyword{ multivariate }
 

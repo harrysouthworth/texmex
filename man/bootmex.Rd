@@ -1,6 +1,7 @@
 \name{bootmex}
 \alias{bootmex}
 \alias{print.bootmex}
+\alias{show.bootmex}
 \alias{plot.bootmex}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Bootstrap a conditional multivariate extreme values model }
@@ -13,6 +14,7 @@ for advice.
 bootmex(x, which, R = 100, dth, dqu, nPass=3, trace=10)
 \method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
 \method{print}{bootmex}(x, ...)
+\method{show}{bootmex}(x, ...)
 }
 \arguments{
   \item{x}{ An object of class 'migpd' as returned by function \code{migpd}. }
@@ -84,12 +86,12 @@ mean bias is the correct thing to do.
 	\code{\link{bootmex}}, \code{\link{predict.mex}}.
 		    }
 \examples{
-data(winter)
-mygpd <- migpd(winter , mqu = .7)
-myboot <- bootmex(mygpd, which = "NO", dqu=.7)
-myboot
-plot(myboot,plots="gpd")
-plot(myboot,plots="dependence")
+# Uncomment the following lines to run example - commented out to keep CRAN robots happy
+#mygpd <- migpd(winter , mqu = .7)
+#myboot <- bootmex(mygpd, which = "NO", dqu=.7)
+#myboot
+#plot(myboot,plots="gpd")
+#plot(myboot,plots="dependence")
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

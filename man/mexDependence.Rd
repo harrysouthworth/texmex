@@ -1,6 +1,7 @@
 \name{mexDependence}
 \alias{mexDependence}
 \alias{print.mexDependence}
+\alias{show.mexDependence}
 \alias{plot.mexDependence}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Estimate the dependence parameters in a conditional multivariate extreme values model }
@@ -11,8 +12,9 @@
 }
 \usage{
 mexDependence(x, which, dth, dqu)
-\method{print}{mexDependence}(object, ...)
-\method{plot}{mexDependence}(object, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...)
+\method{print}{mexDependence}(x, ...)
+\method{show}{mexDependence}(x, ...)
+\method{plot}{mexDependence}(x, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -30,7 +32,6 @@ mexDependence(x, which, dth, dqu)
               structure. The model will be conditional on the \code{which}
 			  variable being over this quantile. Only one of \code{dth}
 			  or \code{dqu} should be given.}
-  \item{object}{An object returned by \code{mexDependence}.}
   \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
   the quantiles of the conditional distributions which will be plotted.}
   \item{col}{The color for points on scatterplots of residuals and original data.}

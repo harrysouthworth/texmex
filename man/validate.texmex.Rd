@@ -1,19 +1,47 @@
 \name{validate.texmex}
 \alias{validate.texmex}
+\alias{test.gpd}
+\alias{test.mex}
+\alias{test.bootmex}
+\alias{test.gpdRangeFit}
+\alias{test.MCS}
+\alias{test.mexDependence}
+\alias{test.mexRangeFit}
+\alias{test.migpd}
+\alias{test.migpdCoefs}
+\alias{test.mrlPlot}
+\alias{test.pgpd}
+\alias{test.plot.bootmex}
+\alias{test.plot.chi}
+\alias{test.plot.gpd}
+\alias{test.plot.mexDependence}
+\alias{test.plot.predict.mex}
+\alias{test.predict.mex}
+\alias{test.qgpd}
+\alias{test.rgpd}
+\alias{test.thinAndBurn.bgpd}
+\alias{test.chi}
+\alias{test.copula}
+\alias{test.dgpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Validate the texmex package
 }
 \description{
-Using \code{svUnit}, run tests to compare behaviour of \code{texmex} with
+Using \code{RUnit}, run tests to compare behaviour of \code{texmex} with
 expected behaviour
 }
 \usage{
-validate.texmex()
+validate.texmex(testDir)
+}
+\arguments{
+\item{testDir}{The location of the tests. If not provided, defaults to being the
+  R subdirectory of the package tree. Only developers would ever want to use this
+  argument.}
 }
 %- maybe also 'usage' for other objects documented here.
 \details{
-The function uses functionality in the \code{svUnit} package to perform many
+The function uses functionality in the \code{RUnit} package to perform many
 tests to ensure that \code{texmex} behaves as expected. These include tests
 to make sure that \code{texmex} can reproduce published results (often parameter
 estimates and model summaries that appear in Coles (2001) or in Heffernan
@@ -33,8 +61,8 @@ If all is well, the result should indicate that no errors or fails have
 occurred.
 }
 \value{
-An object of class \code{svSuiteData}. See the help for \code{svUnit} for
-details.  
+An object of class \code{RUnitTestData}. See the help for \code{RUnit} for
+details.
 
 Plots are also produced on the active plotting device; those plots 
 that reproduce figures in the referenced material are labelled with the Figure 
@@ -60,15 +88,13 @@ As a result, the function takes a while to run.
 \code{\link{texmex}}
 }
 \examples{
+# Uncomment the following lines to run - commented out to make CRAN robots happy
 ## open device to save plotted output
-pdf("texmexPlots.pdf")
-
-val <- validate.texmex()
-summary(val)
-val
-
+#pdf("texmexPlots.pdf")
+#val <- validate.texmex()
+#printHTMLProtocol(val, "~/Desktop/texmexReport.html")
 ## finish writing to device
-dev.off()
+#dev.off()
 }
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.

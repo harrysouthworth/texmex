@@ -1,8 +1,10 @@
 \name{migpd}
 \alias{migpd}
 \alias{print.migpd}
+\alias{show.migpd}
 \alias{summary.migpd}
 \alias{coef.migpd}
+\alias{coefficients.migpd}
 \title{ Fit multiple independent generalized Pareto models }
 \description{
 	Fit multiple independent generalized Pareto models as the first step
@@ -12,9 +14,11 @@
 \usage{
 migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
       trace = 0, verbose = FALSE, priorParameters = NULL)
-\method{print}{migpd}(object, ...)
-\method{summary}{migpd}(object, ...)
+\method{print}{migpd}(x, ...)
+\method{show}{migpd}(x, ...)
+\method{summary}{migpd}(object, verbose = TRUE,...)
 \method{coef}{migpd}(object, ...)
+\method{coefficients}{migpd}(object, ...)
 }
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
@@ -39,7 +43,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 			names of the columns of \code{data}. If not provided, 
 			it defaults to being centred at zero, with variance
 			10000 for log(sigma) and 0.25 for xi. See the details section.}
-  \item{object}{ Object of class \code{migpd} as returned by function \code{migpd}.}
+  \item{x, object}{ Object of class \code{migpd} as returned by function \code{migpd}.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{

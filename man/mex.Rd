@@ -10,19 +10,25 @@
 \alias{print.predict.mex}
 \alias{summary.predict.mex}
 \alias{plot.predict.mex}
+\alias{print.summary.predict.mex}
+\alias{show.predict.mex}
+\alias{show.summary.predict.mex}
 \title{Conditional multivariate extreme values modelling}
 \description{Fit the conditional multivariate extreme value model of Heffernan and Tawn}
 \usage{
 mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
 \method{show}{mex}(x, ...)
-\method{summary}{mex}(x, ...)
+\method{summary}{mex}(object, ...)
 \method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
-\method{coef}{mex}(x, ...)
-\method{coefficients}{mex}(x, ...)
-\method{predict}{mex}(x, which, pqu=0.99, nsim=1000, trace=10, ...)
+\method{coef}{mex}(object, ...)
+\method{coefficients}{mex}(object, ...)
+\method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, ...)
 \method{print}{predict.mex}(x, ...)
-\method{summary}{predict.mex}(x, mth, probs=c(0.05, 0.5, 0.95), ...)
+\method{show}{predict.mex}(x, ...)
+\method{summary}{predict.mex}(object, mth, probs=c(0.05, 0.5, 0.95), ...)
+\method{print}{summary.predict.mex}(x, ...)
+\method{show}{summary.predict.mex}(x, ...)
 \method{plot}{predict.mex}(x, pch=c(1, 3), col=c(2, 8), cex=c(1, 1), ask=TRUE, ...)
 }
 
@@ -71,7 +77,7 @@ mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace 
   \item{col}{The color for points on scatterplots of residuals and original data.
              In \code{plot.predict.mex}, the colours of points for observed and
              simulated data.}
-  \item{x}{Object of class \code{mex} as returned by function \code{mex}.}
+  \item{x, object}{Object of class \code{mex} as returned by function \code{mex}.}
   \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning 
   variable over which it will be thresholded. Defaults to \code{pqu = .99 }. }
   \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations 
