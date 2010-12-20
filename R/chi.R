@@ -144,7 +144,7 @@ plot.chi <- function(x, which=1:2, lty = 1, cilty = 2, col = 1, spcases = FALSE,
     invisible()
 }
 
-test(chi) <- function(){
+test.chi <- function(){
 
 # independent implementation of chi and chibar, Janet Heffernan personal code library
   .Cfunction <- function(data, nLevels){
@@ -217,7 +217,7 @@ test(chi) <- function(){
   checkEqualsNumeric(chi.JH$ChiBarUpper, chi$chibar[,3],msg="chi: ChiBarUpper")
 }
 
-test(plot.chi) <- function(){
+test.plot.chi <- function(){
   chi <- chi(wavesurge)
   par(mfrow=c(1,2),pty="m")
   res <- plot(chi,main1="Figure 8.11 of Coles (2001)\nChi")

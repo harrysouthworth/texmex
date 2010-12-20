@@ -36,7 +36,7 @@ function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 	res
 }
 
-test(pgpd) <- function(){
+test.pgpd <- function(){
 
   myTest <- function(sig,xi,thresh,msg){
     myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))

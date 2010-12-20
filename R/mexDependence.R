@@ -126,7 +126,7 @@ function (x, which, dth, dqu)
    res
 }
 
-test(mexDependence) <- function(){
+test.mexDependence <- function(){
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 

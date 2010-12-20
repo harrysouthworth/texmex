@@ -29,7 +29,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
     invisible()
 }
 
-test(plot.gpd) <- function(){
+test.plot.gpd <- function(){
   par(mfrow=c(2,2))
   mod <- gpd(rain, th=30, penalty="none")
   res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot","\nDensity Plot")))

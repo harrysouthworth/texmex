@@ -57,7 +57,7 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
    invisible(res)
 }
 
-test(migpd) <- function(){
+test.migpd <- function(){
 
 # values from Heffernan and Tawn (2004) Table 4. 
 # Note values in published Table 4 for u_{Xi} in cols NO2 and NO Winter were reversed.

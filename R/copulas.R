@@ -39,9 +39,9 @@ function (x, na.last = NA) {
 }
 
 
-print.copula <- function(object, ...){
-    print(object$call)
-    cat("A copula of", ncol(object$copula), "variables.\n")
+print.copula <- function(x, ...){
+    print(x$call)
+    cat("A copula of", ncol(x$copula), "variables.\n")
     invisible()
 }
 
@@ -53,8 +53,8 @@ summary.copula <- function(object, ...){
     invisible()
 }
 
-plot.copula <- function(object, jitter.=FALSE, ...){
-    x <- object$copula
+plot.copula <- function(x, jitter.=FALSE, ...){
+    x <- x$copula
     if (jitter.){
         x <- apply(x, 2, jitter)
     }
@@ -62,7 +62,7 @@ plot.copula <- function(object, jitter.=FALSE, ...){
     invisible()
 }
 
-test(copula) <- function(){
+test.copula <- function(){
   fun <- function(d) apply(d,2,function(x)(1:n)[rank(x)])/(1+n)
   n <- 200
 

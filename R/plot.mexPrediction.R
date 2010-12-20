@@ -36,7 +36,7 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 	invisible()
 }
 
-test(plot.predict.mex) <- function(){
+test.plot.predict.mex <- function(){
 # check reproduce Figure 6 in Heffernan and Tawn
   w <- migpd(winter,mqu=0.7,penalty="none")
   noMod <- bootmex(w, wh="NO", dqu=.7)  

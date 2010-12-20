@@ -105,7 +105,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	res
 }
 
-test(predict.mex) <- function(){
+test.predict.mex <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
   smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7)
   wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO")

@@ -22,7 +22,7 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), nboot=10,
   }
 }
 
-test(mexRangeFit) <- function(){
+test.mexRangeFit <- function(){
 
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
   

@@ -19,7 +19,7 @@ function (data, umin = min(data), umax = max(data) - 0.1, conf = 0.95,
     lines(Threshold[!is.na(xu)], xu[!is.na(xu)], lty = 2)
 }
 
-test(mrlPlot) <- function(){
+test.mrlPlot <- function(){
   par(mfrow=c(1,1))
   res <- mrlPlot(rain, main="Figure 4.1 of Coles (2001)")
   checkEquals(res,NULL,msg="mrlPlot: check execution")

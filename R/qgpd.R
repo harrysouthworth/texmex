@@ -30,7 +30,7 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
     res
 }
 
-test(qgpd) <- function(){
+test.qgpd <- function(){
 
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))

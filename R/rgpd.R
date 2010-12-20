@@ -21,7 +21,7 @@
   res
 }
 
-test(rgpd) <- function(){
+test.rgpd <- function(){
 
   myTest <- function(seed,p, thresh,msg=""){
       set.seed(seed)

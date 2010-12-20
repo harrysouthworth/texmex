@@ -35,7 +35,7 @@ thinAndBurn.bgpd <- function(object, burn, thin){
   invisible(object)
 }
 
-test(thinAndBurn.bgpd) <- function(){
+test.thinAndBurn.bgpd <- function(){
 
 # generate data to use for checking
   d <- sample(3:10,1)

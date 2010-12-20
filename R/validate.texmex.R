@@ -1,13 +1,22 @@
-validate.texmex <- function(){
-   check <- "package:svUnit" %in% search()
+validate.texmex <- function(testDir){
+   check <- "package:RUnit" %in% search()
    if (!check){
-      stop("You need to attach the svUnit package to validate texmex")
+      check <- try(library(RUnit))
+      if (class(check) == "try-error"){
+          stop("You need to attach the RUnit package to validate texmex")
+      }
    }
-   where <- (1:length(search()))[search() == "package:texmex"]
-   res <- svSuiteList(pos=where)
+   if (missing(testDir)){
+       testDir <- paste(.path.package("texmex"), "tests", sep = "/")
+   }
+   
+   res <- defineTestSuite("texmex", dirs=testDir,
+                          testFuncRegexp="^test.+",
+                          testFileRegexp="*.R")
    cat("Running over 100 tests, including MCMC and bootstrap implementations.\nThis will take some time...\n\n")
-   clearLog()
-   runTest(res)
-   Log()
+
+   res <- runTestSuite(res)
+
+   res
 }
 

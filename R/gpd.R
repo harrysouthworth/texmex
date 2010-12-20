@@ -256,7 +256,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
 }
 
-test(gpd) <- function(){
+test.gpd <- function(){
   tol <- 0.01
 
 ###################################################################
@@ -274,7 +274,7 @@ test(gpd) <- function(){
   mod <- gpd(rain, th=30, penalty="none")
   mod.coef <- coef(mod)
   
-  mod.coef[1] <- exp(mod.coef)
+  mod.coef[1] <- exp(mod.coef[1])
   names(mod.coef)[1] <- "sigma"
   
   mod.loglik <- mod$loglik
@@ -467,14 +467,14 @@ test(gpd) <- function(){
   data <- makeData(a=1,b,n=3000)
   
   gp1 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.25)))
-  gp2 <- list(c(0, 0, 0), diag(c(10^4, 0.05, 0.05)))
+  gp2 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.01)))
 
   mod0 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
   mod1 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
   mod2 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
 
-  checkTrue(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3]),msg="gpd: with covariates, xi drawn to zero")
-  checkTrue(abs(coef(mod1)[2:3]) > abs(coef(mod2)[2:3]),msg="gpd: with covariates, xi drawn to zero")
+  checkTrue(all(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3])),msg="gpd: with covariates, xi drawn to zero")
+  checkTrue(abs(coef(mod1)[3]) > abs(coef(mod2)[3]),msg="gpd: with covariates, xi drawn to zero")
 
 # 2.2 Tests for phi being drawn to 0
 
@@ -489,8 +489,8 @@ test(gpd) <- function(){
   mod4 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
   mod5 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
 
-  checkTrue(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2]),msg="gpd: with covariates, phi being drawn to 0")
-  checkTrue(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2]),msg="gpd: with covariates, phi being drawn to 0")
+  checkTrue(all(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2])),msg="gpd: with covariates, phi being drawn to 0")
+  checkTrue(all(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2])),msg="gpd: with covariates, phi being drawn to 0")
 
 # 2.3 Tests for xi being drawn to 2
   b <- rep(c(-0.5,0.5),each=5)
@@ -503,8 +503,8 @@ test(gpd) <- function(){
   mod7 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
   mod8 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
 
-  checkTrue(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3]),msg="gpd: with covariates, xi drawn to 2")
-  checkTrue(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3]),msg="gpd: with covariates, xi drawn to 2")
+  checkTrue(all(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3])),msg="gpd: with covariates, xi drawn to 2")
+  checkTrue(all(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3])),msg="gpd: with covariates, xi drawn to 2")
 
 # 2.4 Tests for phi being drawn to 4 
 

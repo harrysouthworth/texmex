@@ -110,7 +110,7 @@ summary.bootMCS <- function(object, alpha=.05, ...){
     res
 }
 
-test(MCS) <- function(){
+test.MCS <- function(){
   myMCS <- function(x,p){
 # First and second args are
 # x (dxn matrix) and p (vector of probabilities).

@@ -14,7 +14,7 @@ function(object, which, coefs){
   }
   
   if (length(which) == 1){
-    object$models[which]$coefficients <- coefs
+    object$models[[which]]$coefficients <- coefs
   }
   
   for (i in 1:length(which)){
@@ -23,7 +23,7 @@ function(object, which, coefs){
   object
 }
 
-test(migpdCoefs) <- function(){
+test.migpdCoefs <- function(){
 
   liver <- liver
   liver$ndose <- as.numeric(liver$dose)
@@ -54,7 +54,7 @@ test(migpdCoefs) <- function(){
   oldALTco[1] <- log(oldALTco[1])
 
   checkEqualsNumeric(altco, newALTco, msg="migpdCoefs: change one set of coefficients")
-  checkTrue(newALTco != oldALTco, msg="migpdCoefs: change one set of coefficients")
+  checkTrue(all(newALTco != oldALTco), msg="migpdCoefs: change one set of coefficients")
 
 # Change 2 sets of coefficients at once
 
@@ -67,5 +67,5 @@ test(migpdCoefs) <- function(){
   oldCo[1,] <- log(oldCo[1,])
 
   checkEqualsNumeric(cbind(altco, astco),newCo, msg="migpdCoefs: change two set of coefficients at once")
-  checkTrue(newCo != oldCo, "migpdCoefs: change two set of coefficients at once")
+  checkTrue(all(newCo != oldCo), "migpdCoefs: change two set of coefficients at once")
 }

@@ -52,7 +52,7 @@ function( x , plots = "gpd", main="", ... ){
 	invisible()
 }
 
-test(plot.bootmex) <- function(){
+test.plot.bootmex <- function(){
 
 # 2-d wavesurge data
 

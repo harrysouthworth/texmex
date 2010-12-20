@@ -28,7 +28,7 @@ function(x, sigma, xi, u = 0, log.d=FALSE ){
     res
 }
 
-test(dgpd) <- function(){
+test.dgpd <- function(){
 
   myTest <- function(sig,xi,thresh,msg){
     myd <- sapply(1:nreps,function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))

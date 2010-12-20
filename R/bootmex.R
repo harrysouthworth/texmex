@@ -121,10 +121,10 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     ans
 }
 
-test(bootmex) <- function(){ # this is a weak test - it tests the structure 
+test.bootmex <- function(){ # this is a weak test - it tests the structure 
 # of the output but not the correctness of the bootstrap coefficients; it will 
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
-# testing of this function, run test(predict.mex)
+# testing of this function, run test.predict.mex
 
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
