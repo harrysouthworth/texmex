@@ -59,8 +59,23 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         if (missing(th)) {
             th <- quantile(y, qu)
         }
-        X.phi <- model.matrix(phi, data)
-        X.xi <- model.matrix(xi, data)
+
+		
+		
+		if (!is.R() & length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
+			X.phi <- matrix(rep(1, nrow(data)), ncol=1)
+		}
+		else {
+	        X.phi <- model.matrix(phi, data)
+		}
+		if (!is.R() & length(as.character(xi)) == 2 & as.character(xi)[2] == "1"){
+			X.xi <- matrix(rep(1, nrow(data)), ncol=1)
+		}
+		else {
+	        X.xi <- model.matrix(xi, data)
+		}
+
+
         X.phi <- X.phi[y > th, ]
         X.xi <- X.xi[y > th, ]
     }
@@ -136,8 +151,8 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ################################## If method = "optimize", construct object and return...
 
+	o$cov <- solve(o$hessian)
     if (method == "o"){
-        o$cov <- solve(o$hessian)
         o$hessian <- NULL
         o$se <- sqrt(diag(o$cov))
         o$threshold <- th
@@ -166,15 +181,33 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     ################################# Simulate from posteriors....
 
     else { # Method is "simulate"...
-   
         if (missing(jump.const)){
             jump.const <- (2.4/sqrt(ncol(X.phi) + ncol(X.xi)))^2
         }
 
         u <- th
-	
-        # Next line seems redundant, but leave in case want to allow other priors in future
-        prior <- dmvnorm
+
+	    ##################### Set up prior - account for differences between R & S+
+		if (is.R()){
+			prior <- dmvnorm
+		}
+		else {
+			prior <- function(x, mean, cov, log.=TRUE){ log(dmvnorm(x, mean, cov)) }
+		}
+
+	    ################# Set up proposal - account for differences bewteen R & S+
+	    if (is.R()){
+	    	proposal <- function(mean, sigma){
+		    	c(rmvnorm( 1 , mean, sigma = sigma ))
+	    	}
+	    }
+	    else {
+	    	proposal <- function(mean, sigma){
+	    		c(rmvnorm(1, mean, cov=sigma))
+	    	}
+	    }
+
+       ############################# Define log-likelihood
 
         gpdlik <- # Positive loglikelihood
         function(param, data, X.phi, X.xi){
@@ -190,8 +223,6 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
                 - sum(phi) - sum(log(data) * (1/xi + 1))
             }
         } # Close gpdlik <- function
-
-
 
         # Need to check for convergence failure here. Otherwise, end up simulating
         # proposals from distribution with zero variance in 1 dimension.
@@ -212,20 +243,15 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         if (!exists(".Random.seed")){ runif(1)  }
         seed <- .Random.seed # Retain and add to output
 
-
-        cov <- solve(o$hessian)
+        cov <- o$cov
         ######################## Run the Metropolis algorithm...
         for(i in 2:iter){
             if( verbose){
                 if( i %% trace == 0 ) cat(i, " steps taken\n" )
             }
         
-            if ( exists("is.R") && is.function(is.R) && is.R() ){
-                prop <- c(rmvnorm( 1 , mean = o$par, sigma = cov * jump.const ))
-            }
-            else {
-                prop <- c(rmvnorm( 1 , mean = o$par, cov = cov * jump.const ))
-            }
+			prop <- proposal(o$par, cov*jump.const)
+
             bottom <- prior(res[i - 1,], priorParameters[[1]], priorParameters[[2]], log=TRUE ) +
                       gpdlik(res[ i - 1 , ] , y-u, X.phi, X.xi)
             top <- prior(prop, priorParameters[[1]], priorParameters[[2]], log=TRUE) +

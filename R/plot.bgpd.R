@@ -7,9 +7,17 @@ function( x, which.plots=1:3, density.adjust=2,
 	if ( 1 %in% which.plots ){
         kdes <- list()
     
-        for (i in 1:length(varnames)){
-            kdes[[ i ]] <- density(x$param[, i], n=200, adjust=density.adjust)
-        }
+		if (is.R()){
+	        for (i in 1:length(varnames)){
+    	        kdes[[ i ]] <- density(x$param[, i], n=200, adjust=density.adjust)
+        	}
+		}
+		else {
+			for (i in 1:length(varnames)){
+				bw <- bandwidth.hb(x$param[, i]) * density.adjust
+				kdes[[i]] <- density(x$param[, i], n=200, width=bw)
+			}
+		}
 
 	    for( i in 1:length(kdes)){
     		plot(kdes[[i]], type = "l" , xlab = varnames[i] , ylab="Density" ,

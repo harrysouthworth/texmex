@@ -1,5 +1,6 @@
-thinAndBurn <- function (object, burn, thin)
+thinAndBurn <- function (object, burn, thin){
   UseMethod("thinAndBurn")
+}
 
 thinAndBurn.bgpd <- function(object, burn, thin){
 

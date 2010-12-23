@@ -8,7 +8,8 @@ summary.bgpd <- function(object, ...){
 }
 
 print.summary.bgpd <- function(x, ...){
-   print(unclass(x))
+   print(as.matrix(x))
    invisible()
 }
 
+show.summary.bgpd <- print.summary.bgpd
