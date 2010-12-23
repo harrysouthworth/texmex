@@ -1,7 +1,7 @@
 Package: texmex
 Type: Package
 Title: Threshold exceedences and multivariate extremes
-Version: 1.0
+Version: 1.1
 Date: 2010-12-20
 Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
