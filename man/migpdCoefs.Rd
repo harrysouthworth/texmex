@@ -30,10 +30,10 @@ migpdCoefs(object, which, coefs)
 library(MASS)
 liver <- liver
 liver$ndose <- as.numeric(liver$dose)
-d <- data.frame(alt = resid(rlm(log(ALT_M) ~ log(ALT_B) + ndose, data=liver)),
-                ast = resid(rlm(log(AST_M) ~ log(AST_B) + ndose, data=liver)),
-                alp = resid(rlm(log(ALP_M) ~ log(ALP_B) + ndose, data=liver)),
-                tbl = resid(rlm(log(TBL_M) ~ log(TBL_B) + ndose, data=liver)))
+d <- data.frame(alt = resid(rlm(log(ALT.M) ~ log(ALT.B) + ndose, data=liver)),
+                ast = resid(rlm(log(AST.M) ~ log(AST.B) + ndose, data=liver)),
+                alp = resid(rlm(log(ALP.M) ~ log(ALP.B) + ndose, data=liver)),
+                tbl = resid(rlm(log(TBL.M) ~ log(TBL.B) + ndose, data=liver)))
 
 Dgpds <- migpd(d[liver$dose == "D", 1:4], mqu=.7)
 

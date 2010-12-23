@@ -10,14 +10,14 @@
 \format{
   A data frame with 606 observations on the following 9 variables.
   \describe{
-    \item{\code{ALP_B}}{Alkaline phosphatase at baseline. A numeric vector.}
-    \item{\code{ALT_B}}{Alanine aminotransferase at baseline. A numeric vector.}
-    \item{\code{AST_B}}{Aspartate aminotransferase at baseline. A numeric vector.}
-    \item{\code{TBL_B}}{Total bilirubin at baseline. A numeric vector.}
-    \item{\code{ALP_M}}{Alkaline phosphatase after treatment. A numeric vector.}
-    \item{\code{ALT_M}}{Alanine aminotransferase after treatment. A numeric vector.}
-    \item{\code{AST_M}}{Aspartate aminotransferase after treatment. A numeric vector.}
-    \item{\code{TBL_M}}{Total bilirubin after treatment. A numeric vector.}
+    \item{\code{ALP.B}}{Alkaline phosphatase at baseline. A numeric vector.}
+    \item{\code{ALT.B}}{Alanine aminotransferase at baseline. A numeric vector.}
+    \item{\code{AST.B}}{Aspartate aminotransferase at baseline. A numeric vector.}
+    \item{\code{TBL.B}}{Total bilirubin at baseline. A numeric vector.}
+    \item{\code{ALP.M}}{Alkaline phosphatase after treatment. A numeric vector.}
+    \item{\code{ALT.M}}{Alanine aminotransferase after treatment. A numeric vector.}
+    \item{\code{AST.M}}{Aspartate aminotransferase after treatment. A numeric vector.}
+    \item{\code{TBL.M}}{Total bilirubin after treatment. A numeric vector.}
     \item{\code{dose}}{The treatment group (i.e. dose group). A factor with levels \code{A} \code{B} \code{C} \code{D}}
   }
 }

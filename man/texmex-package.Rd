@@ -60,13 +60,13 @@ summary(mypred , probs = c( .025, .5, .975 ))
 # Analyse the liver data included in the package
 library(MASS) # For the rlm function
 
-liver <- liver[liver$ALP_M > 1,] # Get rid of outlier
+liver <- liver[liver$ALP.M > 1,] # Get rid of outlier
 liver$ndose <- as.numeric(liver$dose)
 
-alt <- resid(rlm(log(ALT_M) ~ log(ALT_B) + ndose, data=liver, method="MM"))
-ast <- resid(rlm(log(AST_M) ~ log(AST_B) + ndose, data=liver, method="MM"))
-alp <- resid(rlm(log(ALP_M) ~ log(ALP_B) + ndose, data=liver, method="MM"))
-tbl <- resid(rlm(log(TBL_M) ~ log(TBL_B) + ndose, data=liver, method="MM"))
+alt <- resid(rlm(log(ALT.M) ~ log(ALT.B) + ndose, data=liver, method="MM"))
+ast <- resid(rlm(log(AST.M) ~ log(AST.B) + ndose, data=liver, method="MM"))
+alp <- resid(rlm(log(ALP.M) ~ log(ALP.B) + ndose, data=liver, method="MM"))
+tbl <- resid(rlm(log(TBL.M) ~ log(TBL.B) + ndose, data=liver, method="MM"))
 
 r <- data.frame(alt=alt, ast=ast, alp=alp, tbl=tbl)
 
@@ -111,7 +111,7 @@ altmod4 <- gpd(alt, qu=.7, data=r)
 # Those are simulated residuals. Get some baselines and transform all
 # to raw scale
 
-#b <- sample(log(liver$ALT_M), size=nrow(balt3$param), replace=TRUE)
+#b <- sample(log(liver$ALT.M), size=nrow(balt3$param), replace=TRUE)
 #res <- exp(b + simD)
 
 # estimate quantiles on raw scale

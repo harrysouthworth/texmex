@@ -96,4 +96,4 @@ mean bias is the correct thing to do.
 % Add one or more standard keywords, see file 'KEYWORDS' in the
 % R documentation directory.
 \keyword{ models }
-\keyword{ multivariate }% __ONLY ONE__ keyword per line
+\keyword{ multivariate }% ..ONLY ONE.. keyword per line
