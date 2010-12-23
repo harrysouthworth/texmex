@@ -399,13 +399,13 @@ test.gpd <- function(){
 #     These are not necessarily sensible models!
 #     Start with phi alone.
 
-  mod <- gpd(ALT_M, qu=.7, data=liver,
-           phi = ~ ALT_B + dose, xi = ~1,
+  mod <- gpd(ALT.M, qu=.7, data=liver,
+           phi = ~ ALT.B + dose, xi = ~1,
            penalty="none")
 
-  m <- model.matrix(~ ALT_B + dose, liver)
+  m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- .ismev.gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
+  ismod <- .ismev.gpd.fit(liver$ALT.M, threshold=quantile(liver$ALT.M, .7), 
                  ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
 
   checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol,msg="gpd: covariates in phi only, point ests")
@@ -415,13 +415,13 @@ test.gpd <- function(){
 
 ######################################################################
 # 3.2 Test xi alone.
-  mod <- gpd(ALT_M, qu=.7, data=liver,
-           phi = ~1, xi = ~ ALT_B + dose,
+  mod <- gpd(ALT.M, qu=.7, data=liver,
+           phi = ~1, xi = ~ ALT.B + dose,
            penalty="none")
 
-  m <- model.matrix(~ ALT_B + dose, liver)
+  m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- .ismev.gpd.fit(liver$ALT_M, threshold=quantile(liver$ALT_M, .7), 
+  ismod <- .ismev.gpd.fit(liver$ALT.M, threshold=quantile(liver$ALT.M, .7), 
                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
@@ -534,15 +534,15 @@ test.gpd <- function(){
   save.seed <- .Random.seed
 
   set.seed(save.seed)
-  bmod <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7), iter=1000,verbose=FALSE, method="sim")
+  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7), iter=1000,verbose=FALSE, method="sim")
   
   set.seed(save.seed)
-  bmod2 <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7), iter=1000,verbose=FALSE, method="sim")
+  bmod2 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7), iter=1000,verbose=FALSE, method="sim")
   
   checkEqualsNumeric(bmod$param,bmod2$param,msg="gpd: test simulation reproducibility 1")
 
   set.seed(bmod$seed)
-  bmod3 <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7), iter=1000,verbose=FALSE, method="sim")
+  bmod3 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7), iter=1000,verbose=FALSE, method="sim")
   checkEqualsNumeric(bmod$param, bmod3$param,msg="gpd: test simulation reproducibility 2")
 
 #*************************************************************  
@@ -552,7 +552,7 @@ test.gpd <- function(){
 
   iter <- sample(500:1000,1)
   burn <- sample(50,1)
-  bmod2 <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
+  bmod2 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                 iter=iter, burn=burn, verbose=FALSE, method="sim")
 
   checkEqualsNumeric(iter-burn, nrow(bmod2$param),msg="gpd: Logical test of burn-in 2")
@@ -562,14 +562,14 @@ test.gpd <- function(){
 
   thin <- 0.5
   iter <- 1000
-  bmod <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
+  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                iter=iter, thin = thin,verbose=FALSE, method="sim")
 
   checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param),msg="gpd: Logical test of thinning 1")
 
   thin <- 2
   iter <- 1000
-  bmod <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),
+  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                iter=iter, thin = thin, verbose=FALSE, method="sim")
 
   checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),msg="gpd: Logical test of thinning 1")
@@ -584,8 +584,8 @@ test.gpd <- function(){
   tol.se <- 0.2
 # 4.4. Compare MAP and posterior summaries for simple model
 
-  mod <- gpd(ALT_M, data=liver, qu=.7)
-  bmod <- gpd(ALT_M, data=liver, th=quantile(liver$ALT_M, .7),verbose=FALSE, method="sim")
+  mod <- gpd(ALT.M, data=liver, qu=.7)
+  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),verbose=FALSE, method="sim")
   
   checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for simple model - point ests")
   checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for simple model - std errs")
@@ -602,7 +602,7 @@ test.gpd <- function(){
 
 # function rlm : Fit a linear model by robust regression using an M estimator:
 
-  rmod <- rlm(log(ALT_M) ~ log(ALT_B) + dose, data=liver) 
+  rmod <- rlm(log(ALT.M) ~ log(ALT.B) + dose, data=liver) 
   liver$resids <- resid(rmod)
 
   mod <- gpd(resids, data=liver, qu=.7, phi = ~ ndose)
