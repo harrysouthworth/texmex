@@ -2,10 +2,30 @@ mex <- function(data, which, mth, mqu, dth, dqu,
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
-    res1 <- migpd(data=data, mth=mth, mqu=mqu, penalty=penalty,
+	if (missing(which)){
+		which <- names(data)[1]
+		cat("which not given. Conditioning on", which, "\n")
+	}
+
+	if (missing(mth)){
+		mqu <- rep(mqu, ncol(data))
+		mth <- unlist(lapply(1:length(mqu), function(i, data, p){
+												quantile(data[, i], prob=p[i])
+											}, p=mqu, data=data))
+	}
+
+    res1 <- migpd(data=data, mth=mth, penalty=penalty,
                   maxit=maxit, trace=trace, verbose=verbose,
                   priorParameters=priorParameters)
-    res2 <- mexDependence(x= res1, which=which, dth=dth, dqu=dqu)
+
+	if (!missing(dth)){
+		dqu <- mean(data[,which] > dth)
+	}
+	else if (missing(dqu)){
+		dqu <- res1$mqu[1]
+	}
+
+    res2 <- mexDependence(x= res1, which=which, dqu=dqu)
     
     res <- list(margins=res1, dependence=res2)
     oldClass(res) <- "mex"
