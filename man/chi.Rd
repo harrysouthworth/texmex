@@ -17,7 +17,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
                    main1="Chi", main2="Chi Bar", xlab="Quantile",
                    ylab1=expression(chi),
                    ylab2=expression(bar(chi)),
-                   ask=nb.fig < length(which) && dev.interactive(), ...)
+                   ask, ...)
 }
 \arguments{
   \item{data}{ A matrix containing 2 numeric columns. }

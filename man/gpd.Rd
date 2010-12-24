@@ -13,6 +13,7 @@
 \alias{coef.bgpd}
 \alias{coefficients.bgpd}
 \alias{print.summary.bgpd}
+\alias{show.summary.bgpd}
 \alias{print.summary.gpd}
 \alias{show.summary.gpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
@@ -38,6 +39,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \method{coef}{bgpd}(object, ...)
 \method{coefficients}{bgpd}(object, ...)
 \method{print}{summary.gpd}(x, dig=3, ...)
+\method{print}{summary.bgpd}(x, ...)
 \method{print}{summary.bgpd}(x, ...)
 \method{show}{summary.gpd}(x, dig=3, ...)
 }

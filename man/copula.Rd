@@ -13,7 +13,7 @@ copula(x, na.last = NA)
 \method{print}{copula}(x, ...)
 \method{show}{copula}(x, ...)
 \method{summary}{copula}(object, ...)
-\method{plot}{copula}(x, jitter. = FALSE, ...)
+\method{plot}{copula}(x, jitter. = FALSE, jitter.factor=1, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{

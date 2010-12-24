@@ -1,7 +1,7 @@
 \name{bgpdSetSeed}
 \alias{bgpdSetSeed}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Set the seed from a fited \code{bgpd} object.}
+\title{Set the seed from a fited bgpd object.}
 \description{
 Set the seed from a fited \code{bgpd} object to ensure reproducibility of output.
 }
