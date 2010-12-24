@@ -21,7 +21,8 @@ copula(x, na.last = NA)
   \item{na.last}{ How to treat missing values. See \code{rank} for details. }
   \item{jitter.}{In the call to \code{plot.copula}, if \code{jitter=TRUE},
                 the values are jittered before plotting. Defaults
-                to \code{jitter=FALSE}.}
+                to \code{jitter. = FALSE}.}
+  \item{jitter.factor}{How much jittering to use. Defaults to \code{jitter.factor = 1.}}
   \item{object}{Object of class \code{copula} as returned by function \code{copula}.}
   \item{...}{Further arguments to be passed to methods.}                
 }
