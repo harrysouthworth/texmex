@@ -42,7 +42,12 @@
       co <- coef(x)[,i]
       xq <- -log(-log(plotp))
       zq <- quantile(x$Z[,i],quantiles)
-      yq <- sapply(zq, function(z)co["a"] * xq + co["c"] - co["d"]*log(xq) + xq^co["b"] * z)
+      yq <- sapply(zq, function(z, co, xq){
+      						co["a"] * xq + co["c"] - co["d"]*log(xq) + xq^co["b"] * z
+      					}, # Close function
+      					 xq=xq, co=co
+      			   ) # Close sapply
+      
       plotx <- revGumbel(plotp,data=x$migpd$data[,x$which],qu=marP,th=marThr,sigma=sig,xi=xi)
       ploty <- apply(exp(-exp(-yq)),2,revGumbel,data=as.matrix(x$migpd$data[,-x$which])[,i],
                      qu=x$migpd$mqu[-x$which][i],th=x$migpd$mth[-x$which][i],
