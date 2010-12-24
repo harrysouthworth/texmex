@@ -16,8 +16,15 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
 
     # Get the EDFs
     t.method <- "first"
-    data <- cbind(rank(data[, 1],ties.method = t.method)/(n + 1), 
-                  rank(data[, 2],ties.method = t.method)/(n + 1))
+
+	if (is.R()){
+	    data <- cbind(rank(data[, 1],ties.method = t.method)/(n + 1), 
+    	              rank(data[, 2],ties.method = t.method)/(n + 1))
+	}
+	else {
+		data <- cbind(rank(data[, 1])/(n + 1), 
+    	              rank(data[, 2])/(n + 1))
+	}
 
     rowmax <- apply(data, 1, max)
     rowmin <- apply(data, 1, min)
@@ -63,7 +70,7 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
 
     if (trunc) {
         chiu[chiu > 1] <- 1
-        chiu <- apply(chiu, 2, function(x) pmax(x, chiulb))
+        chiu <- apply(chiu, 2, function(x, z){ pmax(x, z) }, z = chiulb)
         chibaru[chibaru > 1] <- 1
         chibaru[chibaru < -1] <- -1
     }
@@ -90,11 +97,10 @@ summary.chi <- function(object, digits=3, ...){
     wh <- quantile(object$quantile, prob=c(.05, .5, .95))
     wh <- sapply(wh, function(i, u){
                         d <- abs(u - i)
-                        u[d == min(d)]
+                        min(u[d == min(d)])
                      }, u=object$quantile)
 
     chiQ <- object$chi[object$quantile %in% wh, 2]
-
     chibarQ <- object$chibar[object$quantile %in% wh, 2]
 
     res <- rbind(wh, chiQ, chibarQ)
@@ -110,13 +116,20 @@ plot.chi <- function(x, which=1:2, lty = 1, cilty = 2, col = 1, spcases = FALSE,
                      xlab = "Quantile", 
                      ylab1 = expression(chi),#"Chi",
                      ylab2 = expression(bar(chi)), #"Chi Bar",
-                     ask = nb.fig < length(which) && dev.interactive(), ...){
+                     ask, ...){
 
     show <- logical(2)
     show[which] <- TRUE
     lty <- c(cilty, lty, cilty)
     col <- c(cicol, col, cicol)
     nb.fig <- prod(par("mfcol"))
+
+	if (is.R() & missing(ask)){
+		ask <- nb.fig < length(which) && dev.interactive()
+	}
+	else {
+		ask <- FALSE
+	}
     if (ask) {
         op <- par(ask = TRUE)
         on.exit(par(op))
@@ -147,60 +160,68 @@ plot.chi <- function(x, which=1:2, lty = 1, cilty = 2, col = 1, spcases = FALSE,
 test.chi <- function(){
 
 # independent implementation of chi and chibar, Janet Heffernan personal code library
-  .Cfunction <- function(data, nLevels){
-    rowWiseMax <- apply(data, 1, max)
-    rowWiseMin <- apply(data, 1, min)
-    u <- seq(min(rowWiseMax) + 1/(2 * nLevels), max(rowWiseMin) - 1/(2 * nLevels), length = nLevels)
-    Cu <- sapply(1:nLevels,function(i)mean(rowWiseMax < u[i]))
-    CbarU <- sapply(1:nLevels,function(i)mean(rowWiseMin > u[i]))
-    list(u = u, Cu = Cu, CbarU = CbarU)
-  } 
+
 
   .ChiFunction <- function(data, nLevels){
-    C <- .Cfunction(TransUniform(data), nLevels = nLevels)
-    u <- C$u
-    Cu <- C$Cu
-    CbarU <- C$CbarU
-    ChiU <- 2 - log(Cu)/log(u)
-    ChiBarU <- (2 * log(1 - u))/log(CbarU) - 1
-    n <- nrow(data)
-    
-#variances of chi and chibar
-    varChi <- ((1/log(u)^2 * 1)/Cu^2 * Cu * (1 - Cu))/n
-    varChiBar <- (((4 * log(1 - u)^2)/(log(CbarU)^4 * CbarU^2)) * CbarU * (1 - CbarU))/n
-  
-#upper and lower 95% conf int bounds for chi and chibar; these are based on normal approx with further functional constraints imposed
-    z.975 <- qnorm(1 - 0.05/2)
-    ChiLower <- ChiU - z.975 * sqrt(varChi)
-    ChiUpper <- ChiU + z.975 * sqrt(varChi)
-  
-    ChiLbound <- numeric(length(u))
-    ChiLbound[u>0.5] <- 2 - log(2 *u[u > 0.5] - 1)/log(u[u > 0.5])
-    ChiLbound[u<=0.5] <- -Inf
-    
-    ChiLower <- apply(cbind(ChiLower, ChiLbound), 1, max)
-    ChiUpper[ChiUpper > 1] <- 1
-  
-    ChiBarLower <- ChiBarU - z.975 * sqrt(varChiBar)
-    ChiBarUpper <- ChiBarU + z.975 * sqrt(varChiBar)
-    ChiBarLower[ChiBarLower < -1] <- -1
-    ChiBarUpper[ChiBarUpper > 1] <- 1
-    
-    list(u = C$u, Cu = C$Cu, CbarU = C$CbarU, 
-         Chi = ChiU, ChiBar = ChiBarU, 
-         ChiLower = ChiLower, ChiUpper = ChiUpper,
-         ChiBarLower = ChiBarLower, ChiBarUpper = ChiBarUpper,
-         n = n)
+		  .Cfunction <- function(data, nLevels){
+		    rowWiseMax <- apply(data, 1, max)
+		    rowWiseMin <- apply(data, 1, min)
+		    u <- seq(min(rowWiseMax) + 1/(2 * nLevels), max(rowWiseMin) - 1/(2 * nLevels), length = nLevels)
+		    Cu <- sapply(1:nLevels,function(i, rmax, u){ mean(rmax < u[i]) }, rmax = rowWiseMax, u=u)
+		    CbarU <- sapply(1:nLevels,function(i, rmin, u){ mean(rmin > u[i]) }, rmin=rowWiseMin, u=u)
+		    list(u = u, Cu = Cu, CbarU = CbarU)
+		  } 
+		  TransUniform <- function(x){
+				  .transUniform <- function(x){
+					if (is.R()){
+					    rank(x,ties.method="first") / (length(x) + 1) # original version
+					}
+					else {
+						rank(x) / (length(x) + 1) # original version
+					}
+				  }
+		
+		
+		    if(length(dim(x)) > 0)apply(x,2,.transUniform)
+		    else .transUniform(x)
+		  } 
+	    C <- .Cfunction(TransUniform(data), nLevels = nLevels)
+	    u <- C$u
+	    Cu <- C$Cu
+	    CbarU <- C$CbarU
+	    ChiU <- 2 - log(Cu)/log(u)
+	    ChiBarU <- (2 * log(1 - u))/log(CbarU) - 1
+	    n <- nrow(data)
+	    
+	#variances of chi and chibar
+	    varChi <- ((1/log(u)^2 * 1)/Cu^2 * Cu * (1 - Cu))/n
+	    varChiBar <- (((4 * log(1 - u)^2)/(log(CbarU)^4 * CbarU^2)) * CbarU * (1 - CbarU))/n
+	  
+	#upper and lower 95% conf int bounds for chi and chibar; these are based on normal approx with further functional constraints imposed
+	    z.975 <- qnorm(1 - 0.05/2)
+	    ChiLower <- ChiU - z.975 * sqrt(varChi)
+	    ChiUpper <- ChiU + z.975 * sqrt(varChi)
+	  
+	    ChiLbound <- numeric(length(u))
+	    ChiLbound[u>0.5] <- 2 - log(2 *u[u > 0.5] - 1)/log(u[u > 0.5])
+	    ChiLbound[u<=0.5] <- -Inf
+	    
+	    ChiLower <- apply(cbind(ChiLower, ChiLbound), 1, max)
+	    ChiUpper[ChiUpper > 1] <- 1
+	  
+	    ChiBarLower <- ChiBarU - z.975 * sqrt(varChiBar)
+	    ChiBarUpper <- ChiBarU + z.975 * sqrt(varChiBar)
+	    ChiBarLower[ChiBarLower < -1] <- -1
+	    ChiBarUpper[ChiBarUpper > 1] <- 1
+	    
+	    list(u = C$u, Cu = C$Cu, CbarU = C$CbarU, 
+	         Chi = ChiU, ChiBar = ChiBarU, 
+	         ChiLower = ChiLower, ChiUpper = ChiUpper,
+	         ChiBarLower = ChiBarLower, ChiBarUpper = ChiBarUpper,
+	         n = n)
   }
 
-  .transUniform <- function(x){
-    rank(x,ties.method="first") / (length(x) + 1) # original version
-  }
 
-  TransUniform <- function(x){
-    if(length(dim(x)) > 0)apply(x,2,.transUniform)
-    else .transUniform(x)
-  } 
 
 #*************************************************************
 
