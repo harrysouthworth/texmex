@@ -25,12 +25,9 @@ MCS <- function(X,p=seq(.1, .9, by=.1)) {
     X <- t(X) # Yiannis's original code had variables as rows
     U <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
     n    <- length(p)
-    res1 <- vector('list',n)
-    for(i in 1:n){
-        res1[[i]] <- U
-      }
-    res2 <- mapply(.MCSlower,res1,p)
-    res <- list(mcs=res2, p=p, call=theCall)
+	res <- sapply(p, .MCSlower, U=U)
+
+    res <- list(mcs=res, p=p, call=theCall)
     oldClass(res) <- "MCS"
     res
   }
@@ -65,13 +62,13 @@ summary.MCS <-  function(object, ...){
 
 bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    theCall <- match.call()
-   bfun <- function(i, data, p){
+   bfun <- function(i, data, p, trace){
        if (i %% trace == 0){ cat("Replicate", i, "\n") }
        d <- data[sample(1:nrow(data), replace=TRUE),]
        MCS(d, p)$mcs
    }
 
-   res <- sapply(1:R, bfun, data=X, p=p)
+   res <- sapply(1:R, bfun, data=X, p=p, trace=trace)
    res <- list(replicates=res, p=p, R=R, call=theCall)
    oldClass(res) <- "bootMCS"
    invisible(res)
