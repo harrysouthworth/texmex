@@ -1,10 +1,26 @@
 `mexRangeFit` <-
-function (x, which, quantiles=seq(0.5,0.9,length=9), nboot=10,
+function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
           col="red",bootcol="grey",...)
 {
-  ests <- lapply(quantiles,function(qu)mexDependence(x,which,dqu=qu))
-  boot <- lapply(quantiles,function(qu)bootmex(x,which,R=nboot,dqu=qu))
-  
+
+  if (class(x) == "mex"){
+    x <- x[[1]]
+  }
+
+   if (missing(which)) {
+       cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], "\n")
+       which <- 1
+   }
+
+  ests <- lapply(quantiles,function(qu, which, x){
+                                mexDependence(x=x, which=which, dqu=qu)
+                           },
+                           which=which, x=x)
+  boot <- lapply(quantiles,function(qu, x, which, R, nPass, trace){
+                                bootmex(x=x, which=which, R=R, dqu=qu, nPass=nPass, trace=trace)
+                            },
+                            x=x, which=which, R=R, nPass=nPass, trace=trace)
+
   PointEsts <- sapply(ests,coef)
   cof <- coef(ests[[1]])
   whichName <- ests[[1]]$conditioningVariable  
@@ -16,7 +32,7 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), nboot=10,
       Boot <- sapply(boot,function(x) sapply(x$boot,function(x) x$dependence[i]))
       ylim <- range(rbind(PointEsts[i,],Boot),na.rm=TRUE)
       plot(quantiles,PointEsts[i,],col=col,ylab=Names[i],type="b",ylim=ylim,...)
-      points(rep(quantiles,each=nboot),Boot,col=bootcol)
+      points(rep(quantiles,each=R),Boot,col=bootcol)
       points(quantiles,PointEsts[i,],col=col)
     }
   }
