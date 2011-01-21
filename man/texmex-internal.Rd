@@ -7,7 +7,7 @@
 \alias{revGumbel}
 \alias{mexGumbel}
 \alias{gpd.fit}
-\title{Internal functions for \code{texmex}}
+\title{Internal functions for texmex}
 \description{Internal functions used by the \code{texmex} package.}
 
 \usage{
