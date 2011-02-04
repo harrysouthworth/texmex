@@ -70,3 +70,4 @@ function( object , nsim = 1000 , alpha = .050, ... ){
     invisible()
 }
 
+show.summary.gpd <- print.summary.gpd
