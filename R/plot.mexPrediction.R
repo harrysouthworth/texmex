@@ -13,7 +13,7 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 
 	xdat <- x$data$real[, 1 ]
   upts <- seq(from =0.001,to=1-0.0001,len=100)
-  xpts <- revGumbel(upts,data=x$data$real[, 1 ], qu = mean(x$data$real[,1] < x$mth[1]), th=x$mth[1],sigma = x$gpd.coef[3,1], xi = x$gpd.coef[4,1])
+  xpts <- revTransform(upts,data=x$data$real[, 1 ], qu = mean(x$data$real[,1] < x$mth[1]), th=x$mth[1],sigma = x$gpd.coef[3,1], xi = x$gpd.coef[4,1])
 
 	for( i in 2:( dim( x$data$real )[[ 2 ]] ) ){
 		ydat <- x$data$real[, i ]
@@ -29,7 +29,7 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 				col=col[ 2 ] , pch=pch[ 2 ], cex=cex[ 2 ] )
 		points( xdat, ydat , pch=pch[ 1 ], col=col[ 1 ], cex= cex[ 1 ] )
 		abline( v = x$data$pth, lty=2, col="blue" )   
-    ypts <- revGumbel(upts,data=x$data$real[, i ], qu = mean(x$data$real[,i] < x$mth[i]), th=x$mth[i],sigma = x$gpd.coef[3,i], xi = x$gpd.coef[4,i])
+    ypts <- revTransform(upts,data=x$data$real[, i ], qu = mean(x$data$real[,i] < x$mth[i]), th=x$mth[i],sigma = x$gpd.coef[3,i], xi = x$gpd.coef[4,i])
     lines(xpts,ypts,col="blue")
 	}
 	

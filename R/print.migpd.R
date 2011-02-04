@@ -7,9 +7,8 @@ function( x , ... ){
 		cat( "\nAll models converged.\n" )
 	else cat( "\nWARNING: Not all models converged.\n" )
 
-	if ( is.null( x$gumbel ) )
-		cat( "Gumbel transformations have not yet been performed.\n" )
-
+    cat("Margin transformation:", x$method, "\n")
+    
 	invisible()
 }
 

@@ -48,8 +48,8 @@
       					 xq=xq, co=co
       			   ) # Close sapply
       
-      plotx <- revGumbel(plotp,data=x$migpd$data[,x$which],qu=marP,th=marThr,sigma=sig,xi=xi)
-      ploty <- apply(exp(-exp(-yq)),2,revGumbel,data=as.matrix(x$migpd$data[,-x$which])[,i],
+      plotx <- revTransform(plotp,data=x$migpd$data[,x$which],qu=marP,th=marThr,sigma=sig,xi=xi)
+      ploty <- apply(exp(-exp(-yq)),2,revTransform,data=as.matrix(x$migpd$data[,-x$which])[,i],
                      qu=x$migpd$mqu[-x$which][i],th=x$migpd$mth[-x$which][i],
                      sigma=coef(x$migpd)[3,-x$which][i],xi=coef(x$migpd)[4,-x$which][i])
       

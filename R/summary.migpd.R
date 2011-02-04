@@ -20,9 +20,9 @@ function( object, verbose = TRUE, ... ){
     cat( "\n\nSummary of models:\n" )
     print( co, ... )
     cat( "\n" )
-	
-    if ( is.null( object$gumbel ) )
-      cat( "Gumbel transformations have not yet been performed.\n" )
+
+    cat("Margin transformation:", x$method, "\n")
+    
   }
   
 	invisible( co )

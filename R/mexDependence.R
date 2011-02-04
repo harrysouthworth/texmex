@@ -4,16 +4,16 @@ function (x, which, dth, dqu)
    theCall <- match.call()
    if (class(x) != "migpd")
        stop("you need to use an object created by migpd")
-   else if (is.null(x$gumbel))
-       stop("you need to pass the object through mexGumbel")
+   else if (is.null(x$transformed))
+       stop("you need to pass the object through mexTransform")
    if (missing(which)) {
-       cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], "\n")
+       cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
        which <- 1
    }
    else if (length(which) > 1)
        stop("which must be of length 1")
    else if (is.character(which))
-       which <- match(which, dimnames(x$gumbel)[[2]])
+       which <- match(which, dimnames(x$transformed)[[2]])
    if (missing(dth) & missing(dqu)) {
        cat("Assuming same quantile for thesholding as was used to fit corresponding marginal model...\n")
        dqu <- x$mqu[which]
@@ -21,7 +21,7 @@ function (x, which, dth, dqu)
    else if (missing(dqu))
        dqu <- x$mqu[which]
    if (missing(dth))
-       dth <- quantile(x$gumbel[, which], dqu)
+       dth <- quantile(x$transformed[, which], dqu)
    dependent <- (1:(dim(x$data)[[2]]))[-which]
    if (length(dqu) < length(dependent))
        dqu <- rep(dqu, length = length(dependent))
@@ -88,12 +88,12 @@ function (x, which, dth, dqu)
            else o$par <- c(o$par[1:2], 0, 0)
        o$par[1:4]
    }
-   yex <- c(x$gumbel[, which])
+   yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
-   res <- apply(as.matrix(x$gumbel[, dependent]), 2, qfun, yex = yex, wh = wh)
+   res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh)
    dimnames(res)[[1]] <- letters[1:4]
-   dimnames(res)[[2]] <- dimnames(x$gumbel)[[2]][dependent]
-   gdata <- as.matrix(x$gumbel[wh, -which])
+   dimnames(res)[[2]] <- dimnames(x$transformed)[[2]][dependent]
+   gdata <- as.matrix(x$transformed[wh, -which])
    tfun <- function(i, data, yex, a, b, cee, d) {
        data <- data[, i]
        a <- a[i]
@@ -119,7 +119,7 @@ function (x, which, dth, dqu)
            z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
        }
    }
-   dimnames(z) <- list(NULL,dimnames(x$gumbel)[[2]][dependent])
+   dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
    res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
        dqu = unique(dqu), which = which, conditioningVariable= names(x$data)[which])
    oldClass(res) <- "mexDependence"

@@ -9,7 +9,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
         th <- th[i]
         qu <- qu[i]
         data <- c(data[, i])
-        res <- revGumbel(exp(-exp(-x)), data = data, th = th, 
+        res <- revTransform(exp(-exp(-x)), data = data, th = th, 
             qu = qu, sigma = exp(param[1]), xi = param[2])
         res
     }
@@ -29,7 +29,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
         stop("object should have class migpd")
     }
     else if (missing(which)) {
-        cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], "\n")
+        cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
         which <- 1
     }
 
@@ -38,14 +38,14 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     }
 
     if (missing(dth)) {
-        dth <- quantile(x$gumbel[, which], prob = dqu)
+        dth <- quantile(x$transformed[, which], prob = dqu)
     }
 
     penalty <- x$penalty
     priorParameters <- x$priorParameters
 
-    n <- dim(x$gumbel)[[1]]
-    d <- dim(x$gumbel)[[2]]
+    n <- dim(x$transformed)[[1]]
+    d <- dim(x$transformed)[[2]]
 
     if (is.character(which)) {
         which <- (1:d)[dimnames(x$data)[[2]] == which]
@@ -55,8 +55,8 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     innerFun <- function(i, x, which, dth, dqu, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getgum=getgum, dependent=dependent) {
         
-        g <- sample(1:(dim(x$gumbel)[[1]]), size = n, replace = TRUE)
-        g <- x$gumbel[g, ]
+        g <- sample(1:(dim(x$transformed)[[1]]), size = n, replace = TRUE)
+        g <- x$transformed[g, ]
         ok <- FALSE
 
         while (!ok) {
@@ -71,7 +71,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
 
         ggpd <- migpd(g, mth = x$mth, penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which)
+        gd <- mexDependence(ggpd, dth = dth, which = which, method=x$method)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
                     Z = gd$Z,

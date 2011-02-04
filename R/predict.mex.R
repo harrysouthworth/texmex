@@ -29,7 +29,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
     xi <- u2gpd( ui, p = 1 - migpd$mqu[ which ], th=migpd$mth[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
 	
   	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
-		  xmi[, i ] <- revGumbel( xmi[ ,i ], as.matrix(data[,-which])[, i ],
+		  xmi[, i ] <- revTransform( xmi[ ,i ], as.matrix(data[,-which])[, i ],
 								             th = migpd$mth[ -which ][ i ],
 								             qu = migpd$mqu[ -which ][ i ],
 								             sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )

@@ -8,7 +8,7 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
   }
 
    if (missing(which)) {
-       cat("Missing 'which'. Conditioning on", dimnames(x$gumbel)[[2]][1], "\n")
+       cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
        which <- 1
    }
 
