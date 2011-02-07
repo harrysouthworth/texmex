@@ -4,8 +4,7 @@ function (x, which, dth, dqu)
    theCall <- match.call()
    if (class(x) != "migpd")
        stop("you need to use an object created by migpd")
-   else if (is.null(x$transformed))
-       stop("you need to pass the object through mexTransform")
+
    if (missing(which)) {
        cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
        which <- 1
@@ -59,7 +58,7 @@ function (x, which, dth, dqu)
            o$par <- rep(NA, 4)
        }
        if (!is.na(o$par[1]))
-           if (o$par[1] < 10^(-5) & o$par[2] < 0) {
+           if (x$margins == "gumbel" & o$par[1] < 10^(-5) & o$par[2] < 0) {
                Q <- function(yex, ydep, param) {
                  param <- param[-1]
                  b <- param[1]
@@ -87,7 +86,7 @@ function (x, which, dth, dqu)
            }
            else o$par <- c(o$par[1:2], 0, 0)
        o$par[1:4]
-   }
+   } # Close qfun <- function(
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
    res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh)
@@ -121,7 +120,7 @@ function (x, which, dth, dqu)
    }
    dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
    res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
-       dqu = unique(dqu), which = which, conditioningVariable= names(x$data)[which])
+       dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which])
    oldClass(res) <- "mexDependence"
    res
 }

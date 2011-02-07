@@ -1,9 +1,11 @@
-mex <- function(data, which, mth, mqu, dth, dqu,
+mex <- function(data, which, mth, mqu, dth, dqu, margins="gumbel",
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
+	theCall <- match.call()
+
 	if (missing(which)){
-		which <- names(data)[1]
+		which <- colnames(data)[1]
 		cat("which not given. Conditioning on", which, "\n")
 	}
 
@@ -14,7 +16,7 @@ mex <- function(data, which, mth, mqu, dth, dqu,
 											}, p=mqu, data=data))
 	}
 
-    res1 <- migpd(data=data, mth=mth, penalty=penalty,
+    res1 <- migpd(data=data, mth=mth, margins=margins, penalty=penalty,
                   maxit=maxit, trace=trace, verbose=verbose,
                   priorParameters=priorParameters)
 
@@ -27,16 +29,17 @@ mex <- function(data, which, mth, mqu, dth, dqu,
 
     res2 <- mexDependence(x= res1, which=which, dqu=dqu)
     
-    res <- list(margins=res1, dependence=res2)
+    res <- list(margins=res1, dependence=res2, call=theCall)
     oldClass(res) <- "mex"
     res
 }
 
 
 print.mex <- function(x, ...){
-    cat("Marginal models:\n\n")
+	print(x$call, ...)
+	cat("Marginal models:\n")
     summary(x[[1]])
-    cat("Dependence model:\n\n")
+    cat("\nDependence model:\n")
     print(x[[2]])
     invisible()
 }

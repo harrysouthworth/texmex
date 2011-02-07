@@ -48,7 +48,8 @@ function( object, mth, probs=c( .05, .5, .95 ), ... ){
 
 	wn <- dimnames( object$data$simulated )[[ 2 ]][ 1 ]
 	wth <- paste( "Q", 100*object$pqu, sep = "" )
-	dn <- paste( "P(", dimnames( object$data$simulated )[[ 2 ]] , ">", mth,"|", wn, ">", wth, ")", sep = "" )
+
+	dn <- paste( "P(", dimnames( object$data$simulated )[[ 2 ]] , ">", signif(mth, ...),"|", wn, ">", wth, ")", sep = "" )
 
 	dimnames( thres ) <- list( "", dn )
 	
@@ -58,7 +59,7 @@ function( object, mth, probs=c( .05, .5, .95 ), ... ){
 				 statistic=deparse( substitute( statistic ) )
 				 )
 
-	oldClass( ans ) <- "summary.predict.mex"
+	oldClass(ans) <- "summary.predict.mex"
 	ans
 }
 

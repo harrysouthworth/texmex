@@ -36,7 +36,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	  }
     
     sim <- data.frame( xi , xmi )
-    names( sim ) <- c( names( migpd$data )[ which ],names( migpd$data )[ -which ])
+    names( sim ) <- c( colnames( migpd$data )[ which ], colnames( migpd$data )[ -which ])
     sim
   }
 
@@ -93,7 +93,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 
 	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ) ,
 				        simulated = sim, pth=pth)
-  names(data$real)[1] <- names(migpd$data)[which] 
+  names(data$real)[1] <- colnames(migpd$data)[which] 
   
   res <- list( call = theCall , replicates = bootRes, data = data,
 				       which = which, pqu = pqu,

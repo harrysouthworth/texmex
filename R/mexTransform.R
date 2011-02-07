@@ -56,12 +56,9 @@ function( x ,
     	x$transformed <- -log( -log( res ) )
     }
     else if (margins == "laplace"){
-        trans <- matrix(0, nrow=nrow(res), ncol=ncol(res))
-        trans[res >= 0.50] <- 0.5 * exp(res[res >= 0.50] - 0.5)
-        trans[res < 0.50] <- 1 - 0.5 * exp(0.5[res < 0.50] - res)
-        x$transformed <- trans
+		x$transformed <- sign(res - .5) * log(1 - 2*abs(res - .5))
     }
-    else { stop("margins need to be gumbel or laplace")}
-	invisible( x )
+    else { stop("margins need to be gumbel or laplace") }
+	invisible(x)
 }
 

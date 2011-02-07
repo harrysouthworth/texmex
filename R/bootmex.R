@@ -3,14 +3,24 @@ bootmex <-
 function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     theCall <- match.call()
 
-    getgum <- function(i, x, data, mod, th, qu) {
+    getgum <- function(i, x, data, mod, th, qu, margins) {
         x <- c(x[, i])
         param <- mod[[i]]$coefficients
         th <- th[i]
         qu <- qu[i]
         data <- c(data[, i])
-        res <- revTransform(exp(-exp(-x)), data = data, th = th, 
-            qu = qu, sigma = exp(param[1]), xi = param[2])
+		if (margins == "gumbel"){
+			res <- revTransform(exp(-exp(-x)), data = data, th = th, 
+            					qu = qu, sigma = exp(param[1]), xi = param[2])
+		}
+		else {
+			y <- x
+			y[y < 0] <- .5 * exp(y[y < 0])
+			y[y >= 0] <- 1 - .5 * exp(-y[y >= 0])
+			res <- revTransform(y, data = data, th = th, 
+								qu = qu, sigma = exp(param[1]), xi = param[2])
+		}
+					
         res
     }
 
@@ -33,6 +43,8 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
         which <- 1
     }
 
+	margins <- x$margins
+	
     if (missing(dqu) & missing(dth)) {
         dqu <- x$mqu[which]
     }
@@ -52,7 +64,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     }
     dependent <- (1:d)[-which]
 
-    innerFun <- function(i, x, which, dth, dqu, penalty, priorParameters, 
+    innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getgum=getgum, dependent=dependent) {
         
         g <- sample(1:(dim(x$transformed)[[1]]), size = n, replace = TRUE)
@@ -60,18 +72,27 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
         ok <- FALSE
 
         while (!ok) {
-            for (j in 1:(dim(g)[[2]])) g[order(g[, j]), j] <- sort(-log(-log(runif(dim(g)[[1]]))))
+            for (j in 1:(dim(g)[[2]])){
+				if (margins == "gumbel"){
+					g[order(g[, j]), j] <- sort(-log(-log(runif(dim(g)[[1]]))))
+				}
+				else {
+					u <- runif(nrow(g))
+					g[order(g[, j]), j] <- sort(sign(u - .5) * log(1 - 2*abs(u - .5)))
+				}
+			}
             if (sum(g[, which] > dth) > 1){ ok <- TRUE }
         }
         
-        g <- sapply(1:d, getgum, x = g, data = x$data,
+        g <- sapply(1:d, getgum, x = g, data = x$data, margins=margins,
                     mod = x$models, th = x$mth, qu = x$mqu)
                     
         dimnames(g)[[2]] <- names(x$models)
 
-        ggpd <- migpd(g, mth = x$mth, penalty = penalty, priorParameters = priorParameters)
+        ggpd <- migpd(g, mth = x$mth, margins=margins,
+					  penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which, method=x$method)
+        gd <- mexDependence(ggpd, dth = dth, which = which)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
                     Z = gd$Z,
@@ -87,7 +108,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
 
     dqu <- rep(dqu, d) 
 
-    res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, 
+    res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, margins=margins, 
         dqu = dqu, penalty = penalty, priorParameters = priorParameters, 
         pass = 1, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
 
