@@ -44,7 +44,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     }
 
 	margins <- x$margins
-	
+
     if (missing(dqu) & missing(dth)) {
         dqu <- x$mqu[which]
     }
@@ -122,7 +122,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
                 cat("Pass", pass, ":", sum(rerun), "samples to rerun.\n")
                 rerun <- (1:R)[rerun]
                 res[rerun] <- lapply((1:R)[rerun], innerFun, 
-                  x = x, which = which, dth = dth, dqu = dqu, 
+                  x = x, which = which, dth = dth, dqu = dqu, margins=margins,
                   penalty = penalty, priorParameters = priorParameters, 
                   pass = pass, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
             }

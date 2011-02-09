@@ -24,7 +24,12 @@ function (x, which, dth, dqu)
    dependent <- (1:(dim(x$data)[[2]]))[-which]
    if (length(dqu) < length(dependent))
        dqu <- rep(dqu, length = length(dependent))
-   qfun <- function(X, yex, wh) {
+
+   # Allowable range of a depends on marginal distributions
+   lo <- if (x$margins == "gumbel"){ c(10^(-8), -(10^8), -(10^8), 10^(-8)) }
+		   else { c(-1, -(10^8), -(10^8), 10^(-8)) }
+      
+   qfun <- function(X, yex, wh, lo) {
        Q <- function(yex, ydep, param) {
            a <- param[1]
            b <- param[2]
@@ -42,12 +47,11 @@ function (x, which, dth, dqu)
                        warning("Infinite value of Q in mexDependence")
                }
            res
-       }
+       } # Close Q <- function
 
 
-
-       o <- try(optim(c(0.5, 0, 0, 1), Q, lower = c(10^(-8), -(10^8),
-           -(10^8), 10^(-8)), upper = c(1, 1, 10^8, 10^8), method = "L-BFGS-B",
+       o <- try(optim(c(0.5, 0, 0, 1), Q, lower = lo, upper = c(1, 1, 10^8, 10^8),
+					  method = "L-BFGS-B",
            yex = yex[wh], ydep = X[wh]), silent=TRUE)
 
 
@@ -89,7 +93,7 @@ function (x, which, dth, dqu)
    } # Close qfun <- function(
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
-   res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh)
+   res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh, lo=lo)
    dimnames(res)[[1]] <- letters[1:4]
    dimnames(res)[[2]] <- dimnames(x$transformed)[[2]][dependent]
    gdata <- as.matrix(x$transformed[wh, -which])
