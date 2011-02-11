@@ -52,7 +52,7 @@ function (data, mth, mqu, margins = "gumbel", penalty = "gaussian", maxit = 1000
    names(mth) <- names(mqu) <- dimnames(data)[[2]]
    res <- list(call = theCall, models = modlist, data = data,
        mth = mth, mqu = mqu, penalty = penalty, priorParameters = priorParameters,
-       margins=margins)
+       margins = casefold(margins))
    res <- mexTransform(res, margins=casefold(margins))
    oldClass(res) <- "migpd"
    invisible(res)
