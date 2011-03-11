@@ -32,20 +32,22 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
        dqu <- rep(dqu, length = length(dependent))
 
    # Allowable range of 'a' depends on marginal distributions
-   lo <- if (x$margins == "gumbel"){ c(10^(-8), -(10^8), -(10^8), 10^(-8)) }
-		   else { c(-1 + 10^(-8), -(10^8), -(10^8), 10^(-8)) }
+   lo <- if (x$margins == "gumbel"){ c(10^(-10), -(10^10), -(10^10), 10^(-10)) }
+		   else { c(-1 + 10^(-10), -(10^10), -(10^10), 10^(-10)) }
       
    qfun <- function(X, yex, wh, lo, margins, constrain, v, maxit) {
        Q <- function(yex, ydep, param, constrain, v) {
-           a <- param[1]
+
+		   a <- param[1]
            b <- param[2]
            m <- param[3]
            s <- param[4]
 
-		   if (a >= 1){ a <- 1 - 10^(-8) }
-		   else if (a <= -1){ a <- -1 + 10^(-8) }
-		   if (b >= 1){ b <- 1 - 10^(-8) }
-		   
+		   if (a >= 1){ a <- 1 - 10^(-10) }
+		   else if (!constrain & a <= 10^(-10)){ a <- 10^(-10) }
+		   else if (constrain & a <= -1 + 10^(-10)){ a <- -1 + 10^(-10) }
+		   if (b >= 1){ b <- 1 - 10^(-10) }
+
 		   obj <- function(yex, ydep, a, b, m, s, constrain, v) {
                mu <- a * yex + m * yex^b
                sig <- s * yex^b
@@ -77,21 +79,22 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
 						C1e <- C1o <- C2e <- C2o <- FALSE
 					}
 
-				   if (!((C1e | C1o) && (C2e | C2o))){ res <- 10^8 }
+				   if (!((C1e | C1o) && (C2e | C2o))){ res <- 10^10 }
 
 			   } # Close if (constrain
 			   res
            } # Close obj <- function
-           res <- sum(obj(yex, ydep, a, b, m, s, constrain, v))
+
+		   res <- sum(obj(yex, ydep, a, b, m, s, constrain, v))
                if (is.infinite(res)){
-                       if (res < 0){ res <- -(10^8) }
+                       if (res < 0){ res <- -(10^10) }
                        else res <- 10^8
                        warning("Infinite value of Q in mexDependence")
                }
            res
        } # Close Q <- function
 
-       o <- try(optim(par=c(0.01, 0.01, 0.01, 1), fn=Q, #lower = lo, upper = c(1-10^(-8), 1 - 10^(-8), 10^8, 10^8),
+       o <- try(optim(par=c(0.01, 0.01, 0.01, 1), fn=Q, 
 					  method = "Nelder-Mead", control=list(maxit=maxit),
            yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
 
@@ -107,7 +110,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
        }
 	   
        if (!is.na(o$par[1]))
-           if (margins == "gumbel" & o$par[1] < 10^(-5) & o$par[2] < 0) {
+           if (margins == "gumbel" & o$par[1] <= 10^(-10) & o$par[2] < 0) {
                Q <- function(yex, ydep, param) {
                  param <- param[-1]
                  b <- param[1]
@@ -115,7 +118,12 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
                  d <- param[3]
                  m <- param[4]
                  s <- param[5]
-                 obj <- function(yex, ydep, a, b, cee, d, m, s) {
+
+				 if (b >=1){ b <- 1 - 10^(-10) }
+				 if (d <= 10^(-10)){ d <- 10^(-10) }
+				 else if (d >= 1- 10^(-10)){ d <- 1 - 10^(-10) }
+			
+				 obj <- function(yex, ydep, a, b, cee, d, m, s) {
                    mu <- cee - d * log(yex) + m * yex^b
                    sig <- s * yex^b
                    log(sig) + 0.5 * ((ydep - mu)/sig)^2
@@ -123,9 +131,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
                  res <- sum(obj(yex, ydep, a, b, cee, d, m, s))
                  res
                }
-               o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, lower = c(10^(-8),
-                 -Inf, -Inf, 10^(-8), -Inf, 10^(-8)), upper = c(1,
-                 1, 10^8, 1 - 10^(-8), Inf, Inf), method = "L-BFGS-B",
+               o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, method = "Nelder-Mead",
                  yex = yex[wh], ydep = X[wh]), silent=TRUE)
                if (class(o) == "try-error" || o$convergence != 0) {
                  warning("Non-convergence in mexDependence")
@@ -134,14 +140,19 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
                }
            }
            else o$par <- c(o$par[1:2], 0, 0)
-       o$par[1:4]
+       c(o$par[1:4], o$value) # Parameters and negative loglik
    } # Close qfun <- function(
 
    
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
-   res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh,
+
+	res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh,
 	   			lo=lo, margins=x$margins, constrain=constrain, v=v, maxit=maxit)
+
+   loglik <- -res[5,]
+   res <- matrix(res[1:4,], nrow=4)
+
    dimnames(res)[[1]] <- letters[1:4]
    dimnames(res)[[2]] <- dimnames(x$transformed)[[2]][dependent]
    gdata <- as.matrix(x$transformed[wh, -which])
@@ -172,7 +183,8 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
    }
    dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
    res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
-       dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which])
+       dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which],
+	   loglik=loglik)
    oldClass(res) <- "mexDependence"
    res
 }
