@@ -74,10 +74,11 @@ bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    invisible(res)
 }
 
-plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ...){
+plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ylim, ...){
    m <- rowMeans(x$replicates)
    ci <- apply(x$replicates, 1, quantile, prob=c(1-alpha/2, alpha/2))
-   plot(x$p, m, type="l", ylim=range(ci),
+   if (missing(ylim)){ ylim <- range(ci) }
+   plot(x$p, m, type="l", ylim=ylim,
         xlab=xlab, ylab=ylab,
         sub=paste(100*(1-alpha), "% interval. ", x$R, " bootstrap samples were performed", sep=""))
    lines(x$p, ci[1,], lty=2)
