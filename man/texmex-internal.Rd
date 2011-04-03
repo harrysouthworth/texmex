@@ -4,8 +4,8 @@
 \alias{qqgpd}
 \alias{ppgpd}
 \alias{u2gpd}
-\alias{revGumbel}
-\alias{mexGumbel}
+\alias{revTransform}
+\alias{mexTransform}
 \alias{gpd.fit}
 \title{Internal functions for texmex}
 \description{Internal functions used by the \code{texmex} package.}
@@ -21,8 +21,8 @@ ppgpd(object, nsim = 1000, alpha = 0.05, xlab, ylab, main,
      pch=1, col = 2, cex = 0.75, linecol = 4, cicol = 0,
      polycol = 15, smooth = TRUE)
 u2gpd(u, p=1, th=0, sigma, xi)
-mexGumbel(x, method = "mixture", divisor = "n+1", na.rm=TRUE)
-revGumbel(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
+mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE)
+revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
 gpd.fit(y, th, X.phi, X.xi, penalty="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0)
 }
