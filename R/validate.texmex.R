@@ -11,7 +11,7 @@ validate.texmex <- function () {
    tests <- objects(wh)[substring(objects(wh), 1, 5) == "test."]
 
    for (i in 1:length(tests)) {
-       str <- paste(tempdir(), "\\", tests[i], ".R", sep = "")
+       str <- paste(tempdir(), "/", tests[i], ".R", sep = "")
        dump(tests[i], file = str)
    }
    res <- defineTestSuite("texmex", dirs = tempdir(), testFuncRegexp = "^test.+", testFileRegexp = "*.R")
