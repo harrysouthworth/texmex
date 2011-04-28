@@ -50,7 +50,6 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
   quantile bootstrap confidence intervals are displayed.
 }
 \value{
-  If it is a LIST, use
   \item{MCS }{The correlations.}
   \item{p }{The quantiles at which the correlations were evaluated at}
   \item{method}{The method used.}

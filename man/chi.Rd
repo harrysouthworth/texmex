@@ -59,7 +59,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
               confidence limits.}
   \item{quantile}{The quantiles at which chi and chi-bar were
                   evaluated.}
-  \item{chiulb, chibarulb}{Uppwer and lower bounds for chi and chi-bar.}
+  \item{chiulb, chibarulb}{Upper and lower bounds for chi and chi-bar.}
 }
 \references{ S. Coles, J. E. Heffernan and J. A. Tawn, Dependence
 measures for extreme values analyses, Extremes, 2, 339 -- 365, 1999 }
