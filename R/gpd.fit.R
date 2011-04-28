@@ -73,7 +73,18 @@ gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         o$par <- c(phiPar, xiPar)
 
         ### Scale the covariance...
-  
+        U <- solve(o$hessian)
+
+        uphi <- matrix(U[1:ncol(X.phi), 1:ncol(X.phi)], ncol=ncol(X.phi))
+        ssphi <-  c(1 + (uphi[1] + sum(colSums(uphi[-1,-1])) - 2*sum(uphi[1,])) / uphi[1,1], 1/sphi[-1])
+browser()
+
+        uxi <- matrix(U[(ncol(X.phi)+1):(ncol(X.phi) + ncol(X.xi)), (ncol(X.phi)+1):(ncol(X.phi) + ncol(X.xi))], ncol=ncol(X.xi))
+        ssxi <-  c(1 + (uxi[1] + sum(colSums(uxi[-1,-1])) - 2*sum(uxi[1,])) / uxi[1,1], 1/sxi[-1])
+        Dstar <- diag(c(ssphi, ssxi))
+        S <- Dstar %*% U %*% Dstar
+        o$hessian <- solve(S)
+
     } # Close if (scale.
 
 
