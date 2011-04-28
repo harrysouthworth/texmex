@@ -24,7 +24,7 @@ u2gpd(u, p=1, th=0, sigma, xi)
 mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE)
 revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
 gpd.fit(y, th, X.phi, X.xi, penalty="none", start=NULL,
-        priorParameters = NULL, maxit = 10000, trace = 0)
+        priorParameters = NULL, maxit = 10000, trace = 0, scale. = TRUE)
 }
 
 \arguments{
@@ -42,7 +42,7 @@ gpd.fit(y, th, X.phi, X.xi, penalty="none", start=NULL,
     is approximated using the empirical distribution. }
 \item{divisor}{Divisor used in estimation of empirical distribution.}
 \item{na.rm}{Whether or not to remove missing values.}
-\item{y, X.phi, X.xi, penalty, start, priorParameters, maxit, trace}{Arguments
+\item{y, X.phi, X.xi, penalty, start, priorParameters, maxit, trace, scale.}{Arguments
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}
 }

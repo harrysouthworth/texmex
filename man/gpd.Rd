@@ -25,7 +25,7 @@ Pareto distribution, possibly with explanatory variables.
 gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     prior = "gaussian", method = "optimize", start = NULL, priorParameters = NULL,
     maxit = 10000, trace = NULL,
-    iter = 10500, burn = 500, thin = 1, jump.const, verbose = TRUE)
+    iter = 10500, burn = 500, thin = 1, jump.const, verbose = TRUE, scale. = TRUE)
 \method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
@@ -91,6 +91,11 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
+  \item{scale.}{Whether or not to scale the data before optimizing. This is only likely
+                to be useful for testing. Scaling the data tends to produce more stable
+                estimates, particulary of the Hessian, and thus the standard errors of
+                the point estimates. It's safer to rely on likelihood-based inference
+                rather than approximation based on approximate standard errors.}
   \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
                    or \code{summary.bgpd} returned by \code{gpd} or \code{summary.gpd}.}
   \item{digits}{Number of digits for printing.}
