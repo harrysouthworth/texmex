@@ -2,7 +2,7 @@ gpd <-
 function (y, data, th, qu, phi = ~1, xi = ~1,
           penalty = "gaussian", prior = "gaussian", method = "optimize",
           start = NULL, priorParameters = NULL, maxit = 10000, trace=NULL,
-          iter = 10500, burn=500, thin = 1, jump.const, verbose=TRUE) {
+          iter = 10500, burn=500, thin = 1, jump.const, verbose=TRUE, scale.=TRUE) {
 
     theCall <- match.call()
 
@@ -140,7 +140,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     ################################## Do the optimization....
 
     o <- gpd.fit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior,
-                 priorParameters = priorParameters, maxit = maxit, trace = otrace)
+                 priorParameters = priorParameters, maxit = maxit, trace = otrace, scale.=scale.)
 
 
     if (o$convergence != 0) {

@@ -1,7 +1,19 @@
 gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
-        priorParameters = NULL, maxit = 10000, trace = 0) {
+        priorParameters = NULL, maxit = 10000, trace = 0, scale.=TRUE) {
 
-    gpd.lik <- function(par, y, th, X.phi, X.xi, penalty = "none", 
+    if (scale.){
+        # Scale and centre the data in the hope of stabilizing computations
+        whphi <- (1:ncol(X.phi))[colnames(X.phi) != "(Intercept)"]
+        whxi <- (1:ncol(X.xi))[colnames(X.xi) != "(Intercept)"]
+        sphi <-apply(X.phi, 2, sd)
+        sxi <- apply(X.xi, 2, sd)
+        mphi <- apply(X.phi, 2, mean)
+        mxi <- apply(X.xi, 2, mean)
+        X.phi[,whphi] <- apply(matrix(X.phi[,whphi]), 2, scale)
+        X.xi[,whxi] <- apply(matrix(X.xi[,whxi]), 2, scale)
+    }
+    
+   gpd.lik <- function(par, y, th, X.phi, X.xi, penalty = "none", 
         priorParameters = NULL) {
         keepsc <- par[1:ncol(X.phi)]
         keepxi <- par[-(1:ncol(X.phi))]
@@ -41,5 +53,29 @@ gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         X.xi = X.xi, th = th, penalty = penalty, control = list(maxit = maxit, 
             trace = trace), priorParameters = priorParameters, 
         hessian = TRUE)
+
+    if (scale.){
+        # Need to account for scaling of the data...
+        # First do the parameter estimates...
+
+        phiPar <- o$par[1:ncol(X.phi)]
+        xiPar <- o$par[(ncol(X.phi)+1):(ncol(X.phi) + ncol(X.xi))]
+
+        phiPar[whphi] <- phiPar[whphi] / sphi[c(1:ncol(X.phi))[whphi]]
+        if (colnames(X.phi)[1] == "(Intercept)"){
+            phiPar[1] <- phiPar[1] - sum(phiPar[-1] * mphi[(1:ncol(X.phi))[whphi]])
+        }
+        xiPar[whxi] <- xiPar[whxi] / sxi[(1:ncol(X.xi))[whxi]]
+        if (colnames(X.xi)[1] == "(Intercept)"){
+            xiPar[1] <- xiPar[1] - sum(xiPar[-1] * mxi[(1:ncol(X.xi))[whxi]])
+        }
+
+        o$par <- c(phiPar, xiPar)
+
+        ### Scale the covariance...
+  
+    } # Close if (scale.
+
+
     invisible(o)
 }
