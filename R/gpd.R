@@ -269,7 +269,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
         res <- list(call=theCall, threshold=u , map = o,
                     burn = burn, thin = thin, 
-                    chains=res ,
+                    chains=res, y=y, data=data,
                     X.phi = X.phi, X.xi = X.xi,
 					acceptance=acc, seed=seed 
                     )
