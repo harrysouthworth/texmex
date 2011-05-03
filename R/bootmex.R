@@ -3,7 +3,7 @@ bootmex <-
 function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     theCall <- match.call()
 
-    getgum <- function(i, x, data, mod, th, qu, margins) {
+    getTran <- function(i, x, data, mod, th, qu, margins) {
         x <- c(x[, i])
         param <- mod[[i]]$coefficients
         th <- th[i]
@@ -15,8 +15,8 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
 		}
 		else {
 			y <- x
-			y[y < 0] <- .5 * exp(y[y < 0])
-			y[y >= 0] <- 1 - .5 * exp(-y[y >= 0])
+			y[y < 0] <- exp(y[y < 0]) / 2
+			y[y >= 0] <- 1 - exp(-y[y >= 0]) / 2
 			res <- revTransform(y, data = data, th = th, 
 								qu = qu, sigma = exp(param[1]), xi = param[2])
 		}
@@ -65,7 +65,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     dependent <- (1:d)[-which]
 
     innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, 
-        pass = 1, trace = trace, n=n, d=d, getgum=getgum, dependent=dependent) {
+        pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
         
         g <- sample(1:(dim(x$transformed)[[1]]), size = n, replace = TRUE)
         g <- x$transformed[g, ]
@@ -84,7 +84,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
             if (sum(g[, which] > dth) > 1){ ok <- TRUE }
         }
         
-        g <- sapply(1:d, getgum, x = g, data = x$data, margins=margins,
+        g <- sapply(1:d, getTran, x = g, data = x$data, margins=margins,
                     mod = x$models, th = x$mth, qu = x$mqu)
                     
         dimnames(g)[[2]] <- names(x$models)
@@ -110,7 +110,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
 
     res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, margins=margins, 
         dqu = dqu, penalty = penalty, priorParameters = priorParameters, 
-        pass = 1, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
+        pass = 1, trace = trace, getTran=getTran, n=n, d=d, dependent=dependent)
 
     # Sometimes samples contain no extreme values. Need to have another pass or two
     if (nPass > 1) {
@@ -124,7 +124,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
                 res[rerun] <- lapply((1:R)[rerun], innerFun, 
                   x = x, which = which, dth = dth, dqu = dqu, margins=margins,
                   penalty = penalty, priorParameters = priorParameters, 
-                  pass = pass, trace = trace, getgum=getgum, n=n, d=d, dependent=dependent)
+                  pass = pass, trace = trace, getTran=getTran, n=n, d=d, dependent=dependent)
             }
         }
     }

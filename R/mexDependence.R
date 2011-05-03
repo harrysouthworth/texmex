@@ -1,5 +1,5 @@
 `mexDependence` <-
-function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
+function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000, start)
 {
    theCall <- match.call()
    if (class(x) != "migpd")
@@ -35,7 +35,15 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
    lo <- if (x$margins == "gumbel"){ c(10^(-10), -(10^10), -(10^10), 10^(-10)) }
          else { c(-1 + 10^(-10), -(10^10), -(10^10), 10^(-10)) }
       
-   qfun <- function(X, yex, wh, lo, margins, constrain, v, maxit) {
+   if (missing(start)){ start <- c(.01, .01, .01, 1) }
+   else if (length(start) == 2){
+       start <- c(start, 0, 1)
+   }
+   else if (length(start) != 4){
+       stop("start should have length 4 (or 2)")
+   }
+
+   qfun <- function(X, yex, wh, lo, margins, constrain, v, maxit, start){
        Q <- function(yex, ydep, param, constrain, v) {
 
 	   a <- param[1]
@@ -74,10 +82,10 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
 						  (1-1/b)*(-b*min(z))^(1/(1-b))*(1+a)^(-b/(1-b)) - min(zneg) > 0 &
 						  (1-1/b)*(-b*max(z))^(1/(1-b))*(1+a)^(-b/(1-b)) - max(zneg) > 0
 
-					if (any(is.na(c(C1e, C1o, C2e, C2o)))) {
-						warning("Strayed into impossible area of parameter space")
-						C1e <- C1o <- C2e <- C2o <- FALSE
-					}
+	                           if (any(is.na(c(C1e, C1o, C2e, C2o)))) {
+                                       warning("Strayed into impossible area of parameter space")
+                                       C1e <- C1o <- C2e <- C2o <- FALSE
+                                   }
 
 				   if (!((C1e | C1o) && (C2e | C2o))){ res <- 10^10 }
 
@@ -93,8 +101,8 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
            }
            res
        } # Close Q <- function
-
-       o <- try(optim(par=c(0.01, 0.01, 0.01, 1), fn=Q, 
+       
+       o <- try(optim(par=start, fn=Q, 
 					  method = "L-BFGS-B", lower=lo, upper=c(1, 1, Inf, Inf), control=list(maxit=maxit),
            yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
 
@@ -149,7 +157,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
    wh <- yex > unique(dth)
 
 	res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh,
-	   			lo=lo, margins=x$margins, constrain=constrain, v=v, maxit=maxit)
+	   			lo=lo, margins=x$margins, constrain=constrain, v=v, maxit=maxit, start=start)
 
    loglik <- -res[5,]
    res <- matrix(res[1:4,], nrow=4)
