@@ -99,7 +99,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
            yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
 
 		if (class(o) == "try-error"){
-			warning("Error in optim")
+			warning("Error in optim call from mexDependence")
 			o <- as.list(o)
 			o$par <- rep(NA, 4)
 		}
@@ -119,11 +119,11 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
                  m <- param[4]
                  s <- param[5]
 
-				 if (b >=1){ b <- 1 - 10^(-10) }
-				 if (d <= 10^(-10)){ d <- 10^(-10) }
-				 else if (d >= 1- 10^(-10)){ d <- 1 - 10^(-10) }
-			
-				 obj <- function(yex, ydep, a, b, cee, d, m, s) {
+		 if (b >=1){ b <- 1 - 10^(-10) }
+		 if (d <= 10^(-10)){ d <- 10^(-10) }
+		 else if (d >= 1- 10^(-10)){ d <- 1 - 10^(-10) }
+	
+		 obj <- function(yex, ydep, a, b, cee, d, m, s) {
                    mu <- cee - d * log(yex) + m * yex^b
                    sig <- s * yex^b
                    log(sig) + 0.5 * ((ydep - mu)/sig)^2
