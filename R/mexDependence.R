@@ -33,26 +33,26 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
 
    # Allowable range of 'a' depends on marginal distributions
    lo <- if (x$margins == "gumbel"){ c(10^(-10), -(10^10), -(10^10), 10^(-10)) }
-		   else { c(-1 + 10^(-10), -(10^10), -(10^10), 10^(-10)) }
+         else { c(-1 + 10^(-10), -(10^10), -(10^10), 10^(-10)) }
       
    qfun <- function(X, yex, wh, lo, margins, constrain, v, maxit) {
        Q <- function(yex, ydep, param, constrain, v) {
 
-		   a <- param[1]
+	   a <- param[1]
            b <- param[2]
            m <- param[3]
            s <- param[4]
 
-		   if (a >= 1){ a <- 1 - 10^(-10) }
-		   else if (!constrain & a <= 10^(-10)){ a <- 10^(-10) }
-		   else if (constrain & a <= -1 + 10^(-10)){ a <- -1 + 10^(-10) }
-		   if (b >= 1){ b <- 1 - 10^(-10) }
+	   if (a >= 1){ a <- 1 - 10^(-10) }
+	   else if (!constrain & a <= 10^(-10)){ a <- 10^(-10) }
+	   else if (constrain & a <= -1 + 10^(-10)){ a <- -1 + 10^(-10) }
+	   if (b >= 1){ b <- 1 - 10^(-10) }
 
-		   obj <- function(yex, ydep, a, b, m, s, constrain, v) {
-               mu <- a * yex + m * yex^b
-               sig <- s * yex^b
+	   obj <- function(yex, ydep, a, b, m, s, constrain, v) {
+           mu <- a * yex + m * yex^b
+           sig <- s * yex^b
 			   
-			   res <- log(sig) + 0.5 * ((ydep - mu)/sig)^2
+	   res <- log(sig) + 0.5 * ((ydep - mu)/sig)^2
 
 			   if (constrain){
 				   v <- v * max(yex)
@@ -85,17 +85,17 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
 			   res
            } # Close obj <- function
 
-		   res <- sum(obj(yex, ydep, a, b, m, s, constrain, v))
-               if (is.infinite(res)){
-                       if (res < 0){ res <- -(10^10) }
-                       else res <- 10^8
-                       warning("Infinite value of Q in mexDependence")
-               }
+           res <- sum(obj(yex, ydep, a, b, m, s, constrain, v))
+           if (is.infinite(res)){
+                  if (res < 0){ res <- -(10^10) }
+                  else res <- 10^8
+                  warning("Infinite value of Q in mexDependence")
+           }
            res
        } # Close Q <- function
 
        o <- try(optim(par=c(0.01, 0.01, 0.01, 1), fn=Q, 
-					  method = "Nelder-Mead", control=list(maxit=maxit),
+					  method = "L-BFGS-B", lower=lo, upper=c(1, 1, Inf, Inf), control=list(maxit=maxit),
            yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
 
 		if (class(o) == "try-error"){
@@ -111,6 +111,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
 	   
        if (!is.na(o$par[1]))
            if (margins == "gumbel" & o$par[1] <= 10^(-10) & o$par[2] < 0) {
+               lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
                Q <- function(yex, ydep, param) {
                  param <- param[-1]
                  b <- param[1]
@@ -131,7 +132,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000)
                  res <- sum(obj(yex, ydep, a, b, cee, d, m, s))
                  res
                }
-               o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, method = "Nelder-Mead",
+               o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, method = "L-BFGS-B", lower=lo, upper=c(1, 1-10^(-10), Inf, 1-10^(-10), Inf, Inf),
                  yex = yex[wh], ydep = X[wh]), silent=TRUE)
                if (class(o) == "try-error" || o$convergence != 0) {
                  warning("Non-convergence in mexDependence")

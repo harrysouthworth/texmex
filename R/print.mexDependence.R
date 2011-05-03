@@ -6,7 +6,7 @@ function(x, ...){
 	cat("\nThresholding quantiles for transformed data:\n")
 	print(x$dqu, ...)
 	cat("\nDependence structure parameter estimates:\n")
-	if (any(x$coefficients[3:4, ] > 10^(-6))){
+	if (any(abs(x$coefficients)[3:4, ] > 10^(-6))){
 		print(x$coefficients, ...)
 	}
 	else {
