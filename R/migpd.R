@@ -1,5 +1,5 @@
 `migpd` <-
-function (data, mth, mqu, margins = "gumbel", penalty = "gaussian", maxit = 10000,
+function (data, mth, mqu, margins = "laplace", penalty = "gaussian", maxit = 10000,
    trace = 0, verbose=FALSE, priorParameters = NULL)
 {
    theCall <- match.call()

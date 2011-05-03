@@ -1,4 +1,4 @@
-mex <- function(data, which, mth, mqu, dth, dqu, margins="gumbel",
+mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
