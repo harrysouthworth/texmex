@@ -62,11 +62,11 @@ gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         xiPar <- o$par[(ncol(X.phi)+1):(ncol(X.phi) + ncol(X.xi))]
 
         phiPar[whphi] <- phiPar[whphi] / sphi[c(1:ncol(X.phi))[whphi]]
-        if (colnames(X.phi)[1] == "(Intercept)"){
+        if (ncol(X.phi) > 1 && colnames(X.phi)[1] == "(Intercept)"){
             phiPar[1] <- phiPar[1] - sum(phiPar[-1] * mphi[(1:ncol(X.phi))[whphi]])
         }
         xiPar[whxi] <- xiPar[whxi] / sxi[(1:ncol(X.xi))[whxi]]
-        if (colnames(X.xi)[1] == "(Intercept)"){
+        if (ncol(X.xi) > 1 && colnames(X.xi)[1] == "(Intercept)"){
             xiPar[1] <- xiPar[1] - sum(xiPar[-1] * mxi[(1:ncol(X.xi))[whxi]])
         }
 
@@ -76,11 +76,10 @@ gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         U <- solve(o$hessian)
 
         uphi <- matrix(U[1:ncol(X.phi), 1:ncol(X.phi)], ncol=ncol(X.phi))
-        ssphi <-  c(1 + (uphi[1] + sum(colSums(uphi[-1,-1])) - 2*sum(uphi[1,])) / uphi[1,1], 1/sphi[-1])
-browser()
+        ssphi <-  c(1 + (sum(colSums(matrix(uphi[-1,-1]))) - 2*sum(uphi[1,])) / uphi[1,1], 1/sphi[-1]^2)
 
         uxi <- matrix(U[(ncol(X.phi)+1):(ncol(X.phi) + ncol(X.xi)), (ncol(X.phi)+1):(ncol(X.phi) + ncol(X.xi))], ncol=ncol(X.xi))
-        ssxi <-  c(1 + (uxi[1] + sum(colSums(uxi[-1,-1])) - 2*sum(uxi[1,])) / uxi[1,1], 1/sxi[-1])
+        ssxi <-  c(1 + (sum(colSums(matrix(uxi[-1,-1]))) - 2*sum(uxi[1,])) / uxi[1,1], 1/sxi[-1]^2)
         Dstar <- diag(c(ssphi, ssxi))
         S <- Dstar %*% U %*% Dstar
         o$hessian <- solve(S)
