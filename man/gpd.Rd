@@ -91,12 +91,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
-  \item{scale.}{Whether or not to scale the data before optimizing. This is only likely
-                to be useful for testing. Scaling the data tends to produce more stable
-                estimates, particulary of the Hessian, and thus the standard errors of
-                the point estimates. It's safer to rely on likelihood-based inference
-                rather than approximation based on approximate standard errors.}
-  \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
+ \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
                    or \code{summary.bgpd} returned by \code{gpd} or \code{summary.gpd}.}
   \item{digits}{Number of digits for printing.}
   \item{main}{Titles for plots. Should be a vector of length 4.}
