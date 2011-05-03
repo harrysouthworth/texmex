@@ -272,7 +272,7 @@ jhWdepPM10 <- matrix(c(
 0.59510081,  0.569002154,  0.00000000, 0.0000000,
 0.10412199,  0.207529741,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
   
-  tol <- 0.11
+  tol <- 0.13
   if(FALSE){
   par(mfrow=c(2,5))
   plot(jhWdepO3,  myWdepO3$coefficients);abline(0,1)
