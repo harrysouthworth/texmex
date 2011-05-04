@@ -2,7 +2,7 @@ gpd <-
 function (y, data, th, qu, phi = ~1, xi = ~1,
           penalty = "gaussian", prior = "gaussian", method = "optimize",
           start = NULL, priorParameters = NULL, maxit = 10000, trace=NULL,
-          iter = 10500, burn=500, thin = 1, jump.const, verbose=TRUE) {
+          iter = 10500, burn=500, thin = 1, jump.cov, jump.const, verbose=TRUE) {
 
     theCall <- match.call()
 
@@ -241,7 +241,8 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         if (!exists(".Random.seed")){ runif(1)  }
         seed <- .Random.seed # Retain and add to output
 
-        cov <- o$cov
+        if (missing(jump.cov){ cov <- o$cov }
+		else { cov <- jump.cov }
         ######################## Run the Metropolis algorithm...
         for(i in 2:iter){
             if( verbose){
