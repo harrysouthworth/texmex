@@ -7,8 +7,6 @@ function( x , ... ){
 		cat( "\nAll models converged.\n" )
 	else cat( "\nWARNING: Not all models converged.\n" )
 
-    cat("Margin transformation:", x$margins, "\n")
-    
 	invisible()
 }
 
