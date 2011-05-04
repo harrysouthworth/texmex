@@ -3,7 +3,7 @@ function( x ,
 		  method = "mixture",
 		  divisor = "n+1",
 		  na.rm = TRUE,
-          margins = "gumbel"){
+      margins = "laplace"){
 
 	if ( !is.element( method, c( "mixture", "empirical" ) ) )
 		stop( "method should be either 'mixture' or 'empirical'" )
