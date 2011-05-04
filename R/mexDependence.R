@@ -1,11 +1,14 @@
 `mexDependence` <-
-function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000, start)
+function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=10000, start)
 {
    theCall <- match.call()
    if (class(x) != "migpd")
        stop("you need to use an object created by migpd")
 
-   if (x$margins == "gumbel" & (!missing(constrain) | !missing(v))) {
+   x$margins <-  casefold(margins)
+   x <- mexTransform(x, margins=casefold(margins))
+   
+   if (margins == "gumbel" & (!missing(constrain) | !missing(v))) {
 	   stop("With Gumbel margins, you can't constrain")
    }
    
@@ -66,7 +69,7 @@ function (x, which, dth, dqu, constrain=TRUE, v = 10, maxit=10000, start)
 				   v <- v * max(yex)
 				   zpos <- range(ydep - yex)
 				   z <- range((ydep - yex * a) / (yex^b)) # q0 & q1 
-				   zneg <- range(-ydep - yex) # q0 & q1
+				   zneg <- range(ydep + yex) # q0 & q1
 				   
 				   C1e <- a <= min(1, 1 - b*min(z)*v^(b-1), 1 - v^(b-1)*min(z) + min(zpos)/v) &
 						  a <= min(1, 1 - b*max(z)*v^(b-1), 1 - v^(b-1)*max(z) + max(zpos)/v)
