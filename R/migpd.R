@@ -1,5 +1,5 @@
 `migpd` <-
-function (data, mth, mqu, margins = "laplace", penalty = "gaussian", maxit = 10000,
+function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
    trace = 0, verbose=FALSE, priorParameters = NULL)
 {
    theCall <- match.call()
@@ -51,9 +51,7 @@ function (data, mth, mqu, margins = "laplace", penalty = "gaussian", maxit = 100
        }
    names(mth) <- names(mqu) <- dimnames(data)[[2]]
    res <- list(call = theCall, models = modlist, data = data,
-       mth = mth, mqu = mqu, penalty = penalty, priorParameters = priorParameters,
-       margins = casefold(margins))
-   res <- mexTransform(res, margins=casefold(margins))
+       mth = mth, mqu = mqu, penalty = penalty, priorParameters = priorParameters)
    oldClass(res) <- "migpd"
    invisible(res)
 }
@@ -85,7 +83,6 @@ test.migpd <- function(){
 # check excecution for 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
-  checkEqualsNumeric(dim(wavesurge.fit$transformed),dim(wavesurge),msg="migpd: 2-d data, transformed data dimension")
   checkEqualsNumeric(wavesurge.fit$models$wave$loglik,gpd(wavesurge$wave,qu=0.7)$loglik,
                      tol=0.001,msg="migpd: 2-d data gpd fit wave")
   
