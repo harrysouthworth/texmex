@@ -3,15 +3,14 @@
 \alias{print.bootgpd}
 \alias{show.bootgpd}
 \alias{summary.bootgpd}
+\alias{summary.bootgpd}
 \alias{plot.bootgpd}
 \title{Parametric bootstrap for generalized Pareto models
 }
 \description{
-%%  ~~ A concise (1-5 lines) description of what the function does. ~~
+Parametric bootstrap for generalized Pareto models with or without covariates
 }
-\usage{
-bootgpd(x, R = 99, trace = 10)
-}
+\usage{bootgpd(x, R = 99, trace = 10)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x}{
@@ -20,76 +19,42 @@ An object of class 'gpd'
   \item{R}{ The number of replicates to run. Defaults to \code{R = 99}.
 }
   \item{trace}{
-Report progress to the user every \code{trace} replicates. Defaults to \code{trace = 10}.
-}
+Report progress to the user every \code{trace} replicates. Defaults to \code{trace = 10}.}
+\item{x){An object of class \code{gpd}}
+\item{object){An object of class \code{gpd}}
+\item{col}{Colour of histogram bars}
+\item{border}{Whether or not to draw borders between histogram bars}
+
 }
 \details{
-%%  ~~ If necessary, more details than the description above ~~
+The design matrices for phi and xi are held intact and random numbers are
+generated as the bootstrap response variable. Especially for small sample sizes,
+non-parameteric bootstrapping of GPD models can result in unreasonable distributions
+due to small numbers of observed extreme values having considerable influence
+on parameter estimates. Therefore, only parametric bootstrapping is implemented
+here.
 }
 \value{
-%%  ~Describe the value returned
-%%  If it is a LIST, use
-%%  \item{comp1 }{Description of 'comp1'}
-%%  \item{comp2 }{Description of 'comp2'}
-%% ...
-}
-\references{
-%% ~put references to the literature/web site here ~
+  \item{call}{The function call}
+  \item{replicates}{The bootstrap parameter estimates}
+  \item{summary.bootgpd: margins }{Summary of the marginal parameter estiamtes}
+  \item{summary.bootgpd: covariance{Covariance of the parameter estimates}
+
 }
 \author{
-%%  ~~who you are~~
-}
-\note{
-%%  ~~further notes~~
+Harry Southworth
 }
 
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
-%% ~~objects to See Also as \code{\link{help}}, ~~~
+\code{\link{gpd}}, ~~~
 }
 \examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-## The function is currently defined as
-function(x, R=99, trace=10){
-    if (class(x) != "gpd"){
-        stop("x must be of class 'gpd'")
-    }
-    
-    theCall <- match.call()
-
-    nphi <- ncol(x$X.phi); nxi <- ncol(x$X.xi)
-    phi <- coef(x)[1:nphi]
-    xi <- coef(x)[(nphi+1):(nphi+nxi)]
-    phi <- colSums(phi * t(x$X.phi))
-    xi <- colSums(xi *t(x$X.xi))
-
-    if ("priorParameters" \%in\% names(x$call)){
-        pp <- x$priorParameters
-    }
-    else {
-        pp <- list(rep(0, nphi+nxi), diag(rep(10^4, nphi+nxi)))
-    }
-
-    bfun <- function(i, xi, phi, X.phi, X.xi, co, pp, prior){
-        if (i \%\% trace == 0){ cat("Replicate", i, "\n") }
-
-        y <- rgpd(length(xi), xi=xi, sigma=exp(phi))
-        gpd.fit(y=y,th=min(y) -1, X.phi=X.phi, X.xi=X.xi, penalty=prior, priorParameters=pp, start=co)$par
-    }
-
-    res <- t(sapply(1:R, bfun, xi=xi, phi=phi, X.phi=x$X.phi, X.xi=x$X.xi, co=coef(x), pp=pp, prior=x$penalty))
-
-    res <- list(call=theCall, replicates=res)
-
-    oldClass(res) <- "bootgpd"
-    res
-  }
+mod <- gpd(log(ALT.M), data=liver, qu=.7, xi=~as.numeric(dose))
+bmod <- bootgpd(mod)
+summary(bmod)
+par(mfrow=c(1,3))
+plot(bmod) 
 }
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
-\keyword{ ~kwd1 }
-\keyword{ ~kwd2 }% __ONLY ONE__ keyword per line
+\keyword{ models }
+
