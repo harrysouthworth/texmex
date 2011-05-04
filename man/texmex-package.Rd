@@ -30,7 +30,7 @@ License: \tab GPL (>=2) | BSD\cr
 \code{\link{bootmex}}: Bootstrap estimation for parameters in generalized Pareto models
                 and in the dependence structure.
 
-\code{\link{validate.texmex}}: Use the \code{svUnit} package to run lots of tests to
+\code{\link{validate.texmex}}: Use the \code{RUnit} package to run lots of tests to
             establish a high degree of confidence that the functions do what
             they are supposed to.
 }
