@@ -38,17 +38,11 @@ here.
   \item{call}{The function call}
   \item{replicates}{The bootstrap parameter estimates}
   \item{summary.bootgpd: margins }{Summary of the marginal parameter estiamtes}
-  \item{summary.bootgpd: covariance{Covariance of the parameter estimates}
-
+  \item{summary.bootgpd: covariance}{Covariance of the parameter estimates}
 }
-\author{
-Harry Southworth
-}
+\author{Harry Southworth}
 
-
-\seealso{
-\code{\link{gpd}}, ~~~
-}
+\seealso{\code{\link{gpd}}}
 \examples{
 mod <- gpd(log(ALT.M), data=liver, qu=.7, xi=~as.numeric(dose))
 bmod <- bootgpd(mod)
