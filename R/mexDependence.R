@@ -128,37 +128,40 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
     }
 	   
     if (!is.na(o$par[1])) # gumbel margins and negative dependence
-           if (margins == "gumbel" & o$par[1] <= 10^(-10) & o$par[2] < 0) {
-               lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
-               Q <- function(yex, ydep, param) {
-                 param <- param[-1]
-                 b <- param[1]
-                 cee <- param[2]
-                 d <- param[3]
-                 m <- param[4]
-                 s <- param[5]
+        if (margins == "gumbel" & o$par[1] <= 10^(-10) & o$par[2] < 0) {
+          lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
+          Q <- function(yex, ydep, param) {
+               param <- param[-1]
+               b <- param[1]
+               cee <- param[2]
+               d <- param[3]
+               m <- param[4]
+               s <- param[5]
 
-		 if (b >=1){ b <- 1 - 10^(-10) }
-		 if (d <= 10^(-10)){ d <- 10^(-10) }
-		 else if (d >= 1- 10^(-10)){ d <- 1 - 10^(-10) }
+               if (b >=1){ b <- 1 - 10^(-10) }
+               if (d <= 10^(-10)){ d <- 10^(-10) }
+               else if (d >= 1- 10^(-10)){ d <- 1 - 10^(-10) }
 	
-		 obj <- function(yex, ydep, a, b, cee, d, m, s) {
-                   mu <- cee - d * log(yex) + m * yex^b
-                   sig <- s * yex^b
-                   log(sig) + 0.5 * ((ydep - mu)/sig)^2
-                 }
-                 res <- sum(obj(yex, ydep, a, b, cee, d, m, s))
-                 res
-               }
-               o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, method = "L-BFGS-B", lower=lo, upper=c(1, 1-10^(-10), Inf, 1-10^(-10), Inf, Inf),
-                 yex = yex[wh], ydep = X[wh]), silent=TRUE)
-               if (class(o) == "try-error" || o$convergence != 0) {
-                 warning("Non-convergence in mexDependence")
-                 o <- as.list(o)
-                 o$par <- rep(NA, 4)
-               }
-           }
-           else o$par <- c(o$par[1:2], 0, 0)
+               obj <- function(yex, ydep, a, b, cee, d, m, s) {
+                      mu <- cee - d * log(yex) + m * yex^b
+                      sig <- s * yex^b
+                      log(sig) + 0.5 * ((ydep - mu)/sig)^2
+                      }
+               res <- sum(obj(yex, ydep, a, b, cee, d, m, s))
+               res
+          }
+          o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, method = "L-BFGS-B", lower=lo, 
+                   upper=c(1, 1-10^(-10), Inf, 1-10^(-10), Inf, Inf),
+                   yex = yex[wh], ydep = X[wh]), silent=TRUE)
+                   
+          if (class(o) == "try-error" || o$convergence != 0) {
+             warning("Non-convergence in mexDependence")
+             o <- as.list(o)
+             o$par <- rep(NA, 4)
+          }
+        } # end if gumbel margins and neg dependence
+        else o$par <- c(o$par[1:2], 0, 0)
+        
        c(o$par[1:4], o$value) # Parameters and negative loglik
    } # Close qfun <- function(
 
@@ -212,20 +215,20 @@ test.mexDependence <- function(){
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 
-  mySdepO3 <- mexDependence(smarmod,which=1,dqu=0.7)
-  myWdepO3 <- mexDependence(wmarmod,which=1,dqu=0.7)
+  mySdepO3 <- mexDependence(smarmod,which=1,dqu=0.7,margins="gumbel")
+  myWdepO3 <- mexDependence(wmarmod,which=1,dqu=0.7,margins="gumbel")
 
-  mySdepNO2 <- mexDependence(smarmod,which=2,dqu=0.7)
-  myWdepNO2 <- mexDependence(wmarmod,which=2,dqu=0.7)
+  mySdepNO2 <- mexDependence(smarmod,which=2,dqu=0.7,margins="gumbel")
+  myWdepNO2 <- mexDependence(wmarmod,which=2,dqu=0.7,margins="gumbel")
 
-  mySdepNO <- mexDependence(smarmod,which=3,dqu=0.7)
-  myWdepNO <- mexDependence(wmarmod,which=3,dqu=0.7)
+  mySdepNO <- mexDependence(smarmod,which=3,dqu=0.7,margins="gumbel")
+  myWdepNO <- mexDependence(wmarmod,which=3,dqu=0.7,margins="gumbel")
 
-  mySdepSO2 <- mexDependence(smarmod,which=4,dqu=0.7)
-  myWdepSO2 <- mexDependence(wmarmod,which=4,dqu=0.7)
+  mySdepSO2 <- mexDependence(smarmod,which=4,dqu=0.7,margins="gumbel")
+  myWdepSO2 <- mexDependence(wmarmod,which=4,dqu=0.7,margins="gumbel")
 
-  mySdepPM10 <- mexDependence(smarmod,which=5,dqu=0.7)
-  myWdepPM10 <- mexDependence(wmarmod,which=5,dqu=0.7)
+  mySdepPM10 <- mexDependence(smarmod,which=5,dqu=0.7,margins="gumbel")
+  myWdepPM10 <- mexDependence(wmarmod,which=5,dqu=0.7,margins="gumbel")
 
   
 jhSdepO3 <- matrix(c(
@@ -290,7 +293,7 @@ jhWdepPM10 <- matrix(c(
 0.59510081,  0.569002154,  0.00000000, 0.0000000,
 0.10412199,  0.207529741,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
   
-  tol <- 0.13
+  tol <- 0.23
   if(FALSE){
   par(mfrow=c(2,5))
   plot(jhWdepO3,  myWdepO3$coefficients);abline(0,1)
@@ -305,7 +308,7 @@ jhWdepPM10 <- matrix(c(
   plot(jhSdepSO2, mySdepSO2$coefficients);abline(0,1)
   plot(jhSdepPM10,mySdepPM10$coefficients);abline(0,1)
   }
-  
+
   checkEqualsNumeric(jhWdepO3,  myWdepO3$coefficients,  tol=tol,msg="mexDependence: Winter O3")
   checkEqualsNumeric(jhWdepNO2, myWdepNO2$coefficients, tol=tol,msg="mexDependence: Winter NO2")
   checkEqualsNumeric(jhWdepNO,  myWdepNO$coefficients,  tol=tol,msg="mexDependence: Winter NO")
