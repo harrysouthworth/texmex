@@ -1,25 +1,29 @@
 `mexRangeFit` <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
-          col="red",bootcol="grey",...)
+          col="red",bootcol="grey",margins="laplace", ...)
 {
 
   if (class(x) == "mex"){
-    x <- x[[1]]
+    x <- x[[2]]$migpd
+    if( (!missing(margins))){
+      warning("margins given, but already applied to 'mex' object.  Using 'mex' value")
+    }
+    margins <- x$margins
+  } else if (class(x) != "migpd"){
+    stop("object should have class mex or migpd")
+  } 
+  
+  if (missing(which)) {
+     cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
+     which <- 1
   }
 
-   if (missing(which)) {
-       cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
-       which <- 1
-   }
-   
-  ests <- lapply(quantiles, function(qu, which, x){
-                                mexDependence(x=x, which=which, dqu=qu)
-                           },
-                           which=which, x=x)
-  boot <- lapply(quantiles, function(qu, x, which, R, nPass, trace){
-                                bootmex(x=x, which=which, R=R, dqu=qu, nPass=nPass, trace=trace)
-                            },
-                            x=x, which=which, R=R, nPass=nPass, trace=trace)
+  ests <- lapply(quantiles, function(qu, which, x, margins)
+                                    mexDependence(x=x, which=which, dqu=qu, margins = margins),
+                 which=which, x=x, margins = margins)
+  boot <- lapply(quantiles, function(qu, x, which, R, nPass, trace, margins)
+                                    bootmex(x=x, which=which, R=R, dqu=qu, nPass=nPass, trace=trace, margins=margins),
+                 which=which, x=x, margins=margins, R=R, nPass=nPass, trace=trace)
 
   PointEsts <- sapply(ests,coef)
   cof <- coef(ests[[1]])
@@ -41,9 +45,15 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
 test.mexRangeFit <- function(){
 
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
+  wmexmod.gum <- mex(winter, mqu=.7,  penalty="none", margins="gumbel")
+  wmexmod.lap <- mex(winter, mqu=.7,  penalty="none", margins="laplace")
   
   par(mfrow=c(2,2))
-  mexRangeFit(wmarmod,which=1,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5)
+  mexRangeFit(wmarmod,which=1,margins="gumbel",
+              main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5)
+  mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5)
+  mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5)
+  
   
   checkException(mexRangeFit(TRUE,which=2),msg="mexRangeFit: exception handle")
   checkException(mexRangeFit(5,which=1),msg="mexRangeFit: exception handle")
@@ -51,6 +61,10 @@ test.mexRangeFit <- function(){
 # now 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
-  mexRangeFit(wavesurge.fit,which=1,main="Dependence threshold selection,\nwave and surge data, Coles 2001")
+  mexRangeFit(wavesurge.fit,which=1,margins="laplace",
+              main="Dependence threshold selection,\nwave and surge data, Coles 2001")
+  mexRangeFit(wavesurge.fit,which=1,margins="gumbel",
+              main="Dependence threshold selection,\nwave and surge data, Coles 2001")
+  
   
 }
