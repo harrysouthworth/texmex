@@ -10,13 +10,18 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
 	}
 
 	if (missing(mth)){
-		mqu <- rep(mqu, ncol(data))
+    if(length(mqu) == 1){
+		  mqu <- rep(mqu, ncol(data))
+    } 
+    if( length(mqu) != ncol(data)){
+      stop("mqu must be length 1 or length equal to the dimension of the data")
+    }
 		mth <- unlist(lapply(1:length(mqu), function(i, data, p){
 												quantile(data[, i], prob=p[i])
 											}, p=mqu, data=data))
 	}
 
-    res1 <- migpd(data=data, mth=mth, margins=margins, penalty=penalty,
+    res1 <- migpd(data=data, mth=mth, penalty=penalty,
                   maxit=maxit, trace=trace, verbose=verbose,
                   priorParameters=priorParameters)
 
@@ -27,7 +32,7 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
 		dqu <- res1$mqu[1]
 	}
 
-    res2 <- mexDependence(x= res1, which=which, dqu=dqu)
+    res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins)
     
     res <- list(margins=res1, dependence=res2, call=theCall)
     oldClass(res) <- "mex"
@@ -40,6 +45,7 @@ print.mex <- function(x, ...){
 	cat("Marginal models:\n")
     summary(x[[1]])
     cat("\nDependence model:\n")
+    cat(x$dependence$migpd$margins,"margins used for dependence estimation.\n")
     print(x[[2]])
     invisible()
 }
