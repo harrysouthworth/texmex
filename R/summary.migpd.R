@@ -20,9 +20,6 @@ function(object, verbose = TRUE, ...){
     cat("\n\nSummary of models:\n")
     print(co, ...)
     cat("\n")
-
-    cat("Margin transformation:", object$margins, "\n")
-    
   }
   
 	invisible(co)
