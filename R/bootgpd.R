@@ -1,4 +1,4 @@
-bootgpd <- function(x, R=99, trace=10){
+bootgpd <- function(x, R=100, trace=10){
     if (class(x) != "gpd"){
         stop("x must be of class 'gpd'")
     }
@@ -27,7 +27,7 @@ bootgpd <- function(x, R=99, trace=10){
 
     res <- t(sapply(1:R, bfun, xi=xi, phi=phi, X.phi=x$X.phi, X.xi=x$X.xi, co=coef(x), pp=pp, prior=x$penalty))
 
-    res <- list(call=theCall, replicates=res)
+    res <- list(call=theCall, replicates=res, original=coef(x))
 
     oldClass(res) <- "bootgpd"
     res
@@ -35,16 +35,27 @@ bootgpd <- function(x, R=99, trace=10){
 
 print.bootgpd <- function(x, ...){
     print(x$call)
-    res <- t( apply(x$replicates, 2, summary))
+    means <- apply(x$replicates, 2, mean)
+    medians <- apply(x$replicates, 2, median)
+    sds <- apply(x$replicates, 2, sd)
+    bias <- means - x$original
+    res <- rbind(x$original, means, bias, sds, medians)
+    rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
     #colnames(res) <- names(summary(rnorm(3)))
     print(res, ...)
     invisible(res)
 }
 
 summary.bootgpd <- function(object, ...){
-    mars <- t(apply(object$replicates,2, summary))
+    means <- apply(object$replicates, 2, mean)
+    medians <- apply(object$replicates, 2, median)
+    sds <- apply(object$replicates, 2, sd)
+    bias <- means - object$original
+    res <- rbind(object$original, means, bias, sds, medians)
+    rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
+
 	covs <- var(object$replicates)
-	res <- list(call = object$call, margins=mars, covariance=covs)
+	res <- list(call = object$call, margins=res, covariance=covs)
 	oldClass(res) <- "summary.bootgpd"
     res
 }
@@ -73,3 +84,69 @@ plot.bootgpd <- function(x, col="blue", border=FALSE, ...){
 
 show.bootgpd <- print.bootgpd
 show.summary.bootgpd <- print.summary.bootgpd
+
+test.gpd <- function(){
+    # Compare bootstrap standard errors with those given by Coles
+    # page 85
+    cse <- c(.958432, .101151)
+    raingpd <- gpd(rain, th=30, penalty="none")
+    rainboot <- bootgpd(raingpd, R=100, trace=100)
+    rainrep <- rainboot$replicates
+    rainrep[,1] <- exp(rainrep[, 1])
+    bse <- apply(rainrep, 2, sd)
+    checkTrue(abs(cse[1] - bse[1]) < cse[1] / 10,
+              msg="bootgpd: rain se(sigma) matches Coles")
+    checkTrue(abs(cse[2] - bse[2]) < cse[2] / 10,
+              msg="bootgpd: rain se(xi) matches Coles")
+
+    # Check bootstrap medians are close to poitn estimates (the MLEs are
+    # biased and the distribution of sigma in particular is skewed, so use
+    # medians, not means, and allow a little leeway
+    
+    best <- apply(rainrep, 2, median)
+    cest <- coef(raingpd); cest[1] <- exp(cest[1])
+    checkTrue(abs(cest[1] - best[1]) < cest[1] / 10,
+              msg="bootgpd: rain median of sigma matches point estimate")
+    checkTrue(abs(cest[2] - best[2]) < cest[2] / 10,
+              msg="bootgpd: rain medians of xi matches point estimate")
+
+    ##################################################################
+    # Do some checks for models with covariates. Due to apparent instability
+    # of the Hessian in some cases, allow some leeway
+    
+    lmod <- gpd(log(ALT.M / ALT.B), data=liver, qu=.7,
+                xi= ~ as.numeric(dose), phi= ~ as.numeric(dose))
+    lboot <- bootgpd(lmod, R=200, trace=100)
+    bse <- apply(lboot$replicates, 2, sd)
+    rse <- bse / lmod$se
+    rse <- ifelse(rse < 1, 1/rse, rse)
+    checkTrue(max(rse) < 1.5, msg="bootgpd: SEs with xi in model")
+
+    best <- apply(lboot$replicates, 2, median)
+    rest <- best / coef(lmod)
+    rest <- ifelse(rest < 1, 1/rest, rest)
+    checkTrue(max(rest) < 1.5, msg="bootgpd: medians in line with point ests")
+
+    ## Check penalization works - set harsh penalty and do similar
+    ## checks to above
+
+    pp <- list(c(0, .5), diag(c(.5, .05)))
+    raingpd <- gpd(rain, th=30, penalty="none", priorParameters=pp)
+    rainboot <- bootgpd(raingpd, R=1000, trace=100)
+    
+    bse <- apply(rainboot$replicates, 2, sd)
+    rse <- bse / raingpd$se
+    rse <- ifelse(rse < 1, 1/rse, rse)
+    checkTrue(max(rse) < 1.1, msg="bootgpd: SEs with xi in model")
+
+    best <- apply(rainboot$replicates, 2, median)
+    rest <- best / coef(raingpd)
+    rest <- ifelse(rest < 1, 1/rest, rest)
+    checkTrue(max(rest) < 1.1, msg="bootgpd: medians in line with point ests")
+}
+
+
+
+
+
+
