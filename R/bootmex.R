@@ -143,6 +143,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10, margins = "laplace
     ans$R <- R
     ans$simpleMar <- x
     ans$simpleDep <- mexDependence(x, dth = dth, which=which, margins=margins)$coefficients
+    ans$margins <- margins
     oldClass(ans) <- c("bootmex", "mex")
     ans
 }
