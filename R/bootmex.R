@@ -1,6 +1,6 @@
 bootmex <- 
     # Bootstrap inference for a conditional multivaratiate extremes model.
-function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
+function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10, margins = "laplace") {
     theCall <- match.call()
 
     getTran <- function(i, x, data, mod, th, qu, margins) {
@@ -33,17 +33,22 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
             warning("dqu given, but already applied to 'mex' object. Using 'mex' value")
         }
         dqu <- x[[2]]$dqu
-        x <- x[[1]]
+        if( (!missing(margins))){
+            warning("margins given, but already applied to 'mex' object.  Using 'mex' value")
+        }
+        margins <- x[[2]]$migpd$margins
+        
+        x <- x[[2]]$migpd
+    } else if (class(x) != "migpd"){
+      stop("object should have class mex or migpd")
+    } else {
+       x$margins <-  casefold(margins)
+       x <- mexTransform(x, margins=casefold(margins))
+       if (missing(which)) {
+          cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
+          which <- 1
+       }
     }
-    else if (class(x) != "migpd"){
-        stop("object should have class migpd")
-    }
-    else if (missing(which)) {
-        cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
-        which <- 1
-    }
-
-	margins <- x$margins
 
     if (missing(dqu) & missing(dth)) {
         dqu <- x$mqu[which]
@@ -89,10 +94,10 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
                     
         dimnames(g)[[2]] <- names(x$models)
 
-        ggpd <- migpd(g, mth = x$mth, margins=margins,
+        ggpd <- migpd(g, mth = x$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which)
+        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
                     Z = gd$Z,
@@ -137,7 +142,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10) {
     ans$which <- which
     ans$R <- R
     ans$simpleMar <- x
-    ans$simpleDep <- mexDependence(x, dth = dth, which)$coefficients
+    ans$simpleDep <- mexDependence(x, dth = dth, which=which, margins=margins)$coefficients
     oldClass(ans) <- c("bootmex", "mex")
     ans
 }
@@ -154,15 +159,15 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   myWdep <- mexDependence(wmarmod)
 
   R <- 20
-  
+ 
   mySboot <- bootmex(smarmod, R=R, which=1, dqu=.7)
   myWboot <- bootmex(wmarmod, R=R, which=1, dqu=.7)
 
-  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep")
-  checkEqualsNumeric(coef(smarmod), coef(mySboot$simpleMar), msg="bootmex: summer simpleMar")
+  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep from call with mar model")
+  checkEqualsNumeric(coef(smarmod), coef(mySboot$simpleMar), msg="bootmex: summer simpleMar from call with mar model")
 
-  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep")
-  checkEqualsNumeric(coef(wmarmod), coef(myWboot$simpleMar), msg="bootmex: winter simpleMar")
+  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep from call with mar model")
+  checkEqualsNumeric(coef(wmarmod), coef(myWboot$simpleMar), msg="bootmex: winter simpleMar from call with mar model")
   
   checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
   checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
@@ -170,17 +175,17 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
 
-  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7)
-  wmarmod <- mex(winter, mqu=.7,  penalty="none")
+  smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel")
+  wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel")
 
-  mySboot <- bootmex(smarmod, R=R)
-  myWboot <- bootmex(wmarmod, R=R)
+  mySboot <- bootmex(smexmod, R=R)
+  myWboot <- bootmex(wmexmod, R=R)
 
-  checkEqualsNumeric(coef(smarmod)[[2]], mySboot$simpleDep, msg="bootmex: summer simpleDep")
-  checkEqualsNumeric(coef(smarmod)[[1]], coef(mySboot$simpleMar), msg="bootmex: summer simpleMar")
+  checkEqualsNumeric(coef(smexmod)[[2]], mySboot$simpleDep, msg="bootmex: summer simpleDep from call with mex model")
+  checkEqualsNumeric(coef(smexmod)[[1]], coef(mySboot$simpleMar), msg="bootmex: summer simpleMar from call with mex model")
 
-  checkEqualsNumeric(coef(wmarmod)[[2]], myWboot$simpleDep, msg="bootmex: winter simpleDep")
-  checkEqualsNumeric(coef(wmarmod)[[1]], coef(myWboot$simpleMar), msg="bootmex: winter simpleMar")
+  checkEqualsNumeric(coef(wmexmod)[[2]], myWboot$simpleDep, msg="bootmex: winter simpleDep from call with mex model")
+  checkEqualsNumeric(coef(wmexmod)[[1]], coef(myWboot$simpleMar), msg="bootmex: winter simpleMar from call with mex model")
   
   checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
   checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
