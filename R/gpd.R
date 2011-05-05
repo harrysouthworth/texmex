@@ -241,7 +241,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         if (!exists(".Random.seed")){ runif(1)  }
         seed <- .Random.seed # Retain and add to output
 
-        if (missing(jump.cov){ cov <- o$cov }
+        if (missing(jump.cov)){ cov <- o$cov }
 		else { cov <- jump.cov }
         ######################## Run the Metropolis algorithm...
         for(i in 2:iter){
