@@ -40,87 +40,94 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
       
    if (missing(start)){ start <- c(.01, .01, .01, 1) }
    else if (length(start) == 2){
-       start <- c(start, 0, 1)
+       start <- c(start, 0.01, 1)
    }
    else if (length(start) != 4){
        stop("start should have length 4 (or 2)")
    }
 
    qfun <- function(X, yex, wh, lo, margins, constrain, v, maxit, start){
-       Q <- function(yex, ydep, param, constrain, v) {
+     Q <- function(yex, ydep, param, constrain, v) {
 
 	   a <- param[1]
-           b <- param[2]
-           m <- param[3]
-           s <- param[4]
+     b <- param[2]
+     m <- param[3]
+     s <- param[4]
 
 	   if (a >= 1){ a <- 1 - 10^(-10) }
-	   else if (!constrain & a <= 10^(-10)){ a <- 10^(-10) }
-	   else if (constrain & a <= -1 + 10^(-10)){ a <- -1 + 10^(-10) }
+	   else if (margins == "gumbel"  & a <= 10^(-10)){ a <- 10^(-10) }
+	   else if (margins == "laplace" & a <= -1 + 10^(-10)){ a <- -1 + 10^(-10) }
 	   if (b >= 1){ b <- 1 - 10^(-10) }
 
 	   obj <- function(yex, ydep, a, b, m, s, constrain, v) {
-           mu <- a * yex + m * yex^b
-           sig <- s * yex^b
+         mu <- a * yex + m * yex^b
+         sig <- s * yex^b
 			   
-	   res <- log(sig) + 0.5 * ((ydep - mu)/sig)^2
+         res <- log(sig) + 0.5 * ((ydep - mu)/sig)^2
 
-			   if (constrain){
+  	     if (constrain){
 				   v <- v * max(yex)
 				   zpos <- range(ydep - yex)
 				   z <- range((ydep - yex * a) / (yex^b)) # q0 & q1 
 				   zneg <- range(ydep + yex) # q0 & q1
 				   
 				   C1e <- a <= min(1, 1 - b*min(z)*v^(b-1), 1 - v^(b-1)*min(z) + min(zpos)/v) &
-						  a <= min(1, 1 - b*max(z)*v^(b-1), 1 - v^(b-1)*max(z) + max(zpos)/v)
+						      a <= min(1, 1 - b*max(z)*v^(b-1), 1 - v^(b-1)*max(z) + max(zpos)/v)
 				   
-				   C1o <- a <= 1 & a > 1 - b * min(z) * v^(b-1) & a > 1 -b*max(z)*v^(b-1) &
-							  (1 - 1/b)*(b*min(z))^(1/(1-b)) * (1-a)^(-b/(1 - b)) + min(zpos) > 0 &
-							  (1 - 1/b)*(b*max(z))^(1/(1-b)) * (1-a)^(-b/(1 - b)) + max(zpos) > 0
+				   C1o <- a <= 1 & 
+                  a > 1 - b * min(z) * v^(b-1) & 
+                  a > 1 - b * max(z) * v^(b-1) &
+							   (1 - 1/b)*(b*min(z))^(1/(1-b)) * (1-a)^(-b/(1 - b)) + min(zpos) > 0 &
+							   (1 - 1/b)*(b*max(z))^(1/(1-b)) * (1-a)^(-b/(1 - b)) + max(zpos) > 0
 
 				   C2e <- -a <= min(1, 1 + b*v^(b-1)*min(z), 1 + v^(b-1)*min(z) - min(zneg)/v) &
-						  -a <= min(1, 1 + b*v^(b-1)*max(z), 1 + v^(b-1)*max(z) - max(zneg)/v)
+						      -a <= min(1, 1 + b*v^(b-1)*max(z), 1 + v^(b-1)*max(z) - max(zneg)/v)
 
-				   C2o <- -a <= 1 & -a > 1 + b*v^(b-1)*min(z) & -a > 1 + b*v^(b-1)*max(z) &
-						  (1-1/b)*(-b*min(z))^(1/(1-b))*(1+a)^(-b/(1-b)) - min(zneg) > 0 &
-						  (1-1/b)*(-b*max(z))^(1/(1-b))*(1+a)^(-b/(1-b)) - max(zneg) > 0
+				   C2o <- -a <= 1 & 
+                  -a > 1 + b*v^(b-1)*min(z) & 
+                  -a > 1 + b*v^(b-1)*max(z) &
+						     (1-1/b)*(-b*min(z))^(1/(1-b))*(1+a)^(-b/(1-b)) - min(zneg) > 0 &
+						     (1-1/b)*(-b*max(z))^(1/(1-b))*(1+a)^(-b/(1-b)) - max(zneg) > 0
 
-	                           if (any(is.na(c(C1e, C1o, C2e, C2o)))) {
-                                       warning("Strayed into impossible area of parameter space")
-                                       C1e <- C1o <- C2e <- C2o <- FALSE
-                                   }
+	          if (any(is.na(c(C1e, C1o, C2e, C2o)))) {
+               warning("Strayed into impossible area of parameter space")
+               C1e <- C1o <- C2e <- C2o <- FALSE
+            }
 
-				   if (!((C1e | C1o) && (C2e | C2o))){ res <- 10^10 }
-
-			   } # Close if (constrain
+				    if (!((C1e | C1o) && (C2e | C2o))){
+              res <- 10^10
+            }
+			    } # Close if (constrain
 			   res
-           } # Close obj <- function
+      } # Close obj <- function
 
-           res <- sum(obj(yex, ydep, a, b, m, s, constrain, v))
-           if (is.infinite(res)){
-                  if (res < 0){ res <- -(10^10) }
-                  else res <- 10^8
-                  warning("Infinite value of Q in mexDependence")
+      res <- sum(obj(yex, ydep, a, b, m, s, constrain, v))
+        if (is.infinite(res)){
+           if (res < 0){ 
+             res <- -(10^10) 
+           } else {
+             res <- 10^8
            }
-           res
-       } # Close Q <- function
+           warning("Infinite value of Q in mexDependence")
+        }
+        res
+     } # Close Q <- function
        
-       o <- try(optim(par=start, fn=Q, 
-					  method = "L-BFGS-B", lower=lo, upper=c(1, 1, Inf, Inf), control=list(maxit=maxit),
-           yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
+     o <- try(optim(par=start, fn=Q, 
+			  		  method = "L-BFGS-B", lower=lo, upper=c(1, 1, Inf, Inf), control=list(maxit=maxit),
+              yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
 
 		if (class(o) == "try-error"){
 			warning("Error in optim call from mexDependence")
 			o <- as.list(o)
 			o$par <- rep(NA, 4)
-		}
-       else if (o$convergence != 0) {
-           warning("Non-convergence in mexDependence")
-           o <- as.list(o)
-           o$par <- rep(NA, 4)
-       }
+		} else if (o$convergence != 0) {
+      warning("Non-convergence in mexDependence")
+      o <- as.list(o)
+      o$par <- rep(NA, 4)
+    }
 	   
-       if (!is.na(o$par[1]))
+    if (!is.na(o$par[1])) # gumbel margins and negative dependence
            if (margins == "gumbel" & o$par[1] <= 10^(-10) & o$par[2] < 0) {
                lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
                Q <- function(yex, ydep, param) {
@@ -159,8 +166,8 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
 
-	res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh,
-	   			lo=lo, margins=x$margins, constrain=constrain, v=v, maxit=maxit, start=start)
+	 res <- apply(as.matrix(x$transformed[, dependent]), 2, qfun, yex = yex, wh = wh,
+	        			lo=lo, margins=x$margins, constrain=constrain, v=v, maxit=maxit, start=start)
 
    loglik <- -res[5,]
    res <- matrix(res[1:4,], nrow=4)
@@ -195,8 +202,8 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    }
    dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
    res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
-       dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which],
-	   loglik=loglik)
+               dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which],
+	             loglik=loglik)
    oldClass(res) <- "mexDependence"
    res
 }
