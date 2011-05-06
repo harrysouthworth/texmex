@@ -29,10 +29,27 @@ Report progress to the user every \code{trace} replicates. Defaults to \code{tra
 \details{
 The design matrices for phi and xi are held intact and random numbers are
 generated as the bootstrap response variable. Especially for small sample sizes,
-non-parameteric bootstrapping of GPD models can result in unreasonable distributions
-due to small numbers of observed extreme values having considerable influence
-on parameter estimates. Therefore, only parametric bootstrapping is implemented
-here.
+non-parameteric bootstrapping of GPD models can result in unreasonable
+distributions (such as bimodal)
+due to small numbers of observed extreme values having considerable
+influence on parameter estimates in a minority of samples. Therefore,
+only parametric bootstrapping is implemented here.
+
+The print method returns the original point estimates, bootstrap means,
+bootstrap estimates of bias and standard deviation. The bootstrap
+median is also returned. 
+
+The summary method returns the same as the print method, but also the
+bootstrap estimate of the covariance of the parameters. When printed,
+the correlation (not covariance) is displayed. The covariance might
+be wanted to pass into \code{gpd} using \code{method = "simulate"}. In
+particular, in some circumstances the numerical estimate of the Hessian
+of the parameters can be unstable, resulting in the Metropolis algorithm
+using a proposal distribution that is too narrow. This shows up as the
+acceptance rate of the algorithm being too high (above about 45\%).
+Then, using a bootstrap estimate might be preferable.
+
+The plot method displays histograms and kernel density estimates.
 }
 \value{
   \item{call}{The function call}
