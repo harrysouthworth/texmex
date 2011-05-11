@@ -1,79 +1,58 @@
 bootmex <- 
     # Bootstrap inference for a conditional multivaratiate extremes model.
-function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10, margins = "laplace") {
+function (x, R = 100, nPass = 3, trace = 10) {
     theCall <- match.call()
 
+# Construct the object to be returned.
+    ans <- list()
+    ans$call <- theCall
+    
     getTran <- function(i, x, data, mod, th, qu, margins) {
         x <- c(x[, i])
         param <- mod[[i]]$coefficients
         th <- th[i]
         qu <- qu[i]
         data <- c(data[, i])
-		if (margins == "gumbel"){
-			res <- revTransform(exp(-exp(-x)), data = data, th = th, 
+        if (margins == "gumbel"){
+			     res <- revTransform(exp(-exp(-x)), data = data, th = th, 
             					qu = qu, sigma = exp(param[1]), xi = param[2])
-		}
-		else {
-			y <- x
-			y[y < 0] <- exp(y[y < 0]) / 2
-			y[y >= 0] <- 1 - exp(-y[y >= 0]) / 2
-			res <- revTransform(y, data = data, th = th, 
-								qu = qu, sigma = exp(param[1]), xi = param[2])
-		}
-					
+		    } else {
+			    y <- x
+			    y[y < 0] <- exp(y[y < 0]) / 2
+			    y[y >= 0] <- 1 - exp(-y[y >= 0]) / 2
+			    res <- revTransform(y, data = data, th = th, 
+					     			qu = qu, sigma = exp(param[1]), xi = param[2])
+		    }
         res
     }
 
-    if (class(x) == "mex"){
-        if (!missing(which)){
-            warning("which given, but already applied to 'mex' object. Using 'mex' value")
-        }
-        which <- x[[2]]$which
-        if (!missing(dqu)){
-            warning("dqu given, but already applied to 'mex' object. Using 'mex' value")
-        }
-        dqu <- x[[2]]$dqu
-        if( (!missing(margins))){
-            warning("margins given, but already applied to 'mex' object.  Using 'mex' value")
-        }
-        margins <- x[[2]]$migpd$margins
-        
-        x <- x[[2]]$migpd
-    } else if (class(x) != "migpd"){
-      stop("object should have class mex or migpd")
-    } else {
-       x$margins <-  casefold(margins)
-       x <- mexTransform(x, margins=casefold(margins))
-       if (missing(which)) {
-          cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
-          which <- 1
-       }
+    if (class(x) != "mexDependence"){
+      stop("object must be of type 'mexDependence'")
     }
+    which <- x$which
+    dqu <- x$dqu
+    dth <- x$dth
+    margins <- x$migpd$margins        
+    penalty <- x$migpd$penalty
+    priorParameters <- x$migpd$priorParameters
 
-    if (missing(dqu) & missing(dth)) {
-        dqu <- x$mqu[which]
-    }
-
-    if (missing(dth)) {
-        dth <- quantile(x$transformed[, which], prob = dqu)
-    }
-
-    penalty <- x$penalty
-    priorParameters <- x$priorParameters
-
-    n <- dim(x$transformed)[[1]]
-    d <- dim(x$transformed)[[2]]
-
-    if (is.character(which)) {
-        which <- (1:d)[dimnames(x$data)[[2]] == which]
-    }
+    n <- dim(x$migpd$transformed)[[1]]
+    d <- dim(x$migpd$transformed)[[2]]
+    dqu <- rep(dqu, d) 
     dependent <- (1:d)[-which]
+    
+    ans$simpleDep <- x$coefficients
+    ans$dqu <- dqu
+    ans$which <- which
+    ans$R <- R
+    ans$simpleMar <- x$migpd
+    ans$margins <- margins
 
     innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
         
-        g <- sample(1:(dim(x$transformed)[[1]]), size = n, replace = TRUE)
-        g <- x$transformed[g, ]
+        g <- sample(1:(dim(x$migpd$transformed)[[1]]), size = n, replace = TRUE)
+        g <- x$migpd$transformed[g, ]
         ok <- FALSE
 
         while (!ok) {
@@ -89,15 +68,15 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10, margins = "laplace
             if (sum(g[, which] > dth) > 1){ ok <- TRUE }
         }
         
-        g <- sapply(1:d, getTran, x = g, data = x$data, margins=margins,
-                    mod = x$models, th = x$mth, qu = x$mqu)
+        g <- sapply(1:d, getTran, x = g, data = x$migpd$data, margins=margins,
+                    mod = x$migpd$models, th = x$migpd$mth, qu = x$migpd$mqu)
                     
-        dimnames(g)[[2]] <- names(x$models)
+        dimnames(g)[[2]] <- names(x$migpd$models)
 
-        ggpd <- migpd(g, mth = x$mth, 
+        ggpd <- migpd(g, mth = x$migpd$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins)
+        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, start = ans$simpleDep[c(1:2,5:6),])
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$coefficients, 
                     Z = gd$Z,
@@ -111,7 +90,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10, margins = "laplace
         res
     } # Close innerFun 
 
-    dqu <- rep(dqu, d) 
+
 
     res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, margins=margins, 
         dqu = dqu, penalty = penalty, priorParameters = priorParameters, 
@@ -134,16 +113,7 @@ function (x, which, R = 100, dth, dqu, nPass = 3, trace = 10, margins = "laplace
         }
     }
 
-    # Construct the object to be returned.
-    ans <- list()
     ans$boot <- res
-    ans$call <- theCall
-    ans$dqu <- dqu
-    ans$which <- which
-    ans$R <- R
-    ans$simpleMar <- x
-    ans$simpleDep <- mexDependence(x, dth = dth, which=which, margins=margins)$coefficients
-    ans$margins <- margins
     oldClass(ans) <- c("bootmex", "mex")
     ans
 }
