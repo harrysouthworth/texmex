@@ -1,6 +1,7 @@
 gpd <- 
 function (y, data, th, qu, phi = ~1, xi = ~1,
           penalty = "gaussian", prior = "gaussian", method = "optimize",
+		  cov="observed",
           start = NULL, priorParameters = NULL, maxit = 10000, trace=NULL,
           iter = 10500, burn=500, thin = 1, jump.cov, jump.const, verbose=TRUE) {
 
@@ -139,7 +140,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ################################## Do the optimization....
 
-    o <- gpd.fit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior,
+    o <- gpd.fit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior, hessian = cov == "numeric",
                  priorParameters = priorParameters, maxit = maxit, trace = otrace)
 
 
@@ -149,10 +150,9 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ################################## If method = "optimize", construct object and return...
 
-	o$cov <- solve(o$hessian)
+	if (cov == "numeric") { o$cov <- solve(o$hessian) }
     if (method == "o"){
         o$hessian <- NULL
-        o$se <- sqrt(diag(o$cov))
         o$threshold <- th
         o$penalty <- prior
         o$coefficients <- o$par
@@ -164,7 +164,8 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         o$y <- y
         o$X.phi <- X.phi
         o$X.xi <- X.xi
-        if (missing(data)) {
+		o$priorParameters <- priorParameters
+		if (missing(data)) {
             data <- NULL
         }
         o$data <- data
@@ -173,7 +174,9 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         o$value <- NULL
         o$counts <- NULL
         oldClass(o) <- "gpd"
-        o
+		if (cov == "observed") { o$cov <- info.gpd(o) }
+		o$se <- sqrt(diag(o$cov))
+		o
     } # Close if (method == "o"
 
     ################################# Simulate from posteriors....
