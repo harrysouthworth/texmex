@@ -427,13 +427,13 @@ test.gpd <- function(){
 #     These are not necessarily sensible models!
 #     Start with phi alone.
 
-  mod <- gpd(ALT.M, qu=.7, data=liver,
+  mod <- gpd(log(ALT.M / ALT.B), qu=.7, data=liver,
            phi = ~ ALT.B + dose, xi = ~1,
-           penalty="none")
+           penalty="none", cov="numeric")
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- .ismev.gpd.fit(liver$ALT.M, threshold=quantile(liver$ALT.M, .7), 
+  ismod <- .ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B), threshold=quantile(liver$ALT.M, .7), 
                  ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
 
   checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol,msg="gpd: covariates in phi only, point ests")
@@ -443,13 +443,13 @@ test.gpd <- function(){
 
 ######################################################################
 # 3.2 Test xi alone.
-  mod <- gpd(ALT.M, qu=.7, data=liver,
+  mod <- gpd(log(ALT.M / ALT.B), qu=.7, data=liver,
            phi = ~1, xi = ~ ALT.B + dose,
-           penalty="none")
+           penalty="none", cov="numeric")
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- .ismev.gpd.fit(liver$ALT.M, threshold=quantile(liver$ALT.M, .7), 
+  ismod <- .ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B), threshold=quantile(liver$ALT.M, .7), 
                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])

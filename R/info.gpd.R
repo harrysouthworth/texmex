@@ -78,8 +78,11 @@ function(o, method="observed"){
 	}
 
 	i <- rbind( cbind(Is, Iks), cbind(t(Iks), Ik))
-	res <- try(solve(i - p))
-	if (class(res) == "try-error"){ res <- matrix(0, ncol=ns+nk, nrow=ns+nk) }
+	res <- try(solve(i - p), silent=TRUE)
+	if (class(res) == "try-error"){
+	    warning("singular information matrix. Returning a matrix of 0s. Try using bootgpd for inference instead")
+	    res <- matrix(0, ncol=ns+nk, nrow=ns+nk)
+	}
 	res
 }
 
