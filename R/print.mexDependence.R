@@ -5,9 +5,10 @@ function(x, ...){
 	names(x$dqu) <- dimnames(x$parameters)[[2]]
 	cat("\nThresholding quantiles for transformed data:\n", x$dqu, "\n", sep="")
 	#print(x$dqu, ...)
+  cat("\n",x$margins," margins used for Dependence estimation\n", sep="")
 	cat("\nDependence structure parameter estimates:\n")
 	if (any(abs(x$coefficients)[3:4, ] > 10^(-6))){
-		print(x$coefficients, ...)
+		print(x$coefficients[1:4,], ...)
 	}
 	else {
 		print(x$coefficients[1:2, ], ...)
