@@ -67,6 +67,14 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
      and point estimates (either ML or MAP estimates) are returned with other
      information. If ``simulate'', a Metropolis algorithm is used to simulate
      from the joint posterior distribution of the parameters.}
+  \item{cov}{How to compute the covariance matrix of the parameters. Defaults to
+        \code{cov = "observed"} in which case the observed information matrix
+        is used, as given in Appendix A of Davison and Hinkley. The only other
+        option is \code{cov = "numeric"} in which case a numerical approximation
+        of the Hessian is used (see the help for \code{optim}). In some cases,
+        particularly with small samples, the numerical approximation can be
+        quite different from the closed form result. Also see the comments in
+        the Details section, below.}
   \item{start}{Starting values for the parameters, to be passed to \code{optim}.
            If not provided, an exponential distribution is assumed as the starting
            point.}
@@ -140,6 +148,15 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   The region is a (1 - alpha)\% region based on \code{nsim} simulated
   samples.
 
+  When there are estimated values of \code{xi <= 0.5}, the regularity
+  conditions of the likelihood break down and inference based on approximate
+  standard errors cannot be performed. In this case, the most fruitful
+  approach to inference appears to be by the bootstrap. It might be possible
+  to simulate from the posterior, but finding a good proposal distribution
+  might be difficult and you should take care to get an acceptance rate
+  that is reasonably high (around 40\% when there are no covariates, lower
+  otherwise). 
+  
   If \code{start} is not provided, the maximum penalized likelhood point
   estimates are computed and used.
 
@@ -200,6 +217,10 @@ are also returned by the \code{coef} method. Depending on what you
 }
 
 \author{Janet E Heffernan, Harry Southworth}
+
+\references{A. C. Davison and R. L. Smith, Models for exceedances over
+            high thresholds, Journal of the Royal Statistical Society B,
+            53, 393 -- 442, 1990}
 
 \examples{
   x <- rnorm(1000)

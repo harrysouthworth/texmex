@@ -13,15 +13,12 @@ Parametric bootstrap for generalized Pareto models with or without covariates
 \usage{bootgpd(x, R = 99, trace = 10)}
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x}{
-An object of class 'gpd'
-}
-  \item{R}{ The number of replicates to run. Defaults to \code{R = 99}.
-}
+\item{x}{An object of class 'gpd'}
+  \item{R}{ The number of replicates to run. Defaults to \code{R = 99}.}
   \item{trace}{
 Report progress to the user every \code{trace} replicates. Defaults to \code{trace = 10}.}
-\item{x){An object of class \code{gpd}}
-\item{object){An object of class \code{gpd}}
+\item{x}{An object of class \code{gpd}}
+\item{object}{An object of class \code{gpd}}
 \item{col}{Colour of histogram bars}
 \item{border}{Whether or not to draw borders between histogram bars}
 
