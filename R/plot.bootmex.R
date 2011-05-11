@@ -28,7 +28,7 @@ function( x , plots = "gpd", main="", ... ){
   if(which == 2){
     cn <- paste(cn, "|", condVar)
   }
-  labs <- paste(rep(rn, length(cn)), rep(cn, each=which*2),sep="  ")
+  labs <- paste(rep(rn, length(cn)), rep(cn, each=switch(which,2,6)),sep="  ")
 
 	fun <- function(X, z, label, ...) {
 		hist(z[[X]] , prob=TRUE, xlab=label[X], main=main, ...)
@@ -42,7 +42,7 @@ function( x , plots = "gpd", main="", ... ){
 
   if(which == 2){ # scatterplots of dependence parameters    
     fun <- function(X,z,label, ...){
-      offset <- (X-1) * 4
+      offset <- (X-1) * 6
       plot(lco[[offset + 1]],lco[[offset + 2]],xlab=labs[offset + 1],ylab=labs[offset + 2],main=main, ...)
       points(pointEst[1,X],pointEst[2,X],pch="@",col="red")
       if( margins == "gumbel"){
