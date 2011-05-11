@@ -7,6 +7,7 @@
 \alias{revTransform}
 \alias{mexTransform}
 \alias{gpd.fit}
+\alias{info.gpd}
 \title{Internal functions for texmex}
 \description{Internal functions used by the \code{texmex} package.}
 
@@ -25,6 +26,7 @@ mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE)
 revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
 gpd.fit(y, th, X.phi, X.xi, penalty="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0, scale. = TRUE)
+info.gpd(x, method="observed")
 }
 
 \arguments{
@@ -45,6 +47,8 @@ gpd.fit(y, th, X.phi, X.xi, penalty="none", start=NULL,
 \item{y, X.phi, X.xi, penalty, start, priorParameters, maxit, trace, scale.}{Arguments
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}
+\item{x, method}{Arguments supplied to \code{info.gpd}. The first object should be an
+    object of class 'gpd'. The second argument currently does nothing.}
 }
 \details{
 None of these functions are intended to be used explicitly.
