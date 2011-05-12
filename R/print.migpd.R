@@ -10,3 +10,4 @@ function( x , ... ){
 	invisible()
 }
 
+`show.migpd` <- print.migpd

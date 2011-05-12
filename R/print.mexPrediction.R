@@ -24,4 +24,3 @@ function( x, ... ){
     res
 }
 show.predict.mex <- print.predict.mex
-

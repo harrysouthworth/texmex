@@ -16,3 +16,5 @@ function(x, ...){
 	invisible()
 }
 
+`show.mexDependence` <- print.mexDependence
+
