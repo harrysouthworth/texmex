@@ -32,11 +32,7 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
 		dqu <- res1$mqu[1]
 	}
 
-    res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins)
-    
-    res <- list(margins=res1, dependence=res2, call=theCall)
-    oldClass(res) <- "mex"
-    res
+    mexDependence(x= res1, which=which, dqu=dqu, margins=margins)
 }
 
 
