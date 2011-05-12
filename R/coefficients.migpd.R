@@ -7,3 +7,9 @@ function( object, ... ){
 	co[ 3, ] <- exp( co[ 3 , ] )
 	co
 }
+
+`coef.migpd` <-
+function( object, ... ){
+  coefficients.migpd(object)
+}
+

@@ -6,3 +6,8 @@ function( object, ... ) {
 								res
 							   }
 
+`coef.gpd` <-
+function( object, ... ) {
+  coefficients.gpd(object)
+							   }
+
