@@ -54,9 +54,11 @@ test.mexRangeFit <- function(){
   mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5)
   mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5)
   
-  
+  o <- options()
+  options(show.error.messages=FALSE)
   checkException(mexRangeFit(TRUE,which=2),msg="mexRangeFit: exception handle")
   checkException(mexRangeFit(5,which=1),msg="mexRangeFit: exception handle")
+  options(op)
   
 # now 2-d data
 
