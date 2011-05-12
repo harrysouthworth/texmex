@@ -50,8 +50,8 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    } else {
      calculateStart <- FALSE
      
-     if(class(start) == "mexDependence"){
-       start <- start$coefficients[-(3:4),]
+     if(class(start) == "mex"){
+       start <- start$dependence$coefficients[-(3:4),]
      } else if (length(start) == 2){
        start <- c(start, 0.01, 1)
      }
@@ -222,11 +222,14 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
        }
    }
    dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
-   res <- list(call = theCall, coefficients = res, Z = z, migpd=x, dth = unique(dth),
+   res2 <- list(coefficients = res, Z = z, dth = unique(dth),
                dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which],
 	             loglik=loglik, margins=margins)
-   oldClass(res) <- "mexDependence"
-   res
+   oldClass(res2) <- "mexDependence"
+   
+   output <- list(margins=x, dependence=res2, call=theCall)
+   oldClass(output) <- "mex"
+   output
 }
 
 test.mexDependence <- function(){
@@ -314,30 +317,30 @@ jhWdepPM10 <- matrix(c(
   tol <- 0.23
   if(FALSE){
   par(mfrow=c(2,5))
-  plot(jhWdepO3,  myWdepO3$coefficients);abline(0,1)
-  plot(jhWdepNO2, myWdepNO2$coefficients);abline(0,1)
-  plot(jhWdepNO,  myWdepNO$coefficients);abline(0,1)
-  plot(jhWdepSO2, myWdepSO2$coefficients);abline(0,1)
-  plot(jhWdepPM10,myWdepPM10$coefficients);abline(0,1)
+  plot(jhWdepO3,  myWdepO3$dependence$coefficients);abline(0,1)
+  plot(jhWdepNO2, myWdepNO2$dependence$coefficients);abline(0,1)
+  plot(jhWdepNO,  myWdepNO$dependence$coefficients);abline(0,1)
+  plot(jhWdepSO2, myWdepSO2$dependence$coefficients);abline(0,1)
+  plot(jhWdepPM10,myWdepPM10$dependence$coefficients);abline(0,1)
 
-  plot(jhSdepO3,  mySdepO3$coefficients);abline(0,1)
-  plot(jhSdepNO2, mySdepNO2$coefficients);abline(0,1)
-  plot(jhSdepNO,  mySdepNO$coefficients);abline(0,1)
-  plot(jhSdepSO2, mySdepSO2$coefficients);abline(0,1)
-  plot(jhSdepPM10,mySdepPM10$coefficients);abline(0,1)
+  plot(jhSdepO3,  mySdepO3$dependence$coefficients);abline(0,1)
+  plot(jhSdepNO2, mySdepNO2$dependence$coefficients);abline(0,1)
+  plot(jhSdepNO,  mySdepNO$dependence$coefficients);abline(0,1)
+  plot(jhSdepSO2, mySdepSO2$dependence$coefficients);abline(0,1)
+  plot(jhSdepPM10,mySdepPM10$dependence$coefficients);abline(0,1)
   }
 
-  checkEqualsNumeric(jhWdepO3,  myWdepO3$coefficients,  tol=tol,msg="mexDependence: Winter O3")
-  checkEqualsNumeric(jhWdepNO2, myWdepNO2$coefficients, tol=tol,msg="mexDependence: Winter NO2")
-  checkEqualsNumeric(jhWdepNO,  myWdepNO$coefficients,  tol=tol,msg="mexDependence: Winter NO")
-  checkEqualsNumeric(jhWdepSO2, myWdepSO2$coefficients, tol=tol,msg="mexDependence: Winter SO2")
-  checkEqualsNumeric(jhWdepPM10,myWdepPM10$coefficients,tol=tol,msg="mexDependence: Winter PM10")
+  checkEqualsNumeric(jhWdepO3,  myWdepO3$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Winter O3")
+  checkEqualsNumeric(jhWdepNO2, myWdepNO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Winter NO2")
+  checkEqualsNumeric(jhWdepNO,  myWdepNO$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Winter NO")
+  checkEqualsNumeric(jhWdepSO2, myWdepSO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Winter SO2")
+  checkEqualsNumeric(jhWdepPM10,myWdepPM10$dependence$coefficients[1:4,],tol=tol,msg="mexDependence: Winter PM10")
 
-  checkEqualsNumeric(jhSdepO3,  mySdepO3$coefficients,  tol=tol,msg="mexDependence: Summer O3")
-  checkEqualsNumeric(jhSdepNO2, mySdepNO2$coefficients, tol=tol,msg="mexDependence: Summer NO2")
-  checkEqualsNumeric(jhSdepNO,  mySdepNO$coefficients,  tol=tol,msg="mexDependence: Summer NO")
-  checkEqualsNumeric(jhSdepSO2, mySdepSO2$coefficients, tol=tol,msg="mexDependence: Summer SO2")
-  checkEqualsNumeric(jhSdepPM10,mySdepPM10$coefficients,tol=tol,msg="mexDependence: Summer PM10")
+  checkEqualsNumeric(jhSdepO3,  mySdepO3$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Summer O3")
+  checkEqualsNumeric(jhSdepNO2, mySdepNO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Summer NO2")
+  checkEqualsNumeric(jhSdepNO,  mySdepNO$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Summer NO")
+  checkEqualsNumeric(jhSdepSO2, mySdepSO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Summer SO2")
+  checkEqualsNumeric(jhSdepPM10,mySdepPM10$dependence$coefficients[1:4,],tol=tol,msg="mexDependence: Summer PM10")
   
 # test functionality with 2-d data
 
@@ -346,8 +349,12 @@ jhWdepPM10 <- matrix(c(
   which <- 1
   wavesurge.mex <- mexDependence(wavesurge.fit,which=which,dqu=dqu)
 
-  checkEqualsNumeric(dim(wavesurge.mex$Z),c(578,1),msg="mexDependence: execution for 2-d data")
-  checkEqualsNumeric(wavesurge.mex$dqu, dqu, msg="mexDependence: execution for 2-d data")
-  checkEqualsNumeric(wavesurge.mex$which,which,msg="mexDependence: execution for 2-d data")
+  checkEqualsNumeric(dim(wavesurge.mex$dependence$Z),c(578,1),msg="mexDependence: execution for 2-d data")
+  checkEqualsNumeric(wavesurge.mex$dependence$dqu, dqu, msg="mexDependence: execution for 2-d data")
+  checkEqualsNumeric(wavesurge.mex$dependence$which,which,msg="mexDependence: execution for 2-d data")
+  
+# test specification of starting values
+
+  wavesurge.mex <- mexDependence(wavesurge.fit,which=which,start=wavesurge.mex)
   
 }
