@@ -32,7 +32,9 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
 		dqu <- res1$mqu[1]
 	}
 
-    mexDependence(x= res1, which=which, dqu=dqu, margins=margins)
+    res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins)
+    res2$call <- theCall
+    res2
 }
 
 
@@ -41,7 +43,6 @@ print.mex <- function(x, ...){
 	cat("Marginal models:\n")
     summary(x[[1]])
     cat("\nDependence model:\n")
-    cat(x$dependence$migpd$margins,"margins used for dependence estimation.\n")
     print(x[[2]])
     invisible()
 }
