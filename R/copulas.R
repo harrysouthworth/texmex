@@ -81,6 +81,10 @@ test.copula <- function(){
 
   checkEqualsNumeric(d2,copula(u2)$copula,msg="copula: 2 dimensional")
   checkEqualsNumeric(d3,copula(u3)$copula,msg="copula: 3 dimensional")
+  
+  o <- options()
+  options(show.error.messages=FALSE)
   checkException(copula(TRUE),msg="copula: exception")
   checkException(copula("text"),msg="copula: exception")
+  options(op)
 }
