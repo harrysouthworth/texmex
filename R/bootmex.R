@@ -2,7 +2,10 @@ bootmex <-
     # Bootstrap inference for a conditional multivaratiate extremes model.
 function (x, R = 100, nPass = 3, trace = 10) {
     theCall <- match.call()
-
+    if (class(x) != "mex"){
+      stop("object must be of type 'mex'")
+    }
+    
 # Construct the object to be returned.
     ans <- list()
     ans$call <- theCall
@@ -26,33 +29,32 @@ function (x, R = 100, nPass = 3, trace = 10) {
         res
     }
 
-    if (class(x) != "mexDependence"){
-      stop("object must be of type 'mexDependence'")
-    }
-    which <- x$which
-    dqu <- x$dqu
-    dth <- x$dth
-    margins <- x$migpd$margins        
-    penalty <- x$migpd$penalty
-    priorParameters <- x$migpd$priorParameters
+    mar <- x$margins
+    dep <- x$dependence
+    which <- dep$which
+    dqu <- dep$dqu
+    dth <- dep$dth
+    margins <- dep$margins        
+    penalty <- mar$penalty
+    priorParameters <- mar$priorParameters
 
-    n <- dim(x$migpd$transformed)[[1]]
-    d <- dim(x$migpd$transformed)[[2]]
+    n <- dim(mar$transformed)[[1]]
+    d <- dim(mar$transformed)[[2]]
     dqu <- rep(dqu, d) 
     dependent <- (1:d)[-which]
     
-    ans$simpleDep <- x$coefficients
+    ans$simpleDep <- dep$coefficients
     ans$dqu <- dqu
     ans$which <- which
     ans$R <- R
-    ans$simpleMar <- x$migpd
+    ans$simpleMar <- mar
     ans$margins <- margins
 
     innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, 
         pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
         
-        g <- sample(1:(dim(x$migpd$transformed)[[1]]), size = n, replace = TRUE)
-        g <- x$migpd$transformed[g, ]
+        g <- sample(1:(dim(mar$transformed)[[1]]), size = n, replace = TRUE)
+        g <- mar$transformed[g, ]
         ok <- FALSE
 
         while (!ok) {
@@ -68,18 +70,18 @@ function (x, R = 100, nPass = 3, trace = 10) {
             if (sum(g[, which] > dth) > 1){ ok <- TRUE }
         }
         
-        g <- sapply(1:d, getTran, x = g, data = x$migpd$data, margins=margins,
-                    mod = x$migpd$models, th = x$migpd$mth, qu = x$migpd$mqu)
+        g <- sapply(1:d, getTran, x = g, data = mar$data, margins=margins,
+                    mod = mar$models, th = mar$mth, qu = mar$mqu)
                     
-        dimnames(g)[[2]] <- names(x$migpd$models)
+        dimnames(g)[[2]] <- names(mar$models)
 
-        ggpd <- migpd(g, mth = x$migpd$mth, 
+        ggpd <- migpd(g, mth = mar$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
 
         gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, start = ans$simpleDep[c(1:2,5:6),])
         res <- list(GPD = coef(ggpd)[3:4, ],
-                    dependence = gd$coefficients, 
-                    Z = gd$Z,
+                    dependence = gd$dependence$coefficients, 
+                    Z = gd$dependence$Z,
                     Y = g)
                     
         if (pass == 1) {
@@ -89,8 +91,6 @@ function (x, R = 100, nPass = 3, trace = 10) {
         }
         res
     } # Close innerFun 
-
-
 
     res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, margins=margins, 
         dqu = dqu, penalty = penalty, priorParameters = priorParameters, 
@@ -130,21 +130,27 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   myWdep <- mexDependence(wmarmod)
 
   R <- 20
- 
-  mySboot <- bootmex(smarmod, R=R, which=1, dqu=.7)
-  myWboot <- bootmex(wmarmod, R=R, which=1, dqu=.7)
 
-  checkEqualsNumeric(mySdep$coefficients, mySboot$simpleDep, msg="bootmex: summer simpleDep from call with mar model")
+  mySboot <- bootmex(mySdep, R=R)
+  myWboot <- bootmex(myWdep, R=R)
+
+  checkEqualsNumeric(coef(mySdep)[[2]], mySboot$simpleDep, msg="bootmex: summer simpleDep from call with mar model")
+  checkEqualsNumeric(coef(myWdep)[[2]], myWboot$simpleDep, msg="bootmex: winter simpleDep from call with mar model")
+
   checkEqualsNumeric(coef(smarmod), coef(mySboot$simpleMar), msg="bootmex: summer simpleMar from call with mar model")
-
-  checkEqualsNumeric(myWdep$coefficients, myWboot$simpleDep, msg="bootmex: winter simpleDep from call with mar model")
   checkEqualsNumeric(coef(wmarmod), coef(myWboot$simpleMar), msg="bootmex: winter simpleMar from call with mar model")
+  
+  checkEqualsNumeric(dim(mySboot$boot[[1]]$Z)[2], dim(mySdep$dependence$Z)[2], msg="bootmex: summer dim of residuals from call with mar model")
+  checkEqualsNumeric(dim(myWboot$boot[[1]]$Z)[2], dim(myWdep$dependence$Z)[2], msg="bootmex: winter dim of residuals from call with mar model")
+  
+  checkEqualsNumeric(dim(mySboot$boot[[1]]$dependence), dim(coef(mySdep)[[2]]), msg="bootmex: summer dim of coefficients from call with mar model")
+  checkEqualsNumeric(dim(myWboot$boot[[1]]$dependence), dim(coef(myWdep)[[2]]), msg="bootmex: winter dim of coefficients from call with mar model")
   
   checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
   checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
   
-  checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
-  checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
+  checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="bootmex: size of bootstrap data set")
+  checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="bootmex: size of bootstrap data set")
 
   smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel")
   wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel")
@@ -161,17 +167,18 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(R, length(mySboot$boot),msg="bootmex: number of bootstrap samples")
   checkEqualsNumeric(R, length(myWboot$boot),msg="bootmex: number of bootstrap samples")
   
-  checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="cmxvBoot: size of bootstrap data set")
-  checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="cmxvBoot: size of bootstrap data set")
+  checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="bootmex: size of bootstrap data set")
+  checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="bootmex: size of bootstrap data set")
 
 # check execution of for 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
+  wavesurge.mex <- mexDependence(wavesurge.fit, dqu=0.8,which=1)
   R <- 20
-  wavesurge.boot <- bootmex(wavesurge.fit,which=1,R=R,dqu=0.8)
+  
+  wavesurge.boot <- bootmex(wavesurge.mex,R=R)
 
   checkEqualsNumeric(dim(wavesurge.boot$boot[[1]]$Z)[2],1,msg="bootmex: execution for 2-d data")
   checkEquals(dimnames(wavesurge.boot$boot[[1]]$Z)[[2]],names(wavesurge)[2],msg="bootmex: execution for 2-d data")
   checkEqualsNumeric(length(wavesurge.boot$boot),R,msg="bootmex: execution for 2-d data")
-  
 }
