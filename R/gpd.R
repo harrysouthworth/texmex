@@ -150,34 +150,37 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ################################## If method = "optimize", construct object and return...
 
-	if (cov == "numeric") { o$cov <- solve(o$hessian) }
-    if (method == "o"){
-        o$hessian <- NULL
-        o$threshold <- th
-        o$penalty <- prior
-        o$coefficients <- o$par
-        names(o$coefficients) <- c(paste("phi:", colnames(X.phi)), 
-                                   paste("xi:", colnames(X.xi)))
-        o$par <- NULL
-        o$rate <- rate
-        o$call <- theCall
-        o$y <- y
-        o$X.phi <- X.phi
-        o$X.xi <- X.xi
-		o$priorParameters <- priorParameters
-		if (missing(data)) {
-            data <- NULL
-        }
-        o$data <- data
+    o$hessian <- NULL
+    o$threshold <- th
+    o$penalty <- prior
+    o$coefficients <- o$par
+    names(o$coefficients) <- c(paste("phi:", colnames(X.phi)), 
+                               paste("xi:", colnames(X.xi)))
+    o$par <- NULL
+    o$rate <- rate
+    o$call <- theCall
+    o$y <- y
+    o$X.phi <- X.phi
+    o$X.xi <- X.xi
+	o$priorParameters <- priorParameters
+	if (missing(data)) {
+        data <- NULL
+    }
+    o$data <- data
 
-        o$loglik <- -o$value
-        o$value <- NULL
-        o$counts <- NULL
-        oldClass(o) <- "gpd"
-		if (cov == "observed") { o$cov <- info.gpd(o) }
-		o$se <- sqrt(diag(o$cov))
+    o$loglik <- -o$value
+    o$value <- NULL
+    o$counts <- NULL
+    oldClass(o) <- "gpd"
+    
+    if (cov == "numeric") { o$cov <- solve(o$hessian) }
+	if (cov == "observed") { o$cov <- info.gpd(o) }
+	else { stop("cov must be either 'numeric' or 'observed'") }
+
+	o$se <- sqrt(diag(o$cov))
+    if (method == "o"){
 		o
-    } # Close if (method == "o"
+    }
 
     ################################# Simulate from posteriors....
 
@@ -235,7 +238,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         res <- matrix( ncol=ncol(X.phi) + ncol(X.xi), nrow=iter )
 
         if (missing(start)) {
-            res[1, ] <- o$par
+            res[1, ] <- o$coefficients
         }
 	    else { 
             res[1, ] <- start
@@ -251,9 +254,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
             if( verbose){
                 if( i %% trace == 0 ) cat(i, " steps taken\n" )
             }
-        
-			prop <- proposal(o$par, cov*jump.const)
-
+			prop <- proposal(o$coefficients, cov*jump.const)
             bottom <- prior(res[i - 1,], priorParameters[[1]], priorParameters[[2]], log=TRUE ) +
                       gpdlik(res[ i - 1 , ] , y-u, X.phi, X.xi)
             top <- prior(prop, priorParameters[[1]], priorParameters[[2]], log=TRUE) +
