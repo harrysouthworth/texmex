@@ -1,4 +1,4 @@
-mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
+mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",constrain=TRUE,v=10,
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
@@ -21,9 +21,9 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
 											}, p=mqu, data=data))
 	}
 
-    res1 <- migpd(data=data, mth=mth, penalty=penalty,
-                  maxit=maxit, trace=trace, verbose=verbose,
-                  priorParameters=priorParameters)
+  res1 <- migpd(data=data, mth=mth, penalty=penalty,
+                maxit=maxit, trace=trace, verbose=verbose,
+                priorParameters=priorParameters)
 
 	if (!missing(dth)){
 		dqu <- mean(data[,which] > dth)
@@ -32,9 +32,9 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",
 		dqu <- res1$mqu[1]
 	}
 
-    res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins)
-    res2$call <- theCall
-    res2
+  res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins, constrain=constrain, v=v)
+  res2$call <- theCall
+  res2
 }
 
 
