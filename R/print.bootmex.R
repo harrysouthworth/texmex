@@ -16,3 +16,4 @@ function(x , ... ){
   invisible()
 }
 
+`show.bootmex` <- print.bootmex
