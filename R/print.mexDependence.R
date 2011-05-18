@@ -6,8 +6,8 @@ function(x, ...){
 	cat("\nThresholding quantiles for transformed data:\n", x$dqu, "\n", sep="")
 
   cat("\n",x$margins," margins used for Dependence estimation\n", sep="")
-  if(x$dependence$constrain){
-    cat("Constrained estimation of dependence parameters using v =",x$dependence$v,"\n")
+  if(x$constrain){
+    cat("Constrained estimation of dependence parameters using v =",x$v,"\n")
   }
 
 	cat("\nDependence structure parameter estimates:\n")
