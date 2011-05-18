@@ -32,6 +32,8 @@ function (x, R = 100, nPass = 3, trace = 10) {
     mar <- x$margins
     dep <- x$dependence
     which <- dep$which
+    constrain <- dep$constrain
+    v <- dep$v
     dqu <- dep$dqu
     dth <- dep$dth
     margins <- dep$margins        
@@ -50,7 +52,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
     ans$simpleMar <- mar
     ans$margins <- margins
 
-    innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, 
+    innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, constrain, v=v,
         pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
         
         g <- sample(1:(dim(mar$transformed)[[1]]), size = n, replace = TRUE)
@@ -78,7 +80,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
         ggpd <- migpd(g, mth = mar$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, start = ans$simpleDep[c(1:2,5:6),])
+        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, start = ans$simpleDep[c(1:2,5:6),], constrain=constrain, v=v)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$dependence$coefficients, 
                     Z = gd$dependence$Z,
@@ -93,7 +95,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
     } # Close innerFun 
 
     res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, margins=margins, 
-        dqu = dqu, penalty = penalty, priorParameters = priorParameters, 
+        dqu = dqu, penalty = penalty, priorParameters = priorParameters, constrain=constrain, v=v,
         pass = 1, trace = trace, getTran=getTran, n=n, d=d, dependent=dependent)
 
     # Sometimes samples contain no extreme values. Need to have another pass or two
@@ -107,7 +109,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
                 rerun <- (1:R)[rerun]
                 res[rerun] <- lapply((1:R)[rerun], innerFun, 
                   x = x, which = which, dth = dth, dqu = dqu, margins=margins,
-                  penalty = penalty, priorParameters = priorParameters, 
+                  penalty = penalty, priorParameters = priorParameters, constrain=constrain, v=v,
                   pass = pass, trace = trace, getTran=getTran, n=n, d=d, dependent=dependent)
             }
         }
