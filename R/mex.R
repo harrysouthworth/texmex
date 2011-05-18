@@ -40,7 +40,7 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",constrain=TRU
 
 print.mex <- function(x, ...){
 	print(x$call, ...)
-	cat("Marginal models:\n")
+	cat("\n\nMarginal models:\n")
     summary(x[[1]])
     cat("\nDependence model:\n")
     print(x[[2]])
