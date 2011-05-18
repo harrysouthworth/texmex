@@ -2,29 +2,39 @@
 function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	theCall <- match.call()
 	
-    # Class can be either mex or bootmex
-    theClass <- class(object)[1]
-    if (! theClass %in% c("mex", "bootmex")){
-        stop("object must have class 'mex' or 'bootmex'")
-    }
-		
+  # Class can be either mex or bootmex
+  theClass <- class(object)[1]
+  if (! theClass %in% c("mex", "bootmex")){
+      stop("object must have class 'mex' or 'bootmex'")
+  }
+
 	if (theClass == "bootmex" ){
-        which <- object$which
-        migpd <- object$simpleMar
-    }
-    else {
-        which <- object[[2]]$which
-        migpd <- object[[1]]
-    }
+      which <- object$which
+      migpd <- object$simpleMar
+      margins <- object$margins
+      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins, start = object$simpleDep[1:4,] )
+  } else {
+      which <- object[[2]]$which
+      migpd <- object[[1]]
+      margins <- object[[2]]$margins
+      dall <- object
+  }
 	
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
-    y <- -log( -log( runif( nsim , min=pqu ) ) )
+    ui <- runif( nsim , min=pqu )
+    if( margins == "gumbel"){
+      y <- -log( -log( ui ) )
+      distFun <- function(x) exp(-exp(-x))
+    } else if (margins == "laplace"){
+      y <- ifelse(ui < .5,  log(2 * ui), -log(2 * (1 - ui) ))
+      distFun <- function(x) ifelse(x<0, exp(x)/2, 1-exp(-x)/2)
+    }
+    
   	z <- as.matrix(z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,])
     ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )
   
-  	ui <- exp( -exp( -y ) )
-    xmi <- apply( ymi, 2, function( x ) exp( -exp( -x ) ) )
+    xmi <- apply( ymi, 2, distFun )
 
     xi <- u2gpd( ui, p = 1 - migpd$mqu[ which ], th=migpd$mth[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
 	
@@ -55,21 +65,22 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 			else a <- NA
 			a + ( y^v[ 2 ] ) * z
 		}
-  
-    if (theClass == "bootmex"){
-    	################################################################
-	    # The function lfun does most of the work
-    	lfun <- function( i , bo, pqu, nsim , migpd, which ){
-	    	if ( i %% trace == 0 ) cat( i, "sets done\n" )
+
+  ###############################################################    
+  if (theClass == "bootmex"){
+	# The function lfun does most of the work
+  lfun <- function( i , bo, pqu, nsim , migpd, which ){
+	   if ( i %% trace == 0 ) cat( i, "sets done\n" )
     
-            res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
-                                 coxmi = as.matrix(bo[[ i ]]$GPD[,-which]),
-                                 data = bo[[i]]$Y)
-	    	res
-    	} 
-	    bootRes <- lapply( 1:length( object$boot ) , lfun ,
-	        			   migpd=migpd, pqu=pqu, bo = object$boot, nsim=nsim,
-	        			   which = which )
+     res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
+                          coxmi = as.matrix(bo[[ i ]]$GPD[,-which]),
+                          data = bo[[i]]$Y)
+	   res
+  } 
+
+	bootRes <- lapply( 1:length( object$boot ) , lfun ,
+	        			    migpd=migpd, pqu=pqu, bo = object$boot, nsim=nsim,
+	        			    which = which )
 	    # bootRes contains the bootstrap simulated complete vectors X on the original 
       # scale of the data, conditional on having the _which_ component above the pqu quantile.
 	} # Close if (theClass == "bootmex"
@@ -78,21 +89,17 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	##########################################################################
 	# Get a sample using the point estimates of the parameters
 	# that are suggested by the data
-  
-    cox <- coef(migpd)[3:4, which]
-    coxmi <- as.matrix(coef(migpd)[3:4, -which])
 
-    dall <- if (theClass == "mex") { object[[2]] }
-            else { mexDependence( object$simpleMar , which=which , dqu=object$dqu ) }
+  cox <- coef(migpd)[3:4, which]
+  coxmi <- as.matrix(coef(migpd)[3:4, -which])
 
-    sim <- MakeThrowData(dco=dall$coefficients,z=dall$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
+  sim <- MakeThrowData(dco=dall$dependence$coefficients,z=dall$dependence$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
                 
-    m <- 1 / ( 1 - pqu ) # Need to estimate qpu quantile
+  m <- 1 / ( 1 - pqu ) # Need to estimate pqu quantile
  	zeta <- 1 - migpd$mqu[ which ] # Coles, page 81
 	pth <- migpd$mth[ which ] + cox[ 1 ] / cox[ 2 ] * ( ( m*zeta )^cox[ 2 ] - 1 )
 
-	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ) ,
-				        simulated = sim, pth=pth)
+	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ), simulated = sim, pth=pth)
   names(data$real)[1] <- colnames(migpd$data)[which] 
   
   res <- list( call = theCall , replicates = bootRes, data = data,
@@ -107,8 +114,8 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 
 test.predict.mex <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
-  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7)
-  wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO")
+  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel")
+  wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel")
 
   NOmodWinter <- bootmex(wmarmod)
   NOpredWinter <- predict(NOmodWinter, nsim = 500) # matches sample size in H+T2004
@@ -144,8 +151,8 @@ test.predict.mex <- function(){
 
   R <- 20
   nsim <- 100
-  wavesurge.fit <- migpd(wavesurge,mq=.7)
-  wavesurge.boot <- bootmex(wavesurge.fit,which=1,R=R)
+  wavesurge.mex <- mex(wavesurge,mq=.7,dqu=0.7,margins="laplace")
+  wavesurge.boot <- bootmex(wavesurge.mex,R=R)
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim)
 
   checkEqualsNumeric(length(wavesurge.pred$replicates),R,msg="predict.mex execution for 2-d data")
