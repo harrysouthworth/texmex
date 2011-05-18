@@ -116,7 +116,7 @@ plot(myWdep4.lap,main=paste("Winter\nfitting quantile =",myWdep4.lap$dependence$
 plot(mySdep5.lap,main=paste("Summer\nfitting quantile =",mySdep5.lap$dependence$dqu,"\nLaplace margins"))
 plot(myWdep5.lap,main=paste("Winter\nfitting quantile =",myWdep5.lap$dependence$dqu,"\nLaplace margins"))
    
-o <- options()
+op <- options()
 options(show.error.messages=FALSE)
    checkException(plot.mex(smarmod),msg="plot.mex: exception handle")
    checkException(plot.mex(TRUE),msg="plot.mex: exception handle")
