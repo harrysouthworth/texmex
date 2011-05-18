@@ -8,10 +8,8 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    x$margins <-  casefold(margins)
    x <- mexTransform(x, margins=casefold(margins))
    
-   if (margins == "gumbel" & (!missing(constrain) | !missing(v)))
-	   stop("With Gumbel margins, you can't constrain")
-   
-   if (margins == "gumbel"){
+   if (margins == "gumbel" & constrain){
+     warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
      constrain <- FALSE
    }
    
@@ -224,7 +222,7 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
    res2 <- list(coefficients = res, Z = z, dth = unique(dth),
                dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which],
-	             loglik=loglik, margins=margins)
+	             loglik=loglik, margins=margins, constrain=constrain, v=v)
    oldClass(res2) <- "mexDependence"
    
    output <- list(margins=x, dependence=res2, call=theCall)
