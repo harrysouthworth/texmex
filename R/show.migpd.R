@@ -1,1 +1,0 @@
-`show.migpd` <- print.migpd
