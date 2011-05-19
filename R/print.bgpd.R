@@ -9,7 +9,7 @@ function( x , print.seed=FALSE, ...){
 
 	cat( "\n\nMAP estimates:\n" )
     co <- coef(x)
-    map <- x$map$par
+    map <- x$map$coefficients
     names(map) <- names(co)
 
 	print( map , ... )
