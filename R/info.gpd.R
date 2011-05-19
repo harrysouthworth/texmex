@@ -78,16 +78,11 @@ function(o, method="observed"){
 	}
 
 	i <- rbind( cbind(Is, Iks), cbind(t(Iks), Ik))
-	res <- try(solve(i - p), silent=TRUE)
-	if (class(res) == "try-error"){
-	    warning("singular information matrix. Returning a matrix of 0s. Try using bootgpd for inference instead")
-	    res <- matrix(0, ncol=ns+nk, nrow=ns+nk)
-	}
-	res
+	solve(i - p)
 }
 
 test.info.gpd <- function(){
-	lmod <- gpd(log(ALT.M) / log(ALT.B), data=liver, qu=.5, xi=~I(240*as.numeric(dose)), cov="numeric")
+	lmod <- gpd(r, data=liver, qu=.5, xi=~I(240*as.numeric(dose)), cov="numeric")
 	checkTrue(all(sqrt(diag(info.gpd(lmod))) > 0), msg="info.gpd: SDs positive")
 
 	# Check equality to numerical approximation in big samples
