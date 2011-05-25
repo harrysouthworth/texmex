@@ -27,7 +27,13 @@ ConstraintsAreSatisfied <- function(a,b,z,zpos,zneg,v){
 }
 
 # positive dependence Gumbel and pos or neg dependence Laplace neg likelihood function
-PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v) {
+PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v, aLow) {
+  BigNumber <- 10^40
+  WeeNumber <- 10^(-10)
+  
+  if(a < aLow[1] | s < WeeNumber | a > 1-WeeNumber  | b > 1-WeeNumber) {
+    res <- BigNumber
+  } else {
     mu <- a * yex + m * yex^b
     sig <- s * yex^b
 			   
@@ -35,9 +41,9 @@ PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v) {
     
     if (is.infinite(res)){
         if (res < 0){ 
-          res <- -(10^40) 
+          res <- -BigNumber 
         } else {
-          res <- 10^40
+          res <- BigNumber
         }
         warning("Infinite value of Q in mexDependence")
     } else if (constrain){
@@ -47,33 +53,20 @@ PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v) {
 			 zneg <- range(ydep + yex) # q0 & q1
 				   
 			 if (!ConstraintsAreSatisfied(a,b,z,zpos,zneg,v)){
-          res <- 10^40
+          res <- BigNumber
        }
-		}  
-    
-	  res
+		} 
+  }    
+  res
 }
 
-PosGumb.Laplace.negProfileLogLik <- function(yex, ydep, a, b, m, s, constrain, v) {
+PosGumb.Laplace.negProfileLogLik <- function(yex, ydep, a, b, constrain, v, aLow) { 
+  Z <- (ydep - yex * a) / (yex^b)
 
-  Q <- function(yex, ydep, param, constrain, v, a, b){
-    PosGumb.Laplace.negloglik(yex,ydep,a,b,m=param[1],s=param[2],constrain,v)
-  }    
-
-  o <- try(optim(par=c(m,s),fn=Q,method="L-BFGS-B", lower=c(-Inf, 10^(-10)), upper=c(Inf, Inf), a=a, b=b, yex = yex, ydep = ydep, constrain=constrain, 
-                 v=v), silent=TRUE)
-  
-  if (class(o) == "try-error"){
-			warning("Error in optim call from mexDependence")
-			o <- as.list(o)
-			o$par <- rep(NA, 2)
-		} else if (o$convergence != 0) {
-      warning("Non-convergence in mexDependence")
-      o <- as.list(o)
-      o$par <- rep(NA, 2)
-    }
-	   
-  res <- list(profLik <- o$value, m=o$par[1], s=o$par[2])
+  m <- mean(Z)
+  s <- sd(Z)
+    
+  res <- PosGumb.Laplace.negloglik(yex,ydep,a,b,m=m,s=s,constrain,v,aLow=aLow)
+  res <- list(profLik=res,m=m, s=s)
   res
-                 
 }
