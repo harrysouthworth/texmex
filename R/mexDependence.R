@@ -1,12 +1,12 @@
 `mexDependence` <-
-function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=10000, start=c(.01, .01, .01, 1), nGridPlotLik=15, robustStartSearch=FALSE)
+function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=10000, start=c(.01, .01), nGridPlotLik=NULL, marTransform="mixture")
 {
    theCall <- match.call()
    if (class(x) != "migpd")
        stop("you need to use an object created by migpd")
 
    x$margins <-  casefold(margins)
-   x <- mexTransform(x, margins=casefold(margins))
+   x <- mexTransform(x, margins = casefold(margins),method = marTransform)
    
    if (margins == "gumbel" & constrain){
      warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
@@ -35,119 +35,67 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
        dqu <- rep(dqu, length = length(dependent))
 
    # Allowable range of 'a' depends on marginal distributions
-   lo <- if (x$margins == "gumbel"){ c(10^(-10), -(10^10), -(10^10), 10^(-10)) }
-         else { c(-1 + 10^(-10), -(10^10), -(10^10), 10^(-10)) }
+   aLow <- ifelse(x$margins == "gumbel", 10^(-10),-1 + 10^(-10))
   
    if (missing(start)){ 
-     start <- c(.01, .01, .01, 1) 
-     if(constrain){
-       calculateStart <- TRUE
-     } else {
-       calculateStart <- FALSE
-     }
-   } else {
-     calculateStart <- FALSE
-     
-     if(class(start) == "mex"){
-       start <- start$dependence$coefficients[-(3:4),]
-     } else if (length(start) == 2){
-       start <- c(start, 0.01, 1)
-     }
+     start <- c(.01, .01)
+   } else if(class(start) == "mex"){
+     start <- start$dependence$coefficients[1:2,]
    } 
 
-   if( length(start) == 4 ){
-     start <- matrix(rep(start,length(dependent)),nrow=4)
+   if( length(start) == 2 ){
+     start <- matrix(rep(start,length(dependent)),nrow=2)
    }
 
-   if( length(start) != 4*length(dependent)){
-     stop("start should be of type 'mex' or be a vector of length 4, or 2, or be a matrix with 4 rows and ncol equal to the number of dependence models to be estimated")
+   if( length(start) != 2*length(dependent)){
+     stop("start should be of type 'mex' or be a vector of length 2, or be a matrix with 2 rows and ncol equal to the number of dependence models to be estimated")
    }  
 
-   qfun <- function(X, yex, wh, lo, margins, constrain, v, maxit, start){
-     Q <- function(yex, ydep, param, constrain, v) {
+   qfun <- function(X, yex, wh, aLow, margins, constrain, v, maxit, start){
+     Q <- function(yex, ydep, param, constrain, v, aLow) {
 
-	     a <- param[1]
+  	   a <- param[1]
        b <- param[2]
-       m <- param[3]
-       s <- param[4]
 
-	     if (a >= 1){ a <- 1 - 10^(-10) }
-	     else if (margins == "gumbel"  & a <= 10^(-10)){ a <- 10^(-10) }
-	     else if (margins == "laplace" & a <= -1 + 10^(-10)){ a <- -1 + 10^(-10) }
-	     if (b >= 1){ b <- 1 - 10^(-10) }
-	   
-       res <- PosGumb.Laplace.negloglik(yex, ydep, a, b, m, s, constrain, v) # this function defined in file mexDependenceLowLevelFunctions
-       res
+       res <- PosGumb.Laplace.negProfileLogLik(yex, ydep, a, b, constrain, v, aLow) # defined in file mexDependenceLowLevelFunctions
+       res$profLik
      } # Close Q <- function
 
-     if ( calculateStart ){ 
-       a.grid <- seq(lo[1],1-10^(-10),length=nGridPlotLik)
-       b.grid <- seq(-5,1-10^(-10),length=nGridPlotLik)
-       if(robustStartSearch){ # uses brute force grid search for starting points - slow but robust to non-convergence of profile log-lik calculation
-         m.grid <- seq(-5,5,length=nGridPlotLik)
-         s.grid <- seq(0.01,10,length=nGridPlotLik)
+     o <- try(optim(par=start, fn=Q, 
+              control=list(maxit=maxit),
+              yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
+
+		 if (class(o) == "try-error"){
+			 warning("Error in optim call from mexDependence")
+			 o <- as.list(o)
+			 o$par <- rep(NA, 6)
+		 } else if (o$convergence != 0) {
+       warning("Non-convergence in mexDependence")
+       o <- as.list(o)
+       o$par <- rep(NA, 6)
+     }
+	   
+     if ( !is.null(nGridPlotLik) ){# plot profile likelihood for (a,b)
+       a.grid <- seq(aLow,1-10^(-10),length=nGridPlotLik)
+       b.grid <- seq(-3,1-10^(-10),length=nGridPlotLik)
+       a.b <- expand.grid(a.grid,b.grid)
+       fun <- function(X,yex,ydep,a.b,constrain,v,aLow){
+                       PosGumb.Laplace.negProfileLogLik(yex=yex, ydep=ydep,a = a.b[X,1],b=a.b[X,2], constrain=constrain,v=v,aLow=aLow)
+                       }
+       profLik <- lapply(1:(dim(a.b)[1]), fun, a.b=a.b,yex=yex[wh],ydep=X[wh],constrain=constrain,v=v,aLow=aLow)
+
+       profLik <- matrix(unlist(profLik),ncol=3,byrow=TRUE)
+       profLik.grid <- matrix(profLik[,1],nrow=length(a.grid))
+       profLik.grid[profLik.grid > 10^10] <- NA
+       image(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b"); points(o$par[1],o$par[2])
        
-         fun.s.m.a.b <- function(X,a.grid,b.grid,yex,ydep,m.grid,s.grid,constrain,v){
-           fun.m.a.b <- function(X,a.grid,b.grid,yex,ydep,m.grid,s,constrain,v){
-             fun.a.b <- function(X,a.grid,b.grid,yex,ydep,m,s,constrain,v){
-               fun.b <- function(X,a,b.grid,yex,ydep,m,s,constrain,v)
-                                 PosGumb.Laplace.negloglik(yex,ydep,a,b=b.grid[X],m,s,constrain,v)
-               sapply(1:length(b.grid), fun.b, a=a.grid[X], b.grid=b.grid,yex=yex,ydep=ydep,m=m,s=s,constrain=constrain,v=v)
-               }
-             sapply(1:length(a.grid), fun.a.b, a.grid=a.grid, b.grid=b.grid,yex=yex,ydep=ydep,m=m.grid[X],s=s,constrain=constrain,v=v)
-             }
-           sapply(1:length(m.grid), fun.m.a.b, a.grid=a.grid, b.grid=b.grid,yex=yex,ydep=ydep,m=m.grid,s=s.grid[X],constrain=constrain,v=v)
-           }
-         nllh <- sapply(1:length(s.grid), fun.s.m.a.b, a.grid=a.grid, b.grid=b.grid,yex=yex[wh],ydep=X[wh],m.grid=m.grid,s.grid=s.grid,constrain=constrain,v=v)
-         nllh2 <- matrix(nllh[,apply(nllh,2,min) == min(nllh)],byrow=FALSE,ncol=length(m.grid))
-         nllh3 <- matrix(nllh2[,apply(nllh2,2,min) == min(nllh2)],byrow=FALSE,ncol=length(a.grid))
-         
-         s.start <- s.grid[apply(nllh,2,min) == min(nllh)]
-         m.start <- m.grid[apply(nllh2,2,min) == min(nllh2)]
-         a.start <- a.grid[apply(nllh3,2,min) == min(nllh3)]
-         b.start <- b.grid[apply(nllh3,1,min) == min(nllh3)]
-         start <- c(a.start,b.start,m.start,s.start)
-         # Q(yex[wh],ydep = X[wh], start, constrain,v) # to check that start does indeed return the minimum nllh
-       } else {
-       
-       # profile likelihood
-       
-         a.b <- expand.grid(a.grid,b.grid)
-         fun <- function(X,yex,ydep,a.b,m,s,constrain,v){
-                         PosGumb.Laplace.negProfileLogLik(yex=yex, ydep=ydep,a = a.b[X,1],b=a.b[X,2], m=0.01,s=1,constrain=constrain,v=v)
-                         }
-         profLik <- lapply(1:(dim(a.b)[1]), fun, a.b=a.b,yex=yex[wh],ydep=X[wh],m=0.01,s=1,constrain=constrain,v=v)
-       
-         profLik <- matrix(unlist(profLik),ncol=3,byrow=TRUE)
-         profLik.grid <- matrix(profLik[,1],nrow=length(a.grid))
-         profLik.grid[profLik.grid > 10^10] <- NA
-         whichPars <- profLik[,1] == min(profLik[,1])
-         start <- c(a.b[whichPars,1],a.b[whichPars,2],profLik[whichPars,2],profLik[whichPars,3])
-         image(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b")
-         points(start[1],start[2])
-         # Q(yex[wh],ydep = X[wh], start, constrain,v) # to check that start does indeed return the minimum nllh
-         # profLik[whichPars,1]
-       }
+       #filled.contour(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
      }
 
-     o <- try(optim(par=start, fn=Q, 
-			  		  method = "L-BFGS-B", lower=lo, upper=c(1, 1, Inf, Inf), control=list(maxit=maxit),
-              yex = yex[wh], ydep = X[wh], constrain=constrain, v=v), silent=TRUE)
-
-		if (class(o) == "try-error"){
-			warning("Error in optim call from mexDependence")
-			o <- as.list(o)
-			o$par <- rep(NA, 6)
-		} else if (o$convergence != 0) {
-      warning("Non-convergence in mexDependence")
-      o <- as.list(o)
-      o$par <- rep(NA, 6)
-    }
-	   
-    if (!is.na(o$par[1])) { # gumbel margins and negative dependence
-        if (margins == "gumbel" & o$par[1] <= 10^(-10) & o$par[2] < 0) {
-          lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
-          Q <- function(yex, ydep, param) {
+     if (!is.na(o$par[1])) { # gumbel margins and negative dependence
+        if (margins == "gumbel" & o$par[1] <= 10^(-5) & o$par[2] < 0) {
+           lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
+           Q <- function(yex, ydep, param) {
                param <- param[-1]
                b <- param[1]
                cee <- param[2]
@@ -155,10 +103,6 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
                m <- param[4]
                s <- param[5]
 
-               if (b >=1){ b <- 1 - 10^(-10) }
-               if (d <= 10^(-10)){ d <- 10^(-10) }
-               else if (d >= 1- 10^(-10)){ d <- 1 - 10^(-10) }
-	
                obj <- function(yex, ydep, a, b, cee, d, m, s) {
                       mu <- cee - d * log(yex) + m * yex^b
                       sig <- s * yex^b
@@ -176,17 +120,19 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
              o <- as.list(o)
              o$par <- rep(NA, 6)
           }
-        } # end if gumbel margins and neg dependence
-          else o$par <- c(o$par[1:2], 0, 0, o$par[3:4])
+        } else { # end if gumbel margins and neg dependence
+          Z <- (X[wh] - yex[wh] * o$par[1]) / (yex[wh]^o$par[2])
+          o$par <- c(o$par[1:2], 0, 0, mean(Z),sd(Z))
+        }
     }
     c(o$par[1:6], o$value) # Parameters and negative loglik
    } # Close qfun <- function(
    
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
-               
-   res <- sapply(1:length(dependent),function(X,dat,yex,wh,lo,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,lo,margins,constrain,v,maxit,start[,X]),
-                dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, lo=lo, margins=margins, constrain=constrain, v=v, maxit=maxit, start=start)
+         
+   res <- sapply(1:length(dependent),function(X,dat,yex,wh,aLow,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,aLow,margins,constrain,v,maxit,start[,X]),
+                dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins, constrain=constrain, v=v, maxit=maxit, start=start)
                 
    loglik <- -res[7,]
    res <- matrix(res[1:6,], nrow=6)
@@ -353,6 +299,20 @@ jhWdepPM10 <- matrix(c(
   
 # test specification of starting values
 
-  wavesurge.mex <- mexDependence(wavesurge.fit,which=which,start=wavesurge.mex)
+  which <- 2
+  dqu <- 0.8
+  summer.fit <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
+  summer.mex1 <- mexDependence(summer.fit,which=which,dqu=dqu)
+  summer.mex2 <- mexDependence(summer.fit,which=which,dqu=dqu,start=summer.mex1)
+  summer.mex3 <- mexDependence(summer.fit,which=which,dqu=dqu,start=summer.mex1$dependence$coefficients[1:2,])
+  summer.mex4 <- mexDependence(summer.fit,which=which,dqu=dqu,start=c(0.01,0.03))
+
+  tol <- 0.001
+  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex2$dependence$coefficients,tol=tol,msg="mexDependence: summer starting values: class(start)='mex'")
+  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex3$dependence$coefficients,tol=tol,msg="mexDependence: summer starting values: start= matrix ")
+  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex4$dependence$coefficients,tol=tol,msg="mexDependence: summer starting values: start= vector")
+ 
+# test gumbel and laplace obtain approx equal estimates under high threshold choice
+
   
 }
