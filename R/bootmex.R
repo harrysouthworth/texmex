@@ -80,7 +80,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
         ggpd <- migpd(g, mth = mar$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, start = ans$simpleDep[c(1:2,5:6),], constrain=constrain, v=v)
+        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, constrain=constrain, v=v)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$dependence$coefficients, 
                     Z = gd$dependence$Z,
@@ -171,7 +171,17 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="bootmex: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="bootmex: size of bootstrap data set")
+  
+  smexmod.1 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=FALSE)
+  smexmod.2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=TRUE,v=2)
+  mySboot.1 <- bootmex(smexmod.1,R=R)
+  mySboot.2 <- bootmex(smexmod.2,R=R)
 
+  checkEqualsNumeric(coef(smexmod.1)[[2]], mySboot.1$simpleDep, msg="bootmex: summer simpleDep from call with mex model, constrain=FASLE")
+  checkEqualsNumeric(coef(smexmod.1)[[1]], coef(mySboot.1$simpleMar), msg="bootmex: summer simpleMar from call with mex model, constrain=FASLE")
+  checkEqualsNumeric(coef(smexmod.2)[[2]], mySboot.2$simpleDep, msg="bootmex: summer simpleDep from call with mex model, v=2")
+  checkEqualsNumeric(coef(smexmod.2)[[1]], coef(mySboot.2$simpleMar), msg="bootmex: summer simpleMar from call with mex model, v=2")
+  
 # check execution of for 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
