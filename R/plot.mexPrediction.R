@@ -38,8 +38,8 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 
 test.plot.predict.mex <- function(){
 # check reproduce Figure 6 in Heffernan and Tawn
-  w <- migpd(winter,mqu=0.7,penalty="none")
-  noMod <- bootmex(w, wh="NO", dqu=.7, margins="gumbel")  
+  w <- mex(winter,mqu=0.7,penalty="none", wh="NO", dqu=.7, margins="gumbel")
+  noMod <- bootmex(w)  
   noPred <- predict(noMod)
   par(mfcol=c(2,2))
   res <- plot(noPred,main="Fig. 6 Heffernan and Tawn (2004)")
@@ -48,8 +48,8 @@ test.plot.predict.mex <- function(){
 # check for 2-d data
   R <- 20
   nsim <- 100
-  wavesurge.fit <- migpd(wavesurge,mq=.7)
-  wavesurge.boot <- bootmex(wavesurge.fit,which=1,R=R, margins="laplace")
+  wavesurge.mex <- mex(wavesurge,mq=.7,which=1, margins="laplace")
+  wavesurge.boot <- bootmex(wavesurge.mex,R=R)
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim)
   par(mfrow=c(1,1))
   res <- plot(wavesurge.pred)
