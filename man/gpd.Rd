@@ -23,9 +23,9 @@ Pareto distribution, possibly with explanatory variables.
 }
 \usage{
 gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
-    prior = "gaussian", method = "optimize", start = NULL, priorParameters = NULL,
+    prior = "gaussian", method = "optimize", cov="observed", start = NULL, priorParameters = NULL,
     maxit = 10000, trace = NULL,
-    iter = 10500, burn = 500, thin = 1, jump.const, verbose = TRUE, scale. = TRUE)
+    iter = 10500, burn = 500, thin = 1, jump.cov, jump.const, verbose = TRUE)
 \method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
@@ -38,10 +38,10 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
 \method{coef}{bgpd}(object, ...)
 \method{coefficients}{bgpd}(object, ...)
-\method{print}{summary.gpd}(x, dig=3, ...)
+\method{print}{summary.gpd}(x, digits=3, ...)
 \method{print}{summary.bgpd}(x, ...)
 \method{print}{summary.bgpd}(x, ...)
-\method{show}{summary.gpd}(x, dig=3, ...)
+\method{show}{summary.gpd}(x, digits=3, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -96,6 +96,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{thin}{ The degree of thinning of the resulting Markov chains. Defaults
                to 1 (no thinning). A value of 0.5 (for example) would result in
                every other step being discarded. }
+  \item{jump.cov}{Covariance matrix for proposal distribution of Metropolis algorithm.  This is scaled by \code{jump.const}.}
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
@@ -119,7 +120,6 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{density.adjust}{Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
-  \item{dig}{Number of digits to print.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{

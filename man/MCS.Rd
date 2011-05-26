@@ -25,7 +25,7 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
 \method{print}{bootMCS}(x, ...)
 \method{show}{bootMCS}(x, ...)
 \method{summary}{bootMCS}(object, alpha=0.05, ...)
-\method{plot}{bootMCS}(x, xlab="p", ylab="MCS", alpha=0.05, ...)
+\method{plot}{bootMCS}(x, xlab="p", ylab="MCS", alpha=0.05, ylim, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -39,6 +39,7 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
   \item{xlab, ylab}{Axis labels.}
   \item{alpha}{A (1 - alpha)\% pointwise confidence interval will be produced.
                Defaults to \code{alpha = 0.05}.}
+  \item{ylim}{Plotting limits for bootstrap plot.}
   \item{...}{Optional arguments to be passed into methods.}
 }
 \details{

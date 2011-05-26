@@ -16,7 +16,7 @@
 \title{Conditional multivariate extreme values modelling}
 \description{Fit the conditional multivariate extreme value model of Heffernan and Tawn}
 \usage{
-mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
+mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 10, penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
 \method{print}{mex}(x, ...)
 \method{show}{mex}(x, ...)
 \method{summary}{mex}(object, ...)
@@ -55,6 +55,9 @@ mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace 
   \item{dqu}{As an alternative to \code{dth}, specify the quantile at which to
             threshold the transformed data when estimating the dependence
             parameters.}
+  \item{margins}{See documentation for \code{\link{mexDependence}}.}
+  \item{constrain}{See documentation for \code{\link{mexDependence}}.}
+  \item{v}{See documentation for \code{\link{mexDependence}}.}
   \item{penalty}{How to penalize the likelihood when estimating the marginal
             generalized Pareto distributions. Defaults to ``gaussian''. See the
             help file for \code{\link{gpd}} for more information.}
@@ -92,12 +95,28 @@ mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace 
   \item{...}{Further arguments to be passed to methods.}
 }
 
-\details{The parameters in the generalized Pareto distribution are estimated for
+\details{The function \code{mex} works as follows. The parameters in the generalized Pareto distribution are estimated for
          each column of the data in turn, independently of all other columns.
          Then, the conditional multivariate approach of Heffernan and Tawn is
-         used to model the dependence between variables.
+         used to model the dependence between variables. The returned object is of class 'mex'.
 
-         The \code{predict} method for \code{mex} works as follows.
+     The \code{plot} method produces diagnostic plots for the fitted dependence model described by Heffernan and Tawn, 2004.
+    
+    Scatterplots of the residuals Z from the fitted model of Heffernan and Tawn (2004) are 
+    plotted against the quantile of the conditioning variable, with a lowess curve showing the local 
+    mean of these points.  Any trend in the location of these variables with the conditioning variable
+    indicates a violation of the model assumption that the residuals Z are indpenendent of the conditioning
+    variable.
+    
+    The absolute value of Z-mean(Z) is also plotted, again with the lowess curve showing 
+    the local mean of these points.  These plots are intended to highlight any trend between the 
+    variability of the residuals Z and the conditioning variable.
+    
+    The final plots show the fitted quantiles (specified by \code{quantiles}) of the conditional distribution 
+    of each variable given the conditioning variable.  A model that fits well will have good agreement between the
+    distribution of the raw data (shown by the scatter plot) and the fitted quantiles.
+
+    The \code{predict} method for \code{mex} works as follows.
          For each set of parameter estimates and normalized conditional Gumbel
          data, simulated values of the dependent variables are created, given that the
          conditioning variable is above its 100\code{pqu} quantile.  The returned object 
@@ -115,6 +134,7 @@ mex(data, which, mth, mqu, dth, dqu, penalty = "gaussian", maxit = 10000, trace 
 \value{
   \item{margins}{An object of class \code{\link{migpd}}.}
   \item{dependence}{An object of class \code{\link{mexDependence}}.}
+  \item{call}{This matches the original function call.}
 }
 \references{J. E. Heffernan and J. A. Tawn, A conditional approach for
             multivariate extreme values, Journal of the Royal Statistical

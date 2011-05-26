@@ -7,7 +7,7 @@ Estimate dependence parameters in a conditional multivariate extreme values mode
 Diagnostic tool to aid the choice of threshold to be used for the estimation of the dependence parameters in the conditional multivariate extreme values model of Heffernan and Tawn, 2004.  
 }
 \usage{
-mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), R = 10, col = "red", bootcol = "grey", ...)
+mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), R = 10, nPass=3, trace=10, col = "red", bootcol = "grey", margins = "laplace", constrain = TRUE, v = 10, ...)
 }
 \arguments{
   \item{x}{An object of class \code{\link{mex}} or \code{\link{migpd}}.}
@@ -15,10 +15,15 @@ mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), R = 10, col = "red"
   \item{quantiles}{A numeric vector specifying the quantiles of the marginal distribution of the conditioning variable at which to fit the dependence model.
 }
   \item{R}{ The number of bootstrap runs to perform at each threshold. Defaults to \code{R}=10.}
+  \item{nPass}{Argument passed to function \code{\link{bootmex}}.}
+  \item{trace}{Argument passed to function \code{\link{bootmex}}.}
   \item{col}{
 Plotting colour for the point estimates of the dependence parameters.}
   \item{bootcol}{
 Plotting colour for the bootstrap estimates of the dependence parameters.}
+  \item{margins}{Argument passed to function \code{\link{mexDependence}}.}
+  \item{constrain}{Argument passed to function \code{\link{mexDependence}}.}
+  \item{v}{Argument passed to function \code{\link{mexDependence}}.}
   \item{\dots}{
 Further graphical parameters may be passed, which will be used for plotting.
 }

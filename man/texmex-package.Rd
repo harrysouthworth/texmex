@@ -50,9 +50,9 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 \keyword{package}
 \examples{
 # Analyse the winter data used by Heffernan and Tawn
-mymex <- mex(winter, mqu = .7, penalty="none")
+mymex <- mex(winter, mqu = .7, penalty="none", dqu=.7, which = "NO")
 plot(mymex)
-myboot <- bootmex(mymex, dqu=.7, which = "NO")
+myboot <- bootmex(mymex)
 plot(myboot)
 mypred <- predict(myboot,  pqu=.95)
 summary(mypred , probs = c( .025, .5, .975 ))
