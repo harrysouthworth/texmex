@@ -70,13 +70,13 @@ test.plot.bootmex <- function(){
   smarmex.O3 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 1, dqu = Qu, penalty="none",margins="gumbel")
   wmarmex.O3 <- mex(winter, mqu=.7, which = 1, dqu = Qu, penalty="none",margins="gumbel")
   smarmex.NO2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 2, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.NO2 <- mex(winter, mqu=.7, which = 2, dqu = Qu, penalty="none",margins="gumbel",margins="gumbel")
+  wmarmex.NO2 <- mex(winter, mqu=.7, which = 2, dqu = Qu, penalty="none",margins="gumbel")
   smarmex.NO <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 3, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.NO <- mex(winter, mqu=.7, which = 3, dqu = Qu, penalty="none",margins="gumbel",margins="gumbel")
+  wmarmex.NO <- mex(winter, mqu=.7, which = 3, dqu = Qu, penalty="none",margins="gumbel")
   smarmex.SO2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 4, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.SO2 <- mex(winter, mqu=.7, which = 4, dqu = Qu, penalty="none",margins="gumbel",margins="gumbel")
+  wmarmex.SO2 <- mex(winter, mqu=.7, which = 4, dqu = Qu, penalty="none",margins="gumbel")
   smarmex.PM10 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 5, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.PM10 <- mex(winter, mqu=.7, which = 5, dqu = Qu, penalty="none",margins="gumbel",margins="gumbel")
+  wmarmex.PM10 <- mex(winter, mqu=.7, which = 5, dqu = Qu, penalty="none",margins="gumbel")
   
   Qu <- 0.7
   R <- 50

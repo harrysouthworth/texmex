@@ -12,7 +12,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
       which <- object$which
       migpd <- object$simpleMar
       margins <- object$margins
-      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins, start = object$simpleDep[1:4,] )
+      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins )
   } else {
       which <- object[[2]]$which
       migpd <- object[[1]]

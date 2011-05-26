@@ -46,15 +46,12 @@ print.mex <- function(x, ...){
     print(x[[2]])
     invisible()
 }
+
 show.mex <- print.mex
+
 summary.mex <- function(object, ...){
     print(object, ...)
     invisible(coef(object))
-}
-
-plot.mex <- function(x, ...){
-    plot(x[[2]])
-    invisible()
 }
 
 coefficients.mex <- function(object, ...){

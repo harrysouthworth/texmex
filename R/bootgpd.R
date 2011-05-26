@@ -57,15 +57,15 @@ summary.bootgpd <- function(object, ...){
 	covs <- var(object$replicates)
 	res <- list(call = object$call, margins=res, covariance=covs)
 	oldClass(res) <- "summary.bootgpd"
-    res
+  res
 }
 
 print.summary.bootgpd <- function(x, ...){
 	print(x$call)
 	print(x$margins)
 	cat("\nCorrelation:\n")
-    print(cov2cor(x$covariance))
-    invisible()
+  print(cov2cor(x$covariance))
+  invisible()
 }
 
 plot.bootgpd <- function(x, col="blue", border=FALSE, ...){

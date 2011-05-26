@@ -46,7 +46,7 @@ test.thinAndBurn.bgpd <- function(){
 
 # test appropriate errors for misspecification of thin and burn
 
-  o <- options()
+  op <- options()
   options(show.error.messages=FALSE)
   checkException(thinAndBurn(x,burn=2),msg="thinAndBurn.bgpd: errors for misspecification of thin and burn")
   checkException(thinAndBurn(x,thin=1),msg="thinAndBurn.bgpd: errors for misspecification of thin and burn")

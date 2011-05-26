@@ -52,16 +52,16 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    }  
 
    qfun <- function(X, yex, wh, aLow, margins, constrain, v, maxit, start){
-     Q <- function(yex, ydep, param, constrain, v, aLow) {
+     Qpos <- function(yex, ydep, param, constrain, v, aLow) {
 
   	   a <- param[1]
        b <- param[2]
 
        res <- PosGumb.Laplace.negProfileLogLik(yex, ydep, a, b, constrain, v, aLow) # defined in file mexDependenceLowLevelFunctions
        res$profLik
-     } # Close Q <- function
+     } # Close Qpos <- function
 
-     o <- try(optim(par=start, fn=Q, 
+     o <- try(optim(par=start, fn=Qpos, 
               control=list(maxit=maxit),
               yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
 
@@ -87,15 +87,15 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
        profLik <- matrix(unlist(profLik),ncol=3,byrow=TRUE)
        profLik.grid <- matrix(profLik[,1],nrow=length(a.grid))
        profLik.grid[profLik.grid > 10^10] <- NA
-       image(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b"); points(o$par[1],o$par[2])
+       #image(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b"); points(o$par[1],o$par[2])
        
-       #filled.contour(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
+       filled.contour(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
      }
 
      if (!is.na(o$par[1])) { # gumbel margins and negative dependence
         if (margins == "gumbel" & o$par[1] <= 10^(-5) & o$par[2] < 0) {
            lo <- c(10^(-10), -Inf, -Inf, 10^(-10), -Inf, 10^(-10))
-           Q <- function(yex, ydep, param) {
+           Qneg <- function(yex, ydep, param) {
                param <- param[-1]
                b <- param[1]
                cee <- param[2]
@@ -103,15 +103,15 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
                m <- param[4]
                s <- param[5]
 
-               obj <- function(yex, ydep, a, b, cee, d, m, s) {
+               obj <- function(yex, ydep, b, cee, d, m, s) {
                       mu <- cee - d * log(yex) + m * yex^b
                       sig <- s * yex^b
                       log(sig) + 0.5 * ((ydep - mu)/sig)^2
                       }
-               res <- sum(obj(yex, ydep, a, b, cee, d, m, s))
+               res <- sum(obj(yex, ydep, b, cee, d, m, s))
                res
           }
-          o <- try(optim(c(0, 0, 0, 0, 0, 1), Q, method = "L-BFGS-B", lower=lo, 
+          o <- try(optim(c(0, 0, 0, 0, 0, 1), Qneg, method = "L-BFGS-B", lower=lo, 
                    upper=c(1, 1-10^(-10), Inf, 1-10^(-10), Inf, Inf),
                    yex = yex[wh], ydep = X[wh]), silent=TRUE)
                    

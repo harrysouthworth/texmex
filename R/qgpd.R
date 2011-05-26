@@ -42,7 +42,7 @@ test.qgpd <- function(){
 
 #*************************************************************
 # 6.4.0 Test exception for out of range probabilties
-  o <- options()
+  op <- options()
   options(show.error.messages=FALSE)
   checkException(qgpd(1,1,0,2),msg="qgpd: exception for out of range prob")
   checkException(qgpd(1.5,1,0,2),msg="qgpd: exception for out of range prob")
