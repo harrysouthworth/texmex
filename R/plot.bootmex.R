@@ -67,6 +67,7 @@ test.plot.bootmex <- function(){
   
 # 5-d air pollution data
 
+  Qu <- 0.7
   smarmex.O3 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 1, dqu = Qu, penalty="none",margins="gumbel")
   wmarmex.O3 <- mex(winter, mqu=.7, which = 1, dqu = Qu, penalty="none",margins="gumbel")
   smarmex.NO2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 2, dqu = Qu, penalty="none",margins="gumbel")
