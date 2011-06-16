@@ -47,7 +47,7 @@ PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v, aLow)
         }
         warning("Infinite value of Q in mexDependence")
     } else if (constrain){
-		   v <- v * max(yex)
+		   #v <- v * max(yex)
 			 zpos <- range(ydep - yex) # q0 & q1
 			 z <- range((ydep - yex * a) / (yex^b)) # q0 & q1 
 			 zneg <- range(ydep + yex) # q0 & q1
