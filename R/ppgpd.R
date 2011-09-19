@@ -1,4 +1,4 @@
-`ppgpd` <-
+ppgpd <-
 function( object , nsim = 1000, alpha = .050,
 		  xlab, ylab,  main, # labels and titles
 		  pch=1, col = 2, cex = .75, linecol = 4 ,
@@ -12,7 +12,7 @@ function( object , nsim = 1000, alpha = .050,
 	if ( missing( ylab ) || is.null( ylab ) ) { ylab <- "Model" }
 	if ( missing( main ) || is.null( main ) ) { main <- "Probability Plot" }
 
-	x <- ( 1:length( dat ) ) / length( dat )
+    x <- ppoints(dat)
 
 	# If doing the envelope, simulate, sort and get the quantiles
 	if ( nsim > 0 ){
@@ -29,8 +29,7 @@ function( object , nsim = 1000, alpha = .050,
 	ylimits <- if ( nsim == 0 ) NULL else range( sim )
 
 	oldpar <- par( pty = "s" ); on.exit( oldpar )
-	plot( x,
-		  pgpd( sort( dat ), a[ 1 ] , a[ 2 ] , u ),
+	plot( x, pgpd( sort( dat ), a[ 1 ] , a[ 2 ] , u ),
 		  xlab = xlab, ylab = ylab,
 		  main = main, 
 		  type = "n"
@@ -38,8 +37,8 @@ function( object , nsim = 1000, alpha = .050,
 	# If doing the envelope, plot it before putting the data on 
 	if ( nsim > 0 ){
 		if ( smooth & length( x ) > 2 ) {
-			splo <- spline( x, sim[ 1 , ] , 200 )
-			sphi <- spline( x, sim[ 2 , ] , 200 )
+			splo <- spline( x, sim[ 1 , ], 200 )
+			sphi <- spline( x, sim[ 2 , ], 200 )
 			if ( polycol != 0 )
 				polygon( c( splo$x, rev( sphi$x ) ),
 					     c( splo$y, rev( sphi$y ) ),
