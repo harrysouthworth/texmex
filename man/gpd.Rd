@@ -209,7 +209,7 @@ are also returned by the \code{coef} method. Depending on what you
     \item{param}{The remainder of the chain after deleting the burn-in
                  and applying any thinning.}
     \item{X.phi}{The design matrix for the log of the scale parameter.}
-    \item{X.xi}{The design matrix for the log of the scale parameter.}
+    \item{X.xi}{The design matrix for the log of the shape parameter.}
     \item{acceptance}{The proportion of proposals that were accepted by
                       the Metropolis algorithm.}
     \item{seed}{The seed used by the random number generator.}
