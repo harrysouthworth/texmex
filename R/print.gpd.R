@@ -17,8 +17,8 @@ function( x , digits=max(3, getOption("digits") - 3), ... ){
 	cat( "\nRate of excess:\t\t")
 	cat(format(x$rate, digits=digits, ...))
 
-    cat("\n\nLog-lik.\t\tAIC\n")
-    cat(format(x$loglik, digits, ...), "\t\t", format(AIC(x), digits=digits, ...))
+  cat("\n\nLog-lik.\t\tAIC\n")
+  cat(format(x$loglik, digits, ...), "\t\t", format(AIC(x), digits=digits, ...))
 
 	co <- cbind( coef( x ), x$se )
 	dimnames(co) <- list(names(coef(x)) , c("Value", "SE"))
