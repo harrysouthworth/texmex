@@ -1,7 +1,7 @@
 gpd <- 
 function (y, data, th, qu, phi = ~1, xi = ~1,
           penalty = "gaussian", prior = "gaussian", method = "optimize",
-		  cov="observed",
+		      cov="observed",
           start = NULL, priorParameters = NULL, maxit = 10000, trace=NULL,
           iter = 10500, burn=500, thin = 1, jump.cov, jump.const, verbose=TRUE) {
 
@@ -140,7 +140,8 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ################################## Do the optimization....
 
-    o <- gpd.fit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior, hessian = cov == "numeric",
+    o <- gpd.fit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior, start=start, 
+                 hessian = cov == "numeric",
                  priorParameters = priorParameters, maxit = maxit, trace = otrace)
 
 
@@ -150,7 +151,9 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ################################## If method = "optimize", construct object and return...
 
-    o$hessian <- NULL
+    if( cov == "observed" ){
+      o$hessian <- NULL
+    }
     o$threshold <- th
     o$penalty <- prior
     o$coefficients <- o$par
@@ -162,8 +165,8 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     o$y <- y
     o$X.phi <- X.phi
     o$X.xi <- X.xi
-	o$priorParameters <- priorParameters
-	if (missing(data)) {
+	  o$priorParameters <- priorParameters
+	  if (missing(data)) {
         data <- NULL
     }
     o$data <- data
@@ -172,14 +175,14 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     o$value <- NULL
     o$counts <- NULL
     oldClass(o) <- "gpd"
-    
-    if (cov == "numeric") { o$cov <- solve(o$hessian) }
-	if (cov == "observed") { o$cov <- info.gpd(o) }
-	else { stop("cov must be either 'numeric' or 'observed'") }
 
-	o$se <- sqrt(diag(o$cov))
+    if (cov == "numeric") { o$cov <- solve(o$hessian) }
+	  if (cov == "observed") { o$cov <- info.gpd(o) }
+	  else { stop("cov must be either 'numeric' or 'observed'") }
+
+	  o$se <- sqrt(diag(o$cov))
     if (method == "o"){
-		o
+		  o
     }
 
     ################################# Simulate from posteriors....
@@ -409,16 +412,17 @@ test.gpd <- function(){
 
   checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd: lasso penalization phi being drawn to 4")
   checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd: lasso penalization phi being drawn to 4")
- 
+
 ########################################################
 # Tests on including covariates. Once more, gpd.fit in ismev
 # works with sigma inside the optimizer, so we need to tolerate
-# some differences and standard errors might be a out.
+# some differences and standard errors might be a bit out.
 
 # 3.0 Reproduce Coles, page 119. Reported log-likelihood is -484.6.
 
-  rtime <- 1:length(rain)
+  rtime <- (1:length(rain))/1000
   d <- data.frame(rainfall = rain, time=rtime)
+
   mod <- gpd(rainfall, th=30, data=d, phi= ~ time, penalty="none")
 
   checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol,msg="gpd: loglik Coles page 119")
