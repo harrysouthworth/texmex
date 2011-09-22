@@ -1,30 +1,24 @@
-# TODO: Add comment
-# 
-# Author: kpzv097
-###############################################################################
-
-
 info.gpd <-
     # Compute the observed information matrix from a gpd object.
-    # The expressions are given in Appendix A of Davison & Smith 1990. On page
-    # 397 they state s(xTb) = exp(xTb).
+    # The expressions are given in Appendix A of Davison & Smith 1990. 
+    # Note we are using a simpler parameterisation in which phi = log(sigma) 
+    # and xi are both linear in their covariates. Xi is -k used in Davison and Smith.
 	# If penalization is used, the calculation accounts for this, but the resulting
 	# estimates of variance will be too low and bias might dominate MSE
 function(o, method="observed"){	
-    if (class(o) != "gpd"){ stop("object must be of class 'gpd'") }
-
-	if (method != "observed"){
-		stop("only 'observed' information is implemented")
-	}
+  if (class(o) != "gpd"){ stop("object must be of class 'gpd'") }
+	if (method != "observed"){ stop("only 'observed' information is implemented") }
 	
-	# Set out stall
 	x <- o$X.phi; z <- o$X.xi
 	ns <- ncol(x); nk <- ncol(z)
-	s <- coef(o)[1:ns]; k <- -coef(o)[(ns+1):(ns + nk)] # D & S use k = -xi
-	s <- exp(colSums(s * t(x))); k <- colSums(k * t(z))
-	w <- (o$y - o$threshold) / s
+	phi <- coef(o)[1:ns]
+  xi <- coef(o)[(ns+1):(ns + nk)]
 
-	# Second derivatives of penalties
+	phi.i <- colSums(phi * t(x))
+  xi.i <- colSums(xi * t(z))
+	w.i <- (o$y - o$threshold) / exp(phi.i)
+
+# Second derivatives of penalties
 	p <- matrix(0, nrow=ns+nk, ncol=ns+nk) # OK for MLE, will need a warning for L1
 	if (o$penalty %in% c("guassian", "quadratic")){
 		Si <- solve(o$priorParameters[[2]])
@@ -33,57 +27,47 @@ function(o, method="observed"){
 				p[i,j] <- 2*Si[i,j]
 			}
 		}
-	} # Close if (o$penatly %in%
+	}
 	
-	# First derivatives of sigma and xi. These are vector derivatives
-	d.s <- s * x
-	d.k <- z
+# Second and mixed derivatives of log-lik wrt coefficients of linear predictors
 	
-	# Second derivatives of sigma
-	d2.s2 <- d.s * x
-	# 0 for k because predictor is linear
+  d2li.dphi2 <- -(1 + 1/xi.i) * xi.i * w.i / (1 + xi.i*w.i)^2
+  d2li.dphidxi <- 1/xi.i^2 * (1/(1 + xi.i*w.i) - 1) + (1+1/xi.i)*w.i/(1 + xi.i*w.i)^2
+  d2li.dxi2 <- -2/xi.i^3 * log(1 + xi.i*w.i) + 2*w.i/(xi.i^2 * (1 + xi.i*w.i)) + (1 + 1/xi.i)*w.i^2/(1 + xi.i*w.i)^2
+  
+# Matrix has 4 blocks, 2 of which are transposes of each other. Need block for phi parameters,
+# block for xi parameters and block for the cross of them.
 	
-    # First derivatives of loglik. Davison & Smith use k = -xi, so need to adjust
-	# derivatives in k by *(-1)
-    dl.dk <- (-1 / k^2 * log(1 - k*w) + (1 - 1/k) * w / (1 - k*w) ) * (-1)	
-	dl.ds <- ( (w - 1) / (1 - k*w) ) / s
-	
-	# Second derivatives
-	d2l.dk2 <- 2 / k^3 * log(1 - k*w) + 2*w / (k^2 * (1 - k*w)) + (1 - 1/k) * (w / (1 - k*w))^2
-	d2l.dkds <- ( (w / s) * (w - 1) / (1 - k*w)^2 ) * (-1)
-	d2l.ds2 <- s^(-2) * (1 - 2*w + k*w*w) / (1 - k*w)^2
-	
-    # Matrix has 4 blocks, 2 of which are the same. Need block for sigma parameters,
-	# block for xi parameters and block for the cross of them
-	
-	Is <- matrix(0, ncol=ns, nrow=ns)
-    for (i in 1:ns){
-		for (j in 1:ns){ # Lazy coding - only need lower diagonal
-			  Is[i,j] <- -sum(x[,i] * x[,j] * (d.s[,i]^2 * d2l.ds2) + d2.s2[,i] * dl.ds)
-		}
+  Ip <- matrix(0, ncol=ns, nrow=ns)
+  for (u in 1:ns){
+	  for (v in 1:ns){
+		  Ip[u,v] <- -sum(x[,u] * x[,v] * d2li.dphi2)
+	  }
 	}
 
-	Ik <- matrix(0, ncol=nk, nrow=nk)
-	for (i in 1:nk){
-		for (j in 1:nk){
-			Ik[i,j] <- -sum(z[,i] * z[,j] * (d.k[, i]^2 * d2l.dk2 ))
+	Ix <- matrix(0, ncol=nk, nrow=nk)
+	for (s in 1:nk){
+		for (t in 1:nk){
+			Ix[s,t] <- -sum(z[,s] * z[,t] * d2li.dxi2) 
 		}
 	}
 	
-	Iks <- matrix(0, ncol=nk, nrow=ns)
-	for (i in 1:ns){
-		for (j in 1:nk){
-			Iks[i,j] <- -sum(z[,j] * x[,i] * d.k[,j] * d.s[,i] * d2l.dkds )
+	Ipx <- matrix(0, ncol=nk, nrow=ns)
+	for (u in 1:ns){
+		for (s in 1:nk){
+			Ipx[u,s] <- -sum(z[,s] * x[,u] * d2li.dphidxi )
 		}
 	}
+  
+	i <- rbind( cbind(Ip, Ipx), cbind(t(Ipx), Ix))
 
-	i <- rbind( cbind(Is, Iks), cbind(t(Iks), Ik))
-	solve(i - p)
+	# return observed Information matrix.   Note that an estimate of the covariance matrix is given by the inverse of this matrix.  
+  i - p 
 }
 
 test.info.gpd <- function(){
-	lmod <- gpd(r, data=liver, qu=.5, xi=~I(240*as.numeric(dose)), cov="numeric")
-	checkTrue(all(sqrt(diag(info.gpd(lmod))) > 0), msg="info.gpd: SDs positive")
+	lmod <- gpd(ALT.M, data=liver, qu=.5, xi=~I(240*as.numeric(dose)), cov="numeric")
+	checkTrue(all(sqrt(diag(solve(info.gpd(lmod)))) > 0), msg="info.gpd: SDs positive")
 
 	# Check equality to numerical approximation in big samples
 	set.seed(20110511)
@@ -92,7 +76,7 @@ test.info.gpd <- function(){
 		x <- rt(10000, 10)
 		junk <- gpd(x, qu=.9, penalty="none", cov="numeric")
 		msg <- paste("info.gpd: t", i, "equality to numerical", sep="")
-		checkEqualsNumeric(junk$cov, info.gpd(junk), tolerance=tol, msg=msg)
+		checkEqualsNumeric(junk$cov, solve(info.gpd(junk)), tolerance=tol, msg=msg)
 	}
 }
 
