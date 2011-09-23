@@ -54,8 +54,9 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{xi}{ Formula for the shape parameter. Defaults to
       \code{phi = ~ 1} - i.e. no covariates. }
   \item{penalty}{ How to penalize the likelhood. Currently, either
-     ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments.
-     See the information on the \code{prior} argument, below.}
+     ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments. 
+     If \code{penalty} is "gaussian" or "lasso" then the parameters for 
+     the penalization are specified through the \code{prior} argument, see below.}
   \item{prior}{If \code{method = "optimize"}, just an alternative way of
      specifying the pentalty, and only one or neither of \code{penalty}
      and \code{prior} should be given. If \code{method = "simulate"},
@@ -73,17 +74,22 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
         option is \code{cov = "numeric"} in which case a numerical approximation
         of the Hessian is used (see the help for \code{optim}). In some cases,
         particularly with small samples, the numerical approximation can be
-        quite different from the closed form result. Also see the comments in
+        quite different from the closed form (\code{cov="observed"}) result, and the value derived from 
+        the observed information should be preferred. However, in either case, since the 
+        underlying log-likelihood may be far from quadratic for small samples, 
+        the resulting estimates of standard errors are liable to approximate 
+        poorly the true standard errors. Also see the comments in
         the Details section, below.}
   \item{start}{Starting values for the parameters, to be passed to \code{optim}.
            If not provided, an exponential distribution is assumed as the starting
            point.}
   \item{priorParameters}{  A list with two components. The first should be 
                 a vector of means, the second should be a covariance matrix if the 
-                penalty/prior is "gaussian" and a precision matrix is the penalty is "lasso".
-                These represent the parameters in the Gaussian prior distribution.
+                penalty/prior is "gaussian" or "quadratic" and a diagonal precision matrix 
+                if the penalty/prior is "lasso", "L1" or "Laplace".
+                If \code{method = "simulate"} then these represent the parameters in the Gaussian prior distribution.
                 If not supplied: all default prior means are zero;
-                all default prior variances are $10^4$;all covariances
+                all default prior variances are $10^4$; all covariances
                 are zero.  }
   \item{maxit}{ The number of iterations allowed in \code{optim} }
   \item{trace}{ Whether or not to print progress to screen. If \code{method = "optimize"},
