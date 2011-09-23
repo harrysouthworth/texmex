@@ -19,8 +19,8 @@ function(o, method="observed"){
 	w.i <- (o$y - o$threshold) / exp(phi.i)
 
 # Second derivatives of penalties
-	p <- matrix(0, nrow=ns+nk, ncol=ns+nk) # OK for MLE, will need a warning for L1
-	if (o$penalty %in% c("guassian", "quadratic")){
+	p <- matrix(0, nrow=ns+nk, ncol=ns+nk)
+	if (o$penalty %in% c("gaussian", "quadratic")){ # note if Lasso penalty used then 2nd deriv is zero hence no term for this
 		Si <- solve(o$priorParameters[[2]])
 		for (i in 1:(ns+nk)){
 			for (j in 1:(ns + nk)){
@@ -70,13 +70,25 @@ test.info.gpd <- function(){
 	checkTrue(all(sqrt(diag(solve(info.gpd(lmod)))) > 0), msg="info.gpd: SDs positive")
 
 	# Check equality to numerical approximation in big samples
-	set.seed(20110511)
+	set.seed(20110923)
 	tol <- 10^(-3)
 	for (i in 1:10){
 		x <- rt(10000, 10)
+
 		junk <- gpd(x, qu=.9, penalty="none", cov="numeric")
 		msg <- paste("info.gpd: t", i, "equality to numerical", sep="")
 		checkEqualsNumeric(junk$cov, solve(info.gpd(junk)), tolerance=tol, msg=msg)
-	}
+
+  # check estimation when we have a penalty
+    gp1 <- list(c(0, 0), diag(c(10^4, .05)))
+    gp2 <- list(c(0, 0), diag(c(.1, 10^4)))
+		junk1 <- gpd(x, qu=.9, priorParameters = gp1, cov="numeric")
+		junk2 <- gpd(x, qu=.9, priorParameters = gp2, cov="numeric")
+		msg1 <- paste("info.gpd: t", i, "equality to numerical, penalty on xi", sep="")
+		msg2 <- paste("info.gpd: t", i, "equality to numerical, penalty on phi", sep="")
+    tol <- 0.01
+		checkEqualsNumeric(junk1$cov, solve(info.gpd(junk1)), tolerance=tol, msg=msg1)
+		checkEqualsNumeric(junk2$cov, solve(info.gpd(junk2)), tolerance=tol, msg=msg2)
+  }
 }
 
