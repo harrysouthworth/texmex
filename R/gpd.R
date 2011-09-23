@@ -102,14 +102,16 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
             priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)), 
                 diag(rep(10^4, ncol(X.phi) + ncol(X.xi))))
         }
-    }
-    else if (prior %in% c("lasso", "l1", "laplace")) {
+        if (length(priorParameters) != 2 | !is.list(priorParameters)) {
+            stop("For Gaussian prior or quadratic penalty, priorParameters should be a list of length 2, the second element of which should be a symmetric (covariance) matrix")
+        }
+    } else if (prior %in% c("lasso", "l1", "laplace")) {
         if (is.null(priorParameters)) {
             priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)), 
                 diag(rep(10^(-4), ncol(X.phi) + ncol(X.xi))))
         }
         if (length(priorParameters) != 2 | !is.list(priorParameters)) {
-            stop("For Laplace prior, priorParameters should be a list of length 2, the second element of which should be a diagonal matrix")
+            stop("For Laplace prior or L1 or Lasso penalty, priorParameters should be a list of length 2, the second element of which should be a diagonal (precision) matrix")
         }
         if (!is.matrix(priorParameters[[2]])) {
             priorParameters[[2]] <- diag(rep(priorParameters[[2]], 
@@ -448,7 +450,7 @@ test.gpd <- function(){
 # 3.2 Test xi alone.
   mod <- gpd(log(ALT.M / ALT.B), qu=.7, data=liver,
            phi = ~1, xi = ~ ALT.B + dose,
-           penalty="none", cov="numeric")
+           penalty="none")
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
@@ -459,9 +461,8 @@ test.gpd <- function(){
   mco[1] <- exp(mco[1])
 
   checkEqualsNumeric(ismod$mle, mco, tolerance = tol,msg="gpd: covariates in xi only: point ests")
-  
 # SEs for phi will not be same as for sigma, but we can test xi
-#  checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol, msg="gpd: covariates in xi only: standard errors")
+  checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol, msg="gpd: covariates in xi only: standard errors")
 
 ######################################################################
 # 3.3 Test phi & xi simultaneously. Use simulated data.
@@ -479,7 +480,7 @@ test.gpd <- function(){
   }
 
   mya <- seq(0.1,1,len=10)
-  myb <- rep(c(-0.5,0.5),each=5)
+  myb <- rep(c(-0.2,0.2),each=5)
   data <- makeData(mya,myb)
   m <- model.matrix(~ a+b, data)
   
@@ -611,10 +612,10 @@ test.gpd <- function(){
 #*************************************************************  
 ## Checks of gpd simulation. Centres of distributions and standard deviations 
 ## should be similar to those coming out of gpd with the same penalty.
-## Posterior means are not the same as MAPs and SEs from Hessian are
+## Posterior means are not the same as MAPs and SEs from Obs Information are
 ## approximations, so allow some tolerance.
 
-  tol <- 0.01
+  tol <- 0.1
   tol.se <- 0.2
 # 4.4. Compare MAP and posterior summaries for simple model
 
@@ -624,6 +625,22 @@ test.gpd <- function(){
   checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for simple model - point ests")
   checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for simple model - std errs")
 
+# 4.4a now not so simple model:
+
+  gp12 <- list(c(0, 0), diag(c(0.25, 0.25)))
+  gp13 <- list(c(1, 0.1), diag(c(0.05, 0.1)))
+
+  mod12 <- gpd(ALT.M,qu=0.7,data=liver,priorParameters=gp12)
+  mod13 <- gpd(ALT.M,qu=0.7,data=liver,priorParameters=gp13)
+  
+  bmod12 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),verbose=FALSE, method="sim",priorParameters=gp12)
+  bmod13 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),verbose=FALSE, method="sim",priorParameters=gp13)
+  
+  checkEqualsNumeric(coef(mod12), postSum(bmod12)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for penalized model 1 - point ests")
+  checkEqualsNumeric(mod12$se, postSum(bmod12)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for penalized model 1 - std errs")
+
+  checkEqualsNumeric(coef(mod13), postSum(bmod13)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for penalized model 2 - point ests")
+  checkEqualsNumeric(mod13$se, postSum(bmod13)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for penalized model 2 - std errs")
 #*************************************************************
 # 4.5. Covariates in phi
 
@@ -664,7 +681,7 @@ test.gpd <- function(){
 #*************************************************************
 # 4.7. Covariates in xi and phi
 
-  # A lot of faffing around led to the conclusion that teh seed was an
+  # A lot of faffing around led to the conclusion that the seed was an
   # unfortunate choice. This usually passes with tol=.02, but fails with
   # this seed (difference is 0.02282496. Change tol to 0.03
 
