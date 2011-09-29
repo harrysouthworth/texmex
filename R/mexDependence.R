@@ -1,5 +1,6 @@
 `mexDependence` <-
-function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=10000, start=c(.01, .01), nGridPlotLik=NULL, marTransform="mixture")
+function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1,
+          PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
 {
    theCall <- match.call()
    if (class(x) != "migpd")
@@ -51,8 +52,12 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
      stop("start should be of type 'mex' or be a vector of length 2, or be a matrix with 2 rows and ncol equal to the number of dependence models to be estimated")
    }  
 
+   if( ! missing(PlotLikRange) ){
+     PlotLikDo <- TRUE
+   }
+     
    qfun <- function(X, yex, wh, aLow, margins, constrain, v, maxit, start){
-     Qpos <- function(yex, ydep, param, constrain, v, aLow) {
+     Qpos <- function(param, yex, ydep, constrain, v, aLow) {
 
   	   a <- param[1]
        b <- param[2]
@@ -64,32 +69,51 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
      o <- try(optim(par=start, fn=Qpos, 
               control=list(maxit=maxit),
               yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
-
-		 if (class(o) == "try-error"){
-			 warning("Error in optim call from mexDependence")
-			 o <- as.list(o)
-			 o$par <- rep(NA, 6)
-		 } else if (o$convergence != 0) {
-       warning("Non-convergence in mexDependence")
-       o <- as.list(o)
-       o$par <- rep(NA, 6)
+                 
+     if (class(o) == "try-error"){
+        warning("Error in optim call from mexDependence")
+        o <- as.list(o)
+        o$par <- rep(NA, 6)
+     } else if (o$convergence != 0) {
+        warning("Non-convergence in mexDependence")
+        o <- as.list(o)
+        o$par <- rep(NA, 6)
+        
+     } else if(nOptim > 1) {
+     
+        for( i in 2:nOptim ){
+           o <- try(optim(par=o$par, fn=Qpos, 
+                    control=list(maxit=maxit),
+                    yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
+           if (class(o) == "try-error"){   
+             warning("Error in optim call from mexDependence")
+             o <- as.list(o)
+             o$par <- rep(NA, 6)           
+             break()
+           } else if (o$convergence != 0) {
+             warning("Non-convergence in mexDependence")
+             o <- as.list(o)
+             o$par <- rep(NA, 6)
+             break()
+           }
+        }
      }
-	   
-     if ( !is.null(nGridPlotLik) ){# plot profile likelihood for (a,b)
-       a.grid <- seq(aLow,1-10^(-10),length=nGridPlotLik)
-       b.grid <- seq(-3,1-10^(-10),length=nGridPlotLik)
-       a.b <- expand.grid(a.grid,b.grid)
-       fun <- function(X,yex,ydep,a.b,constrain,v,aLow){
-                       PosGumb.Laplace.negProfileLogLik(yex=yex, ydep=ydep,a = a.b[X,1],b=a.b[X,2], constrain=constrain,v=v,aLow=aLow)
-                       }
-       profLik <- lapply(1:(dim(a.b)[1]), fun, a.b=a.b,yex=yex[wh],ydep=X[wh],constrain=constrain,v=v,aLow=aLow)
-
-       profLik <- matrix(unlist(profLik),ncol=3,byrow=TRUE)
-       profLik.grid <- matrix(profLik[,1],nrow=length(a.grid))
-       profLik.grid[profLik.grid > 10^10] <- NA
-       #image(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b"); points(o$par[1],o$par[2])
+     
+     if ( PlotLikDo ){# plot profile likelihood for (a,b)
+       nGridPlotLik <- 50
+       a.grid <- seq(PlotLikRange$a[1],PlotLikRange$a[2],length=nGridPlotLik)
+       b.grid <- seq(PlotLikRange$b[1],PlotLikRange$b[2],length=nGridPlotLik)
+       NegProfLik <- matrix(0,nrow=nGridPlotLik,ncol=nGridPlotLik)
+       for(i in 1:nGridPlotLik){
+         for(j in 1:nGridPlotLik){
+           NegProfLik[i,j] <- PosGumb.Laplace.negProfileLogLik(yex=yex[wh], ydep=X[wh],
+                                  a = a.grid[i],b=b.grid[j], constrain=constrain,v=v,aLow=aLow)$profLik
+         }
+       }
+       NegProfLik[NegProfLik > 10^10] <- NA
        
-       filled.contour(a.grid,b.grid,profLik.grid,main="Profile likelihood",xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
+       filled.contour(a.grid,b.grid,-NegProfLik,main=paste("Profile likelihood",PlotLikTitle),color = terrain.colors,
+                      xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
      }
 
      if (!is.na(o$par[1])) { # gumbel margins and negative dependence
@@ -131,8 +155,10 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
          
-   res <- sapply(1:length(dependent),function(X,dat,yex,wh,aLow,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,aLow,margins,constrain,v,maxit,start[,X]),
-                dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins, constrain=constrain, v=v, maxit=maxit, start=start)
+   res <- sapply(1:length(dependent),
+                 function(X,dat,yex,wh,aLow,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,aLow,margins,constrain,v,maxit,start[,X]),
+                 dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins, 
+                 constrain=constrain, v=v, maxit=maxit, start=start)
                 
    loglik <- -res[7,]
    res <- matrix(res[1:6,], nrow=6)
