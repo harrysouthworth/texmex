@@ -89,6 +89,16 @@ test.info.gpd <- function(){
     tol <- 0.01
 		checkEqualsNumeric(junk1$cov, solve(info.gpd(junk1)), tolerance=tol, msg=msg1)
 		checkEqualsNumeric(junk2$cov, solve(info.gpd(junk2)), tolerance=tol, msg=msg2)
+    
+  # check estimation when we have covariates
+    n <- 10000
+    x <- 1/runif(n)
+    y <- rexp(n,exp(2 + x))
+    data <- data.frame(x,y)
+
+    junk3 <- gpd(y,data=data,phi =~ x,th=0)
+    msg3 <- paste("info.gpd: t",i,"equality to numerical, covariates in phi",sep="")
+    checkEqualsNumeric(junk3$cov, solve(info.gpd(junk3)), tolerance=tol, msg=msg3)
   }
 }
 
