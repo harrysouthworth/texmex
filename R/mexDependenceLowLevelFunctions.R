@@ -36,8 +36,8 @@ PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v, aLow)
   } else {
     mu <- a * yex + m * yex^b
     sig <- s * yex^b
-			   
-    res <- sum(log(sig) + 0.5 * ((ydep - mu)/sig)^2)
+
+    res <- sum(0.5 * log(2*pi) + log(sig) + 0.5 * ((ydep - mu)/sig)^2)
     
     if (is.infinite(res)){
         if (res < 0){ 
