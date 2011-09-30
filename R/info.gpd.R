@@ -93,12 +93,18 @@ test.info.gpd <- function(){
   # check estimation when we have covariates
     n <- 10000
     x <- 1/runif(n)
-    y <- rexp(n,exp(2 + x))
-    data <- data.frame(x,y)
+    data <- data.frame(x=x,y=rexp(n,exp(2 + x)))
 
     junk3 <- gpd(y,data=data,phi =~ x,th=0)
     msg3 <- paste("info.gpd: t",i,"equality to numerical, covariates in phi",sep="")
     checkEqualsNumeric(junk3$cov, solve(info.gpd(junk3)), tolerance=tol, msg=msg3)
+    
+    x <- runif(n,-0.5,0.5)
+    data <- data.frame(x=x,y = rgpd(n,sigma = exp(3+2*x), xi=x))
+    
+    junk4 <- gpd(y,data=data,phi=~x, xi = ~ x,th=0)
+    msg4 <- paste("info.gpd: t",i,"equality to numerical, covariates in phi and xi",sep="")
+    checkEqualsNumeric(junk4$cov, solve(info.gpd(junk4)), tolerance=tol, msg=msg4)
   }
 }
 
