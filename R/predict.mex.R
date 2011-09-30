@@ -83,8 +83,9 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	        			    which = which )
 	    # bootRes contains the bootstrap simulated complete vectors X on the original 
       # scale of the data, conditional on having the _which_ component above the pqu quantile.
-	} # Close if (theClass == "bootmex"
-    else { bootRes <- NULL }
+	} else { 
+    bootRes <- NULL 
+  }
   
 	##########################################################################
 	# Get a sample using the point estimates of the parameters
