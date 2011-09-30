@@ -67,35 +67,37 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
             optimizer. Defaults to 0, indicating no trace.}
   \item{verbose}{Whether or not to keep the user informed of progress. Defaults
             to \code{verbose = FALSE}.}
-  \item{priorParameters}{A named list, each element of which contains two
+  \item{priorParameters}{Parameters of prior/penalty used for estimation of the 
+            GPD parameters.  This is only used if \code{penalty = 'gaussian'}.  
+            It is a named list, each element of which contains two
             components: the first should be a vector of length 2 corresponding
             to the location of the Gaussian distribution; the second should be 2
             by 2 matrix corresponding to the covariance of the distribution.
-            This is only used if \code{penalty = 'gaussian'}. The names should match
-            the names of the columns of \code{data}. If not provided, it defaults to
-            being centred at zero, with variance 10000 for log(sigma) and 0.25
-            for xi. See the details section.}
+            The names should match the names of the columns of \code{data}. 
+            If not provided, it defaults to being centred at zero, with 
+            variance 10000 for log(sigma) and 0.25 for xi. See the details section.}
   \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
-  the quantiles of the conditional distributions which will be plotted.}
-  \item{col}{The color for points on scatterplots of residuals and original data.
+            the quantiles of the conditional distributions which will be plotted.}
+  \item{col}{In \code{plot.mex}, the color for points on scatterplots of residuals and original data.
              In \code{plot.predict.mex}, the colours of points for observed and
              simulated data.}
   \item{x, object}{Object of class \code{mex} as returned by function \code{mex}.}
   \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning 
-  variable over which it will be thresholded. Defaults to \code{pqu = .99 }. }
+            variable over which it will be thresholded. Defaults to \code{pqu = .99 }. }
   \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations 
-  to be generated for each set of bootstrap parameter estimates. }
+            to be generated for each set of bootstrap parameter estimates. }
   \item{probs}{In \code{summary.predict.mex} the quantiles of the conditional 
-  distribution(s) to calculate.  Defaults to 5\%, 50\% and 95\%.}
-  \item{pch, cex}{Plotting characters, colours and symbol expansion. The
-       observed and simulated data are plotted using different symbols, conrolled
-       by these arguments and \code{col}, each of which should be of length 2.}
+            distribution(s) to calculate.  Defaults to 5\%, 50\% and 95\%.}
+  \item{pch, cex}{Plotting characters: colours and symbol expansion. The
+            observed and simulated data are plotted using different symbols, conrolled
+            by these arguments and \code{col}, each of which should be of length 2.}
   \item{ask}{Whether or not to ask before changing the plot. Defaults to
-        \code{ask = TRUE}.}
+            \code{ask = TRUE}.}
   \item{...}{Further arguments to be passed to methods.}
 }
 
-\details{The function \code{mex} works as follows. The parameters in the generalized Pareto distribution are estimated for
+\details{The function \code{mex} works as follows. The parameters in the generalized 
+         Pareto distribution are estimated for
          each column of the data in turn, independently of all other columns.
          Then, the conditional multivariate approach of Heffernan and Tawn is
          used to model the dependence between variables. The returned object is of class 'mex'.
@@ -116,18 +118,23 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
     of each variable given the conditioning variable.  A model that fits well will have good agreement between the
     distribution of the raw data (shown by the scatter plot) and the fitted quantiles.
 
-    The \code{predict} method for \code{mex} works as follows.
-         For each set of parameter estimates and normalized conditional Gumbel
-         data, simulated values of the dependent variables are created, given that the
-         conditioning variable is above its 100\code{pqu} quantile.  The returned object 
-         has class 'predict.mex'. The simulated values based on the actual data
+    The \code{predict} method for \code{mex} works as follows. The returned object 
+         has class 'predict.mex'. Simulated values of the dependent variables are created, 
+         given that the conditioning variable is above its 100\code{pqu} quantile.  
+         If \code{predict.mex} is passed an object \code{object} of class \code{"mex"} 
+         then the simulated values are based only on the point estimate of the dependence 
+         model parameters, and the original data.  If \code{predict.mex} is passed an object 
+         \code{object} of class \code{"bootmex"} then the returned value additionally 
+         contains simulated data corresponding to the bootstrap model parameter 
+         estimates.  In both cases, the simulated values based on the original data
          and point estimates appear in component \code{object$data$simulated}. The
-         simulated data from the bootstrap estimates appears in \code{object$replicates}.
+         simulated data from the bootstrap estimates appear in \code{object$replicates}.
+         
          There are \code{print}, \code{summary} and
          \code{plot} methods available for the class 'predict.mex'. The \code{plot} method displays both the original 
          data and the simulated data generated above the threshold for prediction; it 
          shows the threshold for prediction (vertical line) and also the curve joining equal quantiles 
-         of the marginal distributions -- this is for reference, since variables that 
+         of the marginal distributions -- this is for reference: variables that 
          are perfectly dependent will lie exactly on this curve.
 }
 
@@ -147,8 +154,14 @@ Harry Southworth, Janet E. Heffernan
 \examples{
 w <- mex(winter, mqu=.7)
 w
-par(mfcol=c(4, 2))
+par(mfcol=c(2, 2))
 plot(w)
+
+p <- predict(w)
+summary(p)
+p
+plot(p)
+
 }
 \keyword{ models }
 \keyword{ multivariate }
