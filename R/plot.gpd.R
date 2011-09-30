@@ -10,20 +10,27 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
     if (ncol(x$X.phi) == 1 && ncol(x$X.xi) == 1){
         ppgpd( x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
         qqgpd( x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
-        rl.gpd( x, main=main[3], xlab=xlab[3] )
+        rl.gpd( x, main=main[3], xlab=xlab[3], ... )
         hist.gpd( x, main=main[4], xlab=xlab[4] )
     }
     else { # Covariates in the model
-        sigma <- exp(coef(x)[1:ncol(x$X.phi)] %*% t(x$X.phi))
-        xi <- coef(x)[(ncol(x$X.phi) + 1):length(coef(x))] %*% t(x$X.xi)
-        y <- xi * (x$y - x$threshold) / sigma
-        y <- 1/xi * log(1 + y) # Standard exponential
-       
-        x$y <- y
+        fittedScale <- exp(coef(x)[1:ncol(x$X.phi)] %*% t(x$X.phi))
+        fittedShape <- coef(x)[(ncol(x$X.phi) + 1):length(coef(x))] %*% t(x$X.xi)
+        
+        x$y <- resid(x)
         x$threshold <- 0
         x$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
         ppgpd( x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
         qqgpd( x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
+        
+        if(ncol(x$X.phi) > 1){
+          plot(fittedScale,resid(x),main="Residuals vs Fitted Scale",xlab="Fitted scale",ylab="Residuals")
+          panel.smooth(fittedScale,resid(x))
+        }
+        if(ncol(x$X.xi) > 1){
+          plot(fittedShape,resid(x),main="Residuals vs Fitted Shape",xlab="Fitted shape",ylab="Residuals")
+          panel.smooth(fittedShape,resid(x))
+        }
     }
 
     invisible()
@@ -32,6 +39,8 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
 test.plot.gpd <- function(){
   par(mfrow=c(2,2))
   mod <- gpd(rain, th=30, penalty="none")
-  res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot","\nDensity Plot")))
+  res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),
+              c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot\n(SCALE IS DAYS NOT YEARS)","\nDensity Plot")), 
+              RetPeriodRange=c(3.65,365*10000))
   checkEquals(res,NULL,msg="plot.gpd: successful execution")
 } 
