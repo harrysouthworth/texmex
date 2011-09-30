@@ -145,12 +145,17 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   envelope. Therefore, if the number outside the envelope is a little more than
   alpha\%, that does not immediately imply a serious shortcoming of the fitted model.
 
-  When \code{method = "optimize"}, the \code{plot} function produces diagnostic plots for
-  the fitted generalized Pareto model. A PP-plot, QQ-plot,
-  histogram with superimposed generalized Pareto density estimate,
-  and a return level plot with confidence interval are produced.
+  When \code{method = "optimize"}, the \code{plot} function produces 
+  diagnostic plots for the fitted generalized Pareto model. These differ 
+  depending on whether or not there are covariates in the model.  If there 
+  are no covariates then the diagnostic plots are PP- and QQ-plots, a 
+  return level plot and a histogram of the data with superimposed generalized 
+  Pareto density estimate.  These are all calculated using the data on 
+  the original scale. If there are covariates in the model then the 
+  diagnostics consist of PP- and QQ- plots calculated by using the model 
+  residuals, and plots of residuals versus fitted model parameters.
   
-  The PP-plot and QQ-plot contain simulated pointwise confidence regions.
+  The PP- and QQ-plots show simulated pointwise tolerance regions.
   The region is a (1 - alpha)\% region based on \code{nsim} simulated
   samples.
 
@@ -169,17 +174,19 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   If \code{method = "simulate"}, the simulation is done by a Metropolis
   algorithm.
 
-  When plotting the object, if the chains have converged on the posterior distributions, the trace
-        plots should look like `fat hairy caterpillars' and their cumulative 
-        means should converge rapidly. Moreover, the autocorrelation functions
-        should converge quickly to zero.
+  When \code{method = "simulate"} the \code{plot} function produces 
+  diagnostic plots for the Markov chains used to simulate from the posterior 
+  distributions for the model parameters.  If the chains have converged on 
+  the posterior distributions, the trace plots should look like `fat hairy 
+  caterpillars' and their cumulative means should converge rapidly. Moreover, 
+  the autocorrelation functions should converge quickly to zero.
 
-  When printing or summarizing the object, 
-  posterior means and standard deviations are computed. Posterior means
-are also returned by the \code{coef} method. Depending on what you
-  want to do and what the posterior distributions look like (try using \code{plot.bgpd})
-  you might want to work with quantiles of the poseterior distributions instead.
-
+  When \code{method = "simulate"} the \code{print} and \code{summery} functions 
+  give posterior means and standard deviations. Posterior means are also 
+  returned by the \code{coef} method. Depending on what you want to do 
+  and what the posterior distributions look like (use \code{plot.bgpd})
+  you might want to work with quantiles of the poseterior distributions 
+  instead of relying on standard errors.
 }
 \value{
     If \code{method = "optimize"}, an object of class \code{gpd}.
@@ -188,37 +195,45 @@ are also returned by the \code{coef} method. Depending on what you
                        not the optimizer converged.}
     \item{message}{A message telling the user whether or not convergence
                    was achieved.}
-    \item{cov}{The estimated covariance of the parameters in the model.}
-    \item{se}{The estimated standard errors of the parameters in the model.}
     \item{threshold}{The threshold of the data above which the GPD model was fit.}
     \item{penalty}{The type of penalty function used, if any.}
     \item{coefficients}{The parameter estimates as computed under maximum
-               likelihood or maximum penalized likelihood.}
+                        likelihood or maximum penalized likelihood.}
     \item{rate}{The proportion of observations above the threshold.}
     \item{call}{The call to \code{gpd} that produced the object.}
-    \item{y}{The response data.}
+    \item{y}{The response data above the threshold for fitting.}
     \item{X.phi}{The design matrix for the log of the scale parameter.}
     \item{X.xi}{The design matrix for the shape parameter.}
+    \item{priorParameters}{See above.}
+    \item{data}{The response data (above and below the threshold for fitting).}
+    \item{residuals}{Data above the threshold for fitting after transformation 
+                     to standard exponential scale by using the fitted GPD.}
     \item{loglik}{The value of the optimized log-likelihood.}
+    \item{cov}{The estimated covariance of the parameters in the model.}
+    \item{se}{The estimated standard errors of the parameters in the model.}
+    
 
     If \code{method = "simulate"}, an object of class \code{bgpd}.
     \item{call}{The call to \code{gpd} that produced the object.}
     \item{threshold}{The threshold above which the model was fit.}
     \item{map}{The point estimates found by maximum penalized likelihood
                and which were used as the starting point for the Markov
-               chain.}
+               chain.  This is of class \code{gpd} and methods for this 
+               class (such as resid and plot) may be useful.}
     \item{burn}{The number of steps of the Markov chain that are to be 
                 treated as the burn-in and not used in inferences.}
     \item{thin}{The degree of thinning used.}
     \item{chains}{The entire Markov chain generated by the Metropolis
                   algorithm.}
-    \item{param}{The remainder of the chain after deleting the burn-in
-                 and applying any thinning.}
+    \item{y}{The response data above the threshold for fitting.}  
+    \item{data}{The response data (above and below the threshold for fitting).}
     \item{X.phi}{The design matrix for the log of the scale parameter.}
     \item{X.xi}{The design matrix for the log of the shape parameter.}
     \item{acceptance}{The proportion of proposals that were accepted by
                       the Metropolis algorithm.}
     \item{seed}{The seed used by the random number generator.}
+    \item{param}{The remainder of the chain after deleting the burn-in
+                 and applying any thinning.}
 
 }
 
@@ -234,6 +249,12 @@ are also returned by the \code{coef} method. Depending on what you
   mod
   par(mfrow=c(2, 2))
   plot(mod)
+  
+  x <- runif(100,-0.5,0.5)
+  data <- data.frame(x=x,y=rgpd(n,sigma=exp(3 + 2*x),xi=x))
+  mod <- gpd(y, data, phi = ~x, xi = ~x, th = 0)
+  plot(mod)
+  
 # Following lines commented out to keep CRAN robots happy
 #  mod <- gpd(x, qu=.7, method="sim")
 #  mod
