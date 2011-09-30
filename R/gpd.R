@@ -154,6 +154,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     o$coefficients <- o$par
     names(o$coefficients) <- c(paste("phi:", colnames(X.phi)), 
                                paste("xi:", colnames(X.xi)))
+
     o$par <- NULL
     o$rate <- rate
     o$call <- theCall
@@ -165,6 +166,11 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         data <- NULL
     }
     o$data <- data
+                     
+    fittedScale <- exp(o$coefficients[1:ncol(o$X.phi)] %*% t(o$X.phi))
+    fittedShape <- o$coefficients[(ncol(o$X.phi) + 1):length(o$coefficients)] %*% t(o$X.xi)
+    scaledY <- fittedShape * (o$y - o$threshold) / fittedScale
+    o$residuals <- 1/fittedShape * log(1 + scaledY) # Standard exponential
 
     o$loglik <- -o$value
     o$value <- NULL
