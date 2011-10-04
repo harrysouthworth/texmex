@@ -4,6 +4,10 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",constrain=TRU
 
 	theCall <- match.call()
 
+  if(is.null(colnames(data))){
+    colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")
+  }
+  
 	if (missing(which)){
 		which <- colnames(data)[1]
 		cat("which not given. Conditioning on", which, "\n")
@@ -42,7 +46,7 @@ print.mex <- function(x, ...){
 	print(x$call, ...)
 	cat("\n\nMarginal models:\n")
     summary(x[[1]])
-    cat("\nDependence model:\n")
+    cat("\nDependence model:\n\n")
     print(x[[2]])
     invisible()
 }
