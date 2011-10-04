@@ -3,6 +3,9 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
    trace = 0, verbose=FALSE, priorParameters = NULL)
 {
    theCall <- match.call()
+   if(is.null(colnames(data))){
+    colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")
+  }
    d <- dim(data)[2]
    if (missing(mth) & missing(mqu))
        stop("you must provide one of mth or mqu")
