@@ -2,6 +2,7 @@
 \alias{validate.texmex}
 \alias{test.gpd}
 \alias{test.mex}
+\alias{test.bootgpd}
 \alias{test.bootmex}
 \alias{test.gpdRangeFit}
 \alias{test.MCS}
