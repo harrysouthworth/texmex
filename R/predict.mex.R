@@ -12,11 +12,13 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
       which <- object$which
       migpd <- object$simpleMar
       margins <- object$margins
-      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins )
+      constrain <- object$constrain
+      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins, constrain=constrain )
   } else {
-      which <- object[[2]]$which
-      migpd <- object[[1]]
-      margins <- object[[2]]$margins
+      which <- object$dependence$which
+      migpd <- object$margins
+      margins <- object$dependence$margins
+      constrain <- object$dependence$constrain
       dall <- object
   }
 	
@@ -115,8 +117,8 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 
 test.predict.mex <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
-  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel")
-  wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel")
+  smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel",constrain=FALSE)
+  wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel",constrain=FALSE)
 
   NOmodWinter <- bootmex(wmarmod)
   NOpredWinter <- predict(NOmodWinter, nsim = 500) # matches sample size in H+T2004
@@ -142,6 +144,7 @@ test.predict.mex <- function(){
   pointEstWinter <- apply(NOpredWinter$data$sim,2,mean)
 
   tol <- 0.05
+
   checkEqualsNumeric(Table5summer, resSummer,tol=tol,msg="predict.mex: Table 5 summer data")
   checkEqualsNumeric(Table5winter, resWinter,tol=tol,msg="predict.mex: Table 5 winter data")
   
@@ -160,4 +163,33 @@ test.predict.mex <- function(){
   checkEqualsNumeric(dim(wavesurge.pred$replicates[[3]]),c(nsim,2))
   checkEquals(names(wavesurge.pred$replicates[[4]]),names(wavesurge),msg="predict.mex execution for 2-d data")
   
+# check predictions Laplace estimation equal to Gumbel for large samples and high threshold
+
+  tol <- 0.01
+  seeds <- 20:24
+  set.seed(20111004)
+  n <- 100000
+  mqu <- c(0,0.9)
+  dqu <- 0.99
+  for(i in 1:5){
+  
+    cat("\n\n",i,"\n")
+    x <- rgpd(n=n,sigma=1,xi=0.1)
+    y <- 5 + rexp(1,5)*x + rnorm(n,0,x/max(x))
+    data <- data.frame(x=x,y=y)
+
+    data.gpd <- migpd(data , mqu=mqu, penalty="none")
+    lap.mex <- mexDependence(data.gpd,which=1, dqu=dqu,start=c(-0.1,0.1),PlotLikDo=FALSE,v=20)
+    gum.mex <- mex(data,mqu=c(0,0.9),which=1, dqu=dqu,margins="gumbel",constrain=FALSE)
+
+    set.seed(seeds[i])
+    lap.pred <- predict(lap.mex,nsim=10000)
+    set.seed(seeds[i])
+    gum.pred <- predict(gum.mex,nsim=10000)
+
+    lap.ans <- summary(lap.pred)$ans
+    gum.ans <- summary(gum.pred)$ans
+    
+    checkEqualsNumeric(lap.ans,gum.ans,tol=tol,msg=paste("predict.mex Laplace predictions equal to Gumbel, test replicate",i))
   }
+}
