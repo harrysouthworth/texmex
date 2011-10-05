@@ -14,12 +14,13 @@
 dgpd(x, sigma, xi, u = 0, log.d = FALSE)
 pgpd(q, sigma, xi, u = 0, lower.tail = TRUE, log.p = FALSE)
 qgpd(p, sigma, xi, u = 0, lower.tail = TRUE, log.p = FALSE)
-qgpd2(p, sigma, xi, u = 0, la = 1)
+qgpd2(N, sigma = 1, xi = 1, u = 0, la = 1)
 rgpd(n, sigma, xi, u = 0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{x, q, p}{ Value or quantile. }
+  \item{N}{ Number of observations corresponding to N-observation return level to be calculated.}
   \item{n}{ Number of random numbers to simulate.}
   \item{sigma}{ Scale parameter. }
   \item{xi}{ Shape parameter. }
