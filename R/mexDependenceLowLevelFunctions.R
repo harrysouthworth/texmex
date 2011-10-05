@@ -22,7 +22,7 @@ ConstraintsAreSatisfied <- function(a,b,z,zpos,zneg,v){
        warning("Strayed into impossible area of parameter space")
        C1e <- C1o <- C2e <- C2o <- FALSE
    }
-   
+
    (C1e | C1o) && (C2e | C2o)
 }
 
@@ -30,7 +30,7 @@ ConstraintsAreSatisfied <- function(a,b,z,zpos,zneg,v){
 PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v, aLow) {
   BigNumber <- 10^40
   WeeNumber <- 10^(-10)
-  
+
   if(a < aLow[1] | s < WeeNumber | a > 1-WeeNumber  | b > 1-WeeNumber) {
     res <- BigNumber
   } else {
@@ -38,7 +38,7 @@ PosGumb.Laplace.negloglik <- function(yex, ydep, a, b, m, s, constrain, v, aLow)
     sig <- s * yex^b
 
     res <- sum(0.5 * log(2*pi) + log(sig) + 0.5 * ((ydep - mu)/sig)^2)
-    
+
     if (is.infinite(res)){
         if (res < 0){ 
           res <- -BigNumber 
@@ -65,7 +65,7 @@ PosGumb.Laplace.negProfileLogLik <- function(yex, ydep, a, b, constrain, v, aLow
 
   m <- mean(Z)
   s <- sd(Z)
-    
+
   res <- PosGumb.Laplace.negloglik(yex,ydep,a,b,m=m,s=s,constrain,v,aLow=aLow)
   res <- list(profLik=res,m=m, s=s)
   res
