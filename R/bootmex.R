@@ -51,6 +51,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
     ans$R <- R
     ans$simpleMar <- mar
     ans$margins <- margins
+    ans$constrain <- constrain
 
     innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, constrain, v=v,
         pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
@@ -154,8 +155,8 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="bootmex: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="bootmex: size of bootstrap data set")
 
-  smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel")
-  wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel")
+  smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel",constrain=FALSE)
+  wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel",constrain=FALSE)
 
   mySboot <- bootmex(smexmod, R=R)
   myWboot <- bootmex(wmexmod, R=R)
