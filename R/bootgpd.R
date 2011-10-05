@@ -27,6 +27,13 @@ bootgpd <- function(x, R=100, trace=10){
 
     res <- t(sapply(1:R, bfun, xi=xi, phi=phi, X.phi=x$X.phi, X.xi=x$X.xi, co=coef(x), pp=pp, prior=x$penalty))
 
+    se <- apply(res, 2, sd)
+    b <- apply(res, 2, mean) - coef(x)
+
+    if (any(abs(b/se) > .25)){
+        warning("Ratio of bias to standard error is high")
+    }
+
     res <- list(call=theCall, replicates=res, original=coef(x))
 
     oldClass(res) <- "bootgpd"
@@ -43,6 +50,9 @@ print.bootgpd <- function(x, ...){
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
     #colnames(res) <- names(summary(rnorm(3)))
     print(res, ...)
+    if (any(abs(res[3,] / res[4,]) > .25)){
+        warning("Ratio of bias to standard error is high")
+    }
     invisible(res)
 }
 
@@ -54,18 +64,22 @@ summary.bootgpd <- function(object, ...){
     res <- rbind(object$original, means, bias, sds, medians)
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
 
+    if (any(abs(res[3,] / res[4,]) > .25)){
+        warning("Ratio of bias to standard error is high")
+    }
+
 	covs <- var(object$replicates)
 	res <- list(call = object$call, margins=res, covariance=covs)
 	oldClass(res) <- "summary.bootgpd"
-  res
+    res
 }
 
 print.summary.bootgpd <- function(x, ...){
 	print(x$call)
 	print(x$margins)
 	cat("\nCorrelation:\n")
-  print(cov2cor(x$covariance))
-  invisible()
+    print(cov2cor(x$covariance))
+    invisible()
 }
 
 plot.bootgpd <- function(x, col="blue", border=FALSE, ...){
@@ -94,17 +108,21 @@ test.bootgpd <- function(){
     rainrep <- rainboot$replicates
     rainrep[,1] <- exp(rainrep[, 1])
     bse <- apply(rainrep, 2, sd)
-    checkEqualsNumeric(cse,bse,tol=0.1,
-              msg="bootgpd: rain se's matches Coles")
+    checkTrue(abs(cse[1] - bse[1]) < cse[1] / 10,
+              msg="bootgpd: rain se(sigma) matches Coles")
+    checkTrue(abs(cse[2] - bse[2]) < cse[2] / 10,
+              msg="bootgpd: rain se(xi) matches Coles")
 
-    # Check bootstrap medians are close to poitn estimates (the MLEs are
+    # Check bootstrap medians are close to point estimates (the MLEs are
     # biased and the distribution of sigma in particular is skewed, so use
     # medians, not means, and allow a little leeway
     
     best <- apply(rainrep, 2, median)
     cest <- coef(raingpd); cest[1] <- exp(cest[1])
-    checkEqualsNumeric(best,cest,tol=0.1,
-              msg="bootgpd: rain medians of sigma amd xi match point estimate")
+    checkTrue(abs(cest[1] - best[1]) < cest[1] / 10,
+              msg="bootgpd: rain median of sigma matches point estimate")
+    checkTrue(abs(cest[2] - best[2]) < cest[2] / 10,
+              msg="bootgpd: rain medians of xi matches point estimate")
 
     ##################################################################
     # Do some checks for models with covariates. Due to apparent instability
