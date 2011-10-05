@@ -1,0 +1,29 @@
+---------------------------------- Version 1.1 ----------------------------------
+
+This version fixes a few bugs and adds parametric bootstrap functionality for
+gpd modelling.
+
+Changes from version 1.0:
+
+1. bootgpd and methods added.
+2. gpd was not passing 'start' through to gpd.fit. Fixed.
+3. Rationalized summary.gpd and its methods into a single script (no impact).
+4. summary.gpd did the wrong simulation when covariates were in the model. Fixed.
+5. Bug in qqgpd caused x and y values to be reversed. The y-axis is scaled to 
+   accomodate the simulated envelope and this meant that outliers could be
+   excluded from the plot. Fixed.
+6. print.summary.predict.mex was showing too many decimal places. Fixed
+7. validate.texmex failed on Windows due to / in file path (all tests still
+   passed if executed individually). Fixed.
+
+---------------------------------- Version 1.2 ------------------------------------
+Changes from version 1.1:
+
+1. rl.gpd had a bug in the way it computed standard errors. Fixed.
+2. Original Heffernan-Tawn methodology used Gumbel marginal distributions.
+   Keef-Tawn-Papastathopoulos modified this to Laplace margins and identified 
+   constraints that keep the model physically plausible. The modified and
+   constrained approach is implemented and is now the default.
+3. Diagnostic plot of constrained error surface added.
+4. New diagnostic plots for GPD models when there are covariates.
+5. A returned gpd object now has residuals attached.
