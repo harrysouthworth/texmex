@@ -345,25 +345,27 @@ jhWdepPM10 <- matrix(c(
   pairs <- as.matrix(pairs[pairs[,1] != pairs[,2], 2:1])
   margins <- casefold("laplace")
   marTransform <- "mixture"
-  Dthresh <- 1
+  Dthresh <- c(1,2,2.5)
   Mquant <- 0.7
   v <- 10
   k <- 5
 
-  HTSest <- KTPest <- matrix(0,ncol=2,nrow=dim(pairs)[1])
+  for(dth in Dthresh){
+    HTSest <- KTPest <- matrix(0,ncol=2,nrow=dim(pairs)[1])
 
-  for(i in 1:dim(pairs)[1]){
-    mar.model <- migpd(winter[,pairs[i,]],mqu=Mquant,penalty="none")
-    mar.trans <- mexTransform(mar.model,margins=margins,method=marTransform)
-    X <- list(mar.trans$transformed)
-    Dqu <- 1 - mean(mar.trans$transformed[,1] > Dthresh)
-    init <- initial_posneg(D=1,listdata=X,u=Dthresh,v=v) 
-    a <- estimate_HT_KPT_joint_posneg_nm(pars=init,x=Dthresh,listr=X,params=FALSE,k=k,v=v)
-    KTPest[i,] <- a$par
-    b <- mexDependence(mar.trans,which=1,dqu=Dqu,margins=margins,constrain=TRUE,v=v,
-                      marTransform=marTransform,start=init,nOptim=k)
-    HTSest[i,] <- coef(b)$dependence[1:2]
+    for(i in 1:dim(pairs)[1]){
+      mar.model <- migpd(winter[,pairs[i,]],mqu=Mquant,penalty="none")
+      mar.trans <- mexTransform(mar.model,margins=margins,method=marTransform)
+      X <- list(mar.trans$transformed)
+      Dqu <- 1 - mean(mar.trans$transformed[,1] > dth)
+      init <- initial_posneg(D=1,listdata=X,u=dth,v=v) 
+      a <- estimate_HT_KPT_joint_posneg_nm(pars=init,x=dth,listr=X,params=FALSE,k=k,v=v)
+      KTPest[i,] <- a$par
+      b <- mexDependence(mar.trans,which=1,dqu=Dqu,margins=margins,constrain=TRUE,v=v,
+                         marTransform=marTransform,start=init,nOptim=k)
+      HTSest[i,] <- coef(b)$dependence[1:2]
+    }
+
+   checkEqualsNumeric(KTPest,HTSest,tol=tol,mesg=paste("mexDependence: constrained estimation threshold",i))
   }
-
-  checkEqualsNumeric(KTPest,HTSest,tol=tol,mesg="mexDependence: constrained estimation")
 }
