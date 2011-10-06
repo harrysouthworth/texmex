@@ -6,12 +6,7 @@ function( object , nsim = 1000 , alpha = .050, ... ){
     }
     else {
         x <- object
-        sigma <- exp(coef(x)[1:ncol(x$X.phi)] %*% t(x$X.phi))
-        xi <- coef(x)[(ncol(x$X.phi) + 1):length(coef(x))] %*% t(x$X.xi)
-        y <- xi * (x$y - x$threshold) / sigma
-        y <- 1/xi * log(1 + y) # Standard exponential
-       
-        x$y <- y
+        x$y <- object$residuals # Standard exponential if GPD model true
         x$threshold <- 0
         x$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
 
