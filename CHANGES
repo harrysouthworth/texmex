@@ -24,6 +24,8 @@ Changes from version 1.1:
    Keef-Tawn-Papastathopoulos modified this to Laplace margins and identified 
    constraints that keep the model physically plausible. The modified and
    constrained approach is implemented and is now the default.
-3. Diagnostic plot of constrained error surface added.
-4. New diagnostic plots for GPD models when there are covariates.
+3. Diagnostic plot of constrained Profile Log-likelihood surface added, to 
+   help users check for convergence to mle on constrained parameter space.
+4. New diagnostic plots for GPD models when there are covariates, as 
+   part of the plot method for a gpd object.
 5. A returned gpd object now has residuals attached.
