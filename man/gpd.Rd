@@ -250,7 +250,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   par(mfrow=c(2, 2))
   plot(mod)
   
-  x <- runif(100,-0.5,0.5)
+  x <- runif(100,-0.2,0.2)
   data <- data.frame(x=x,y=rgpd(100,sigma=exp(3 + 2*x),xi=x))
   mod <- gpd(y, data, phi = ~x, xi = ~x, th = 0)
   plot(mod)
