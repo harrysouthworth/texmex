@@ -6,7 +6,14 @@
    dep <- x[[2]]
    z <- dep$Z
    n <- dim(z)[1]
-
+   xmax <- max(mar$data[,dep$which])
+   sig <- coef(mar)[3,dep$which]
+   xi <- coef(mar)[4,dep$which]
+   marThr <- mar$mth[dep$which]
+   marP   <- mar$mqu[dep$which]
+   if(xi < 0) upperEnd <- marThr - sig/xi
+   len <- 1001
+   
    for(i in 1:(dim(z)[2])){
       p <- seq(dep$dqu,1-1/n,length=n)
       plot(p,z[,i],xlab=paste("F(",dep$conditioningVariable,")",sep=""),
@@ -15,17 +22,7 @@
       plot(p,abs(z[,i] - mean(z[,i])),xlab=paste("F(",dep$conditioningVariable,")",sep=""),
            ylab=paste("|Z - mean(Z)|   ",colnames(z)[i]," | ",dep$conditioningVariable,sep=""),col=col,...)
       lines(lowess(p,abs(z[,i] - mean(z[,i]))),col="blue")
-   }
 
-   xmax <- max(mar$data[,dep$which])
-   sig <- coef(mar)[3,dep$which]
-   xi <- coef(mar)[4,dep$which]
-   marThr <- mar$mth[dep$which]
-   marP   <- mar$mqu[dep$which]
-   if(xi < 0) upperEnd <- marThr - sig/xi
-   len <- 1001
-
-  for(i in 1:(dim(z)[2])){
       depThr <- c(quantile(mar$data[,dep$which],dep$dqu))
       d <- xmax-depThr
       xlim <- c(depThr-0.1*d, depThr + 1.5*d)
@@ -80,20 +77,20 @@ myWdep4.lap <- mexDependence(wmarmod,which=4, dqu=0.8)
 mySdep5.lap <- mexDependence(smarmod,which=5, dqu=0.85)
 myWdep5.lap <- mexDependence(wmarmod,which=5, dqu=0.9)
 
-mySdep1.gum <- mexDependence(smarmod,which=1, dqu=0.7, margins = "gumbel")
-myWdep1.gum <- mexDependence(wmarmod,which=1, dqu=0.75, margins = "gumbel")
-mySdep2.gum <- mexDependence(smarmod,which=2, dqu=0.8, margins = "gumbel")
-myWdep2.gum <- mexDependence(wmarmod,which=2, dqu=0.85, margins = "gumbel")
-mySdep3.gum <- mexDependence(smarmod,which=3, dqu=0.9, margins = "gumbel")
-myWdep3.gum <- mexDependence(wmarmod,which=3, dqu=0.7, margins = "gumbel")
-mySdep4.gum <- mexDependence(smarmod,which=4, dqu=0.75, margins = "gumbel")
-myWdep4.gum <- mexDependence(wmarmod,which=4, dqu=0.8, margins = "gumbel")
-mySdep5.gum <- mexDependence(smarmod,which=5, dqu=0.85, margins = "gumbel")
-myWdep5.gum <- mexDependence(wmarmod,which=5, dqu=0.9, margins = "gumbel")
+mySdep1.gum <- mexDependence(smarmod,which=1, dqu=0.7, margins = "gumbel",constrain=FALSE)
+myWdep1.gum <- mexDependence(wmarmod,which=1, dqu=0.75, margins = "gumbel",constrain=FALSE)
+mySdep2.gum <- mexDependence(smarmod,which=2, dqu=0.8, margins = "gumbel",constrain=FALSE)
+myWdep2.gum <- mexDependence(wmarmod,which=2, dqu=0.85, margins = "gumbel",constrain=FALSE)
+mySdep3.gum <- mexDependence(smarmod,which=3, dqu=0.9, margins = "gumbel",constrain=FALSE)
+myWdep3.gum <- mexDependence(wmarmod,which=3, dqu=0.7, margins = "gumbel",constrain=FALSE)
+mySdep4.gum <- mexDependence(smarmod,which=4, dqu=0.75, margins = "gumbel",constrain=FALSE)
+myWdep4.gum <- mexDependence(wmarmod,which=4, dqu=0.8, margins = "gumbel",constrain=FALSE)
+mySdep5.gum <- mexDependence(smarmod,which=5, dqu=0.85, margins = "gumbel",constrain=FALSE)
+myWdep5.gum <- mexDependence(wmarmod,which=5, dqu=0.9, margins = "gumbel",constrain=FALSE)
 
 
 # check plots produced for variety of thresholds and parameter combinations
-par(mfrow=c(3,4),pty="m")
+par(mfcol=c(3,4),pty="m")
 plot(mySdep1.gum,main=paste("Summer\nfitting quantile =",mySdep1.gum$dependence$dqu,"\nGumbel margins"))
 plot(myWdep1.gum,main=paste("Winter\nfitting quantile =",myWdep1.gum$dependence$dqu,"\nGumbel margins"))
 plot(mySdep2.gum,main=paste("Summer\nfitting quantile =",mySdep2.gum$dependence$dqu,"\nGumbel margins"))
@@ -124,7 +121,7 @@ options(op)
    
 # check execution for 2-d data
 wavesurge.fit <- migpd(wavesurge,mqu=0.8)
-wavesurge.mex <- mexDependence(wavesurge.fit,dqu=0.8,which=2,margins="gumbel")
+wavesurge.mex <- mexDependence(wavesurge.fit,dqu=0.8,which=2,margins="gumbel",constrain=FALSE)
 par(mfrow=c(2,2))
 res <- plot(wavesurge.mex,main="Wave surge data")
 checkEquals(res,NULL,msg = "plot.mex: successful execution")
