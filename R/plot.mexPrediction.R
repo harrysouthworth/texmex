@@ -38,7 +38,7 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 
 test.plot.predict.mex <- function(){
 # check reproduce Figure 6 in Heffernan and Tawn
-  w <- mex(winter,mqu=0.7,penalty="none", wh="NO", dqu=.7, margins="gumbel")
+  w <- mex(winter,mqu=0.7,penalty="none", wh="NO", dqu=.7, margins="gumbel", constrain=FALSE)
   noMod <- bootmex(w)  
   noPred <- predict(noMod)
   par(mfcol=c(2,2))
