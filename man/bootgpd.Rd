@@ -18,26 +18,25 @@ Parametric bootstrap for generalized Pareto models with or without covariates
 %- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{x}{An object of class \code{'gpd'}}
-\item{R}{ The number of replicates to run. Defaults to \code{R = 100}.}
+\item{R}{ The number of replicates to simulate. Defaults to \code{R = 100}.}
 \item{trace}{Report progress to the user every \code{trace} replicates. Defaults to \code{trace = 10}.}
 \item{col}{Colour of histogram bars}
 \item{border}{Whether or not to draw borders between histogram bars}
-\item{...}{Further arguments to plot commands.}
+\item{...}{Further arguments to \code{plot} method.}
 }
 \details{
-The design matrices for phi and xi are held intact and random numbers are
-generated as the bootstrap response variable. Especially for small sample sizes,
+The design matrices for phi and xi are held fixed and random deviates from the fitted GPD corresponding to these design matrices are generated. Especially for small sample sizes,
 non-parameteric bootstrapping of GPD models can result in unreasonable
 distributions (such as bimodal)
 due to small numbers of observed extreme values having considerable
 influence on parameter estimates in a minority of samples. Therefore,
 only parametric bootstrapping is implemented here.
 
-The print method returns the original point estimates, bootstrap means,
+The \code{print} method returns the original point estimates, bootstrap means,
 bootstrap estimates of bias and standard deviation. The bootstrap
 median is also returned. 
 
-The summary method returns the same as the print method, but also the
+The \code{summary} method returns the same as the \code{print} method, but also the
 bootstrap estimate of the covariance of the parameters. When printed,
 the correlation (not covariance) is displayed. The covariance might
 be wanted to pass into \code{gpd} using \code{method = "simulate"}. In
@@ -47,7 +46,7 @@ using a proposal distribution that is too narrow. This shows up as the
 acceptance rate of the algorithm being too high (above about 45\%).
 Then, using a bootstrap estimate might be preferable.
 
-The plot method displays histograms and kernel density estimates.
+The \code{plot} method displays histograms and kernel density estimates.
 }
 \value{
   \item{call}{The function call}

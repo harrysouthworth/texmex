@@ -19,7 +19,7 @@ rgpd(n, sigma, xi, u = 0)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
-  \item{x, q, p}{ Value or quantile. }
+  \item{x, q, p}{ Value, quantile or probability respectively. }
   \item{N}{ Number of observations corresponding to N-observation return level to be calculated.}
   \item{n}{ Number of random numbers to simulate.}
   \item{sigma}{ Scale parameter. }
@@ -34,8 +34,7 @@ rgpd(n, sigma, xi, u = 0)
   appears in the \code{ismev} package. The functions have been vectorized and
   tested.
 
-  \code{qgpd2} is used internally by \code{rl.plot} and is unlikely to be
-  needed for any other reason.
+  \code{qgpd2} is used internally by \code{rl.plot} and is not intended for direct call by the user.
 
   Random number generation is done by inversion of the distribution function.
   Code written by Harry Southworth.

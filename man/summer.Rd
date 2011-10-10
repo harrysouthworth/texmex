@@ -4,11 +4,11 @@
 \title{ Air pollution data, summer months. }
 \description{
  Air pollution data from Leeds (U.K.) city centre, collected from 1994
-to 1998. The \code{winter} data set corresponds to the months
+to 1998. The \code{summer} data set corresponds to the months
 of April to July inclusive. Some outliers have been
 removed, as discussed by Heffernan and Tawn, 2004.
 }
-\usage{data(winter)}
+\usage{data(summer)}
 \format{
   A data frame with 578 observations on the following 5 variables.
   \describe{
@@ -27,6 +27,6 @@ http://www.blackwellpublishing.com/rss/Readmefiles/heffernan.htm
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
 \examples{
-data(winter)
+data(summer)
 }
 \keyword{datasets}

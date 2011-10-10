@@ -35,7 +35,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{which}{Which plot to do: 1 results in a plot of chi, 2 in a 
                plot of chi bar. Defaults to \code{which = 1:2}.}
   \item{lty, cilty, col, cicol}{Line types and colours for the the
-               estimated quantities and thier confidence intervals.}
+               estimated quantities and their confidence intervals.}
   \item{xlim, ylim1, ylim2}{Limits for the axes.}
   \item{main1, main2}{Main titles for the plots.}
   \item{xlab, ylab1, ylab2}{Axis labels for the plots.}

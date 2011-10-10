@@ -64,7 +64,7 @@ inv_Laplace(p)
 \item{alpha}{Control nominal coverage of condfidence intervals. Defaults to \code{alpha = 0.05}.}
 \item{nsim}{Number of simulated datasets to use in computing confidence intervals.}
 \item{plot}{Whether or not to plot the result.}
-\item{u}{Uniform numbers to be converted to GPD numbers.}
+\item{u}{Uniform deviates to be converted to GPD deviates.}
 \item{p, th, qu, sigma, xi}{Paramters of GPD distribution.}
 \item{method}{Argument to \code{mexTransform}: how to convert. When \code{method = 'mixture'}, the upper tail of the
     distribution is modelled using a generalized Pareto distribution and the remainder
@@ -95,8 +95,10 @@ The plotting functions are used internally by \code{\link{plot.gpd}}.
 
 Some of the code is based on code that appears in the \code{ismev} package,
 originally written by Stuart Coles. 
+
+Code to carry out estimation of H+T2004 under Laplace margins and constrained estimation was written by Yiannis Papastathopoulos, and is used here for validation purposes.
 }
-\author{Harry Southworth, Janet E. Heffernan}
+\author{Harry Southworth, Janet E. Heffernan, Yiannis Papastathopoulos.}
 
 
 

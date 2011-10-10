@@ -34,7 +34,7 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
 
 \arguments{
   \item{data}{A numeric matrix or data.frame, the columns of which are to be modelled.}
-  \item{which}{The variable on which to condition.}
+  \item{which}{The variable on which to condition.  This can be either scalar, indicating the column number of the conditioning variable, or character, giving the column name of the conditioning variable.}
   \item{mth}{In \code{mex}, the threshold above which to fit generalized Pareto distributions.
             If this is a vector of length 1, the same threshold will be used for
             each variable. Otherwise, it should be a vector whose length is
@@ -42,18 +42,17 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
 
             In \code{summary.predict.mex}, the thresholds over which to simulate
             data from the fitted multivariate model. If not supplied, it is
-            taken to be the thresholds that were used to fit the model on the
+            taken to be the thresholds that were used to fit the dependence model on the
             scale of the original data.}
   \item{mqu}{As an alternative to specifying the thresholds via mth, you can
             specify the quantile above which to fit generalized Pareto
             distributions. If this is a vector of length 1, the same quantile
             will be used for each variable. Otherwise, it should be a vector
             whose length is equal to the number of columns in data.}
-  \item{dth}{The threshold to use on the transformed scale; that is, the
-            threshold to use when estimating the dependence structure. The same
-            threshold will be used for each variable.}
+  \item{dth}{The threshold to use for estimating the dependence model, specified on the transformed (Laplace or Gumbel) scale. The same
+            threshold will be used for each variable.  Note that there is no requirement for the thresholds used for marginal fitting (\code{mth}) and dependence fitting (\code{dth}) to be the same, or for them to be ordered in any way.}
   \item{dqu}{As an alternative to \code{dth}, specify the quantile at which to
-            threshold the transformed data when estimating the dependence
+            threshold the data when estimating the dependence
             parameters.}
   \item{margins}{See documentation for \code{\link{mexDependence}}.}
   \item{constrain}{See documentation for \code{\link{mexDependence}}.}
@@ -62,7 +61,7 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
             generalized Pareto distributions. Defaults to ``gaussian''. See the
             help file for \code{\link{gpd}} for more information.}
   \item{maxit}{The maximum number of iterations to be used by the optimizer.
-            defaults to \code{maxit = 1000}.}
+            defaults to \code{maxit = 10000}.}
   \item{trace}{Whether or not to inform the user of the progress of the
             optimizer. Defaults to 0, indicating no trace.}
   \item{verbose}{Whether or not to keep the user informed of progress. Defaults
@@ -78,15 +77,15 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
             variance 10000 for log(sigma) and 0.25 for xi. See the details section.}
   \item{quantiles}{A vector of quantiles taking values between 0 and 1 specifying 
             the quantiles of the conditional distributions which will be plotted.}
-  \item{col}{In \code{plot.mex}, the color for points on scatterplots of residuals and original data.
-             In \code{plot.predict.mex}, the colours of points for observed and
+  \item{col}{In \code{plot} method for objects of class \code{mex}, the color for points on scatterplots of residuals and original data respectively.
+             In \code{plot} method for objects of class \code{predict.mex}, the colours of points for observed and
              simulated data.}
   \item{x, object}{Object of class \code{mex} as returned by function \code{mex}.}
-  \item{pqu}{Argument to \code{predict.mex}. The quantile of the conditioning 
-            variable over which it will be thresholded. Defaults to \code{pqu = .99 }. }
-  \item{nsim}{Argument to \code{predict.mex}. The number of simulated observations 
-            to be generated for each set of bootstrap parameter estimates. }
-  \item{probs}{In \code{summary.predict.mex} the quantiles of the conditional 
+  \item{pqu}{Argument to \code{predict} method. The quantile of the conditioning 
+            variable over which it will be thresholded for prediction. Defaults to \code{pqu = .99 }. }
+  \item{nsim}{Argument to \code{predict} method. The number of simulated observations 
+            to be generated for prediction. }
+  \item{probs}{In \code{summary} method for objects of class \code{predict.mex}: the quantiles of the conditional 
             distribution(s) to calculate.  Defaults to 5\%, 50\% and 95\%.}
   \item{pch, cex}{Plotting characters: colours and symbol expansion. The
             observed and simulated data are plotted using different symbols, conrolled
@@ -96,23 +95,21 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
   \item{...}{Further arguments to be passed to methods.}
 }
 
-\details{The function \code{mex} works as follows. The parameters in the generalized 
-         Pareto distribution are estimated for
+\details{The function \code{mex} works as follows. First, Generalized Pareto distributions (GPD) are fitted to the upper tails of each of the marginal distributions of the data: the GPD parameters are estimated for
          each column of the data in turn, independently of all other columns.
          Then, the conditional multivariate approach of Heffernan and Tawn is
          used to model the dependence between variables. The returned object is of class 'mex'.
+         
+         This function is a wrapper for calls to \code{\link{migpd}} and \code{\link{mexDependence}}, which estimate parameters of the marginal and dependence components of the Heffernan and Tawn model respectively.  See documentation of these functions for details of modelling issues including threshold choice and checking for convergence of parameter estimates.
 
-     The \code{plot} method produces diagnostic plots for the fitted dependence model described by Heffernan and Tawn, 2004.
+     The \code{plot} method produces diagnostic plots for the fitted dependence model described by Heffernan and Tawn, 2004.  The plots are best viewed by using the plotting area split by \code{par(mfcol=c(.,.))} rather than \code{mfrow}, see examples below.
     
     Scatterplots of the residuals Z from the fitted model of Heffernan and Tawn (2004) are 
     plotted against the quantile of the conditioning variable, with a lowess curve showing the local 
-    mean of these points.  Any trend in the location of these variables with the conditioning variable
-    indicates a violation of the model assumption that the residuals Z are indpenendent of the conditioning
-    variable.
-    
-    The absolute value of Z-mean(Z) is also plotted, again with the lowess curve showing 
-    the local mean of these points.  These plots are intended to highlight any trend between the 
-    variability of the residuals Z and the conditioning variable.
+    mean of these points.  The absolute value of \code{Z-mean(Z)} is also plotted, again with the lowess curve showing 
+    the local mean of these points.  Any trend in the location or scatter of these variables with the conditioning variable
+    indicates a violation of the model assumption that the residuals Z are indepenendent of the conditioning
+    variable.  This can be indicative of the dependence threshold used being too low.
     
     The final plots show the fitted quantiles (specified by \code{quantiles}) of the conditional distribution 
     of each variable given the conditioning variable.  A model that fits well will have good agreement between the
@@ -125,7 +122,7 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
          then the simulated values are based only on the point estimate of the dependence 
          model parameters, and the original data.  If \code{predict.mex} is passed an object 
          \code{object} of class \code{"bootmex"} then the returned value additionally 
-         contains simulated data corresponding to the bootstrap model parameter 
+         contains simulated replicate data sets corresponding to the bootstrap model parameter 
          estimates.  In both cases, the simulated values based on the original data
          and point estimates appear in component \code{object$data$simulated}. The
          simulated data from the bootstrap estimates appear in \code{object$replicates}.
@@ -136,12 +133,19 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
          shows the threshold for prediction (vertical line) and also the curve joining equal quantiles 
          of the marginal distributions -- this is for reference: variables that 
          are perfectly dependent will lie exactly on this curve.
+         
+         
+
 }
 
 \value{
+A call to \code{mex} returns an object of class \code{mex} containing the following three objects:
   \item{margins}{An object of class \code{\link{migpd}}.}
   \item{dependence}{An object of class \code{\link{mexDependence}}.}
   \item{call}{This matches the original function call.}
+There are \code{plot}, \code{summary}, \code{coef} and \code{predict} methods for this class.
+
+
 }
 \references{J. E. Heffernan and J. A. Tawn, A conditional approach for
             multivariate extreme values, Journal of the Royal Statistical
@@ -149,14 +153,15 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
 \author{
 Harry Southworth, Janet E. Heffernan
 }
-
+\note{The package \code{texmex} is equipped to fit GPD models to the upper marginal tails only, not the lower tails.  This is appropriate for extrapolating into the tails of any dependent variable when dependence between this variable and the conditioning variable is positive.  In the case of negative dependence between the conditioning variable and any dependent variable, estimation of the conditional distribution of the dependent variable for extreme values of the conditioning variable would naturally visit the lower tail of the dependent variable.  Extrapolation beyond the range of the observed lower tail is not supported in the current version of \code{texmex}. In cases where negative dependence is observed and extrapolation is required into the lower tail of the dependent variable, the situation is trivially resolved by working with a reflection of the dependent variable (Y becomes -Y and so the upper and lower tails are swapped). Results can be calculated for the reflected variable then reflected back to the correct scale.   This is satisfactory when only the pair of variables (the conditioning and single dependent variable) are of interest, but when genuine multivariate (as opposed to simply bivariate) structure is of interest, this approach will destroy the dependence structure between the reflected dependent variable and the remaining dependent variables.}
 \seealso{\code{\link{migpd}}, \code{\link{mexDependence}}, \code{\link{bootmex}}}
 \examples{
 w <- mex(winter, mqu=.7)
 w
-par(mfcol=c(2, 2))
+par(mfcol=c(3, 2))
 plot(w)
 
+par(mfcol=c(2,2))
 p <- predict(w)
 summary(p)
 p

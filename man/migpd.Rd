@@ -5,6 +5,7 @@
 \alias{summary.migpd}
 \alias{coef.migpd}
 \alias{coefficients.migpd}
+\alias{plot.migpd}
 \title{ Fit multiple independent generalized Pareto models }
 \description{
 	Fit multiple independent generalized Pareto models as the first step
@@ -19,13 +20,14 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 \method{summary}{migpd}(object, verbose = TRUE,...)
 \method{coef}{migpd}(object, ...)
 \method{coefficients}{migpd}(object, ...)
+\method{plot}{migpd}(x, main=c("Probability plot","Quantile plot","Return level plot","Histogram and density"), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... )
 }
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
   \item{mth}{ Thresholds above which to fit the models. Only one of
-				\code{th} and \code{qu} should be supplied. }
+				\code{th} and \code{qu} should be supplied. Length one (in which case a common threshold is used) or length equal to the number of coluumns of \code{data} (in which case values correspond to thresholds for each of the columns respectively).}
   \item{mqu}{ Quantiles above which to fit the models. Only one of
-				\code{th} and \code{qu} should be supplied. }
+				\code{th} and \code{qu} should be supplied. Length as for \code{mth} above. }
   \item{penalty}{ How the likelihood should be penalized. Defaults to
 		'gaussian'. Alternatives are 'none' (resulting in maximum
 		likelihood estimation) and 'jeffreys'. }
@@ -44,6 +46,10 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 			it defaults to being centred at zero, with variance
 			10000 for log(sigma) and 0.25 for xi. See the details section.}
   \item{x, object}{ Object of class \code{migpd} as returned by function \code{migpd}.}
+  \item{main}{Character vector of length four: titles for plots produced by \code{plot} method.}
+  \item{xlab}{As \code{main} but for x-axes labels.}
+  \item{nsim}{Number of simulations on which to base tolerance envelopes in \code{plot} method.}
+  \item{alpha}{Significance level for tolerance and confidence intervals in \code{plot} method.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
@@ -85,13 +91,10 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   directly, however, take care to be sure what scale the results
   are on.
   
-  The \code{mex} library contains no functions to help select
-  appropriate thresholds or perform diagnostic checks. You should
-  use one of the other available extreme values packages to do
-  those operations.
+  Threshold selection can be carried out with the help of functions \code{\link{mrlPlot}} and \code{\link{gpdRangeFit}}.
 }
 \value{
-  An object of class 'migpd'. There are \code{coef}, \code{print}
+  An object of class 'migpd'. There are \code{coef}, \code{print}, \code{plot}
   and \code{summary} functions available.
 }
 \references{
@@ -102,12 +105,13 @@ J. E. Heffernan and J. A. Tawn, A conditional approach
 J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the genralized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
 }
 \author{ Harry Southworth }
-\seealso{ \code{\link{mexDependence}}, \code{\link{bootmex}},
-	\code{\link{predict.mex}}
+\seealso{ \code{\link{mex}}, \code{\link{mexDependence}}, \code{\link{bootmex}},
+	\code{\link{predict.mex}}, \code{\link{gpdRangeFit}}, \code{\link{mrlPlot}}
 		  }
 \examples{
 mygpd <- migpd(winter, mqu=.7, penalty = "none")
 mygpd
+plot(mygpd)
 }
 \keyword{ models }
 \keyword{ multivariate }

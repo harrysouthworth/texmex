@@ -14,9 +14,9 @@ xlab = "Threshold", ylab = NULL, main = NULL, ...)
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{data}{ The data vector to be modelled. }
-  \item{umin}{ The minimum threshold to esimate the parameters over. }
-  \item{umax}{ The maximum threshold to esimate the parameters over. }
-  \item{nint}{ The number of points at which to perform the estimation. }
+  \item{umin}{ The minimum threshold above which to esimate the parameters. }
+  \item{umax}{ The maximum threshold above which to esimate the parameters. }
+  \item{nint}{ The number of thresholds at which to perform the estimation. }
   \item{penalty}{The type of penalty to be used in the maximum penalized
                likelihood estimation. Should be either ``gaussian'' or 
                ``none''. Defaults to ``gaussian''.}

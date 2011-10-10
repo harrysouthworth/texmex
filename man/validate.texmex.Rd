@@ -16,6 +16,7 @@
 \alias{test.plot.chi}
 \alias{test.plot.gpd}
 \alias{test.plot.mexDependence}
+\alias{test.plot.migpd}
 \alias{test.plot.predict.mex}
 \alias{test.predict.mex}
 \alias{test.qgpd}
@@ -32,7 +33,7 @@
 Validate the texmex package
 }
 \description{
-Using \code{RUnit}, run tests to compare behaviour of \code{texmex} with
+Using package \code{RUnit}, run tests to compare behaviour of \code{texmex} with
 expected behaviour
 }
 \usage{
@@ -49,8 +50,7 @@ parameter estimates), tests of the structure of objects, tests of proper
 vectorization, tests to ensure that simulated posterior means are close to
 MAP estimates, and tests to ensure that the code gives the same results as
 independently coded calculations (sometimes using code that appears in the
-\code{ismev} and \code{evd} packages, sometimes using code written by someone
-else and without reference to the \code{texmex} version).  A further side 
+\code{ismev} and \code{evd} packages, sometimes using code written by a third party, without reference to the \code{texmex} version).  A further side 
 effect is the production of plots, many of which can be compared with their 
 original published versions to further check that the \code{texmex} reproduces 
 expected output.
@@ -76,7 +76,7 @@ values (with discussion). Journal of the Royal Statistical Society, Series B, vo
 Janet E. Heffernan, Harry Southworth
 }
 \note{
-Over 100 tests are performed, some of which run MCMC or bootstrap algorithms.
+Over 250 tests are performed, some of which run MCMC or bootstrap algorithms.
 As a result, the function takes a while to run.
 }
 

@@ -47,12 +47,12 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \arguments{
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
   \item{data}{ A data object containing \code{y} and any covariates. }
-  \item{th}{ The threshold for \code{y} }
-  \item{qu}{An alternative to \code{th}, specifying the quantile of the \code{y}}
+  \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the GPD upper tail model. }
+  \item{qu}{An alternative to \code{th}, specifying the quantile of the \code{y}.}
   \item{phi}{ Formula for the log of the scale parameter. Defaults to
       \code{phi = ~ 1} - i.e. no covariates. }
   \item{xi}{ Formula for the shape parameter. Defaults to
-      \code{phi = ~ 1} - i.e. no covariates. }
+      \code{xi = ~ 1} - i.e. no covariates. }
   \item{penalty}{ How to penalize the likelhood. Currently, either
      ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments. 
      If \code{penalty} is "gaussian" or "lasso" then the parameters for 
@@ -87,11 +87,11 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
                 a vector of means, the second should be a covariance matrix if the 
                 penalty/prior is "gaussian" or "quadratic" and a diagonal precision matrix 
                 if the penalty/prior is "lasso", "L1" or "Laplace".
-                If \code{method = "simulate"} then these represent the parameters in the Gaussian prior distribution.
+                If \code{method = "simulate"} then these represent the parameters in the Gaussian prior distribution.  If \code{method = "optimize"} then these represent the parameters in the penalty function.
                 If not supplied: all default prior means are zero;
-                all default prior variances are $10^4$; all covariances
+                all default prior variances are \eqn{10^4}; all covariances
                 are zero.  }
-  \item{maxit}{ The number of iterations allowed in \code{optim} }
+  \item{maxit}{ The number of iterations allowed in \code{optim}. }
   \item{trace}{ Whether or not to print progress to screen. If \code{method = "optimize"},
        the argument is passed into \code{optim} -- see the help for that
        function. If \code{method = "simulate"}, the argument determines at
@@ -109,12 +109,10 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
  \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
                    or \code{summary.bgpd} returned by \code{gpd} or \code{summary.gpd}.}
   \item{digits}{Number of digits for printing.}
-  \item{main}{Titles for plots. Should be a vector of length 4.}
-  \item{xlab}{In \code{plot.gpd}, x-axis labels for plots. Should be a vector of length 4.}
-  \item{nsim}{The number of simulations to use to produce the simulation
-              envelope. Defaults to \code{nsim = 1000}}.
-  \item{alpha}{A (1 - alpha)\% simulation envelope is produced. Defaults
-               to \code{alpha = 0.05}}
+  \item{main}{In \code{plot} method, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
+  \item{xlab}{As for \code{main} but labels for x-axes rather than titles.}
+  \item{nsim}{In \code{plot} and \code{summary} methods. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
+  \item{alpha}{In \code{plot} and \code{summary} methods. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
   \item{k}{Constant used in calculation of AIC=-2*loglik + k*p, defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
@@ -129,18 +127,22 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
-  Working with the log of the scale parameter was found to improve the
-  stability of computations, and it makes a quadratic penalty more appropriate.
-  A quadratic penalty can be thought of as a Gaussian prior distribution, whence
-  the terminology of the function.
+  We use the following parameterisation of the GPD:
   
-  Some of the internal code is based on the \code{gpd.fit} function
-  in the \code{ismev} package and is due to Stuart Coles.
+  \deqn{P(X \le x) = 1 - \left(1 + \frac{\xi x}{\sigma}\right)^{-1/\xi}}{%
+        P(X \le x) = 1 - (1 + \xi x / \sigma)^(-1/\xi)}
+  for \eqn{x \ge 0} and \eqn{1 + \xi x / \sigma \ge 0.}  The scale parameter 
+  is sigma (\eqn{\sigma}) and the shape parameter is xi (\eqn{\xi}).
+  
+  Working with the log of the scale parameter improves the
+  stability of computations, making  a quadratic penalty more 
+  appropriate and enabling the inclusion of covariates in the model for the scale parameter, which must remain positive.  We therefore work with phi=log(xi).  A quadratic penalty can be 
+  thought of as a Gaussian prior distribution, whence the terminology of the function.
+  
+  Parameters of the GPD fitted to excesses above threshold \code{th} are estimated by using penalized maximum likelihood (\code{method="optimize"}), or by simulating from the posterior distribution of the model parameters using a Metropolis algorithm (\code{method="simulate"}).  In the latter case, \code{start} is used as a starting value for the Metropolis algorithm; in its absence, the maximum penalized likelhood point estimates are computed and used.
 
-  When a summary or plot is performed, a simulation envelope is
-  produced the data, based on quantiles of the fitted
-  model. This represents a pointwise (1 - alpha)\%   simulated confidence interval.
-  Since the ordered observations will be correlated, if any observation is outside
+  When a summary or plot is performed, a pointwise (1 - alpha)\% tolerance envelope is simulated, based on quantiles of the fitted
+  model.  Since the ordered observations will be correlated, if any observation is outside
   the envelope, it is likely that a chain of observations will be outside the
   envelope. Therefore, if the number outside the envelope is a little more than
   alpha\%, that does not immediately imply a serious shortcoming of the fitted model.
@@ -153,26 +155,12 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   Pareto density estimate.  These are all calculated using the data on 
   the original scale. If there are covariates in the model then the 
   diagnostics consist of PP- and QQ- plots calculated by using the model 
-  residuals, and plots of residuals versus fitted model parameters.
+  residuals (which will be standard exponential devaiates under the GPD model), 
+  and plots of residuals versus fitted model parameters.
   
-  The PP- and QQ-plots show simulated pointwise tolerance regions.
+  The PP- and QQ-plots show simulated pointwise tolerance intervals.
   The region is a (1 - alpha)\% region based on \code{nsim} simulated
   samples.
-
-  When there are estimated values of \code{xi <= 0.5}, the regularity
-  conditions of the likelihood break down and inference based on approximate
-  standard errors cannot be performed. In this case, the most fruitful
-  approach to inference appears to be by the bootstrap. It might be possible
-  to simulate from the posterior, but finding a good proposal distribution
-  might be difficult and you should take care to get an acceptance rate
-  that is reasonably high (around 40\% when there are no covariates, lower
-  otherwise). 
-  
-  If \code{start} is not provided, the maximum penalized likelhood point
-  estimates are computed and used.
-
-  If \code{method = "simulate"}, the simulation is done by a Metropolis
-  algorithm.
 
   When \code{method = "simulate"} the \code{plot} function produces 
   diagnostic plots for the Markov chains used to simulate from the posterior 
@@ -181,15 +169,17 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   caterpillars' and their cumulative means should converge rapidly. Moreover, 
   the autocorrelation functions should converge quickly to zero.
 
-  When \code{method = "simulate"} the \code{print} and \code{summery} functions 
+  When \code{method = "simulate"} the \code{print} and \code{summary} functions 
   give posterior means and standard deviations. Posterior means are also 
   returned by the \code{coef} method. Depending on what you want to do 
-  and what the posterior distributions look like (use \code{plot.bgpd})
-  you might want to work with quantiles of the poseterior distributions 
+  and what the posterior distributions look like (use \code{plot} method)
+  you might want to work with quantiles of the posterior distributions 
   instead of relying on standard errors.
+  
+ 
 }
 \value{
-    If \code{method = "optimize"}, an object of class \code{gpd}.
+    If \code{method = "optimize"}, an object of class \code{gpd}:
 
     \item{convergence}{Output from \code{optim} relating to whether or
                        not the optimizer converged.}
@@ -212,8 +202,10 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     \item{cov}{The estimated covariance of the parameters in the model.}
     \item{se}{The estimated standard errors of the parameters in the model.}
     
+    
 
-    If \code{method = "simulate"}, an object of class \code{bgpd}.
+    If \code{method = "simulate"}, an object of class \code{bgpd}:
+
     \item{call}{The call to \code{gpd} that produced the object.}
     \item{threshold}{The threshold above which the model was fit.}
     \item{map}{The point estimates found by maximum penalized likelihood
@@ -236,8 +228,17 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
                  and applying any thinning.}
 
 }
-
-\author{Janet E Heffernan, Harry Southworth}
+\note{   When there are estimated values of \code{xi <= -0.5}, the regularity
+  conditions of the likelihood break down and inference based on approximate
+  standard errors cannot be performed. In this case, the most fruitful
+  approach to inference appears to be by the bootstrap. It might be possible
+  to simulate from the posterior, but finding a good proposal distribution
+  might be difficult and you should take care to get an acceptance rate
+  that is reasonably high (around 40\% when there are no covariates, lower
+  otherwise). 
+  }
+\author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on the \code{gpd.fit} function
+  in the \code{ismev} package and is due to Stuart Coles.}
 
 \references{A. C. Davison and R. L. Smith, Models for exceedances over
             high thresholds, Journal of the Royal Statistical Society B,

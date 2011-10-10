@@ -1,9 +1,9 @@
 \name{bgpdSetSeed}
 \alias{bgpdSetSeed}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{Set the seed from a fited bgpd object.}
+\title{Set the seed from a fitted bgpd object.}
 \description{
-Set the seed from a fited \code{bgpd} object to ensure reproducibility of output.
+Set the seed from a fitted \code{bgpd} object to ensure reproducibility of output.
 }
 \usage{
 bgpdSetSeed(x)
@@ -24,6 +24,8 @@ Harry Southworth
 \code{\link{gpd}}
 }
 \examples{
-# mod <- gpd(rnorm(1000), qu=.7, method="simulate")
+# data <- rnorm(1000)
+# mod <- gpd(data, qu=.7, method="simulate")
 # bgpdSetSeed(mod)
+# mod1 <- gpd(data, qu=.7, method="simulate") # this produces the same MCMC output as mod
 }

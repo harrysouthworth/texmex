@@ -29,7 +29,7 @@ Further graphical parameters may be passed, which will be used for plotting.
 }
 }
 \details{
-Dependence model parameters are estimated using a range of threhold values.  The sampling variability of these estimates is characterised using the bootstrap.  Point estimates and bootstrap estimates are finally plotted over the range of thresholds.  Choice of threshold is made such that the point estimates at the chosen threshold and beyond are constant, up to sampling variation.
+Dependence model parameters are estimated using a range of threshold values.  The sampling variability of these estimates is characterised using the bootstrap.  Point estimates and bootstrap estimates are finally plotted over the range of thresholds.  Choice of threshold should be made such that the point estimates at the chosen threshold and beyond are constant, up to sampling variation.
 }
 \value{
 NULL.
@@ -45,7 +45,7 @@ Harry Southworth, Janet E. Heffernan
 
 
 \seealso{
-\code{\link{mexDependence}}, \code{\link{bootmex}}~~~
+\code{\link{mexDependence}}, \code{\link{bootmex}}
 }
 
 \examples{
