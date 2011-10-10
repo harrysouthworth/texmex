@@ -10,7 +10,6 @@ function(object, verbose = TRUE, ...){
   co <- coefficients.migpd(object)
   
   if(verbose){
-    #print(object$call, ...)
     cat("\nA collection of", d, "generalized Pareto models.\n")
     
     if (is.null(conv)) cat("All models converged.\n")
