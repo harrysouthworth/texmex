@@ -31,7 +31,9 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 }
 
 test.qgpd <- function(){
-
+  
+  set.seed(201110101)
+  
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))

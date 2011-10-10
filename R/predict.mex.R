@@ -119,7 +119,7 @@ test.predict.mex <- function(){
   # reproduce Table 5 in Heffernan and Tawn 2004
   smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel",constrain=FALSE)
   wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel",constrain=FALSE)
-
+set.seed(20111010)
   NOmodWinter <- bootmex(wmarmod)
   NOpredWinter <- predict(NOmodWinter, nsim = 500) # matches sample size in H+T2004
 

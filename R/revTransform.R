@@ -16,7 +16,7 @@ function (x, data, qu, th = 0, sigma = 1, xi = 0, method = "mixture") {
 }
 
 test.revTransform <- function(){
-  
+  set.seed(20111010)
   n <- 5000
   x <- cbind(rexp(n),rexp(n,3))
   
