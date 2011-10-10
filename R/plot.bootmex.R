@@ -57,9 +57,11 @@ function( x , plots = "gpd", main="", ... ){
 
 test.plot.bootmex <- function(){
 
+set.seed(3141593)
+
 # 2-d wavesurge data
 
-  wavesurge.fit <- mex(wavesurge,mqu=0.7) 
+  wavesurge.fit <- mex(wavesurge,which=1,mqu=0.7) 
   wavesurge.boot <- bootmex(wavesurge.fit,R=50)
   par(mfrow=c(3,2),pty="m")
   check1 <- plot(wavesurge.boot,main="Marginal parameters\nWave surge data of Coles 2001")
@@ -68,19 +70,22 @@ test.plot.bootmex <- function(){
 # 5-d air pollution data
 
   Qu <- 0.7
-  smarmex.O3 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 1, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.O3 <- mex(winter, mqu=.7, which = 1, dqu = Qu, penalty="none",margins="gumbel")
-  smarmex.NO2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 2, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.NO2 <- mex(winter, mqu=.7, which = 2, dqu = Qu, penalty="none",margins="gumbel")
-  smarmex.NO <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 3, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.NO <- mex(winter, mqu=.7, which = 3, dqu = Qu, penalty="none",margins="gumbel")
-  smarmex.SO2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 4, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.SO2 <- mex(winter, mqu=.7, which = 4, dqu = Qu, penalty="none",margins="gumbel")
-  smarmex.PM10 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which = 5, dqu = Qu, penalty="none",margins="gumbel")
-  wmarmex.PM10 <- mex(winter, mqu=.7, which = 5, dqu = Qu, penalty="none",margins="gumbel")
+  mqus <- c(.9, .7, .7, .85, .7)
+  mquw <- 0.7
+  smarmex.O3   <- mex(summer, mqu=mqus, which = 1, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  wmarmex.O3   <- mex(winter, mqu=mquw, which = 1, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  smarmex.NO2  <- mex(summer, mqu=mqus, which = 2, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  wmarmex.NO2  <- mex(winter, mqu=mquw, which = 2, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  smarmex.NO   <- mex(summer, mqu=mqus, which = 3, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  wmarmex.NO   <- mex(winter, mqu=mquw, which = 3, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  smarmex.SO2  <- mex(summer, mqu=mqus, which = 4, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  wmarmex.SO2  <- mex(winter, mqu=mquw, which = 4, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  smarmex.PM10 <- mex(summer, mqu=mqus, which = 5, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
+  wmarmex.PM10 <- mex(winter, mqu=mquw, which = 5, dqu = Qu, penalty="none",margins="gumbel",constrain=FALSE)
   
   Qu <- 0.7
   R <- 50
+
   Sboot.O3 <- bootmex(smarmex.O3, R=R)
   Wboot.O3 <- bootmex(wmarmex.O3, R=R)
   Sboot.NO2 <- bootmex(smarmex.NO2, R=R)
