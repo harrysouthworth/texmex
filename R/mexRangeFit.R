@@ -3,19 +3,19 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
           col="red",bootcol="grey",margins="laplace", constrain=TRUE, v=10, ...)
 {
   if (class(x) == "mex"){
+    if( (!missing(margins))){
+      warning("margins given, but already specified in 'mex' object.  Using 'mex' value")
+    }
+    if( (!missing(constrain))){
+      warning("constrain given, but already specified in 'mex' object.  Using 'mex' value")
+    }
+    if( (!missing(v))){
+      warning("v given, but already specified in 'mex' object.  Using 'mex' value")
+    }
     constrain <- x$dependence$constrain
     v <- x$dependence$v
     start <- x
     x <- x[[1]]
-    if( (!missing(margins))){
-      warning("margins given, but already applied to 'mex' object.  Using 'mex' value")
-    }
-    if( (!missing(constrain))){
-      warning("constrain given, but already applied to 'mex' object.  Using 'mex' value")
-    }
-    if( (!missing(v))){
-      warning("v given, but already applied to 'mex' object.  Using 'mex' value")
-    }
     margins <- x$margins
   } else {
     if (class(x) != "migpd"){
@@ -59,11 +59,11 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
 test.mexRangeFit <- function(){
 
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
-  wmexmod.gum <- mex(winter, mqu=.7,  penalty="none", margins="gumbel")
+  wmexmod.gum <- mex(winter, mqu=.7,  penalty="none", margins="gumbel", constrain=FALSE)
   wmexmod.lap <- mex(winter, mqu=.7,  penalty="none", margins="laplace",v=5)
   
   par(mfrow=c(2,2))
-  mexRangeFit(wmarmod,which=1,margins="gumbel",
+  mexRangeFit(wmarmod,which=1,margins="gumbel",constrain=FALSE,
               main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5)
   mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5)
   mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5)
@@ -79,6 +79,6 @@ test.mexRangeFit <- function(){
   wavesurge.fit <- migpd(wavesurge,mq=.7)
   mexRangeFit(wavesurge.fit,which=1,margins="laplace",
               main="Dependence threshold selection,\nwave and surge data, Coles 2001")
-  mexRangeFit(wavesurge.fit,which=1,margins="gumbel",
+  mexRangeFit(wavesurge.fit,which=1,margins="gumbel",constrain=FALSE,
               main="Dependence threshold selection,\nwave and surge data, Coles 2001")
 }
