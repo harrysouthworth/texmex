@@ -155,7 +155,7 @@ test.predict.mex <- function(){
 
   R <- 20
   nsim <- 100
-  wavesurge.mex <- mex(wavesurge,mq=.7,dqu=0.7,margins="laplace")
+  wavesurge.mex <- mex(wavesurge,mq=.7,dqu=0.7,margins="laplace",which=1)
   wavesurge.boot <- bootmex(wavesurge.mex,R=R)
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim)
 
@@ -172,8 +172,6 @@ test.predict.mex <- function(){
   mqu <- c(0,0.9)
   dqu <- 0.99
   for(i in 1:5){
-  
-    cat("\n\n",i,"\n")
     x <- rgpd(n=n,sigma=1,xi=0.1)
     y <- 5 + rexp(1,5)*x + rnorm(n,0,x/max(x))
     data <- data.frame(x=x,y=y)
