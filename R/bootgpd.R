@@ -100,18 +100,19 @@ show.bootgpd <- print.bootgpd
 show.summary.bootgpd <- print.summary.bootgpd
 
 test.bootgpd <- function(){
+    set.seed(20111007)
     # Compare bootstrap standard errors with those given by Coles
     # page 85
+    tol <- 0.1
     cse <- c(.958432, .101151)
     raingpd <- gpd(rain, th=30, penalty="none")
     rainboot <- bootgpd(raingpd, R=100, trace=100)
     rainrep <- rainboot$replicates
     rainrep[,1] <- exp(rainrep[, 1])
     bse <- apply(rainrep, 2, sd)
-    checkTrue(abs(cse[1] - bse[1]) < cse[1] / 10,
-              msg="bootgpd: rain se(sigma) matches Coles")
-    checkTrue(abs(cse[2] - bse[2]) < cse[2] / 10,
-              msg="bootgpd: rain se(xi) matches Coles")
+
+    checkEqualsNumeric(cse[1],bse[1],tol=tol,msg="bootgpd: rain se(sigma) matches Coles")
+    checkEqualsNumeric(cse[2],bse[2],tol=tol,msg="bootgpd: rain se(xi) matches Coles")
 
     # Check bootstrap medians are close to point estimates (the MLEs are
     # biased and the distribution of sigma in particular is skewed, so use
@@ -119,10 +120,8 @@ test.bootgpd <- function(){
     
     best <- apply(rainrep, 2, median)
     cest <- coef(raingpd); cest[1] <- exp(cest[1])
-    checkTrue(abs(cest[1] - best[1]) < cest[1] / 10,
-              msg="bootgpd: rain median of sigma matches point estimate")
-    checkTrue(abs(cest[2] - best[2]) < cest[2] / 10,
-              msg="bootgpd: rain medians of xi matches point estimate")
+    checkEqualsNumeric(cest[1],best[1],tol=tol,msg="bootgpd: rain median of sigma matches point estimate")
+    checkEqualsNumeric(cest[2],best[2],tol=tol,msg="bootgpd: rain medians of xi matches point estimate")
 
     ##################################################################
     # Do some checks for models with covariates. Due to apparent instability
