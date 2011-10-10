@@ -126,11 +126,12 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
 # testing of this function, run test.predict.mex
 
+  set.seed(20111007)
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 
-  mySdep <- mexDependence(smarmod, dqu=.7)
-  myWdep <- mexDependence(wmarmod)
+  mySdep <- mexDependence(smarmod, dqu=.7, which=1)
+  myWdep <- mexDependence(wmarmod, dqu=.7, which=1)
 
   R <- 20
 
