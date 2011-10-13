@@ -111,7 +111,7 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
     indicates a violation of the model assumption that the residuals Z are indepenendent of the conditioning
     variable.  This can be indicative of the dependence threshold used being too low.
     
-    The final plots show the fitted quantiles (specified by \code{quantiles}) of the conditional distribution 
+    The final plots show the original data (on the original scale) and the fitted quantiles (specified by \code{quantiles}) of the conditional distribution 
     of each variable given the conditioning variable.  A model that fits well will have good agreement between the
     distribution of the raw data (shown by the scatter plot) and the fitted quantiles.
 
