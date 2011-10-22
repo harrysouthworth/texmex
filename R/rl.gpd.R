@@ -39,7 +39,7 @@ function(object, alpha = .050, RetPeriodRange=NULL,
     if( is.null(RetPeriodRange) ){
       jj <- seq(-1, 3.75, by = 0.1)
     }  else {
-      jj <- seq(log10(RetPeriodRange[1]),log10(RetPeriodRange[2]),by=0.1)
+      jj <- seq(log10(RetPeriodRange[1]),log10(RetPeriodRange[2]),length=400)
     }
     m <- unique( c(1/la, 10^jj) )
 
@@ -67,20 +67,20 @@ function(object, alpha = .050, RetPeriodRange=NULL,
 
     # Do polygon and CI lines
     if (smooth & length(xdat) > 2) {
-        splo <- spline(m[xm > u - 1],
+        splo <- spline(log(m[xm > u - 1]),
                        xm[xm > u - 1] - qnorm(1-alpha/2) * sqrt(vxm)[xm > u - 1] ,
                        200)
-        sphi <- spline(m[xm > u - 1],
+        sphi <- spline(log(m[xm > u - 1]),
                        xm[xm > u - 1] + qnorm(1-alpha/2) * sqrt(vxm)[xm > u - 1] ,
                        200)
         if ( polycol != 0 ) {
-            polygon( c( splo$x, rev( sphi$x ) ),
+            polygon( exp(c( splo$x, rev( sphi$x ) )),
 	             c( splo$y, rev( sphi$y ) ),
                      col = polycol ,
                      border=FALSE		    )
          } # Close if (polycol
-         lines( splo$x, splo$y, col = cicol )
-         lines( sphi$x, sphi$y, col = cicol )
+         lines( exp(splo$x), splo$y, col = cicol )
+         lines( exp(sphi$x), sphi$y, col = cicol )
     } else{
         if (polycol != 0){
             polygon(c(m[xm > u - 1], rev( m[xm > u - 1])),
