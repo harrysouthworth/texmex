@@ -37,7 +37,7 @@ function(object, alpha = .050, RetPeriodRange=NULL,
     a <- c(la, a)
 
     if( is.null(RetPeriodRange) ){
-      jj <- seq(-1, 3.75, by = 0.1)
+      jj <- seq(-1, max(3.75,log10(n)),by=0.1)
     }  else {
       jj <- seq(log10(RetPeriodRange[1]),log10(RetPeriodRange[2]),length=400)
     }
