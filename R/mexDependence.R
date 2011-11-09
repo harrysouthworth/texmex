@@ -111,9 +111,10 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
          }
        }
        NegProfLik[NegProfLik > 10^10] <- NA
-       
-       filled.contour(a.grid,b.grid,-NegProfLik,main=paste("Profile likelihood",PlotLikTitle),color = terrain.colors,
-                      xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
+       if(sum(!is.na(NegProfLik))){
+          filled.contour(a.grid,b.grid,-NegProfLik,main=paste("Profile likelihood",PlotLikTitle),color = terrain.colors,
+                         xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
+       }
      }
 
      if (!is.na(o$par[1])) { # gumbel margins and negative dependence
