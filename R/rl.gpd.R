@@ -66,12 +66,13 @@ function(object, alpha = .050, RetPeriodRange=NULL,
          xlab = xlab, ylab = ylab, main = main)
 
     # Do polygon and CI lines
+    U <- u - abs(u/100)
     if (smooth & length(xdat) > 2) {
-        splo <- spline(log(m[xm > u - 1]),
-                       xm[xm > u - 1] - qnorm(1-alpha/2) * sqrt(vxm)[xm > u - 1] ,
+        splo <- spline(log(m[xm > U]),
+                       xm[xm > U] - qnorm(1-alpha/2) * sqrt(vxm)[xm > U] ,
                        200)
-        sphi <- spline(log(m[xm > u - 1]),
-                       xm[xm > u - 1] + qnorm(1-alpha/2) * sqrt(vxm)[xm > u - 1] ,
+        sphi <- spline(log(m[xm > U]),
+                       xm[xm > U] + qnorm(1-alpha/2) * sqrt(vxm)[xm > U] ,
                        200)
         if ( polycol != 0 ) {
             polygon( exp(c( splo$x, rev( sphi$x ) )),
@@ -83,23 +84,22 @@ function(object, alpha = .050, RetPeriodRange=NULL,
          lines( exp(sphi$x), sphi$y, col = cicol )
     } else{
         if (polycol != 0){
-            polygon(c(m[xm > u - 1], rev( m[xm > u - 1])),
-                    c(xm[xm > u - 1] - qnorm(1 - alpha/2) * sqrt(vxm)[xm > u - 1],
-                      rev(xm[xm > u - 1] + qnorm(1 - alpha/2) * sqrt(vxm)[xm > u - 1])),
+            polygon(c(m[xm > U], rev( m[xm > U])),
+                    c(xm[xm > U] - qnorm(1 - alpha/2) * sqrt(vxm)[xm > U],
+                      rev(xm[xm > U] + qnorm(1 - alpha/2) * sqrt(vxm)[xm > U])),
                     col=polycol,
                     border = FALSE) # Close polygon
         } else {
-            lines(m[xm > u - 1],
-                  xm[xm > u - 1] + qnorm(1 - alpha/2) * sqrt(vxm)[xm > u - 1],
+            lines(m[xm > U],
+                  xm[xm > U] + qnorm(1 - alpha/2) * sqrt(vxm)[xm > U],
                   col = cicol)
-            lines(m[xm > u - 1],
-                  xm[xm > u - 1] - qnorm(1 - alpha/2) * sqrt(vxm)[xm > u - 1],
+            lines(m[xm > U],
+                  xm[xm > U] - qnorm(1 - alpha/2) * sqrt(vxm)[xm > U],
                   col = cicol)
         }
     } 
 	
-    lines(m[xm > u - 1], xm[xm > u - 1],
-          col = linecol[ 1 ] )
+    lines(m[xm > U], xm[xm > U], col = linecol[ 1 ] )
 
     # Add observed data to the plot
     ly <- length(xdat)
