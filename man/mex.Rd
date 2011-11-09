@@ -50,7 +50,7 @@ mex(data, which, mth, mqu, dth, dqu, margins = "laplace", constrain = TRUE, v = 
             will be used for each variable. Otherwise, it should be a vector
             whose length is equal to the number of columns in data.}
   \item{dth}{The threshold to use for estimating the dependence model, specified on the transformed (Laplace or Gumbel) scale. The same
-            threshold will be used for each variable.  Note that there is no requirement for the thresholds used for marginal fitting (\code{mth}) and dependence fitting (\code{dth}) to be the same, or for them to be ordered in any way.}
+            threshold will be used for each variable.  If not supplied then the default is to set \code{dth=mth[which]} the threshold used to fit the marginal model to the tail of the conditioning variable.  Note that there is no requirement for the thresholds used for marginal fitting (\code{mth}) and dependence fitting (\code{dth}) to be the same, or for them to be ordered in any way.}
   \item{dqu}{As an alternative to \code{dth}, specify the quantile at which to
             threshold the data when estimating the dependence
             parameters.}
