@@ -26,9 +26,9 @@ function( object, nsim=1000, alpha=.050,
 		sim <- apply( sim, 1, quantile, prob = c( alpha/2, 1 - alpha/2 ) )
 	}
 	else { sim <- NULL }
-	
+
 	# Get the quantile of the observed data MSE relative to the sims
-	p <- mean( sim.mse > mean( ( sort( dat ) - ModPoints )^2 ) )
+	p <- mean( mean( ( sort( dat ) - ModPoints )^2 )  > sim.mse)
 
 	limits <- if ( nsim == 0 ) NULL else range( sim, dat )
 
