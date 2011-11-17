@@ -13,7 +13,7 @@ validate.texmex <- function () {
    # Create temporary directory to put tests into
    dir <- paste(tempdir(), "texmex.tests", sep = "/")
    cmd <- paste("mkdir", dir)
-   system(cmd)
+   try(system(cmd), silent=TRUE)
 
    for (i in 1:length(tests)) {
        str <- paste(dir, "/", tests[i], ".R", sep = "")
