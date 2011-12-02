@@ -80,7 +80,7 @@ plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ylim, ...){
    if (missing(ylim)){ ylim <- range(ci) }
    plot(x$p, m, type="l", ylim=ylim,
         xlab=xlab, ylab=ylab,
-        sub=paste(100*(1-alpha), "% interval. ", x$R, " bootstrap samples were performed", sep=""))
+        sub=paste(100*(1-alpha), "% interval. ", x$R, " bootstrap samples were performed", sep=""),...)
    lines(x$p, ci[1,], lty=2)
    lines(x$p, ci[2,], lty=2)
    invisible(ci)
