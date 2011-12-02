@@ -9,7 +9,7 @@ function( x , xlab, ylab, main, ... ){
 	x <- seq(u, max(h$breaks), length = 100)
 	y <- dgpd( x , a[ 1 ] , a[ 2 ], u )
 
-	if ( missing( xlab ) || is.null( xlab ) ) xlab = "x"
+	if ( missing( xlab ) || is.null( xlab ) ) xlab = "Data"
 	if ( missing( ylab ) || is.null( ylab ) ) ylab = ""
 	if ( missing( main ) || is.null( main ) ) main = "Histogram and density"
 	
