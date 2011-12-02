@@ -51,14 +51,9 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     if (!missing(data)) {
       y <- deparse(substitute(y))
-    }
-    if (!missing(data)) {
       y <- formula(paste(y, "~ 1"))
       y <- model.response(model.frame(y, data=data))
-      if (missing(th)) {
-          th <- quantile(y, qu)
-      }
-
+     
       if (!is.R() & length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
         X.phi <- matrix(rep(1, nrow(data)), ncol=1)
       } else {
@@ -70,18 +65,23 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
       } else {
         X.xi <- model.matrix(xi, data)
       }
-
-      X.phi <- X.phi[y > th, ]
-      X.xi <- X.xi[y > th, ]
     } else {
-      if (missing(th)) {
-          th <- quantile(y, qu)
+      if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){  
+        X.phi <- matrix(ncol = 1, rep(1, length(y)))
+      } else {
+        X.phi <- model.matrix(phi)
       }
-      X.phi <- matrix(ncol = 1, rep(1, length(y)))
-      X.xi <- matrix(ncol = 1, rep(1, length(y)))
-      X.phi <- X.phi[y > th, ]
-      X.xi <- X.xi[y > th, ]
+      if (length(as.character(xi)) == 2 & as.character(xi)[2] == "1"){
+        X.xi <- matrix(ncol = 1, rep(1, length(y)))
+      } else {
+        X.xi <- model.matrix(xi)
+      }
     }
+    if (missing(th)) {
+        th <- quantile(y, qu)
+    }
+    X.phi <- X.phi[y > th, ]
+    X.xi <- X.xi[y > th, ]    
     rate <- mean(y > th)
 
     y <- y[y > th]
