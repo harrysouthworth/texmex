@@ -72,11 +72,11 @@ function( x, ... ){
     }
 	cat( paste( "\nConditioned on ", x$which, " being above its ", 100*x$pqu, "th percentile.\n\n", sep = "" ) )
 	cat( "\nExpected values:\n\n" )
-	print( x$ans, ... )
+	print( signif(x$ans,3), ... )
 
 	cat( "\nConditional probability of threshold exceedance:\n\n" )
 
-	print( x$thres, ... )
+	print( signif(x$thres,3), ... )
 	
 	invisible()
 }
