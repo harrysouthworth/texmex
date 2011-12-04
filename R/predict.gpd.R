@@ -21,32 +21,73 @@
 predict.gpd <-
     # Get predictions for a gpd object. These can either be the linear predictors
     # or return levels.
-function(object, newdata=NULL, type=c("return level", "link"), se.fit=FALSE, ci.fit=FALSE, M=1000){
+function(object, newdata=NULL, type=c("return level", "link"), se.fit=FALSE, ci.fit=FALSE, M=1000, alpha=.050){
     theCall <- match.call()
     
     type <- match.arg(type)
-        
+    
     res <- switch(type,
                   "return level" = rl.gpd(object, M, newdata),
-                  "link" = predict.link.gpd(object, newdata, se.fit, ci.fit)
+                  "link" = predict.link.gpd(object, newdata, se.fit, ci.fit, alpha)
                   )
-    res <- list(rl = res, call = theCall)
-    oldClass(res) <- "returnLevel"
+ #   attributes(res, "call") <- theCall
+    
     res
 }
 
 ## Linear predictor functions for GPD
 
-predict.link.gpd <- function(object, newdata, se.fit, ci.fit){
+predict.link.gpd <- function(object, newdata, se.fit, ci.fit, alpha){
+
+    if (is.null(newdata)){
+        phi <- c(object$coefficients[1:ncol(object$X.phi)] %*% t(object$X.phi))
+        xi <- c(object$coefficients[(ncol(object$X.phi) + 1):length(object$coefficients)] %*% t(object$X.xi))
+
+        res <- cbind(phi, xi)
+
+        if (ci.fit){
+            phi.se <- c(object$se[1:ncol(object$X.phi)] %*% t(object$X.phi))
+            xi.se <- c(object$se[(ncol(object$X.phi) + 1):length(object$se)] %*% t(object$X.xi))
+
+	    z <- qnorm(1 - alpha/2)
+
+            phi.lo <- phi - phi.se*z
+            phi.hi <- phi + phi.se*z
+            xi.lo <- xi - xi.se*z
+            xi.hi <- xi + xi.se*z
+
+            res <- cbind(res, phi.lo, phi.hi, xi.lo, xi.hi)
+
+        }
 
 
+        if (se.fit){
+	    if (!ci.fit){
+                phi.se <- c(object$se[1:ncol(object$X.phi)] %*% t(object$X.phi))
+                xi.se <- c(object$se[(ncol(object$X.phi) + 1):length(object$se)] %*% t(object$X.xi))
+            }
+            res <- cbind(res, phi.se, xi.se)
+        }
 
+
+    }
+
+    else { 
+        cat("not got that far yet!\n")
+        phi <- NULL; xi <- NULL
+    }
+
+
+    res
 }
 
 ## Return level functions for GPD
 
 ## Reversing arguments M and newdata for anyone who wants to call these functions
 ## directly
+
+## Will want to get return levels when using GEV rather than GPD, so make
+## rl generic
 
 rl <- function(object, M, newdata, ...){
     UseMethod("rl")
