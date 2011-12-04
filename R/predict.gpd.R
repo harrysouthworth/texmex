@@ -46,10 +46,13 @@ predict.link.gpd <- function(object, newdata, se.fit, ci.fit, alpha){
         res <- cbind(phi, xi)
 
         if (ci.fit){
-            phi.se <- c(object$se[1:ncol(object$X.phi)] %*% t(object$X.phi))
-            xi.se <- c(object$se[(ncol(object$X.phi) + 1):length(object$se)] %*% t(object$X.xi))
+            phi.cov <- as.matrix(object$cov[1:ncol(object$X.phi), 1:ncol(object$X.phi)])
+            xi.cov <- as.matrix(object$cov[(ncol(object$X.phi) + 1):length(object$coefficients), (ncol(object$X.phi) + 1):length(object$se)])
 
-	    z <- qnorm(1 - alpha/2)
+            phi.se <- sqrt(rowSums((object$X.phi %*% phi.cov) * object$X.phi))
+            xi.se <- sqrt(rowSums((object$X.xi %*% xi.cov) * object$X.xi))
+
+            z <- qnorm(1 - alpha/2)
 
             phi.lo <- phi - phi.se*z
             phi.hi <- phi + phi.se*z
@@ -60,11 +63,10 @@ predict.link.gpd <- function(object, newdata, se.fit, ci.fit, alpha){
 
         }
 
-
         if (se.fit){
-	    if (!ci.fit){
-                phi.se <- c(object$se[1:ncol(object$X.phi)] %*% t(object$X.phi))
-                xi.se <- c(object$se[(ncol(object$X.phi) + 1):length(object$se)] %*% t(object$X.xi))
+	    if (!ci.fit){ # Because if ci.fit, phi.se and xi.se already exist
+                phi.se <- sqrt(rowSums((phi %*% phi.cov) * phi))
+                xi.se <- sqrt(rowSums((xi %*% xi.cov) * xi))
             }
             res <- cbind(res, phi.se, xi.se)
         }
@@ -90,6 +92,7 @@ predict.link.gpd <- function(object, newdata, se.fit, ci.fit, alpha){
 ## rl generic
 
 rl <- function(object, M, newdata, ...){
+
     UseMethod("rl")
 }
 
