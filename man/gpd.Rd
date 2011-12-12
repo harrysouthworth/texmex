@@ -36,6 +36,8 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \method{print}{bgpd}(x, print.seed=FALSE, ...)
 \method{summary}{bgpd}(object, ...)
 \method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{predict}{gpd}(object, newdata=NULL, type=c("return level", "link"), se.fit=FALSE, ci.fit=FALSE, M=1000, alpha=.050)
+\method{rl}{gpd}(object, M=1000, newdata)
 \method{coef}{bgpd}(object, ...)
 \method{coefficients}{bgpd}(object, ...)
 \method{print}{summary.gpd}(x, digits=3, ...)
@@ -124,6 +126,8 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{density.adjust}{Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
+  \item{M}{In \code{predict} and \code{rl}, the M-observation return level is computed. Defaults
+           to \code{M = 1000}.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
