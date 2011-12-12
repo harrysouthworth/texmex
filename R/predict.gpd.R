@@ -93,14 +93,60 @@ predict.link.gpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, a
 ## Will want to get return levels when using GEV rather than GPD, so make
 ## rl generic
 
-rl <- function(object, M, newdata, ...){
+rl <- function(object, M, newdata, se.fit=FALSE, ci.fit=FALSE, alpha=.050, ...){
     UseMethod("rl")
 }
 
-rl.gpd <- function(object, M=1000, newdata=NULL){
+gpd.delta <- function(a, m){
+        # This is not exact if a prior (penalty) function is used, but
+        # the CI is approximate anyway.
+        
+    out <- matrix(0, nrow=3, ncol=length(m))
+        
+    if (a[3] == 0){ # exponential case
+        out[1,] <- exp(a[2]) / a[1]
+        out[2,] <- exp(a[2]) * log(m * a[1])
+    } else {
+        out[1,] <- exp(a[2]) * m^a[3] * a[1]^(a[3] - 1)
+        out[2,] <- exp(a[2]) / a[3] * ((m*a[1])^a[3] - 1) 
+        out[3,] <- -exp(a[2]) / (a[3]*a[3]) * ( (m * a[1] )^a[3] - 1 ) +
+                   exp(a[2]) / a[3] * (m * a[1])^a[3] * log(m * a[1])
+    } 
+
+   out
+} 
+
+rl.gpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050){
     co <- predict.link.gpd(object, newdata=newdata)
-    
+    co <- cbind(rep(object$rate, nrow(co)), co)    
+
     res <- object$threshold + (exp(co[,1]) / co[,2]) * (object$rate^co[,2] - 1)
+    res <- cbind(RL=res)
+
+    getse <- function(o, co){
+        dxm <- t(apply(co, 1, gpd.delta, m=M))
+        V <- matrix(c(object$rate * (1 - object$rate)/length(mod$y), 0, 0,
+                      0, object$cov[1,],
+                      0, object$cov[2,]), ncol = 3)
+
+        # Get (4.15) of Coles, page 82, adjusted for phi = log(sigma)
+        sqrt(mahalanobis(dxm, center=c(0, 0, 0), cov=V, inverted=TRUE))
+    }
+
+    if (ci.fit){
+        se <- getse(object, co)
+        lo <- res - qnorm(1 - alpha/2)*se
+        hi <- res + qnorm(1 - alpha/2)*se
+
+        res <- cbind(res, lo=lo, hi=hi)
+    } # Close if (ci.fit
+
+    if (se.fit){
+        if (!ci.fit){
+            se <- getse(object, co)
+        }
+        res <- cbind(res, se=se)
+    }
 
     invisible(res)
 }
