@@ -10,7 +10,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
     if (ncol(x$X.phi) == 1 && ncol(x$X.xi) == 1){
         ppgpd( x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha )
         qqgpd( x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha )
-        rl.gpd( x, main=main[3], xlab=xlab[3], ... )
+        plotrl.gpd( x, main=main[3], xlab=xlab[3], ... )
         hist.gpd( x, main=main[4], xlab=xlab[4] )
     }
     else { # Covariates in the model

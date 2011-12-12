@@ -1,5 +1,5 @@
-`rl.gpd` <-
-function(object, alpha = .050, RetPeriodRange=NULL,
+plotrl.gpd <-
+function(object, alpha = .050,
          xlab, ylab, main,
          pch= 1, col =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = TRUE ){
@@ -36,11 +36,8 @@ function(object, alpha = .050, RetPeriodRange=NULL,
 	
     a <- c(la, a)
 
-    if( is.null(RetPeriodRange) ){
-      jj <- seq(-1, max(3.75,log10(n)),by=0.1)
-    }  else {
-      jj <- seq(log10(RetPeriodRange[1]),log10(RetPeriodRange[2]),length=400)
-    }
+    jj <- seq(-1, max(3.75,log10(n)),by=0.1)
+
     m <- unique( c(1/la, 10^jj) )
 
     xm <- qgpd2(m, exp(a[2]), a[3], u, la)

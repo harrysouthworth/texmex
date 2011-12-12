@@ -97,7 +97,7 @@ rl <- function(object, M, newdata, ...){
     UseMethod("rl")
 }
 
-rl.gpd <- function(object, M=1000, newdata){
+rl.gpd <- function(object, M=1000, newdata=NULL){
     co <- predict.link.gpd(object, newdata=newdata)
     
     res <- object$threshold + (exp(co[,1]) / co[,2]) * (object$rate^co[,2] - 1)
