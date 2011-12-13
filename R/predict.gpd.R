@@ -120,10 +120,12 @@ rl.gpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alp
     co <- predict.link.gpd(object, newdata=newdata)
     co <- cbind(rep(object$rate, nrow(co)), co)    
 
+    if (missing(newdata)){ co <- unique(co) }
+
     res <- object$threshold + (exp(co[,1]) / co[,2]) * (object$rate^co[,2] - 1)
     res <- cbind(RL=res)
 
-    getse <- function(o, co){
+    getse <- function(o, co, M){
         dxm <- t(apply(co, 1, gpd.delta, m=M))
         V <- matrix(c(object$rate * (1 - object$rate)/length(mod$y), 0, 0,
                       0, object$cov[1,],
@@ -134,7 +136,7 @@ rl.gpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alp
     }
 
     if (ci.fit){
-        se <- getse(object, co)
+        se <- getse(object, co, M)
         lo <- res - qnorm(1 - alpha/2)*se
         hi <- res + qnorm(1 - alpha/2)*se
 
@@ -143,12 +145,12 @@ rl.gpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alp
 
     if (se.fit){
         if (!ci.fit){
-            se <- getse(object, co)
+            se <- getse(object, co, M)
         }
         res <- cbind(res, se=se)
     }
 
-    invisible(res)
+    res
 }
 
 ################################################################################

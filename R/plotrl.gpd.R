@@ -27,6 +27,10 @@ function(object, alpha = .050,
         out
     } 
 
+    if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
+    if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
+    if (missing(main) || is.null(main)) { main <- "Return Level Plot" }
+
     a <- object$coefficients
     u <- object$threshold
     la <- object$rate # rate of threshold excess
@@ -40,7 +44,10 @@ function(object, alpha = .050,
 
     m <- unique( c(1/la, 10^jj) )
 
-    xm <- qgpd2(m, exp(a[2]), a[3], u, la)
+    xm <- rl.gpd(object, M=m, ci.fit=TRUE, alpha=alpha)
+
+if (FALSE){
+#    xm <- qgpd2(m, exp(a[2]), a[3], u, la)
     dxm <- t(gpd.delta(a = a, m = m))
 
     # Get covariance including P(over threshold) parameter
@@ -51,16 +58,18 @@ function(object, alpha = .050,
     # Get (4.15) of Coles, page 82, adjusted for phi = log(sigma)
     vxm <- mahalanobis(dxm, center=c(0, 0, 0), cov=V, inverted=TRUE)
 
-    if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
-    if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
-    if (missing(main) || is.null(main)) { main <- "Return Level Plot" }
-
     plot(m, xm,
          log = "x",
          type = "n",
          xlim=range(m),
          ylim=range(c(xdat, xm[xm > u - 1] + qnorm(1-alpha/2) * sqrt(vxm)[xm > u - 1])), 
          xlab = xlab, ylab = ylab, main = main)
+} # Close if (FALSE
+
+    plot(m, xm[, 1], log="x", type="n",
+         xlim = range(m), ylim = range(xm),
+         xlab=xlab, ylab=ylab, main=main)
+return()
 
     # Do polygon and CI lines
     U <- u - abs(u/100)
