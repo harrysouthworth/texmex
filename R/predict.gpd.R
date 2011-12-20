@@ -163,7 +163,7 @@ predict.bgpd <- function(object, newdata=NULL, type=c("return level", "link"), M
     
     res <- switch(type,
                   "rl" =, "return level" = rl.bgpd(object, M),
-                  "parameters" = cobgpd(object, newdata)
+                  "lp"=, "link" = cobgpd(object, newdata)
                   )
     res <- list(rl = res, call = theCall)
     oldClass(res) <- "returnLevel"
@@ -171,8 +171,24 @@ predict.bgpd <- function(object, newdata=NULL, type=c("return level", "link"), M
 }
 
 predict.link.bgpd <- function(object, newdata, se.fit, ci.fit){
+    if (!is.null(newdata)){
+        xi.fo <- object$call$xi
+        phi.fo <- object$call$phi
 
+        X.xi <- if (!is.null(xi.fo)){ model.matrix(as.formula(xi.fo), newdata) }
+                else { matrix(1, nrow(newdata)) }
+        X.phi <- if (!is.null(phi.fo)){ model.matrix(as.formula(object$call$phi), newdata) }
+                 else { matrix(1, nrow(newdata)) }
+    }
 
+    else {
+        X.xi <- object$X.xi
+        X.phi <- object$X.phi
+    }
+
+    res <- cbind(X.phi, X.xi) * object$param
+    oldClass(res) <- "predict.link.bgpd"
+    invisible(res)
 }
 
 rl.bgpd <- function(object, M){
@@ -189,8 +205,8 @@ predict.bootgpd <- function(object, type=c("return level", "link"), M=1000){
     type <- match.arg(type)
 
     res <- switch(type,
-                  "return level" = rl.bgpd(object, M),
-                  "parameters" = cobgpd(object, newdata)
+                  "rl"=, "return level" = rl.bgpd(object, M),
+                  "lp"=, "link" = cobgpd(object, newdata)
                   )
     res <- list(rl = res, call = theCall)
     oldClass(res) <- "returnLevel"
@@ -198,7 +214,24 @@ predict.bootgpd <- function(object, type=c("return level", "link"), M=1000){
 
 }
 predict.link.bootgpd <- function(object, newdata, se.fit, ci.fit){
+    if (!is.null(newdata)){
+        xi.fo <- object$call$xi
+        phi.fo <- object$call$phi
 
+        X.xi <- if (!is.null(xi.fo)){ model.matrix(as.formula(xi.fo), newdata) }
+                else { matrix(1, nrow(newdata)) }
+        X.phi <- if (!is.null(phi.fo)){ model.matrix(as.formula(object$call$phi), newdata) }
+                 else { matrix(1, nrow(newdata)) }
+    }
+
+    else {
+        X.xi <- object$X.xi
+        X.phi <- object$X.phi
+    }
+
+    res <- cbind(X.phi, X.xi) * object$replicates
+    oldClass(res) <- "predict.link.bootgpd"
+    invisible(res)
 
 }
 
