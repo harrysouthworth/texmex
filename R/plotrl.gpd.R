@@ -44,10 +44,9 @@ function(object, alpha = .050,
 
     m <- unique( c(1/la, 10^jj) )
 
-    xm <- rl.gpd(object, M=m, ci.fit=TRUE, alpha=alpha)
+#    xm <- rl.gpd(object, M=m, ci.fit=TRUE, alpha=alpha)
 
-if (FALSE){
-#    xm <- qgpd2(m, exp(a[2]), a[3], u, la)
+    xm <- qgpd2(m, exp(a[2]), a[3], u, la)
     dxm <- t(gpd.delta(a = a, m = m))
 
     # Get covariance including P(over threshold) parameter
@@ -64,12 +63,10 @@ if (FALSE){
          xlim=range(m),
          ylim=range(c(xdat, xm[xm > u - 1] + qnorm(1-alpha/2) * sqrt(vxm)[xm > u - 1])), 
          xlab = xlab, ylab = ylab, main = main)
-} # Close if (FALSE
 
-    plot(m, xm[, 1], log="x", type="n",
-         xlim = range(m), ylim = range(xm),
-         xlab=xlab, ylab=ylab, main=main)
-return()
+#    plot(m, xm[, 1], log="x", type="n",
+#         xlim = range(m), ylim = range(xm),
+#         xlab=xlab, ylab=ylab, main=main)
 
     # Do polygon and CI lines
     U <- u - abs(u/100)

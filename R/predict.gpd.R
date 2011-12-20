@@ -28,7 +28,7 @@ function(object, newdata=NULL, type=c("return level", "link"), se.fit=FALSE, ci.
     type <- match.arg(type)
     
     res <- switch(type,
-                  "return level" = rl.gpd(object, M, newdata),
+                  "rl"=, "return level" = rl.gpd(object, M, newdata),
                   "link" = predict.link.gpd(object, newdata, se.fit, ci.fit, alpha)
                   )
     res
@@ -162,7 +162,7 @@ predict.bgpd <- function(object, newdata=NULL, type=c("return level", "link"), M
     type <- match.arg(type)
     
     res <- switch(type,
-                  "return level" = rl.bgpd(object, M),
+                  "rl" =, "return level" = rl.bgpd(object, M),
                   "parameters" = cobgpd(object, newdata)
                   )
     res <- list(rl = res, call = theCall)
