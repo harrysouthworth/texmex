@@ -1,6 +1,6 @@
 `mexRangeFit` <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
-          col="red",bootcol="grey",margins="laplace", constrain=TRUE, v=10, ...)
+          col=2,bootcol="grey",margins="laplace", constrain=TRUE, v=10, ...)
 {
   if (class(x) == "mex"){
     if( (!missing(margins))){
