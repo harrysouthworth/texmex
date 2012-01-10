@@ -18,10 +18,10 @@
       p <- seq(dep$dqu,1-1/n,length=n)
       plot(p,z[,i],xlab=paste("F(",dep$conditioningVariable,")",sep=""),
            ylab=paste("Z   ",colnames(z)[i]," | ",dep$conditioningVariable,sep=""),col=col,...)
-      lines(lowess(p,z[,i]),col="red")
+      lines(lowess(p,z[,i]),col=2)
       plot(p,abs(z[,i] - mean(z[,i])),xlab=paste("F(",dep$conditioningVariable,")",sep=""),
            ylab=paste("|Z - mean(Z)|   ",colnames(z)[i]," | ",dep$conditioningVariable,sep=""),col=col,...)
-      lines(lowess(p,abs(z[,i] - mean(z[,i]))),col="blue")
+      lines(lowess(p,abs(z[,i] - mean(z[,i]))),col=4)
 
       depThr <- c(quantile(mar$data[,dep$which],dep$dqu))
       d <- xmax-depThr
