@@ -110,62 +110,51 @@ summary.chi <- function(object, digits=3, ...){
 }
 
 
-plot.chi <- function(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty = 1, cilty = 2, col = 1, spcases = TRUE, cicol = 1,
-                     xlim = c(0, 1), ylimChi = c(-1, 1), ylimChiBar = c(-1, 1),
-                     mainChi = "Chi", mainChiBar = "Chi Bar",
+plot.chi <- function(x, which=1:2, lty = 1, cilty = 2, col = 1, spcases = FALSE, cicol = 1,
+                     xlim = c(0, 1), ylim1 = c(-1, 1), ylim2 = c(-1, 1),
+                     main1 = "Chi", main2 = "Chi Bar",
                      xlab = "Quantile", 
-                     ylabChi = expression(chi),#"Chi",
-                     ylabChiBar = expression(bar(chi)), #"Chi Bar",
+                     ylab1 = expression(chi),#"Chi",
+                     ylab2 = expression(bar(chi)), #"Chi Bar",
                      ask, ...){
 
-  lty <- c(cilty, lty, cilty)
-  col <- c(cicol, col, cicol)
-  nb.fig <- prod(par("mfcol"))
+    show <- logical(2)
+    show[which] <- TRUE
+    lty <- c(cilty, lty, cilty)
+    col <- c(cicol, col, cicol)
+    nb.fig <- prod(par("mfcol"))
 
 	if (is.R() & missing(ask)){
-	  ask <- nb.fig < sum(show) && dev.interactive()
-	}	else {
+		ask <- nb.fig < length(which) && dev.interactive()
+	}
+	else {
 		ask <- FALSE
 	}
-  if (ask) {
-     op <- par(ask = TRUE)
-     on.exit(par(op))
-  }
-  if (show["ChiBar"]) {
-    matplot(x$quantile, x$chibar, type = "l", lty = lty, col = col, 
-            xlim = xlim, ylim = ylimChiBar, main = mainChiBar, xlab = xlab, 
-            ylab = ylabChiBar, ...)
-    if (spcases) {
-      segments(x$qlim[1], 0, x$qlim[2], 0, lty = 5, col = "grey")
-      segments(x$qlim[1], 1, x$qlim[2], 1, lty = 5, col = "grey")
-      segments(x$qlim[1],-1, x$qlim[2],-1, lty = 5, col = "grey")
+    if (ask) {
+        op <- par(ask = TRUE)
+        on.exit(par(op))
     }
-    ChiBarAsympIndep <- prod(tail(x$chibar[,3]) < 1)
-  }
-  if (show["Chi"]) {
-    if (ChiBarAsympIndep) {
-      col <- "grey"
-      cols <- "grey"
-    } else {
-      cols <- "black"
+    if (show[1]) {
+        matplot(x$quantile, x$chi, type = "l", lty = lty, col = col, xlim = xlim, 
+            ylim = ylim1, main = main1, xlab = xlab, ylab = ylab1, 
+            ...)
+        if (spcases) {
+            segments(x$qlim[1], 0, x$qlim[2], 0, lty = 5, col = "grey")
+            segments(x$qlim[1], 1, x$qlim[2], 1, lty = 5, col = "grey")
+            lines(x$quantile, x$chiulb, lty = 5, col = "grey")
+        }
     }
-  
-    matplot(x$quantile, x$chi, type = "l", lty = lty, col = col, xlim = xlim, 
-            ylim = ylimChi, main = mainChi, xlab = xlab, ylab = ylabChi, 
-            col.lab=cols,col.main=cols,col.sub=cols,axes=FALSE,
-             ...)
-     box(col=cols)
-     axis(1,col=cols,col.axis = cols)
-     axis(2,col=cols,col.axis = cols)
-             
-     if (spcases) {
-       segments(x$qlim[1], 0, x$qlim[2], 0, lty = 5, col = "grey")
-       segments(x$qlim[1], 1, x$qlim[2], 1, lty = 5, col = "grey")
-       lines(x$quantile, x$chiulb, lty = 5, col = "grey")
-     }
-  }
-
-  invisible()
+    if (show[2]) {
+        matplot(x$quantile, x$chibar, type = "l", lty = lty, col = col, 
+            xlim = xlim, ylim = ylim2, main = main2, xlab = xlab, 
+            ylab = ylab2, ...)
+        if (spcases) {
+            segments(x$qlim[1], 0, x$qlim[2], 0, lty = 5, col = "grey")
+            segments(x$qlim[1], 1, x$qlim[2], 1, lty = 5, col = "grey")
+            lines(x$quantile, x$chibarulb, lty = 5, col = "grey")
+        }
+    }
+    invisible()
 }
 
 test.chi <- function(){
