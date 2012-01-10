@@ -25,11 +25,11 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
         
         if(ncol(x$X.phi) > 1){
           plot(fittedScale,resid(x),main="Residuals vs Fitted Scale",xlab="Fitted scale",ylab="Residuals")
-          panel.smooth(fittedScale,resid(x))
+          panel.smooth(fittedScale,resid(x),col.smooth=2)
         }
         if(ncol(x$X.xi) > 1){
           plot(fittedShape,resid(x),main="Residuals vs Fitted Shape",xlab="Fitted shape",ylab="Residuals")
-          panel.smooth(fittedShape,resid(x))
+          panel.smooth(fittedShape,resid(x),col.smooth=2)
         }
     }
 
