@@ -28,9 +28,9 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 		points( x$data$simulated[, 1 ] , x$data$simulated[, i ] ,
 				col=col[ 2 ] , pch=pch[ 2 ], cex=cex[ 2 ] )
 		points( xdat, ydat , pch=pch[ 1 ], col=col[ 1 ], cex= cex[ 1 ] )
-		abline( v = x$data$pth, lty=2, col="blue" )   
+		abline( v = x$data$pth, lty=2, col=3 )   
     ypts <- revTransform(upts,data=x$data$real[, i ], qu = mean(x$data$real[,i] < x$mth[i]), th=x$mth[i],sigma = x$gpd.coef[3,i], xi = x$gpd.coef[4,i])
-    lines(xpts,ypts,col="blue")
+    lines(xpts,ypts,col=3)
 	}
 	
 	invisible()
