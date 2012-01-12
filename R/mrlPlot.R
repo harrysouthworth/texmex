@@ -3,6 +3,7 @@ function (data, umin = min(data), umax = max(data) - 0.1, conf = 0.95,
     nint = 100, ...) 
 {
     data <- c(data)
+    AllData <- data
     x <- xu <- xl <- numeric(nint)
     Threshold <- seq(umin, umax, length = nint)
     for (i in 1:nint) {
@@ -17,6 +18,8 @@ function (data, umin = min(data), umax = max(data) - 0.1, conf = 0.95,
         ylim = c(min(xl[!is.na(xl)]), max(xu[!is.na(xu)])), ...)
     lines(Threshold[!is.na(xl)], xl[!is.na(xl)], lty = 2)
     lines(Threshold[!is.na(xu)], xu[!is.na(xu)], lty = 2)
+    rug(AllData)
+    invisible()
 }
 
 test.mrlPlot <- function(){
