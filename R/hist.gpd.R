@@ -13,9 +13,9 @@ function( x , xlab, ylab, main, ... ){
 	if ( missing( ylab ) || is.null( ylab ) ) ylab = ""
 	if ( missing( main ) || is.null( main ) ) main = "Histogram and density"
 	
+  breaks <- seq(from=min(dat),to=max(dat),len=nclass.Sturges(dat)+1)
 	hist( dat, prob = TRUE, ylim = c(0, max(y)),
-		  xlab=xlab, ylab=ylab, main=main, ...
-		 )
+		  xlab=xlab, ylab=ylab, main=main, breaks = breaks, ...)
 	lines(x, y, col = 4)
 	rug(dat)
 	invisible()
