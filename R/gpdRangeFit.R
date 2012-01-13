@@ -3,7 +3,7 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
           nint = 10, 
           penalty="gaussian", priorParameters=NULL, alpha=.05,
           xlab="Threshold", ylab=NULL,
-		  main=NULL, ... ) {
+		  main=NULL, addNexcesses=TRUE,... ) {
 	if ( missing( ylab ) ){
 		ylab = c( "log(scale)", "shape" )
 	}
@@ -34,15 +34,18 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     for (i in 1:2) {
         um <- max(up[, i])
         ud <- min(ul[, i])
-        plot(u, m[, i], ylim = c(ud, um), type = "b",
-			xlab=xlab, ylab=ylab[i], main=main[i], ...)
+        plot(u, m[, i], ylim = c(ud, um), type = "b", xlab=xlab, ylab=ylab[i], main=main[i], ...)
         for (j in 1:nint) lines(c(u[j], u[j]), c(ul[j, i], up[j, i]))
+        if(addNexcesses){
+          axis(3,at=axTicks(1),labels=sapply(axTicks(1),function(u)sum(data>u)),cex=0.5)
+          mtext("# threshold excesses")
+        }
     }
     invisible()
 }
 
 test.gpdRangeFit <- function(){
   par(mfrow=c(2,1))
-  res <- gpdRangeFit(rain, umin=0, umax=50, nint=20, pch=16, main=c("Figure 4.2 of Coles (2001)",""))
+  res <- gpdRangeFit(rain, umin=0, umax=50, nint=20, pch=16, main=c("Figure 4.2 of Coles (2001)",""),addNexcesses=FALSE)
   checkEquals(res,NULL,msg="gpdRangeFit: check execution")
 }
