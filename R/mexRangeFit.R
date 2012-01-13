@@ -1,6 +1,6 @@
 `mexRangeFit` <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
-          col=2,bootcol="grey",margins="laplace", constrain=TRUE, v=10, ...)
+          col=2,bootcol="grey",margins="laplace", constrain=TRUE, v=10, addNexcesses=TRUE,...)
 {
   if (class(x) == "mex"){
     if( (!missing(margins))){
@@ -51,6 +51,10 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
         plot(quantiles,PointEsts[i,],col=col,ylab=Names[i],type="b",ylim=ylim,...)
         points(rep(quantiles,each=R),Boot,col=bootcol)
         points(quantiles,PointEsts[i,],col=col)
+        if(addNexcesses){
+          axis(3,at=axTicks(1),labels=sapply(axTicks(1),function(u,dat,which)sum(dat[,which] > quantile(dat[,which],u)), dat=x$data,which=which))
+          mtext("# threshold excesses")
+        }
       }
     }
   }
@@ -64,9 +68,9 @@ test.mexRangeFit <- function(){
   
   par(mfrow=c(2,2))
   mexRangeFit(wmarmod,which=1,margins="gumbel",constrain=FALSE,
-              main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5)
-  mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5)
-  mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5)
+              main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5,addNexcesses=FALSE)
+  mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5,addNexcesses=FALSE)
+  mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5,addNexcesses=FALSE)
   
   op <- options()
   options(show.error.messages=FALSE)
@@ -78,7 +82,7 @@ test.mexRangeFit <- function(){
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
   mexRangeFit(wavesurge.fit,which=1,margins="laplace",
-              main="Dependence threshold selection,\nwave and surge data, Coles 2001")
+              main="Dependence threshold selection,\nwave and surge data, Coles 2001",addNexcesses=FALSE)
   mexRangeFit(wavesurge.fit,which=1,margins="gumbel",constrain=FALSE,
-              main="Dependence threshold selection,\nwave and surge data, Coles 2001")
+              main="Dependence threshold selection,\nwave and surge data, Coles 2001",addNexcesses=FALSE)
 }
