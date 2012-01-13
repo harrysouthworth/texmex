@@ -1,10 +1,68 @@
 # NOT FOR END-USERS.
-# THESE ARE FUNCTIONS TAKEN FROM THE ismev AND evd PACKAGES, 
+# THESE ARE FUNCTIONS TAKEN FROM THE ismev, evd and extRemes PACKAGES, 
 # AND FROM CODE BY YIANNIS PAPASTATHOPOULOS AND ARE USED
 # SOLELY FOR TESTING texmex.
 # Date evd installed: 2010-12-1
 # Date ismev installed: 2010-12-1
 # Date Papastathopoulos code: 2011-06-22
+# Date extRemes installed : 2012-01-10
+
+.extRemes.decluster.intervals <- function (z, ei) 
+{
+    if (ei >= 1) {
+        r <- 0
+    }
+    else {
+        s <- c(1:length(z))[z]
+        t <- diff(s)
+        temp <- rev(sort(t))
+        nc <- 1 + floor(ei * (sum(z) - 1))
+        while ((nc > 1) && (temp[nc - 1] == temp[nc])) nc <- nc - 1
+        r <- temp[nc]
+    }
+    out <- .extRemes.decluster.runs(z, r)
+    out$scheme <- "intervals"
+    out
+}
+
+.extRemes.decluster.runs <- function (z, r) 
+{
+    nx <- sum(z)
+    s <- c(1:length(z))[z]
+    t <- diff(s)
+    cluster <- rep(1, nx)
+    if (nx > 1) 
+        cluster[2:nx] <- 1 + cumsum(t > r)
+    size <- tabulate(cluster)
+    nc <- length(size)
+    inter <- rep(FALSE, nx)
+    inter[match(1:nc, cluster)] <- TRUE
+    list(scheme = "runs", par = r, nc = nc, size = size, s = s, 
+        cluster = cluster, t = c(NA, t), inter = inter, intra = !inter, 
+        r = r)
+}
+
+.extRemes.exi.intervals <- function(z) 
+{
+    if (sum(z) <= 1) {
+        warning("estimator undefined: too few exceedances")
+        return(1)
+    }
+    else {
+        nz <- length(z)
+        s <- c(1:nz)[z]
+        t <- diff(s)
+        if (max(t) <= 2) {
+            t1 <- mean(t)
+            t2 <- mean(t^2)
+        }
+        else {
+            t1 <- mean(t - 1)
+            t2 <- mean((t - 1) * (t - 2))
+        }
+    }
+    2 * (t1^2)/t2
+}
 
 .evd.qgpd <-
 function (p, loc = 0, scale = 1, shape = 0, lower.tail = TRUE) 
