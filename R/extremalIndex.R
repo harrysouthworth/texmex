@@ -1,10 +1,15 @@
-extremalIndex <- function(data,threshold)
+extremalIndex <- function(y,data=NULL,threshold)
 # intevals estimator of the Extremal Index, Ferro and Segers JRSS B (2003)
 # assumes data points equally spaced in time and no missing data (ie missing time points)
 {
+  if (!missing(data)) {
+     y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
+     y <- formula(paste(y, "~ 1"))
+     y <- model.response(model.frame(y, data=data))
+  }
   theCall <- match.call()
-  timeAll <- 1:length(data)
-  thExceedance <- data > threshold
+  timeAll <- 1:length(y)
+  thExceedance <- y > threshold
   thExceedanceProb <- mean(thExceedance)
   nExceed <- sum(thExceedance)
   exceedanceTimes <- timeAll[thExceedance]
@@ -16,17 +21,18 @@ extremalIndex <- function(data,threshold)
     Est <- (2 * sum(interExceedTimes)^2) / ( (nExceed-1) * sum( interExceedTimes^2) )
   }
   
-  EstIntervals <- min(1,Est)
+  EIintervals <- min(1,Est)
   
-  res <- list(EstIntervals = EstIntervals,
+  res <- list(EIintervals = EIintervals,
               threshold = threshold,
-              TotalN = length(data),
+              TotalN = length(y),
               nExceed = nExceed,
               thExceedanceProb = thExceedanceProb,
               call = theCall,
               interExceedTimes = interExceedTimes,
-              thExceedances = data[thExceedance],
+              thExceedances = y[thExceedance],
               exceedanceTimes = timeAll[thExceedance],
+              y = y,
               data = data)
   
   oldClass(res) <- "extremalIndex"
@@ -40,7 +46,7 @@ print.extremalIndex <- function(Est)
   cat("\nLength of original series",Est$TotalN,"\n")
   cat("Threshold", Est$threshold,"\n")
   cat("Number of Threshold Exceedances",Est$nExceed,"\n")
-  cat("Intervals estimator of Extremal Index", Est$EstIntervals,"\n")
+  cat("Intervals estimator of Extremal Index", Est$EIintervals,"\n")
 }
 
 show.extremalIndex <- print.extremalIndex 
@@ -50,73 +56,234 @@ plot.extremalIndex <- function(Est)
   NormInterExceedTimes <- Est$interExceedTimes * Est$thExceedanceProb
   
   StdExpQuantiles <- qexp(ppoints(NormInterExceedTimes))
-  Theta <- Est$EstIntervals
+  Theta <- Est$EIintervals
   
   plot(StdExpQuantiles, sort(NormInterExceedTimes),xlab="Standard Exponential Quauntiles",ylab="Interexceedance Times",cex=0.7)
   abline(v=qexp(1-Theta))
   abline(a = -qexp(1-Theta)/Theta, b=1/Theta)
+  title(paste("Threshold=",Est$threshold))
 }
 
-declust <- function(x, ...)
+declust <- function(y, data=NULL, ...)
 {
-  UseMethod("declust")
+  if (!missing(data)) {
+     y <- deparse(substitute(y))
+     y <- formula(paste(y, "~ 1"))
+     y <- model.response(model.frame(y, data=data))
+  }
+  UseMethod("declust",y)
+}
+
+declust.default <- function(y,data=NULL,verbose=TRUE,...)
+{
+  if(missing(data)){
+    ei <- extremalIndex(y,...)
+  } else {
+    ei <- extremalIndex(substitute(y),data,...)
+  }
+  if(verbose){
+    print(ei)
+  }
+  declust(ei)
 }
 
 declust.extremalIndex <- function(Est)
 {
   theCall <- match.call()
   
-  C <- floor(Est$EstIntervals * Est$nExceed) + 1
+  C <- floor(Est$EIintervals * Est$nExceed) + 1
 
   Times <- Est$interExceedTimes
   C <- min(C,length(Times)) # needed if short series and C < number of interexceedance times
   sTimes <- sort(Times, decr=TRUE)
-  while(sTimes[C-1] == sTimes[C]){
-    C <- C-1
+  while(sTimes[C-1] == sTimes[C]) C <- C-1
+  r <- sTimes[C]
+
+  clusters <- rep(1,length(Est$thExceedances))
+  clusters[-1] <- 1+cumsum(Times > r)
+  sizes <- tabulate(clusters)
+  nc <- length(sizes)
+
+  clusterMaxima <- sapply(1:nc,function(i) max(Est$thExceedances[clusters == i]))
+  isClusterMax <- rep(FALSE,length(clusters))
+  for(i in 1:nc){ 
+    isClusterMax[clusters == i & Est$thExceedances == max(Est$thExceedances[clusters == i])][1] <- TRUE
   }
 
-  clusters <- vector("list",sum(Times > sTimes[C])+1) # +1 since have one more exceedance than inter-exceedance times
-  clusters[[1]] <- c(Est$exceedanceTimes[1], Est$thExceedances[1])
-  Icluster <- 1
-
-  for(i in 1:(Est$nExceed - 1)) {
-    if(Times[i] > sTimes[C]){
-      Icluster <- Icluster + 1
-    }
-    clusters[[Icluster]] <- rbind(clusters[[Icluster]],
-                                  c(Est$exceedanceTimes[i+1], Est$thExceedances[i+1]))
-  }
-  
-  clusterMaxima <- sapply(clusters, function(x) if(is.null(dim(x)))x[2] else max(x[,2]))
-  
   res <- list(clusters = clusters,
+              sizes=sizes,
               clusterMaxima = clusterMaxima,
+              isClusterMax = isClusterMax,
+              y = Est$y,
               data = Est$data,
               threshold=Est$threshold,
-              theCall=theCall)
+              EIintervals = Est$EIintervals,
+              call=theCall,
+              InterExceedTimes=Times,
+              InterCluster = Times > sTimes[C],
+              thExceedances = Est$thExceedances,
+              exceedanceTimes = Est$exceedanceTimes,
+              r=r)
 
   oldClass(res) <- "declustered"
 
   res
 }
 
+
 print.declustered <- function(x){
-  print(x$theCall)
+  print(x$call)
   cat("\nThreshold ",x$threshold,"\n")
-  cat("Identified",length(x$clusters),"clusters.\n")
+  cat("Identified",length(x$sizes),"clusters.\n")
 }
 
 show.declustered <- print.declustered
 
 plot.declustered <- function(x,ylab="Data",...){
-  plot(x$data,xlab="",ylab=ylab)
+  plot(x$y,xlab="",ylab=ylab)
   abline(h=x$threshold,col=2)
-  for(i in 1:length(x$clusters)){
-    clust <- x$clusters[[i]]
-    if(is.null(dim(clust))){
-      points(clust[1],clust[2],col=2)
-    } else {
-      points(clust,type="b",col=2)
+  for(i in 1:length(x$sizes)){
+    points(x$exceedanceTimes[x$clusters == i],x$thExceedances[x$clusters == i],col=2,type="b")
+  }
+}
+
+bootExtremalIndex <- function(x){
+  if( class(x) == "extremalIndex"){
+    x <- declust(x)
+  } else if(class(x) != "declustered"){
+    stop("x must be of class extremalIndex or declust")
+  }
+  nc <- length(x$sizes)
+  boot.interExceedTimes <- boot.thExceedances <- NULL
+  for(i in 1:nc){
+    clust <- sample(unique(x$clusters),1)
+    boot.interExceedTimes <- c(boot.interExceedTimes,diff(x$exceedanceTimes[x$clusters == clust]))
+    boot.thExceedances <- c(boot.thExceedances,x$thExceedances[x$clusters == clust])
+    if(i < nc){
+      boot.interExceedTimes <- c(boot.interExceedTimes,sample(x$InterExceedTimes[x$InterCluster], 1))
     }
   }
+  
+  boot.exceedanceTimes <- cumsum(c(1,boot.interExceedTimes))
+  boot.data <- rep(-1,max(boot.exceedanceTimes))
+  boot.data[boot.exceedanceTimes] <- boot.thExceedances
+  
+  boot.data
+}
+
+extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(y,0.95),nint=10,nboot=100,alpha=.05,xlab="Threshold",addNexcesses=TRUE, estGPD=TRUE, ...){
+
+  if (!missing(data)) {
+     y <- deparse(substitute(y))
+     y <- formula(paste(y, "~ 1"))
+     y <- model.response(model.frame(y, data=data))
+  }
+  
+  EI <- SH <- SC <- 
+    list(m=numeric(nint),boot=matrix(0,nrow=nint,ncol=nboot))
+  
+  u <- seq(umin, umax, length = nint)
+  for (i in 1:nint) {
+    z <- extremalIndex(y,th=u[i])
+    EI$m[i] <- z$EIintervals
+    d <- declust(z)
+    if(estGPD){
+      gpd.d <- gpd.declustered(d)
+      SH$m[i] <- coef(gpd.d)[2]
+      SC$m[i] <- exp(coef(gpd.d)[1]) - SH$m[i]*u[i]
+    }
+
+    for(j in 1:nboot){
+      boot <- bootExtremalIndex(d)
+      z.b <- extremalIndex(boot,th=u[i])
+      EI$boot[i,j] <- z.b$EIintervals
+      if(estGPD){
+        gpd.b <- try(gpd.declustered(declust(z.b),cov="numeric"))
+        if(class(gpd.b) == "try-error"){
+          SH$boot[i,j] <- SC$boot[i,j] <- NA
+        } else {
+          SH$boot[i,j] <- coef(gpd.b)[2]
+          SC$boot[i,j] <- exp(coef(gpd.b)[1]) -  SH$boot[i,j]*u[i]
+        }
+      }
+    }
+  }
+  EI$ul <- apply(EI$boot,1,quantile,alpha/2)
+  EI$up <- apply(EI$boot,1,quantile,1-alpha/2)
+  if(estGPD){
+    SC$ul <- apply(SC$boot,1,quantile,alpha/2,na.rm=TRUE)
+    SC$up <- apply(SC$boot,1,quantile,1-alpha/2,na.rm=TRUE)
+    SH$ul <- apply(SH$boot,1,quantile,alpha/2,na.rm=TRUE)
+    SH$up <- apply(SH$boot,1,quantile,1-alpha/2,na.rm=TRUE)
+  }
+
+  plots <- function(l,...){
+    plot(u, l$m, ylim=c(min(l$ul),max(l$up)),type = "b", xlab=xlab, ...)
+    for (i in 1:nint) lines(c(u[i], u[i]), c(l$ul[i], l$up[i]))
+    if(addNexcesses){
+      axis(3,at=axTicks(1),labels=sapply(axTicks(1),function(u)max(declust(extremalIndex(y,th=u))$clusters)))
+      mtext("# threshold excesses")
+    }
+  }
+  
+  plots(EI,main="Extremal Index",ylab=expression(theta),...)
+  if(estGPD){
+    plots(SC,main="Scale parameter",ylab=expression(sigma),...)
+    plots(SH,main="Shape parameter",ylab=expression(xi),...)
+  }
+  
+  invisible()
+}
+
+gpd.declustered <- function(x, ...){
+  if(is.null(x$data)){
+    res <- gpd(x$clusterMaxima, th = x$threshold, ...)
+  } else {
+    response <- x$clusterMaxima
+    dat <- cbind(response,x$data[x$y>x$threshold,][x$isClusterMax,])
+    res <- gpd(response, data=dat, th = x$threshold, ...)
+  }
+
+  clusterRate <- max(x$clusters) / length(x$y)
+  if(class(res) == "gpd"){
+    res$rate <- clusterRate
+  } else if(class(res) == "bgpd") {
+    res$map$rate <- clusterRate
+  }
+  
+  res
+  
+}
+
+test.extremalIndex <- function(){
+  tol <- 0.0001
+  th <- quantile(rain,seq(0.7,0.99,len=10))
+  for(i in 1:length(th)){
+    texmex.ei <- extremalIndex(rain,th=th[i])
+    Ferro.ei  <- .extRemes.exi.intervals(rain > th[i])
+
+    Ferro.clust <- .extRemes.decluster.intervals(rain> th[i], Ferro.ei)
+    texmex.clust <- declust(texmex.ei)
+
+    checkEqualsNumeric(texmex.ei$EIintervals, Ferro.ei, 
+          tolerance = tol,msg="extremalIndex: extRemes implementation")
+    checkEqualsNumeric(texmex.clust$sizes, Ferro.clust$size,
+          tolerance = tol,msg="extremalIndex: declustering")
+  }
+
+# check passing data through data frames  
+
+  data <- data.frame(RAIN=rain[1:1000], rnorm=rnorm(1000), num=1:1000)
+  extremalIndexRangeFit(RAIN, data)
+  extremalIndexRangeFit(data$RAIN)
+
+  data.de <- declust(RAIN,data=data,th=th[1],verb=FALSE)
+  resp.de <- declust(data$RAIN,th=th[1],verb=FALSE)
+  
+  data.ei <- extremalIndex(RAIN,data=data,th=th[1])
+  resp.ei <- extremalIndex(data$RAIN,th=th[1])
+  
+  checkEqualsNumeric(data.ei$EIintervals,resp.ei$EIintervals,tolerance=tol,msg="extremalIndex: using data frame to pass response")
+  checkEqualsNumeric(data.de$clusters,resp.de$clusters,tolerance=tol,msg="extremalIndex: using data frame to pass numeric response to declustering")
+
 }
