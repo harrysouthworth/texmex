@@ -1,4 +1,9 @@
-gpd <- function(y, ...){
+gpd <- function(y, data, ...){
+  if (!missing(data)) {
+      y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
+      y <- formula(paste(y, "~ 1"))
+      y <- model.response(model.frame(y, data=data))
+  } 
   UseMethod("gpd",y)
 }
 
