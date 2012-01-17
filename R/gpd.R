@@ -1,4 +1,8 @@
-gpd <- 
+gpd <- function(y, ...){
+  UseMethod("gpd",y)
+}
+
+gpd.default <- 
 function (y, data, th, qu, phi = ~1, xi = ~1,
           penalty = "gaussian", prior = "gaussian", method = "optimize",
 		      cov="observed",
