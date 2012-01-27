@@ -40,9 +40,8 @@ extremalIndex <- function(y,data=NULL,threshold)
   res
 }
 
-print.extremalIndex <- function(Est)
+print.extremalIndex <- function(Est,...)
 {
-  print(Est$call) 
   cat("\nLength of original series",Est$TotalN,"\n")
   cat("Threshold", Est$threshold,"\n")
   cat("Number of Threshold Exceedances",Est$nExceed,"\n")
@@ -51,14 +50,14 @@ print.extremalIndex <- function(Est)
 
 show.extremalIndex <- print.extremalIndex 
 
-plot.extremalIndex <- function(Est)
+plot.extremalIndex <- function(Est,...)
 {
   NormInterExceedTimes <- Est$interExceedTimes * Est$thExceedanceProb
   
   StdExpQuantiles <- qexp(ppoints(NormInterExceedTimes))
   Theta <- Est$EIintervals
   
-  plot(StdExpQuantiles, sort(NormInterExceedTimes),xlab="Standard Exponential Quantiles",ylab="Interexceedance Times",cex=0.7)
+  plot(StdExpQuantiles, sort(NormInterExceedTimes),xlab="Standard Exponential Quantiles",ylab="Interexceedance Times",cex=0.7,...)
   abline(v=qexp(1-Theta))
   abline(a = -qexp(1-Theta)/Theta, b=1/Theta)
   title(paste("Threshold=",Est$threshold))
@@ -136,7 +135,7 @@ declust.extremalIndex <- function(Est,r=NULL)
 }
 
 
-print.declustered <- function(x){
+print.declustered <- function(x,...){
   print(x$call)
   cat("\nThreshold ",x$threshold,"\n")
   cat("Declustering using the",x$method,"method, run length",x$r,"\n")
