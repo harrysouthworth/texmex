@@ -37,7 +37,7 @@ xlab = "Threshold", ylab = NULL, main = NULL, ...)
 }
 
 \author{ Stuart Coles, Janet E Heffernan, Harry Southworth }
-\seealso{ gpd }
+\seealso{ \code{\link{gpd}} }
 \examples{
 par(mfrow=c(1,2))
 gpdRangeFit(rain)
