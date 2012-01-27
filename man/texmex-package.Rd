@@ -29,6 +29,8 @@ License: \tab GPL (>=2) | BSD\cr
 
 \code{\link{bootmex}}: Bootstrap estimation for parameters in generalized Pareto models
                 and in the dependence structure.
+                
+\code{\link{declust}}: Estimation of extremal index and subsequent declustering of dependent sequences using the intervals estimator of Ferro and Segers.
 
 \code{\link{validate.texmex}}: Use the \code{RUnit} package to run lots of tests to
             establish a high degree of confidence that the functions do what
@@ -43,7 +45,10 @@ Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach
 	for multivariate extreme values, Journal of the Royal Statistical
-	society B, 66, 497 -- 546, 2004
+	society B, 66, 497 -- 546, 2004.
+  
+C.A.T Ferro and J. Segers, Inference for Clusters of Extreme Values, Journal of the Royal Statistical
+	society B, 65, 545 -- 556, 2003.
 }
 \keyword{models}
 \keyword{multivariate}
