@@ -1,15 +1,14 @@
 \name{gpdRangeFit}
 \alias{gpdRangeFit}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Estimate generalized Pareto distribution parameters over a range of values }
 \description{
   Estimate generalized Pareto distribution parameters over a range of values, using
   maximum (penalized) likelihood.
 }
 \usage{
-gpdRangeFit(data, umin, umax, nint = 10, 
+gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
             penalty = "gaussian", priorParameters = NULL, alpha=0.05,
-xlab = "Threshold", ylab = NULL, main = NULL, ...)
+xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
@@ -27,6 +26,7 @@ xlab = "Threshold", ylab = NULL, main = NULL, ...)
   \item{xlab}{ Label for the x-axis. }
   \item{ylab}{ Label for the y-axis. }
   \item{main}{ The main title. }
+  \item{addNexcesses}{ Annotate top axis with numbers of threshold excesses arising with the corresponding values of threshold on the bottom axis.}
   \item{\dots}{ Arguments to \code{plot} }
 }
 \details{
