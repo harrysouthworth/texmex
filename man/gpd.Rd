@@ -1,5 +1,6 @@
 \name{gpd}
 \alias{gpd}
+\alias{gpd.default}
 \alias{print.gpd}
 \alias{show.gpd}
 \alias{summary.gpd}
@@ -140,7 +141,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   
   Working with the log of the scale parameter improves the
   stability of computations, making  a quadratic penalty more 
-  appropriate and enabling the inclusion of covariates in the model for the scale parameter, which must remain positive.  We therefore work with phi=log(xi).  A quadratic penalty can be 
+  appropriate and enabling the inclusion of covariates in the model for the scale parameter, which must remain positive.  We therefore work with \eqn{\phi}=log(\eqn{\sigma}).  All specification of priors or penalty functions refer to \eqn{\phi} rather than \eqn{\sigma}.  A quadratic penalty can be 
   thought of as a Gaussian prior distribution, whence the terminology of the function.
   
   Parameters of the GPD fitted to excesses above threshold \code{th} are estimated by using penalized maximum likelihood (\code{method="optimize"}), or by simulating from the posterior distribution of the model parameters using a Metropolis algorithm (\code{method="simulate"}).  In the latter case, \code{start} is used as a starting value for the Metropolis algorithm; in its absence, the maximum penalized likelhood point estimates are computed and used.
@@ -169,8 +170,8 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   When \code{method = "simulate"} the \code{plot} function produces 
   diagnostic plots for the Markov chains used to simulate from the posterior 
   distributions for the model parameters.  If the chains have converged on 
-  the posterior distributions, the trace plots should look like `fat hairy 
-  caterpillars' and their cumulative means should converge rapidly. Moreover, 
+  the posterior distributions, the trace plots should look like "fat hairy 
+  caterpillars" and their cumulative means should converge rapidly. Moreover, 
   the autocorrelation functions should converge quickly to zero.
 
   When \code{method = "simulate"} the \code{print} and \code{summary} functions 
@@ -248,6 +249,9 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
             high thresholds, Journal of the Royal Statistical Society B,
             53, 393 -- 442, 1990}
 
+\seealso{
+See also \code{\link{gpd}}. 
+}
 \examples{
   x <- rnorm(1000)
   mod <- gpd(x, qu = 0.7)
