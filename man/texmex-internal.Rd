@@ -13,7 +13,6 @@
 \alias{PosGumb.Laplace.negProfileLogLik}
 \alias{Profile_likelihood_HT_unc}
 \alias{roots}
-\alias{Dcond estimate_HT}
 \alias{estimate_HT_KPT_joint_posneg_nm}
 \alias{initial_posneg}
 \alias{inv_Laplace}
@@ -22,6 +21,9 @@
 \alias{profile_minmax_joint_posneg_KT}
 \alias{Dcond}
 \alias{estimate_HT}
+\alias{.extRemes.decluster.intervals}
+\alias{.extRemes.decluster.runs}
+\alias{.extRemes.exi.intervals}
 \title{Internal functions for texmex}
 \description{Internal functions used by the \code{texmex} package.}
 
@@ -53,6 +55,9 @@ profile_minmax_joint_posneg_KT (pars,listdata,u,q1=0,q2=1,...,sill=-10^(40))
 initial_posneg(D,...)
 estimate_HT_KPT_joint_posneg_nm(pars,x,listr,params=TRUE,...,k=3)
 inv_Laplace(p)
+.extRemes.decluster.intervals(z, ei) 
+.extRemes.decluster.runs(z, r) 
+.extRemes.exi.intervals(z) 
 }
 
 \arguments{
@@ -87,14 +92,14 @@ inv_Laplace(p)
 \item{yex, ydep}{Data for model estimation: \code{yex} is the explanatory variable on which the model conditions, and \code{ydep} is the dependent variable.}
 \item{par, listr, silly, list, pars, params, c, d, zi, zk, lev, Zj, Zk, Zestfun, listdata,
 q1, q2, sill, D, k}{Arguments to independently coded test functions implementing constrained estimation of the H+T2004 conditional dependence model with Laplace margins.}
-}
+\item{z,r,ei}{Arguments to extRemes package functions used for testing of declustering code. Numeric z logical indicating threshold excess, r run length for runs declustering and ei extremal index estimate.}}
 \details{
 None of these functions are intended to be used explicitly.
 
 The plotting functions are used internally by \code{\link{plot.gpd}}.
 
 Some of the code is based on code that appears in the \code{ismev} package,
-originally written by Stuart Coles. 
+originally written by Stuart Coles, the evd package by Alec Stephenson and extRemes package by Eric Gilleland, Rick Katz and Greg Young. 
 
 Code to carry out estimation of H+T2004 under Laplace margins and constrained estimation was written by Yiannis Papastathopoulos, and is used here for validation purposes.
 }
