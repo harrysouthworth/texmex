@@ -4,6 +4,7 @@
 \alias{test.mex}
 \alias{test.bootgpd}
 \alias{test.bootmex}
+\alias{test.extremalIndex}
 \alias{test.gpdRangeFit}
 \alias{test.MCS}
 \alias{test.mexDependence}
