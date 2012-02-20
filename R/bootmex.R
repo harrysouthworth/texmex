@@ -21,8 +21,8 @@ function (x, R = 100, nPass = 3, trace = 10) {
             					qu = qu, sigma = exp(param[1]), xi = param[2])
 		    } else {
 			    y <- x
-			    y[y < 0] <- exp(y[y < 0]) / 2
-			    y[y >= 0] <- 1 - exp(-y[y >= 0]) / 2
+			    y[x < 0] <- exp(x[x < 0]) / 2
+			    y[x >= 0] <- 1 - exp(-x[x >= 0]) / 2
 			    res <- revTransform(y, data = data, th = th, 
 					     			qu = qu, sigma = exp(param[1]), xi = param[2])
 		    }
