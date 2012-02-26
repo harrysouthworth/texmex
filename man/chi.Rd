@@ -16,8 +16,8 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
                    cicol=1, xlim=c(0, 1), ylimChi = c(-1, 1), ylimChiBar = c(-1, 1),
                      mainChi = "Chi", mainChiBar = "Chi Bar",
                      xlab = "Quantile", 
-                     ylabChi = expression(chi),#"Chi",
-                     ylabChiBar = expression(bar(chi)), #"Chi Bar",
+                     ylabChi = expression(chi(u)),#"Chi(u)"
+                     ylabChiBar = expression(bar(chi)(u)), #"Chi Bar(u)"
                      ask, ...)
 }
 \arguments{

@@ -1,4 +1,4 @@
-gpd.fit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
+gpdFit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0, hessian=TRUE) {
 
    gpd.lik <- function(par, y, th, X.phi, X.xi, penalty = "none", 

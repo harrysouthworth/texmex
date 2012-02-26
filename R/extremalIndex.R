@@ -40,30 +40,30 @@ extremalIndex <- function(y,data=NULL,threshold)
   res
 }
 
-print.extremalIndex <- function(Est,...)
+print.extremalIndex <- function(x,...)
 {
-  cat("\nLength of original series",Est$TotalN,"\n")
-  cat("Threshold", Est$threshold,"\n")
-  cat("Number of Threshold Exceedances",Est$nExceed,"\n")
-  cat("Intervals estimator of Extremal Index", Est$EIintervals,"\n")
+  cat("\nLength of original series",x$TotalN,"\n")
+  cat("Threshold", x$threshold,"\n")
+  cat("Number of Threshold Exceedances",x$nExceed,"\n")
+  cat("Intervals estimator of Extremal Index", x$EIintervals,"\n")
 }
 
 show.extremalIndex <- print.extremalIndex 
 
-plot.extremalIndex <- function(Est,...)
+plot.extremalIndex <- function(x,...)
 {
-  NormInterExceedTimes <- Est$interExceedTimes * Est$thExceedanceProb
+  NormInterExceedTimes <- x$interExceedTimes * x$thExceedanceProb
   
   StdExpQuantiles <- qexp(ppoints(NormInterExceedTimes))
-  Theta <- Est$EIintervals
+  Theta <- x$EIintervals
   
   plot(StdExpQuantiles, sort(NormInterExceedTimes),xlab="Standard Exponential Quantiles",ylab="Interexceedance Times",cex=0.7,...)
   abline(v=qexp(1-Theta))
   abline(a = -qexp(1-Theta)/Theta, b=1/Theta)
-  title(paste("Threshold=",Est$threshold))
+  title(paste("Threshold=",x$threshold))
 }
 
-declust <- function(y, data=NULL, ...)
+declust <- function(y, r=NULL, data=NULL, ...)
 {
   if (!missing(data)) {
      y <- deparse(substitute(y))
@@ -73,7 +73,7 @@ declust <- function(y, data=NULL, ...)
   UseMethod("declust",y)
 }
 
-declust.default <- function(y,data=NULL,verbose=TRUE,r=NULL,...)
+declust.default <- function(y,r=NULL,data=NULL,verbose=TRUE,...)
 {
   if(missing(data)){
     ei <- extremalIndex(y,...)
@@ -87,14 +87,14 @@ declust.default <- function(y,data=NULL,verbose=TRUE,r=NULL,...)
   declust(ei,r=r)
 }
 
-declust.extremalIndex <- function(Est,r=NULL)
+declust.extremalIndex <- function(y,r=NULL,...)
 {
   theCall <- match.call()
-  Times <- Est$interExceedTimes
+  Times <- y$interExceedTimes
   sTimes <- sort(Times, decr=TRUE)
   
   if(is.null(r)){
-    C <- floor(Est$EIintervals * Est$nExceed) + 1
+    C <- floor(y$EIintervals * y$nExceed) + 1
     C <- min(C,length(Times)) # needed if short series and C < number of interexceedance times
     while(sTimes[C-1] == sTimes[C]) C <- C-1
     r <- sTimes[C]
@@ -103,30 +103,30 @@ declust.extremalIndex <- function(Est,r=NULL)
     method <- "runs"
   }
 
-  clusters <- rep(1,length(Est$thExceedances))
+  clusters <- rep(1,length(y$thExceedances))
   clusters[-1] <- 1+cumsum(Times > r)
   sizes <- tabulate(clusters)
   C <- max(clusters)
   
-  clusterMaxima <- sapply(1:C,function(i) max(Est$thExceedances[clusters == i]))
+  clusterMaxima <- sapply(1:C,function(i) max(y$thExceedances[clusters == i]))
   isClusterMax <- rep(FALSE,length(clusters))
   for(i in 1:C){ 
-    isClusterMax[clusters == i & Est$thExceedances == max(Est$thExceedances[clusters == i])][1] <- TRUE
+    isClusterMax[clusters == i & y$thExceedances == max(y$thExceedances[clusters == i])][1] <- TRUE
   }
 
   res <- list(clusters = clusters,
               sizes=sizes,
               clusterMaxima = clusterMaxima,
               isClusterMax = isClusterMax,
-              y = Est$y,
-              data = Est$data,
-              threshold=Est$threshold,
-              EIintervals = Est$EIintervals,
+              y = y$y,
+              data = y$data,
+              threshold=y$threshold,
+              EIintervals = y$EIintervals,
               call=theCall,
               InterExceedTimes=Times,
               InterCluster = Times > sTimes[C],
-              thExceedances = Est$thExceedances,
-              exceedanceTimes = Est$exceedanceTimes,
+              thExceedances = y$thExceedances,
+              exceedanceTimes = y$exceedanceTimes,
               r=r, nClusters = C, method=method)
 
   oldClass(res) <- "declustered"
@@ -249,16 +249,16 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
   invisible()
 }
 
-gpd.declustered <- function(x, ...){
-  if(is.null(x$data)){
-    res <- gpd(x$clusterMaxima, th = x$threshold, ...)
+gpd.declustered <- function(y, ...){
+  if(is.null(y$data)){
+    res <- gpd(y$clusterMaxima, th = y$threshold, ...)
   } else {
-    response <- x$clusterMaxima
-    dat <- cbind(response,x$data[x$y>x$threshold,][x$isClusterMax,])
-    res <- gpd(response, data=dat, th = x$threshold, ...)
+    response <- y$clusterMaxima
+    dat <- cbind(response,y$data[y$y>y$threshold,][y$isClusterMax,])
+    res <- gpd(response, data=dat, th = y$threshold, ...)
   }
 
-  clusterRate <- max(x$clusters) / length(x$y)
+  clusterRate <- max(y$clusters) / length(y$y)
   if(class(res) == "gpd"){
     res$rate <- clusterRate
   } else if(class(res) == "bgpd") {

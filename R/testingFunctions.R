@@ -7,28 +7,28 @@
 # Date Papastathopoulos code: 2011-06-22
 # Date extRemes installed : 2012-01-10
 
-.extRemes.decluster.intervals <- function (z, ei) 
+.extRemes.decluster.intervals <- function (Z, ei) 
 {
     if (ei >= 1) {
         r <- 0
     }
     else {
-        s <- c(1:length(z))[z]
+        s <- c(1:length(Z))[Z]
         t <- diff(s)
         temp <- rev(sort(t))
-        nc <- 1 + floor(ei * (sum(z) - 1))
+        nc <- 1 + floor(ei * (sum(Z) - 1))
         while ((nc > 1) && (temp[nc - 1] == temp[nc])) nc <- nc - 1
         r <- temp[nc]
     }
-    out <- .extRemes.decluster.runs(z, r)
+    out <- .extRemes.decluster.runs(Z, r)
     out$scheme <- "intervals"
     out
 }
 
-.extRemes.decluster.runs <- function (z, r) 
+.extRemes.decluster.runs <- function (Z, r) 
 {
-    nx <- sum(z)
-    s <- c(1:length(z))[z]
+    nx <- sum(Z)
+    s <- c(1:length(Z))[Z]
     t <- diff(s)
     cluster <- rep(1, nx)
     if (nx > 1) 
@@ -42,15 +42,15 @@
         r = r)
 }
 
-.extRemes.exi.intervals <- function(z) 
+.extRemes.exi.intervals <- function(Z) 
 {
-    if (sum(z) <= 1) {
+    if (sum(Z) <= 1) {
         warning("estimator undefined: too few exceedances")
         return(1)
     }
     else {
-        nz <- length(z)
-        s <- c(1:nz)[z]
+        nz <- length(Z)
+        s <- c(1:nz)[Z]
         t <- diff(s)
         if (max(t) <= 2) {
             t1 <- mean(t)

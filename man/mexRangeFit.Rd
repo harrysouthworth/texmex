@@ -7,7 +7,7 @@ Estimate dependence parameters in a conditional multivariate extreme values mode
 Diagnostic tool to aid the choice of threshold to be used for the estimation of the dependence parameters in the conditional multivariate extreme values model of Heffernan and Tawn, 2004.  
 }
 \usage{
-mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), R = 10, nPass=3, trace=10, col = "red", bootcol = "grey", margins = "laplace", constrain = TRUE, v = 10, ...)
+mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), R = 10, nPass=3, trace=10, col = 2, bootcol = "grey", margins = "laplace", constrain = TRUE, v = 10, addNexcesses = TRUE, ...)
 }
 \arguments{
   \item{x}{An object of class \code{\link{mex}} or \code{\link{migpd}}.}
@@ -24,6 +24,7 @@ Plotting colour for the bootstrap estimates of the dependence parameters.}
   \item{margins}{Argument passed to function \code{\link{mexDependence}}.}
   \item{constrain}{Argument passed to function \code{\link{mexDependence}}.}
   \item{v}{Argument passed to function \code{\link{mexDependence}}.}
+  \item{addNexcesses}{Logical, whether to annotate the top axis with the number of excesses corresponding to each threshold.}
   \item{\dots}{
 Further graphical parameters may be passed, which will be used for plotting.
 }

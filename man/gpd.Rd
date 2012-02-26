@@ -23,10 +23,11 @@
 Pareto distribution, possibly with explanatory variables.
 }
 \usage{
-gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
+gpd(y, data, ...)
+\method{gpd}{default}(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     prior = "gaussian", method = "optimize", cov="observed", start = NULL, priorParameters = NULL,
     maxit = 10000, trace = NULL,
-    iter = 10500, burn = 500, thin = 1, jump.cov, jump.const, verbose = TRUE)
+    iter = 10500, burn = 500, thin = 1, jump.cov, jump.const, verbose = TRUE,...)
 \method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
@@ -37,8 +38,6 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
 \method{print}{bgpd}(x, print.seed=FALSE, ...)
 \method{summary}{bgpd}(object, ...)
 \method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
-\method{predict}{gpd}(object, newdata=NULL, type=c("return level", "link"), se.fit=FALSE, ci.fit=FALSE, M=1000, alpha=.050)
-\method{rl}{gpd}(object, M=1000, newdata)
 \method{coef}{bgpd}(object, ...)
 \method{coefficients}{bgpd}(object, ...)
 \method{print}{summary.gpd}(x, digits=3, ...)
@@ -127,8 +126,6 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   \item{density.adjust}{Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
-  \item{M}{In \code{predict} and \code{rl}, the M-observation return level is computed. Defaults
-           to \code{M = 1000}.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
@@ -156,7 +153,7 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   diagnostic plots for the fitted generalized Pareto model. These differ 
   depending on whether or not there are covariates in the model.  If there 
   are no covariates then the diagnostic plots are PP- and QQ-plots, a 
-  return level plot and a histogram of the data with superimposed generalized 
+  return level plot (produced by \code{plotrl.gpd}) and a histogram of the data with superimposed generalized 
   Pareto density estimate.  These are all calculated using the data on 
   the original scale. If there are covariates in the model then the 
   diagnostics consist of PP- and QQ- plots calculated by using the model 
@@ -242,6 +239,9 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
   that is reasonably high (around 40\% when there are no covariates, lower
   otherwise). 
   }
+  
+\seealso{ \code{\link{rl.gpd}}, \code{\link{predict.gpd}}, \code{\link{gpd.declustered}}.}
+
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on the \code{gpd.fit} function
   in the \code{ismev} package and is due to Stuart Coles.}
 
@@ -249,9 +249,6 @@ gpd(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
             high thresholds, Journal of the Royal Statistical Society B,
             53, 393 -- 442, 1990}
 
-\seealso{
-See also \code{\link{gpd}}. 
-}
 \examples{
   x <- rnorm(1000)
   mod <- gpd(x, qu = 0.7)

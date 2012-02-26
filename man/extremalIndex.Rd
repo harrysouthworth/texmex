@@ -21,24 +21,23 @@ Given a threshold which defines excesses above that threshold, estimate the extr
 \usage{
 extremalIndex(y, data = NULL, threshold)
 extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax = quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, xlab = "Threshold", addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE, trace = 10, ...)
-\method{plot}{extremalIndex}(Est)
-\method{print}{extremalIndex}(Est)
-\method{show}{extremalIndex}(Est)
-declust(y, data = NULL, ...)
-\method{declust}{extremalIndex}(Est, r=NULL)
-\method{print}{declustered}(x)
-\method{show}{declustered}(x)
+\method{plot}{extremalIndex}(x,...)
+\method{print}{extremalIndex}(x,...)
+\method{show}{extremalIndex}(x,...)
+declust(y, r=NULL, data = NULL, ...)
+\method{declust}{extremalIndex}(y, r=NULL,...)
+\method{print}{declustered}(x,...)
+\method{show}{declustered}(x,...)
 \method{plot}{declustered}(x, ylab = "Data",...)
 bootExtremalIndex(x)
-\method{gpd}{declustered}(x, ...)
+\method{gpd}{declustered}(y, ...)
 }
 \arguments{
-  \item{y}{ Either a numeric vector or the name of a variable in \code{data}.}
+  \item{y}{ Argument to function \code{extremalIndex}: either a numeric vector or the name of a variable in \code{data}.}
   \item{data}{ A data object containing \code{y} and any covariates. }
   \item{threshold}{ The threshold for \code{y}, exceedances above which will be used to   estimate the extremal index and carry out automatic declustering.}
-  \item{Est}{ Object of class "extremalIndex" returned by a call to \code{extremalIndex}.}
+  \item{x}{ Objects passed to methods. }
   \item{r}{ Positivie integer: run length to be used under "runs" declustering. If specified then so-called "runs" declustering will be carried out, otherwise defaults to NULL in which case the automatic "intervals" declustering method of Ferro and Segers is used.}
-  \item{x}{ Object of class "declustered" returned by a call to \code{declust}. }
   \item{umin}{ The minimum threshold above which to esimate the parameters. }
   \item{umax}{ The maximum threshold above which to esimate the parameters. }
   \item{nint}{ The number of thresholds at which to perform the estimation. }
@@ -50,7 +49,7 @@ bootExtremalIndex(x)
   \item{addNexcesses}{ Whether to annotate the top axis of plots with the number of excesses above the corresponding threhsold. Defaults to \code{TRUE}. }
   \item{estGPD}{ Whether to estimate GPD parameters at each choice of thereshold -- defaults to \code{TRUE} in which case the GPD parameters are estimated.}
   \item{verbose}{Whether to report on progress in RangeFit calculations. Defaults to \code{TRUE}}
-  \time{trace}{How frequently to report bootstrap progress in EangeFit calculations.  Defaults to 10.} 
+  \item{trace}{How frequently to report bootstrap progress in EangeFit calculations.  Defaults to 10.} 
   \item{...}{Further arguments to methods.}
 }
 \details{

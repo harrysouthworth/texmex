@@ -18,7 +18,12 @@
 \alias{test.plot.gpd}
 \alias{test.plot.mexDependence}
 \alias{test.plot.migpd}
+\alias{test.plot.lp.gpd}
 \alias{test.plot.predict.mex}
+\alias{test.plotrl.gpd}
+\alias{test.predict.bgpd}
+\alias{test.predict.bootgpd}
+\alias{test.predict.gpd}
 \alias{test.predict.mex}
 \alias{test.qgpd}
 \alias{test.rgpd}
@@ -29,6 +34,8 @@
 \alias{test.info.gpd}
 \alias{test.plot.mex}
 \alias{test.revTransform}
+\alias{test.predict.gpd}
+\alias{test.predict.bgpd}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Validate the texmex package
@@ -77,7 +84,7 @@ values (with discussion). Journal of the Royal Statistical Society, Series B, vo
 Janet E. Heffernan, Harry Southworth
 }
 \note{
-Over 250 tests are performed, some of which run MCMC or bootstrap algorithms.
+Around 400 checks are performed, some of which run MCMC or bootstrap algorithms.
 As a result, the function takes a while to run.
 }
 
