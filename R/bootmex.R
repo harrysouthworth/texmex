@@ -81,7 +81,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
         ggpd <- migpd(g, mth = mar$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dth = dth, which = which, margins=margins, constrain=constrain, v=v)
+        gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins, constrain=constrain, v=v)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$dependence$coefficients, 
                     Z = gd$dependence$Z,
