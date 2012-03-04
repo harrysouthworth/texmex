@@ -24,7 +24,7 @@ function( object, mth, probs=c( .05, .5, .95 ), ... ){
               }
 
 	ans <- apply( res, 2, sumfun, probs ) # Summary of expected values
-	dn <- paste( "E(", dimnames( object$data$simulated)[[ 2 ]] ,"|", names( object$data$simulated )[[ 1 ]] , ">Q",100*object$pqu,")", sep="" )
+	dn <- paste( dimnames( object$data$simulated)[[ 2 ]] ,"|", names( object$data$simulated )[[ 1 ]] , ">Q",100*object$pqu, sep="" )
 	dimnames( ans )[[ 2 ]] <- dn
 
     # Get the threshold exceedence probabilities
@@ -71,7 +71,7 @@ function( x, ... ){
         cat( "\nResults from", x$B, "bootstrap runs.\n" )
     }
 	cat( paste( "\nConditioned on ", x$which, " being above its ", 100*x$pqu, "th percentile.\n\n", sep = "" ) )
-	cat( "\nExpected values:\n\n" )
+	cat( "\nConditional Mean and Quantiles:\n\n" )
 	print( signif(x$ans,3), ... )
 
 	cat( "\nConditional probability of threshold exceedance:\n\n" )
