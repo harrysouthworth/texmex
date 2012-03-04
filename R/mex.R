@@ -1,4 +1,4 @@
-mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",constrain=TRUE,v=10,
+mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=10,
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
@@ -29,10 +29,7 @@ mex <- function(data, which, mth, mqu, dth, dqu, margins="laplace",constrain=TRU
                 maxit=maxit, trace=trace, verbose=verbose,
                 priorParameters=priorParameters)
 
-	if (!missing(dth)){
-		dqu <- mean(data[,which] > dth)
-	}
-	else if (missing(dqu)){
+	if (missing(dqu)){
 		dqu <- res1$mqu[1]
 	}
 
