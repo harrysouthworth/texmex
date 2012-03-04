@@ -82,7 +82,7 @@ print.summary.bootgpd <- function(x, ...){
     invisible()
 }
 
-plot.bootgpd <- function(x, col="blue", border=FALSE, ...){
+plot.bootgpd <- function(x, col=4, border=FALSE, ...){
 	pfun <- function(x, col, border, xlab,...){
 		d <- density(x, n=100)
 		hist(x, prob=TRUE, col=col, border=border, main="", xlab=xlab, ...)
