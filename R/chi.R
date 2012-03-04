@@ -131,6 +131,7 @@ plot.chi <- function(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty = 1, cilty = 2, co
      op <- par(ask = TRUE)
      on.exit(par(op))
   }
+  ChiBarAsympIndep <- prod(tail(x$chibar[,3]) < 1)
   if (show["ChiBar"]) {
     matplot(x$quantile, x$chibar, type = "l", lty = lty, col = col, 
             xlim = xlim, ylim = ylimChiBar, main = mainChiBar, xlab = xlab, 
@@ -140,7 +141,6 @@ plot.chi <- function(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty = 1, cilty = 2, co
       segments(x$qlim[1], 1, x$qlim[2], 1, lty = 5, col = "grey")
       segments(x$qlim[1],-1, x$qlim[2],-1, lty = 5, col = "grey")
     }
-    ChiBarAsympIndep <- prod(tail(x$chibar[,3]) < 1)
   }
   if (show["Chi"]) {
     if (ChiBarAsympIndep) {
@@ -252,6 +252,8 @@ test.chi <- function(){
 test.plot.chi <- function(){
   chi <- chi(wavesurge)
   par(mfrow=c(1,2),pty="m")
-  res <- plot(chi,mainChi="Figure 8.11 of Coles (2001)\nChi")
+  res <- plot(chi,mainChiBar="Figure 8.11 of Coles (2001)\nChi Bar")
+  plot(chi, show=c("Chi"=FALSE,"ChiBar"=TRUE))
+  plot(chi, show=c("Chi"=TRUE,"ChiBar"=FALSE))
   checkEquals(res,NULL,msg = "plot.chi: check successful execution")
 }
