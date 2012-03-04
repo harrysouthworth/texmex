@@ -1,5 +1,5 @@
 `mexDependence` <-
-function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1,
+function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1,
           PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
 {
    theCall <- match.call()
@@ -23,14 +23,12 @@ function (x, which, dth, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit
    else if (is.character(which))
        which <- match(which, dimnames(x$transformed)[[2]])
    
-   if (missing(dth) & missing(dqu)) {
+   if (missing(dqu)) {
        cat("Assuming same quantile for thesholding as was used to fit corresponding marginal model...\n")
        dqu <- x$mqu[which]
    }
-   else if (missing(dqu))
-       dqu <- x$mqu[which]
-   if (missing(dth))
-       dth <- quantile(x$transformed[, which], dqu)
+   dth <- quantile(x$transformed[, which], dqu)
+       
    dependent <- (1:(dim(x$data)[[2]]))[-which]
    if (length(dqu) < length(dependent))
        dqu <- rep(dqu, length = length(dependent))
