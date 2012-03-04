@@ -1,5 +1,5 @@
 `mexRangeFit` <-
-function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
+function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nPass=3, trace=10,
           col=2,bootcol="grey",margins="laplace", constrain=TRUE, v=10, addNexcesses=TRUE,...)
 {
   if (class(x) == "mex"){
@@ -14,14 +14,12 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), R=10, nPass=3, trace=10,
     }
     constrain <- x$dependence$constrain
     v <- x$dependence$v
-    start <- x
     x <- x[[1]]
     margins <- x$margins
   } else {
     if (class(x) != "migpd"){
       stop("object should have class mex or migpd")
     }
-    start <- mexDependence(x=x,which=which,dqu=median(quantiles),margins=margins, constrain=constrain, v=v)
   } 
   
   if (missing(which)) {
@@ -81,8 +79,18 @@ test.mexRangeFit <- function(){
 # now 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
+  m <- mex(wavesurge,which=1,mqu=0.7)
   mexRangeFit(wavesurge.fit,which=1,margins="laplace",
               main="Dependence threshold selection,\nwave and surge data, Coles 2001",addNexcesses=FALSE)
   mexRangeFit(wavesurge.fit,which=1,margins="gumbel",constrain=FALSE,
               main="Dependence threshold selection,\nwave and surge data, Coles 2001",addNexcesses=FALSE)
+              
+# test specification of starting values
+  R <- 5
+  qu <- c(0.5,0.7,0.9)
+  mexRangeFit(wavesurge.fit,which=1,margins="laplace",constrain=TRUE, start=c(0.01,0.01),R=R,quantiles = qu,
+              main="start=c(0.01,0.01)",addNexcesses=FALSE)
+  mexRangeFit(wavesurge.fit,which=2,margins="laplace",constrain=TRUE, start=m,R=R,quantiles = qu,
+              main="start=fitted model",addNexcesses=FALSE)
+              
 }
