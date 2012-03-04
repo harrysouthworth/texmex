@@ -93,6 +93,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     X.xi <- X.xi[y > th, ]    
     rate <- mean(y > th)
 
+    allY <- y
     y <- y[y > th]
     if (!is.matrix(X.phi)) {
         X.phi <- matrix(X.phi, ncol = 1)
@@ -172,7 +173,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     o$X.xi <- X.xi
 	  o$priorParameters <- priorParameters
 	  if (missing(data)) {
-        data <- NULL
+        data <- allY
     }
     o$data <- data
                      
@@ -289,6 +290,9 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
             }
         }
 
+        if (missing(data)) {
+          data <- allY
+        }
         res <- list(call=theCall, threshold=u , map = o,
                     burn = burn, thin = thin, 
                     chains=res, y=y, data=data,
