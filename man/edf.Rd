@@ -1,7 +1,6 @@
 \name{edf}
 \alias{edf}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Computje empirical distributino function }
+\title{ Compute empirical distribution function }
 \description{
   Compute the empirical distribution function
 }

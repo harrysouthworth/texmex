@@ -10,15 +10,15 @@
 \title{Parametric bootstrap for generalized Pareto models
 }
 \description{
-Parametric bootstrap for generalized Pareto models with or without covariates
+Parametric bootstrap for fitted generalized Pareto models with or without covariates
 }
 \usage{bootgpd(x, R = 100, trace = 10)
-\method{plot}{bootgpd}(x, col="blue", border=FALSE, ...)
+\method{plot}{bootgpd}(x, col=4, border=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
 \item{x}{An object of class \code{'gpd'}}
-\item{R}{ The number of replicates to simulate. Defaults to \code{R = 100}.}
+\item{R}{ The number of bootstrap replicates to simulate. Defaults to \code{R = 100}.}
 \item{trace}{Report progress to the user every \code{trace} replicates. Defaults to \code{trace = 10}.}
 \item{col}{Colour of histogram bars}
 \item{border}{Whether or not to draw borders between histogram bars}
@@ -39,8 +39,8 @@ median is also returned.
 The \code{summary} method returns the same as the \code{print} method, but also the
 bootstrap estimate of the covariance of the parameters. When printed,
 the correlation (not covariance) is displayed. The covariance might
-be wanted to pass into \code{gpd} using \code{method = "simulate"}. In
-particular, in some circumstances the numerical estimate of the Hessian
+be wanted so that it can be passed into \code{gpd} using \code{method = "simulate"}. 
+In some circumstances the numerical estimate of the Hessian
 of the parameters can be unstable, resulting in the Metropolis algorithm
 using a proposal distribution that is too narrow. This shows up as the
 acceptance rate of the algorithm being too high (above about 45\%).
@@ -56,7 +56,7 @@ The \code{plot} method displays histograms and kernel density estimates.
 }
 \author{Harry Southworth}
 
-\seealso{\code{\link{gpd}}}
+\seealso{\code{\link{gpd}}, \code{\link{bootmex}}}
 \examples{
 mod <- gpd(log(ALT.M), data=liver, qu=.7, xi=~as.numeric(dose))
 bmod <- bootgpd(mod)

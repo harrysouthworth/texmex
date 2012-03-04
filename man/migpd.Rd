@@ -1,10 +1,5 @@
 \name{migpd}
 \alias{migpd}
-\alias{print.migpd}
-\alias{show.migpd}
-\alias{summary.migpd}
-\alias{coef.migpd}
-\alias{coefficients.migpd}
 \alias{plot.migpd}
 \title{ Fit multiple independent generalized Pareto models }
 \description{
@@ -15,37 +10,31 @@
 \usage{
 migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
       trace = 0, verbose = FALSE, priorParameters = NULL)
-\method{print}{migpd}(x, ...)
-\method{show}{migpd}(x, ...)
-\method{summary}{migpd}(object, verbose = TRUE,...)
-\method{coef}{migpd}(object, ...)
-\method{coefficients}{migpd}(object, ...)
 \method{plot}{migpd}(x, main=c("Probability plot","Quantile plot","Return level plot","Histogram and density"), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... )
 }
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
   \item{mth}{ Thresholds above which to fit the models. Only one of
-				\code{th} and \code{qu} should be supplied. Length one (in which case a common threshold is used) or length equal to the number of coluumns of \code{data} (in which case values correspond to thresholds for each of the columns respectively).}
+				\code{mth} and \code{mqu} should be supplied. Length one (in which case a common threshold is used) or length equal to the number of coluumns of \code{data} (in which case values correspond to thresholds for each of the columns respectively).}
   \item{mqu}{ Quantiles above which to fit the models. Only one of
-				\code{th} and \code{qu} should be supplied. Length as for \code{mth} above. }
+				\code{mth} and \code{mqu} should be supplied. Length as for \code{mth} above. }
   \item{penalty}{ How the likelihood should be penalized. Defaults to
-		'gaussian'. Alternatives are 'none' (resulting in maximum
-		likelihood estimation) and 'jeffreys'. }
+		'gaussian'. See documentation for \code{\link{gpd}}.}
   \item{maxit}{ The maximum number of iterations to be used by the
 		optimizer.}
-  \item{trace}{Whether or not to tell the user how the optimizer is getting on.}
+  \item{trace}{Whether or not to tell the user how the optimizer is getting on. The argument is passed into \code{\link{optim}} -- see the help for that function.}
   \item{verbose}{ Controls whether or not the function print to screen
 		every time it fits a model. Defaults to FALSE.}
-  \item{priorParameters}{ A named list, each element of which contains
+  \item{priorParameters}{ Only used if
+			\code{penalty = 'gaussian'}. A named list, each element of which contains
 			two components: the first should be a vector of length 2
 			corresponding to the location of the Gaussian distribution;
-			the second should be 2 by 2 matrix corresponding to the 
-			covariance of the distribution. This is only used if
-			\code{penalty = 'gaussian'}. The names should match the
+			the second should be 2x2 matrix corresponding to the 
+			covariance matrix of the distribution. The names should match the
 			names of the columns of \code{data}. If not provided, 
-			it defaults to being centred at zero, with variance
+			it defaults to independent priors being centred at zero, with variance
 			10000 for log(sigma) and 0.25 for xi. See the details section.}
-  \item{x, object}{ Object of class \code{migpd} as returned by function \code{migpd}.}
+  \item{x}{ Object of class \code{migpd} as returned by function \code{migpd}.}
   \item{main}{Character vector of length four: titles for plots produced by \code{plot} method.}
   \item{xlab}{As \code{main} but for x-axes labels.}
   \item{nsim}{Number of simulations on which to base tolerance envelopes in \code{plot} method.}
@@ -55,7 +44,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 \details{
   The parameters in the generalized Pareto distribution are
   estimated for each column of the data in turn, independently
-  of all other columns.
+  of all other columns. Note, covariate modelling of GPD parameters is not supported.
   
   Maximum likelihood estimation often fails with generalized
   Pareto distributions because of the likelihood becoming flat
@@ -77,7 +66,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   distribution, centred
   at zero and with standard deviation 100 will often be vague.
   If a Gaussian penalty is specified but no parameters are
-  given, the function will assume such a prior.
+  given, the function will assume such indpendent priors.
   
   Note that internally the function works with log(sigma), not
   sigma. The reasons are that quadratic penalization makes more
@@ -94,7 +83,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   Threshold selection can be carried out with the help of functions \code{\link{mrlPlot}} and \code{\link{gpdRangeFit}}.
 }
 \value{
-  An object of class 'migpd'. There are \code{coef}, \code{print}, \code{plot}
+  An object of class 'migpd'. There are \code{coefficients}, \code{print}, \code{plot}
   and \code{summary} functions available.
 }
 \references{
@@ -111,6 +100,7 @@ J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the gen
 \examples{
 mygpd <- migpd(winter, mqu=.7, penalty = "none")
 mygpd
+summary(mygpd)
 plot(mygpd)
 }
 \keyword{ models }

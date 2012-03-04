@@ -3,7 +3,6 @@
 \alias{print.bootmex}
 \alias{show.bootmex}
 \alias{plot.bootmex}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Bootstrap a conditional multivariate extreme values model }
 \description{
   Bootstrap a conditional multivariate extreme values model following
@@ -11,6 +10,7 @@ the method of Heffernan and Tawn, 2004.
 }
 \usage{
 bootmex(x, R = 100, nPass=3, trace=10)
+
 \method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
 \method{print}{bootmex}(x, ...)
 \method{show}{bootmex}(x, ...)
@@ -20,7 +20,7 @@ bootmex(x, R = 100, nPass=3, trace=10)
   \item{R}{ The number of bootstrap runs to perform. Defaults to \code{R}=100. }
   \item{nPass}{An integer. Sometimes, particularly with small samples,
           the estimation process fails with
-          some bootstrap samples. The function has a look to see which runs
+          some bootstrap samples. The function checks which runs
           fail and takes additional bootstrap samples in an attempt to get
           parameter estimates. By default, it has nPass=3 attempts at this
           before giving up.}
@@ -34,7 +34,7 @@ bootmex(x, R = 100, nPass=3, trace=10)
  
  Firstly, values of all variables are simulated independently from the parametric Gumbel or Laplace distributions (depending on the choice of \code{margins} in the original call to \code{\link{mex}}). The sample size and data dimension match that of the original data set.  Then an empirical bootstrap sample is generated from the original data after its transformation to the Gumbel/Laplace scale. Again, sample size and structure match the original data set. The empirical bootstrap samples from each margin are then sorted, and then replaced by their corresponding values from the sorted Gumbel/Laplace samples. This procedure preserves the dependence structure of the empirical bootstrap sample while ensuring the marginal properties of the resulting semi-parametric bootstrap sample are those of the parametric Gumbel/Laplace distribution.
 
-The simulated, ordered Laplace/Gumbel sample is then transformed to the scale of the original data. Values beneath the original thresholds for fitting of the GPD tail models are transformed by using the empirical distribution functions and values above these thresholds are passed through the fitted Generalized Pareto Distribution.   This completes the sem-parametric bootstrap from the data.  
+The simulated, ordered Laplace/Gumbel sample is then transformed to the scale of the original data by using the Probability Integral Transform. Values beneath the original thresholds for fitting of the GPD tail models are transformed by using the empirical distribution functions and for values above these thresholds, fitted Generalized Pareto Distribution is used.   This completes the sem-parametric bootstrap from the data.  
 
 Parameter estimation is then carried out as follows: The parameters in the generalized Pareto
 distributions are estimated by using the bootrap data, these data are then transformed to the Laplace/Gumbel scale using the
@@ -66,7 +66,7 @@ mean bias is the correct thing to do.
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
-\seealso{ \code{\link{migpd}} , \code{link{mexDependence} },
+\seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
 	\code{\link{bootmex}}, \code{\link{predict.mex}}.
 		    }
 \examples{

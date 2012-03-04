@@ -21,14 +21,17 @@ mrlPlot(data, umin = min(data), umax = max(data) - 0.1, conf = 0.95, nint = 100,
 \details{
   Threshold choice for the fitting of the GPD is guided by the shape of the Mean Residual Life plot.  A threshold which is suitably high will have a corresponding mrl plot which is approximately linear in shape above the threshold (up to sampling variation).
 
-  The function was originally written by Janet E. Heffernan and appears in
-  the \code{ismev} package. This version modified by Harry Southworth to
-  allow more control over the appearance of the plot.
+
 }
 \value{
 NULL
 }
+\note{  The function was originally written by Janet E. Heffernan and appears in
+  the \code{ismev} package. This version modified by Harry Southworth to
+  allow more control over the appearance of the plot.}
 \author{ Janet E. Heffernan, Harry Southworth }
-
+\references{
+S. Coles, An Introduction to Statistical Modeling of Extreme Values, Springer, 2001
+}
 \keyword{ models }
 

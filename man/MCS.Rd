@@ -1,15 +1,9 @@
 \name{MCS}
 \alias{MCS}
 \alias{bootMCS}
-\alias{print.MCS}
-\alias{show.MCS}
 \alias{plot.MCS}
-\alias{summary.MCS}
-\alias{print.bootMCS}
-\alias{show.bootMCS}
 \alias{summary.bootMCS}
 \alias{plot.bootMCS}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Multivariate conditional Spearman's rho }
 \description{
   Compute multivariate conditional Spearman's rho over a
@@ -18,12 +12,9 @@
 \usage{
 MCS(X, p = seq(0.1, 0.9, by = 0.1))
 bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
-\method{print}{MCS}(x, ...)
-\method{show}{MCS}(x, ...)
-\method{summary}{MCS}(object, ...)
+
 \method{plot}{MCS}(x, xlab="p", ylab="MCS", ...)
-\method{print}{bootMCS}(x, ...)
-\method{show}{bootMCS}(x, ...)
+
 \method{summary}{bootMCS}(object, alpha=0.05, ...)
 \method{plot}{bootMCS}(x, xlab="p", ylab="MCS", alpha=0.05, ylim, ...)
 }
@@ -51,11 +42,20 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
   quantile bootstrap confidence intervals are displayed.
 }
 \value{
-  \item{MCS }{The correlations.}
+ MCS returns an object of class \code{MCS}.  There are plot and summary methods available for this class.
+ 
+  \item{MCS }{The estimated correlations.}
   \item{p }{The quantiles at which the correlations were evaluated at}
-  \item{method}{The method used.}
-  \item{replicates}{Bootstrap replicates if \code{bootMCS} was used.}
-}
+  \item{call}{The function call used.}
+  
+  bootMCS returns an object of class \code{bootMCS}. There are plot and summary methods available for this class.
+  
+  \item{replicates}{Bootstrap replicates.}
+  \item{p }{The quantiles at which the correlations were evaluated at}
+  \item{R}{Number of bootstrap samples.}
+  \item{call}{The function call used.}
+
+   }
 \references{ F. Schmid and R. Schmidt, Multivariate conditional versions
 of Spearman's rho and related measures of tail dependence, Journal of
 Multivariate Analysis, 98, 1123 -- 1140, 2007 }

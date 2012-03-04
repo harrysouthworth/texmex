@@ -23,26 +23,36 @@
        or obtain the linear predictors.}
 
 \usage{
-\method{predict}{gpd}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, ci.fit = FALSE, alpha = 0.05, unique. = TRUE,...)
-\method{predict}{bgpd}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
-\method{predict}{bootgpd}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
+\method{predict}{gpd}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, 
+ci.fit = FALSE, alpha = 0.05, unique. = TRUE,...)
 
-linearPredictors(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, ...)
+\method{predict}{bgpd}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, 
+ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
 
-\method{linearPredictors}{gpd}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.05, unique. = TRUE, full.cov = FALSE,...)
-\method{linearPredictors}{bgpd}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
+\method{predict}{bootgpd}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, 
+ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
+
+
+linearPredictors(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, 
+unique. = TRUE, ...)
+
+\method{linearPredictors}{gpd}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, 
+alpha = 0.05, unique. = TRUE, full.cov = FALSE,...)
+\method{linearPredictors}{bgpd}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, 
+alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
 \method{linearPredictors}{bootgpd}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
 
 \method{print}{lp.gpd}(x, digits=3,...)
 \method{print}{lp.bgpd}(x, digits=3,...)
 \method{print}{lp.bootgpd}(x, digits=3,...)
+
 \method{summary}{lp.gpd}(object, digits=3,...)
 \method{summary}{lp.bgpd}(object, digits=3,...)
 \method{summary}{lp.bootgpd}(object, digits=3,...)
+
 \method{plot}{lp.gpd}(x, main=NULL, pch=1, ptcol=2, cex=.75, linecol=4, cicol=1, polycol=15,...)
 \method{plot}{lp.bgpd}(x, type="median", ...)
 \method{plot}{lp.bootgpd}(x, type="median", ...)
-%- maybe also 'usage' for other objects documented here.
 }
 \arguments{
   \item{object}{
@@ -55,11 +65,11 @@ will be used. Column names must match those of original data matrix used for mod
 
   \item{type}{
 For the predict methods, the type of prediction, either ``return level'' (or ``rl'') or
-``link'' (or ``lp''). Defaults to \code{type = "return level")}. When
+``link'' (or ``lp''). Defaults to \code{type = "return level"}. When
 a return level is wanted, the user can specify the associated return perdiod via the \code{M} argument. If \code{type = ``link''} the linear
-predictor(s) for \code{phi} and/or \code{xi} are returned. 
+predictor(s) for \code{phi} and \code{xi} are returned. 
 
-For the plot method, whether to use the sample median \code{type="median"} or mean \code{type="mean"} estimate of the parameter.
+For the plot methods for simulation based estimation of underlying distributions i.e. objects derived from bgpd and bootgpd classes, whether to use the sample median \code{type="median"} or mean \code{type="mean"} estimate of the parameter.
 }
   \item{se.fit}{
 Whether or not to return the standard error of the predicted value.
@@ -75,7 +85,7 @@ interval represents quantiles of the simulated distribution of the
 parameters.
 }
   \item{M}{
-The return level. Defaults to \code{M = 1000}. If a vector is passed,
+The return level: units are number of observations. Defaults to \code{M = 1000}. If a vector is passed,
 a list is returned, with items corresponding to the different values of the vector \code{M}.
 }
   \item{alpha}{
@@ -101,13 +111,13 @@ Defaults to \code{full.cov = FALSE}
     \item{sumfun}{
 For the \code{bgpd} and \code{bootgpd} methods, a summary function
 can be passed in. If \code{sumfun = FALSE}, the default, the
-summary function used returns the mean and median, and the quantiles
+summary function used returns the estimated mean and median, and quantiles
 implied by \code{alpha}.
     }
-    \item{x}{An object of class \code{lp.gpd}, \code{lp.bgpd} or \code{lp.bootgpd}, to be passed to methods for these clases.}
+    \item{x}{An object of class \code{lp.gpd}, \code{lp.bgpd} or \code{lp.bootgpd}, to be passed to methods for these classes.}
     \item{main, pch, ptcol, cex, linecol, cicol, polycol}{Further arguments to plot methods.}
     \item{digits}{Number of digits to show when printing objects.}
-    \item{...}{Further arguments to plot methods.}
+    \item{...}{Further arguments to methods.}
 }
 \details{
 By default, return levels predicted from the unique values of the
@@ -125,15 +135,6 @@ At present, the confidence intervals returned for an object of class
 \code{gpd} are simple confidence intervals based on assumptions
 of normality that are likely to be far from the truth in many cases.
 A better approach would be to use profile likelihood, and we intend
-to implement this method at a future date.
-}
-
-\examples{
-##---- Should be DIRECTLY executable !! ----
-##-- ==>  Define data, use random,
-##--	or do  help(data=index)  for the standard data sets.
-
-% Add one or more standard keywords, see file 'KEYWORDS' in the
-% R documentation directory.
+to implement this method at a future date.  Alternatively, the credible intervals returned by using Bayesian estimation and the predict method for class "bgpd" will tend to give a better representation of the asymmetry of the estimated intervals around the parameter point estimates.
 }
 \keyword{ methods }

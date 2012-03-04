@@ -85,7 +85,7 @@ plot(Amex)
 
 plot(Dmex, col="blue")
 
-## Take a closer look at ALT
+## Take a closer look at the marginal behaviour of ALT
 
 r$ndose <- liver$ndose
 
@@ -108,12 +108,11 @@ altmod4 <- gpd(alt, qu=.7, data=r)
 
 # Get some simulated values for dose D
 
-#Dphi <- balt3$param[, 1]
-#Dxi <- balt3$param[, 2] + 4 * balt3$param[, 3]
+#DParam <- predict(balt3,type="lp",newdata=data.frame(ndose=4),all=TRUE)[[1]]
 
-#simD <- rgpd(nrow(balt3$param), sigma=exp(Dphi), xi=Dxi, u=quantile(alt, .7))
+#simD <- rgpd(nrow(DParam), sigma=exp(DParam[,"phi"]), xi=DParam[,"xi"], u=quantile(alt, .7))
 
-# Those are simulated residuals. Get some baselines and transform all
+# These are simulated residuals. Get some baselines and transform all
 # to raw scale
 
 #b <- sample(log(liver$ALT.M), size=nrow(balt3$param), replace=TRUE)

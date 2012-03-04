@@ -8,9 +8,9 @@
 \usage{
 gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
             penalty = "gaussian", priorParameters = NULL, alpha=0.05,
-xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
+            xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{data}{ The data vector to be modelled. }
   \item{umin}{ The minimum threshold above which to esimate the parameters. }
@@ -30,10 +30,11 @@ xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
   \item{\dots}{ Arguments to \code{plot} }
 }
 \details{
-  This is Stuart Coles's \code{gpd.fitrange}, as it appears in the
+  This is Stuart Coles' \code{gpd.fitrange}, as it appears in the
   \code{ismev} package, with some fairly minor changes. The function uses
   \code{gpd} internally and uses the default options for that function.
   
+  Note this function does not extend to assessing model fit when there are covariates included in the mdoel.
 }
 
 \author{ Stuart Coles, Janet E Heffernan, Harry Southworth }

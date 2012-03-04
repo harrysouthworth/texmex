@@ -1,14 +1,9 @@
 \name{extremalIndex}
 \alias{extremalIndex}
 \alias{extremalIndexRangeFit}
-\alias{plot.extremalIndex}
-\alias{print.extremalIndex}
-\alias{show.extremalIndex}
 \alias{declust}
 \alias{declust.default}
 \alias{declust.extremalIndex}
-\alias{print.declustered}
-\alias{show.declustered}
 \alias{plot.declustered}
 \alias{bootExtremalIndex}
 \alias{gpd.declustered}
@@ -20,21 +15,25 @@ Given a threshold which defines excesses above that threshold, estimate the extr
 }
 \usage{
 extremalIndex(y, data = NULL, threshold)
-extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax = quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, xlab = "Threshold", addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE, trace = 10, ...)
-\method{plot}{extremalIndex}(x,...)
-\method{print}{extremalIndex}(x,...)
-\method{show}{extremalIndex}(x,...)
-declust(y, r=NULL, data = NULL, ...)
-\method{declust}{extremalIndex}(y, r=NULL,...)
-\method{print}{declustered}(x,...)
-\method{show}{declustered}(x,...)
-\method{plot}{declustered}(x, ylab = "Data",...)
+
+extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), 
+   umax = quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, 
+   xlab = "Threshold", addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE, 
+   trace = 10, ...)
+   
 bootExtremalIndex(x)
+
+declust(y, r=NULL, data = NULL, ...)
+
+\method{declust}{extremalIndex}(y, r=NULL,...)
+
+\method{plot}{declustered}(x, ylab = "Data",...)
+
 \method{gpd}{declustered}(y, ...)
 }
 \arguments{
   \item{y}{ Argument to function \code{extremalIndex}: either a numeric vector or the name of a variable in \code{data}.}
-  \item{data}{ A data object containing \code{y} and any covariates. }
+  \item{data}{ A data frame containing \code{y} and any covariates. }
   \item{threshold}{ The threshold for \code{y}, exceedances above which will be used to   estimate the extremal index and carry out automatic declustering.}
   \item{x}{ Objects passed to methods. }
   \item{r}{ Positivie integer: run length to be used under "runs" declustering. If specified then so-called "runs" declustering will be carried out, otherwise defaults to NULL in which case the automatic "intervals" declustering method of Ferro and Segers is used.}
@@ -48,16 +47,16 @@ bootExtremalIndex(x)
   \item{ylab}{ Label for the y-axis. }
   \item{addNexcesses}{ Whether to annotate the top axis of plots with the number of excesses above the corresponding threhsold. Defaults to \code{TRUE}. }
   \item{estGPD}{ Whether to estimate GPD parameters at each choice of thereshold -- defaults to \code{TRUE} in which case the GPD parameters are estimated.}
-  \item{verbose}{Whether to report on progress in RangeFit calculations. Defaults to \code{TRUE}}
+  \item{verbose}{Whether to report on progress in RangeFit calculations. Defaults to \code{TRUE}.}
   \item{trace}{How frequently to report bootstrap progress in EangeFit calculations.  Defaults to 10.} 
   \item{...}{Further arguments to methods.}
 }
 \details{
-The function \code{extremalIndex} estimates the extremal index of a dependent series of observations above a given threshold \code{threshold}, returning an object of class "extremalIndex".  A graphical diagnostic akin to Figure 1 in Ferror and Segers (2003) is produced by the \code{plot} method for this class.  This plot is used to test the model assumption underpinning the estimation, with good fit being indicated by interexceedance times which correspond to inter-cluster times lying close to the diagonal line indicated.
+The function \code{extremalIndex} estimates the extremal index of a dependent series of observations above a given threshold \code{threshold}, returning an object of class "extremalIndex".  Plot, print and show methods are available for this class. A graphical diagnostic akin to Figure 1 in Ferror and Segers (2003) is produced by the \code{plot} method for this class.  This plot is used to test the model assumption underpinning the estimation, with good fit being indicated by interexceedance times which correspond to inter-cluster times lying close to the diagonal line indicated.
 
-In addition to good model fit, an appropriate choice of threshold is one above which the estimated extremal index is stable over further, higher threshold (up to estimation uncertainty).  This can be assessed by using the function \code{extremalIndexRangeFit}, which examines a range of threshold values.  At each threshold, the extremal index is estimated; that estimate is used to decluster the series and the parameters of the GPD are optionally estimated for the resulting declustered series.  Uncertainty in the estimation of the extremal index and GPD parameters is assessed by using a bootstrap scheme which accounts for uncertainty in the extremal index estimation, and the corresponding uncertainty in the declustering of the series.
+In addition to good model fit, an appropriate choice of threshold is one above which the estimated extremal index is stable over further, higher thresholds (up to estimation uncertainty).  This can be assessed by using the function \code{extremalIndexRangeFit}, which examines a range of threshold values.  At each threshold, the extremal index is estimated; that estimate is used to decluster the series and the parameters of the GPD are optionally estimated for the resulting declustered series.  Uncertainty in the estimation of the extremal index and GPD parameters is assessed by using a bootstrap scheme which accounts for uncertainty in the extremal index estimation, and the corresponding uncertainty in the declustering of the series.
 
-The function \code{declust} returns an object of class "declustered", identifying independent clusters in the original series. The GPD model can be fitted to objects of this class,including the use of covariates in the linear predictors for the parameters of the GPD.  See examples below.
+The function \code{declust} returns an object of class "declustered", identifying independent clusters in the original series. Print, plot and show methodsa are available for this class. The GPD model can be fitted to objects of this class, including the use of covariates in the linear predictors for the parameters of the GPD.  See examples below.
 }
 \value{
 The function \code{extremalIndex} returns a list of class "extremalIndex":
@@ -97,7 +96,7 @@ The function \code{bootExtremalIndex} return a single vector corersponding to a 
 The method \code{gpd} for class "declustered" returns an object of type "gpd" or "bgpd" depending on the precise function call - see documentation for \code{\link{gpd}}.
 }
 \references{
-Ferro, C.A.T.\ and Segers, J., (2003) "Inference for clusters of Extreme Values", JRSS B 65, Part 2, pp 545--556.
+Ferro, C.A.T. and Segers, J., (2003) "Inference for clusters of Extreme Values", JRSS B 65, Part 2, pp 545--556.
 }
 \author{
 Janet E. Heffernan

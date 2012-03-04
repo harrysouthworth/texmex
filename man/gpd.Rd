@@ -7,50 +7,37 @@
 \alias{plot.gpd}
 \alias{coef.gpd}
 \alias{AIC.gpd}
-\alias{coefficients.gpd}
 \alias{print.bgpd}
-\alias{summary.bgpd}
 \alias{plot.bgpd}
-\alias{coef.bgpd}
-\alias{coefficients.bgpd}
-\alias{print.summary.bgpd}
-\alias{show.summary.bgpd}
-\alias{print.summary.gpd}
-\alias{show.summary.gpd}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Generalized Pareto distribution modelling }
 \description{Likelihood based modelling and inference for the generalized
 Pareto distribution, possibly with explanatory variables.
 }
 \usage{
 gpd(y, data, ...)
+
 \method{gpd}{default}(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
-    prior = "gaussian", method = "optimize", cov="observed", start = NULL, priorParameters = NULL,
-    maxit = 10000, trace = NULL,
+    prior = "gaussian", method = "optimize", cov="observed", start = NULL, 
+    priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 10500, burn = 500, thin = 1, jump.cov, jump.const, verbose = TRUE,...)
+
 \method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
-\method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
-\method{coef}{gpd}(object, ...)
+\method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
+
 \method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+
 \method{AIC}{gpd}(object, ..., k=2)
-\method{coefficients}{gpd}(object, ...)
+
 \method{print}{bgpd}(x, print.seed=FALSE, ...)
-\method{summary}{bgpd}(object, ...)
 \method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
-\method{coef}{bgpd}(object, ...)
-\method{coefficients}{bgpd}(object, ...)
-\method{print}{summary.gpd}(x, digits=3, ...)
-\method{print}{summary.bgpd}(x, ...)
-\method{print}{summary.bgpd}(x, ...)
-\method{show}{summary.gpd}(x, digits=3, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
-  \item{data}{ A data object containing \code{y} and any covariates. }
+  \item{data}{ A data frame containing \code{y} and any covariates. }
   \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the GPD upper tail model. }
-  \item{qu}{An alternative to \code{th}, specifying the quantile of the \code{y}.}
+  \item{qu}{An alternative to \code{th}, a probability defined such that \code{quantile(y,qu)} equals \code{th}.}
   \item{phi}{ Formula for the log of the scale parameter. Defaults to
       \code{phi = ~ 1} - i.e. no covariates. }
   \item{xi}{ Formula for the shape parameter. Defaults to
@@ -83,7 +70,7 @@ gpd(y, data, ...)
         poorly the true standard errors. Also see the comments in
         the Details section, below.}
   \item{start}{Starting values for the parameters, to be passed to \code{optim}.
-           If not provided, an exponential distribution is assumed as the starting
+           If not provided, an exponential distribution (shape = 0) is assumed as the starting
            point.}
   \item{priorParameters}{  A list with two components. The first should be 
                 a vector of means, the second should be a covariance matrix if the 
@@ -111,19 +98,19 @@ gpd(y, data, ...)
  \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
                    or \code{summary.bgpd} returned by \code{gpd} or \code{summary.gpd}.}
   \item{digits}{Number of digits for printing.}
-  \item{main}{In \code{plot} method, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
+  \item{main}{In \code{plot} method for class \code{gpd}, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
   \item{xlab}{As for \code{main} but labels for x-axes rather than titles.}
-  \item{nsim}{In \code{plot} and \code{summary} methods. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
-  \item{alpha}{In \code{plot} and \code{summary} methods. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
+  \item{nsim}{In \code{plot} and \code{summary} methods for class \code{gpd}. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
+  \item{alpha}{In \code{plot} and \code{summary} methods for class \code{gpd}. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
   \item{k}{Constant used in calculation of AIC=-2*loglik + k*p, defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
                     \code{print.seed=FALSE}.}
-  \item{which.plots}{Which plots to produce. Option 1 gives kernel density estimates,
+  \item{which.plots}{In \code{plot} method for class \code{bgpd}. Which plots to produce. Option 1 gives kernel density estimates,
                      2 gives traces of the Markov chains with superimposed
                      cumulative means, 3 gives autocorrelation functions.
                      Defaults to \code{which.plots=1:3}.}
-  \item{density.adjust}{Passed into \code{density}. Controls the amount of
+  \item{density.adjust}{In \code{plot} method for class \code{bgpd}. Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
   \item{...}{Further arguments to be passed to methods.}
@@ -197,7 +184,7 @@ gpd(y, data, ...)
     \item{X.phi}{The design matrix for the log of the scale parameter.}
     \item{X.xi}{The design matrix for the shape parameter.}
     \item{priorParameters}{See above.}
-    \item{data}{The response data (above and below the threshold for fitting).}
+    \item{data}{The original data (above and below the threshold for fitting).}
     \item{residuals}{Data above the threshold for fitting after transformation 
                      to standard exponential scale by using the fitted GPD.}
     \item{loglik}{The value of the optimized log-likelihood.}
@@ -220,7 +207,7 @@ gpd(y, data, ...)
     \item{chains}{The entire Markov chain generated by the Metropolis
                   algorithm.}
     \item{y}{The response data above the threshold for fitting.}  
-    \item{data}{The response data (above and below the threshold for fitting).}
+    \item{data}{The original data (above and below the threshold for fitting).}
     \item{X.phi}{The design matrix for the log of the scale parameter.}
     \item{X.xi}{The design matrix for the log of the shape parameter.}
     \item{acceptance}{The proportion of proposals that were accepted by
@@ -228,6 +215,8 @@ gpd(y, data, ...)
     \item{seed}{The seed used by the random number generator.}
     \item{param}{The remainder of the chain after deleting the burn-in
                  and applying any thinning.}
+                 
+    There are summary, plot, print and coefficients methods available for these classes.
 
 }
 \note{   When there are estimated values of \code{xi <= -0.5}, the regularity

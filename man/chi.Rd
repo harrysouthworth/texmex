@@ -1,6 +1,5 @@
 \name{chi}
 \alias{chi}
-\alias{print.chi}
 \alias{summary.chi}
 \alias{plot.chi}
 
@@ -10,15 +9,15 @@
 }
 \usage{
 chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
-\method{print}{chi}(x, ...)
+
 \method{summary}{chi}(object, digits=3, ...)
+
 \method{plot}{chi}(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty=1, cilty=2, col=1, spcases=TRUE,
-                   cicol=1, xlim=c(0, 1), ylimChi = c(-1, 1), ylimChiBar = c(-1, 1),
-                     mainChi = "Chi", mainChiBar = "Chi Bar",
-                     xlab = "Quantile", 
-                     ylabChi = expression(chi(u)),#"Chi(u)"
-                     ylabChiBar = expression(bar(chi)(u)), #"Chi Bar(u)"
-                     ask, ...)
+    cicol=1, xlim=c(0, 1), ylimChi = c(-1, 1), ylimChiBar = c(-1, 1),
+    mainChi = "Chi", mainChiBar = "Chi Bar", xlab = "Quantile", 
+    ylabChi    = expression(chi(u)),#"Chi(u)"
+    ylabChiBar = expression(bar(chi)(u)), #"Chi Bar(u)"
+    ask, ...)
 }
 \arguments{
   \item{data}{ A matrix containing 2 numeric columns. }
@@ -33,7 +32,8 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
                 Defaults to \code{trunc = TRUE}. }
   \item{x, object}{An object of class \code{chi}.}
   \item{digits}{ Number of digits for printing. }
-  \item{show}{Logical, of length 2, names "Chi" and "ChiBar". Defaults to \code{c("Chi"=TRUE,"ChiBar"=TRUE)}.}
+  \item{show}{Logical, of length 2, names "Chi" and "ChiBar". 
+              Defaults to \code{c("Chi" = TRUE, "ChiBar" = TRUE)}.}
   \item{lty, cilty, col, cicol}{Line types and colours for the the
                estimated quantities and their confidence intervals.}
   \item{xlim, ylimChi, ylimChiBar}{Limits for the axes.}
@@ -48,10 +48,6 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   Heffernan and Tawn. The limiting values of these functions as the 
   \code{Quantile} approaches 1 give an empirical measure of the type 
   and strength of tail dependendce exhibited by the data. 
-  The code is a fairly simple reorganization
-  of code written by Janet E. Heffernan and Alec Stephenson and
-  which appears in
-  the \code{chiplot} function in the \code{evd} package.
   
   A limiting value of ChiBar equal to 1 indicates Asymptotic Dependence, 
   in which case the limiting value of Chi gives a measure of the strength 
@@ -75,21 +71,35 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{chiulb, chibarulb}{Upper and lower bounds for chi and chi-bar.}
 }
 \references{ S. Coles, J. E. Heffernan and J. A. Tawn, Dependence
-measures for extreme values analyses, Extremes, 2, 339 -- 365, 1999 }
+measures for extreme values analyses, Extremes, 2, 339 -- 365, 1999. }
 \author{ Janet E. Heffernan, Alec Stephenson, Harry Southworth }
 
 \note{When the data contain ties, the values of chi and chibar are calculated by 
 assigning distinct ranks to tied values using the \code{rank} function with 
 argument \code{ties.method = "first"}.  This results in the values of chi 
 and chibar being sensitive to the order in which the tied values appear 
-in the data.}
+in the data.
+
+The code is a fairly simple reorganization
+  of code written by Janet E. Heffernan and Alec Stephenson and
+  which appears in
+  the \code{chiplot} function in the \code{evd} package.
+  }
 
 \seealso{ \code{\link{MCS}}, \code{\link{rank}} }
 \examples{
 
 D <- liver[liver$dose == "D",]
 chiD <- chi(D[, 5:6])
+par(mfrow=c(1,2))
 plot(chiD)
+
+A <- liver[liver$dose == "A",]
+chiA <- chi(A[, 5:6])
+# here the limiting value of chi bar(u) lies away from one so the chi plot is not relevant and is plotted in grey
+plot(chiA) 
+
+
 }
 \keyword{ multivariate }
 

@@ -96,9 +96,10 @@ As a result, the function takes a while to run.
 \examples{
 # Uncomment the following lines to run - commented out to make CRAN robots happy
 ## open device to save plotted output
+#library(RUnit)
 #pdf("texmexPlots.pdf")
 #val <- validate.texmex()
-#printHTMLProtocol(val, "~/Desktop/texmexReport.html")
+#printHTMLProtocol(val, "texmexReport.html")
 ## finish writing to device
 #dev.off()
 }

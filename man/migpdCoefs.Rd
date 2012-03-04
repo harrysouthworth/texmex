@@ -1,6 +1,5 @@
 \name{migpdCoefs}
 \alias{migpdCoefs}
-%- Also NEED an '\alias' for EACH other topic documented here.
 \title{ Change values of parameters in a migpd object }
 \description{
   Change the values of parameters in a \code{migpd} object. You
@@ -10,7 +9,6 @@
 \usage{
 migpdCoefs(object, which, coefs)
 }
-%- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{object}{ An object of class \code{migpd}. }
   \item{which}{ Which models in the \code{migpd} object you want to change. }
@@ -42,12 +40,15 @@ galt <- gpd(alt, data=d, qu=.7, xi = ~ ndose)
 gast <- gpd(ast, data=d, qu=.7, xi = ~ ndose)
 galp <- gpd(alp, data=d, qu=.7, xi = ~ ndose)
 
-altco <- c(coef(galt), coef(galt)[2] + 4 * coef(galt)[3])
-astco <- c(coef(gast), coef(gast)[2] + 4 * coef(gast)[3])
-alpco <- c(coef(galp), coef(galp)[2] + 4 * coef(galp)[3])
+altco <- predict(galt,type="lp",newdata=data.frame(ndose=4))[1:2]
+astco <- predict(gast,type="lp",newdata=data.frame(ndose=4))[1:2]
+alpco <- predict(galp,type="lp",newdata=data.frame(ndose=4))[1:2]
 
 Dgpd <- migpdCoefs(Dgpds, which=c("alt", "ast", "alp"),
                    coefs=list(altco, astco, alpco))
+                   
+summary(Dgpd)
+summary(Dgpds)
 
 }
 \keyword{ multivariate }
