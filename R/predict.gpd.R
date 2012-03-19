@@ -257,10 +257,20 @@ linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FAL
         X.phi <- object$X.phi
     }
 
+    uX.phi.xi <- unique(cbind(X.phi, X.xi))
+    uX.phi.xi <- uX.phi.xi[, apply(uX.phi.xi, 2, function(x) var(x) > 0)]
+
     if (unique.){
         u <- !duplicated(cbind(X.phi,X.xi))
-        X.xi  <- if(is.matrix(X.xi[u,]))  X.xi[u, ]  else if(ncol(X.xi) == 1)  cbind(X.xi[u,])  else t(cbind(X.xi[u,]))
-        X.phi <- if(is.matrix(X.phi[u,])) X.phi[u, ] else if(ncol(X.phi) == 1) cbind(X.phi[u,]) else t(cbind(X.phi[u,]))
+        X.xi  <- if(is.matrix(X.xi[u,]))  X.xi[u, ]
+                 else if(ncol(X.xi) == 1)  cbind(X.xi[u,])
+                 else t(cbind(X.xi[u,]))
+        X.phi <- if(is.matrix(X.phi[u,])) X.phi[u, ]
+                 else if(ncol(X.phi) == 1) cbind(X.phi[u,])
+                 else t(cbind(X.phi[u,]))
+    }
+    else if (all){
+        stop("if all=TRUE, unique. must be TRUE")
     }
 
     phi <- cbind(object$param[, 1:ncol(X.phi)])
@@ -305,11 +315,19 @@ linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FAL
       res <- addCov(res,X.phi)
       res <- addCov(res,X.xi)
     }
+    else {
+        if (nrow(uX.phi.xi) != length(res)){
+            stop("Number of unique combinations of covariates doesn't match the number of parameters")
+        }
+        for (i in 1:length(res)){
+            res[[i]] <- cbind(res[[i]], matrix(rep(uX.phi.xi[i,], nrow(res[[i]])), nrow=nrow(res[[i]]), byrow=TRUE))
+            colnames(res[[i]]) <- c("phi", "xi", colnames(uX.phi.xi))
+        }
+    }
 
     oldClass(res) <- "lp.bgpd"
     res
 }
-
 rl.bgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
 
     co <- linearPredictors.bgpd(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
