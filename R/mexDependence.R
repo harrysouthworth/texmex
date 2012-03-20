@@ -67,11 +67,12 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
      o <- try(optim(par=start, fn=Qpos, 
               control=list(maxit=maxit),
               yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
-                 
+
      if (class(o) == "try-error"){
         warning("Error in optim call from mexDependence")
         o <- as.list(o)
         o$par <- rep(NA, 6)
+        o$value <- NA
      } else if (o$convergence != 0) {
         warning("Non-convergence in mexDependence")
         o <- as.list(o)
@@ -86,7 +87,8 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
            if (class(o) == "try-error"){   
              warning("Error in optim call from mexDependence")
              o <- as.list(o)
-             o$par <- rep(NA, 6)           
+             o$par <- rep(NA, 6)
+             o$value <- NA             
              break()
            } else if (o$convergence != 0) {
              warning("Non-convergence in mexDependence")
