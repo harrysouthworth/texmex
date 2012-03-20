@@ -55,22 +55,21 @@ function (x, R = 100, nPass = 3, trace = 10) {
 
     innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, constrain, v=v,
         pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
-        
+    
         g <- sample(1:(dim(mar$transformed)[[1]]), size = n, replace = TRUE)
         g <- mar$transformed[g, ]
         ok <- FALSE
 
         while (!ok) {
-            for (j in 1:(dim(g)[[2]])){
-				if (margins == "gumbel"){
-					g[order(g[, j]), j] <- sort(-log(-log(runif(dim(g)[[1]]))))
-				}
-				else {
-					u <- runif(nrow(g))
-					g[order(g[, j]), j] <- sort(sign(u - .5) * log(1 - 2*abs(u - .5)))
-				}
-			}
-            if (sum(g[, which] > dth) > 1){ ok <- TRUE }
+          for (j in 1:(dim(g)[[2]])){
+            u <- runif(nrow(g))
+            if (margins == "gumbel"){
+              g[order(g[, j]), j] <- sort(-log(-log(u)))
+            } else {
+              g[order(g[, j]), j] <- sort(sign(u - .5) * log(1 - 2*abs(u - .5)))
+            }
+          }
+          if (sum(g[, which] > dth) > 1  &   all(g[g[,which] > dth , which] > 0)){ ok <- TRUE }
         }
         
         g <- sapply(1:d, getTran, x = g, data = mar$data, margins=margins,
@@ -80,7 +79,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
 
         ggpd <- migpd(g, mth = mar$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
-
+   
         gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins, constrain=constrain, v=v)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$dependence$coefficients, 
