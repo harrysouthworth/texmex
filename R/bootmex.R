@@ -39,7 +39,8 @@ function (x, R = 100, nPass = 3, trace = 10) {
     margins <- dep$margins        
     penalty <- mar$penalty
     priorParameters <- mar$priorParameters
-
+    start <- 0.75* coef(x)$dependence[1:2,] # scale back towards zero in case point est on edge of original parameter space and falls off edge of constrained space for bootstrap sample
+    
     n <- dim(mar$transformed)[[1]]
     d <- dim(mar$transformed)[[2]]
     dqu <- rep(dqu, d) 
@@ -53,7 +54,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
     ans$margins <- margins
     ans$constrain <- constrain
 
-    innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, constrain, v=v,
+    innerFun <- function(i, x, which, dth, dqu, margins, penalty, priorParameters, constrain, v=v, start=start,
         pass = 1, trace = trace, n=n, d=d, getTran=getTran, dependent=dependent) {
     
         g <- sample(1:(dim(mar$transformed)[[1]]), size = n, replace = TRUE)
@@ -79,8 +80,8 @@ function (x, R = 100, nPass = 3, trace = 10) {
 
         ggpd <- migpd(g, mth = mar$mth, 
 					  penalty = penalty, priorParameters = priorParameters)
-   
-        gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins, constrain=constrain, v=v)
+
+        gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins, constrain=constrain, v=v, start=start)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$dependence$coefficients, 
                     Z = gd$dependence$Z,
@@ -95,7 +96,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
     } # Close innerFun 
 
     res <- lapply(1:R, innerFun, x = x, which = which, dth = dth, margins=margins, 
-        dqu = dqu, penalty = penalty, priorParameters = priorParameters, constrain=constrain, v=v,
+        dqu = dqu, penalty = penalty, priorParameters = priorParameters, constrain=constrain, v=v, start=start,
         pass = 1, trace = trace, getTran=getTran, n=n, d=d, dependent=dependent)
 
     # Sometimes samples contain no extreme values. Need to have another pass or two
@@ -109,7 +110,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
                 rerun <- (1:R)[rerun]
                 res[rerun] <- lapply((1:R)[rerun], innerFun, 
                   x = x, which = which, dth = dth, dqu = dqu, margins=margins,
-                  penalty = penalty, priorParameters = priorParameters, constrain=constrain, v=v,
+                  penalty = penalty, priorParameters = priorParameters, constrain=constrain, v=v, start=start,
                   pass = pass, trace = trace, getTran=getTran, n=n, d=d, dependent=dependent)
             }
         }
@@ -125,7 +126,7 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
 # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong 
 # testing of this function, run test.predict.mex
 
-  set.seed(20111007)
+  set.seed(20120327)
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 
@@ -134,8 +135,8 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
 
   R <- 20
 
-  mySboot <- bootmex(mySdep, R=R)
-  myWboot <- bootmex(myWdep, R=R)
+  mySboot <- bootmex(mySdep, R=R,trace=R+1)
+  myWboot <- bootmex(myWdep, R=R,trace=R+1)
 
   checkEqualsNumeric(coef(mySdep)[[2]], mySboot$simpleDep, msg="bootmex: summer simpleDep from call with mar model")
   checkEqualsNumeric(coef(myWdep)[[2]], myWboot$simpleDep, msg="bootmex: winter simpleDep from call with mar model")
@@ -158,8 +159,8 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel",constrain=FALSE)
   wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel",constrain=FALSE)
 
-  mySboot <- bootmex(smexmod, R=R)
-  myWboot <- bootmex(wmexmod, R=R)
+  mySboot <- bootmex(smexmod, R=R,trace=R+1)
+  myWboot <- bootmex(wmexmod, R=R,trace=R+1)
 
   checkEqualsNumeric(coef(smexmod)[[2]], mySboot$simpleDep, msg="bootmex: summer simpleDep from call with mex model")
   checkEqualsNumeric(coef(smexmod)[[1]], coef(mySboot$simpleMar), msg="bootmex: summer simpleMar from call with mex model")
@@ -175,8 +176,8 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   
   smexmod.1 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=FALSE)
   smexmod.2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=TRUE,v=2)
-  mySboot.1 <- bootmex(smexmod.1,R=R)
-  mySboot.2 <- bootmex(smexmod.2,R=R)
+  mySboot.1 <- bootmex(smexmod.1,R=R,trace=R+1)
+  mySboot.2 <- bootmex(smexmod.2,R=R,trace=R+1)
 
   checkEqualsNumeric(coef(smexmod.1)[[2]], mySboot.1$simpleDep, msg="bootmex: summer simpleDep from call with mex model, constrain=FASLE")
   checkEqualsNumeric(coef(smexmod.1)[[1]], coef(mySboot.1$simpleMar), msg="bootmex: summer simpleMar from call with mex model, constrain=FASLE")
@@ -189,7 +190,7 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   wavesurge.mex <- mexDependence(wavesurge.fit, dqu=0.8,which=1)
   R <- 20
   
-  wavesurge.boot <- bootmex(wavesurge.mex,R=R)
+  wavesurge.boot <- bootmex(wavesurge.mex,R=R,trace=R+1)
 
   checkEqualsNumeric(dim(wavesurge.boot$boot[[1]]$Z)[2],1,msg="bootmex: execution for 2-d data")
   checkEquals(dimnames(wavesurge.boot$boot[[1]]$Z)[[2]],names(wavesurge)[2],msg="bootmex: execution for 2-d data")
