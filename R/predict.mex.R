@@ -120,11 +120,11 @@ test.predict.mex <- function(){
   smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel",constrain=FALSE)
   wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel",constrain=FALSE)
 set.seed(20111010)
-  NOmodWinter <- bootmex(wmarmod)
-  NOpredWinter <- predict(NOmodWinter, nsim = 500) # matches sample size in H+T2004
+  NOmodWinter <- bootmex(wmarmod,trace=101)
+  NOpredWinter <- predict(NOmodWinter, nsim = 500,trace=101) # matches sample size in H+T2004
 
-  NOmodSummer <- bootmex(smarmod)
-  NOpredSummer <- predict(NOmodSummer, nsim = 500)
+  NOmodSummer <- bootmex(smarmod,trace=101)
+  NOpredSummer <- predict(NOmodSummer, nsim = 500,trace=101)
 
   Table5winter <- rbind(c(8.3, 75.4, 569.9, 44.6, 132.3),
                       c(1.2, 4.4, 45.2, 6.7, 8.2))
@@ -156,8 +156,8 @@ set.seed(20111010)
   R <- 20
   nsim <- 100
   wavesurge.mex <- mex(wavesurge,mq=.7,dqu=0.7,margins="laplace",which=1)
-  wavesurge.boot <- bootmex(wavesurge.mex,R=R)
-  wavesurge.pred <- predict(wavesurge.boot,nsim=nsim)
+  wavesurge.boot <- bootmex(wavesurge.mex,R=R,trace=R+1)
+  wavesurge.pred <- predict(wavesurge.boot,nsim=nsim,trace=R+1)
 
   checkEqualsNumeric(length(wavesurge.pred$replicates),R,msg="predict.mex execution for 2-d data")
   checkEqualsNumeric(dim(wavesurge.pred$replicates[[3]]),c(nsim,2))
@@ -181,9 +181,9 @@ set.seed(20111010)
     gum.mex <- mex(data,mqu=c(0,0.9),which=1, dqu=dqu,margins="gumbel",constrain=FALSE)
 
     set.seed(seeds[i])
-    lap.pred <- predict(lap.mex,nsim=10000)
+    lap.pred <- predict(lap.mex,nsim=10000,trace=R+1)
     set.seed(seeds[i])
-    gum.pred <- predict(gum.mex,nsim=10000)
+    gum.pred <- predict(gum.mex,nsim=10000,trace=R+1)
 
     lap.ans <- summary(lap.pred)$ans
     gum.ans <- summary(gum.pred)$ans
