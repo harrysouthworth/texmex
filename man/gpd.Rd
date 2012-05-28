@@ -59,7 +59,7 @@ gpd(y, data, ...)
      from the joint posterior distribution of the parameters.}
   \item{cov}{How to compute the covariance matrix of the parameters. Defaults to
         \code{cov = "observed"} in which case the observed information matrix
-        is used, as given in Appendix A of Davison and Hinkley. The only other
+        is used, as given in Appendix A of Davison and Smith. The only other
         option is \code{cov = "numeric"} in which case a numerical approximation
         of the Hessian is used (see the help for \code{optim}). In some cases,
         particularly with small samples, the numerical approximation can be
