@@ -23,7 +23,7 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
   } 
   
   if (missing(which)) {
-     cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
+     cat("Missing 'which'. Conditioning on", names(x$models)[1], ".\n")
      which <- 1
   }
   
