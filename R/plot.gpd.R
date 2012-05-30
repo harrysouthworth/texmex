@@ -43,4 +43,11 @@ test.plot.gpd <- function(){
               c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot\n(SCALE IS DAYS NOT YEARS)","\nDensity Plot")), 
               RetPeriodRange=c(3.65,365*10000))
   checkEquals(res,NULL,msg="plot.gpd: successful execution")
+  
+# check for very short tailed data
+  set.seed(6)
+  temp <- rgpd(1000,sigma=1,xi=-0.45)
+  fit <- gpd(temp,th=0)
+  res <- plot(fit,main=c("PP","QQ","RL","Hist, Short tailed data"))
+  checkEquals(res,NULL,msg="plot.gpd: successful execution, short tailed data")
 } 
