@@ -2,6 +2,9 @@ plot.lp.gpd <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 1, polycol = 15, ...){
 
+  if(dim(x)[1] == 1){
+    stop("Need range of covariate values to plot linear predictors")
+  }
   if( !any(colnames(x) == "phi.lo") ){
     stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
   }
@@ -47,6 +50,9 @@ plot.lp.gpd <- function(x, main=NULL,
 }
 
 plot.lp.bgpd <- function(x, type="median", ...){
+  if(dim(x)[1] == 1){
+    stop("Need range of covariate values to plot linear predictors")
+  }
 # re-format to same column structure as lp.gpd x
   if( casefold(type) == "median"){
     x <- x[,c(2,6,3,4,7,8,9:dim(x)[2])]
@@ -64,6 +70,36 @@ plot.lp.bgpd <- function(x, type="median", ...){
 plot.lp.bootgpd <- plot.lp.bgpd
 
 test.plot.lp.gpd <- function(){
+# first with no covariates
+n <- 100
+  Y <- rgpd(n,sigma=1,xi=0.1)
+  fit <- gpd(Y,th=0)
+  fitb <- gpd(Y,th=0,method="sim",trace=20000)
+  fit.boot <- bootgpd(fit,R=20,trace=30)
+  M <- seq(5,1000,len=20)
+
+  p <- predict(fit,M=M,ci=TRUE)
+  pb <- predict(fitb,M=M,ci=TRUE)
+  pboot <- predict(fit.boot,M=M,ci=TRUE)
+
+  par(mfrow=c(3,3))
+  plot(p,sameAxes=FALSE)
+  plot(pb,sameAxes=FALSE)
+  plot(pboot,sameAxes=FALSE)
+
+  plot(p,sameAxes=TRUE)
+  plot(pb,sameAxes=TRUE)
+  plot(pboot,sameAxes=TRUE)
+
+  p.lp <- predict(fit,type="lp",ci=TRUE)
+  pb.lp <- predict(fitb,type="lp",ci=TRUE)
+  pboot.lp <- predict(fit.boot,type="lp",ci=TRUE)
+
+  checkException(plot(p.lp),msg="plot.gpd.lp.gpd: fail if no covariates")
+  checkException(plot(pb.lp),msg="plot.bgpd.lp.gpd: fail if no covariates")
+  checkException(plot(pboot.lp),msg="plot.bootgpd.lp.gpd: fail if no covariates")
+  
+# now with covariates
   n <- 100
   M <- 1000
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
@@ -91,6 +127,11 @@ test.plot.lp.gpd <- function(){
   plot(p,sameAxes=FALSE,main="MLE")
   plot(pb,sameAxes=FALSE,main="MCMC")
   plot(pboot,sameAxes=FALSE,main="Bootstrap")
+  
+  par(mfrow=c(3,3))
+  plot(p,sameAxes=TRUE,main="MLE")
+  plot(pb,sameAxes=TRUE,main="MCMC")
+  plot(pboot,sameAxes=TRUE,main="Bootstrap")
   
   par(mfrow=c(3,4))
   plot(p.lp,main="MLE")
