@@ -177,11 +177,13 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     }
     o$data <- data
                      
-    fittedScale <- exp(o$coefficients[1:ncol(o$X.phi)] %*% t(o$X.phi))
-    fittedShape <- o$coefficients[(ncol(o$X.phi) + 1):length(o$coefficients)] %*% t(o$X.xi)
+    fittedScale <- fittedGPDscale(o)
+    fittedShape <- fittedGPDshape(o)
     scaledY <- fittedShape * (o$y - o$threshold) / fittedScale
     o$residuals <- 1/fittedShape * log(1 + scaledY) # Standard exponential
-
+    if(any(fittedShape < -0.5)){
+      warning("fitted shape parameter xi < -0.5\n")
+    }
     o$loglik <- -o$value
     o$value <- NULL
     o$counts <- NULL
