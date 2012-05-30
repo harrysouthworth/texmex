@@ -3,10 +3,15 @@ function( x , xlab, ylab, main, ... ){
 	a <- x$coefficients
 	a[ 1 ] <- exp( a[ 1 ] )
 	u <- x$threshold
+  if(a[2] < 0){
+    UpperEndPoint <- u-a[1]/a[2]
+  } else {
+    UpperEndPoint <- Inf
+  }
 	dat <- x$y
 
 	h <- hist(dat, plot = FALSE)
-	x <- seq(u, max(h$breaks), length = 100)
+	x <- seq(u, min(UpperEndPoint, max(h$breaks)), length = 100)
 	y <- dgpd( x , a[ 1 ] , a[ 2 ], u )
 
 	if ( missing( xlab ) || is.null( xlab ) ) xlab = "Data"
