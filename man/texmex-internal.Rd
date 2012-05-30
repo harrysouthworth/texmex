@@ -7,6 +7,8 @@
 \alias{u2gpd}
 \alias{revTransform}
 \alias{mexTransform}
+\alias{fittedGPDscale}
+\alias{fittedGPDshape}
 \alias{gpdFit}
 \alias{info.gpd}
 \alias{ConstraintsAreSatisfied}
@@ -47,6 +49,8 @@ qgpd2(N, sigma = 1, xi = 1, u = 0, la = 1)
 u2gpd(u, p=1, th=0, sigma, xi)
 mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE, 
      margins="laplace")
+fittedGPDscale(o)
+fittedGPDshape(o)
 revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
 gpdFit(y, th, X.phi, X.xi, penalty="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0, hessian = TRUE)
@@ -96,7 +100,7 @@ rMaxAR(n,theta)
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}
 \item{hessian}{Argument passed to \code{optim}. Logical.}
-\item{o}{Argument supplied to \code{info.gpd}. An
+\item{o}{An
     object of class 'gpd'.}
 \item{a,b}{Dependence parameters of the Heffernan and Tawn dependence model.}
 \item{m,s}{Nuisance parameters of the Heffernan and Tawn dependence model.}
