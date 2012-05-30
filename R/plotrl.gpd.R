@@ -104,7 +104,7 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
     }
 
     if(sameAxes){
-       yrange <- range(Array)
+       yrange <- range(Array[,1:3,])
     }    
   
     for(i in 1:ncov){
@@ -116,7 +116,11 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
       }
 
       if(SetMain){
-        Main <- paste(main,"\n", paste(covnames,"=",signif(cov,2),collapse=", "))
+        if(covnames != ""){
+          Main <- paste(main,"\n", paste(covnames,"=",signif(cov,2),collapse=", "))
+        } else {
+          Main <- main
+        }
       } else {
         Main <- main[i]
       }
