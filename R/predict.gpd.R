@@ -257,10 +257,21 @@ linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FAL
         X.phi <- object$X.phi
     }
 
-    uX.phi.xi <- unique(cbind(X.phi, X.xi))
-    uX.phi.xi <- uX.phi.xi[, apply(uX.phi.xi, 2, function(x) var(x) > 0)]
+    X.phi.xi <- cbind(X.phi, X.xi)
+    ModelHasCovs <- ncol(X.phi.xi) > 2
+    if(ModelHasCovs){
+      covCols <- apply(X.phi.xi, 2, function(x) !all(x==1))
+      Xnames <- colnames(X.phi.xi)
+      if(sum(covCols) == 1){
+        X.phi.xi <- cbind(X.phi.xi[, covCols]) # cbind forces returned object to have a dim attribute
+      } else {
+        X.phi.xi <- X.phi.xi[, covCols]
+      }
+      colnames(X.phi.xi) <- Xnames[covCols]
+    }
 
     if (unique.){
+        X.phi.xi <- unique(X.phi.xi)
         u <- !duplicated(cbind(X.phi,X.xi))
         X.xi  <- if(is.matrix(X.xi[u,]))  X.xi[u, ]
                  else if(ncol(X.xi) == 1)  cbind(X.xi[u,])
@@ -268,9 +279,6 @@ linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FAL
         X.phi <- if(is.matrix(X.phi[u,])) X.phi[u, ]
                  else if(ncol(X.phi) == 1) cbind(X.phi[u,])
                  else t(cbind(X.phi[u,]))
-    }
-    else if (all){
-        stop("if all=TRUE, unique. must be TRUE")
     }
 
     phi <- cbind(object$param[, 1:ncol(X.phi)])
@@ -312,22 +320,28 @@ linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FAL
     }
     
     if(!all){
-      res <- addCov(res,X.phi)
-      res <- addCov(res,X.xi)
-    }
-    else {
-        if (nrow(uX.phi.xi) != length(res)){
+      if(ModelHasCovs){
+        res <- addCov(res,X.phi)
+        res <- addCov(res,X.xi)
+      }
+    } else {
+        if (ModelHasCovs & nrow(X.phi.xi) != length(res)){
             stop("Number of unique combinations of covariates doesn't match the number of parameters")
         }
         for (i in 1:length(res)){
-            res[[i]] <- cbind(res[[i]], matrix(rep(uX.phi.xi[i,], nrow(res[[i]])), nrow=nrow(res[[i]]), byrow=TRUE))
-            colnames(res[[i]]) <- c("phi", "xi", colnames(uX.phi.xi))
+          if(ModelHasCovs){
+            res[[i]] <- cbind(res[[i]], matrix(rep(X.phi.xi[i,], nrow(res[[i]])), nrow=nrow(res[[i]]), byrow=TRUE))
+            colnames(res[[i]]) <- c("phi", "xi", colnames(X.phi.xi))
+          } else {
+            colnames(res[[i]]) <- c("phi","xi")
+          }
         }
     }
 
     oldClass(res) <- "lp.bgpd"
     res
 }
+
 rl.bgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
 
     co <- linearPredictors.bgpd(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
@@ -664,7 +678,6 @@ test.predict.bgpd <- function(){
                 
   checkEquals(target=predict(t.fit,M=1/(1-p)), current=rl(t.fit,M=1/(1-p)),msg="predict.bgpd: predict with type=rl gives same as direct call to rl with default arguments")
   checkEquals(target=predict(t.fit,type="lp"), current=linearPredictors(t.fit),msg="predict.bgpd: predict with type=rl gives same as direct call to rl with default arguments")
-  
 # with covariates
 
   n <- 100
@@ -725,19 +738,19 @@ test.predict.bgpd <- function(){
                      
   p <- predict(fit,type="lp",all=TRUE,newdata=newX)
   l <- lapply(p,function(l) apply(l,2,mean))
-  m <- matrix(unlist(l),ncol=2,byrow=TRUE)
+  m <- matrix(unlist(l),ncol=4,byrow=TRUE)
   r <- predict(fit,type="lp",newdata=newX)
-  checkEqualsNumeric(target = m,current = r[,1:2],msg="predict.bgpd : linear predictors of parameters with new data")                   
+  checkEqualsNumeric(target = m[,1:2],current = r[,1:2],msg="predict.bgpd : linear predictors of parameters with new data")                   
                    
   alpha <- c(0.05,0.1)
   for(a in alpha){
     l.L <- lapply(p,function(l) apply(l,2,quantile,prob=a/2))
     l.U <- lapply(p,function(l) apply(l,2,quantile,prob=1-a/2))
-    m.L <- matrix(unlist(l.L),ncol=2,byrow=TRUE)
-    m.U <- matrix(unlist(l.U),ncol=2,byrow=TRUE)                   
+    m.L <- matrix(unlist(l.L),ncol=4,byrow=TRUE)
+    m.U <- matrix(unlist(l.U),ncol=4,byrow=TRUE)                   
     r <- predict(fit,type="lp",newdata=newX,ci=TRUE,alpha=a)
-    checkEqualsNumeric(target = m.L,current = r[,c(3,7)],msg="predict.bgpd : lower conf ints for linear predictors of parameters with new data")
-    checkEqualsNumeric(target = m.U,current = r[,c(4,8)],msg="predict.bgpd : upper conf ints for linear predictors of parameters with new data")
+    checkEqualsNumeric(target = m.L[,1:2],current = r[,c(3,7)],msg="predict.bgpd : lower conf ints for linear predictors of parameters with new data")
+    checkEqualsNumeric(target = m.U[,1:2],current = r[,c(4,8)],msg="predict.bgpd : upper conf ints for linear predictors of parameters with new data")
   }
   
   checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")[,1:2],
