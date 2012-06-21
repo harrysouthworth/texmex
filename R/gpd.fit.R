@@ -5,9 +5,8 @@ gpdFit <- function(y, th, X.phi, X.xi, penalty="none", start=NULL,
         priorParameters = NULL) {
         keepsc <- par[1:ncol(X.phi)]
         keepxi <- par[-(1:ncol(X.phi))]
-        sc <- colSums(par[1:ncol(X.phi)] * t(X.phi))
-        xi <- colSums(par[(ncol(X.phi) + 1):(ncol(X.phi) + ncol(X.xi))] * 
-            t(X.xi))
+        sc <- X.phi %*% par[1:ncol(X.phi)]
+        xi <- X.xi %*% par[(ncol(X.phi) + 1):(ncol(X.phi) + ncol(X.xi))]
         y <- (y - th)/exp(sc)
         y <- 1 + xi * y
         if (min(y) <= 0) {
