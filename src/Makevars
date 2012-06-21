@@ -1,0 +1,3 @@
+# we need BLAS for linear algebra
+
+PKG_LIBS = $(BLAS_LIBS) $(FLIBS)
