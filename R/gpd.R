@@ -221,13 +221,13 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
 	    ################# Set up proposal - account for differences bewteen R & S+
 	    if (is.R()){
-	    	proposal <- function(mean, sigma){
-		    	c(rmvnorm( 1 , mean, sigma = sigma ))
+	    	proposal <- function(count, mean, sigma){
+		    	rmvnorm(count, mean, sigma = sigma)
 	    	}
 	    }
 	    else {
 	    	proposal <- function(mean, sigma){
-	    		c(rmvnorm(1, mean, cov=sigma))
+	    		rmvnorm(count, mean, cov=sigma)
 	    	}
 	    }
 
@@ -235,8 +235,8 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
         gpdlik <- # Positive loglikelihood
         function(param, data, X.phi, X.xi){
-            phi <- colSums(param[1:ncol(X.phi)] * t(X.phi))
-            xi <- colSums(param[(ncol(X.phi) + 1):(ncol(X.phi) + ncol(X.xi))] * t(X.xi))
+            phi <- X.phi %*% param[1:ncol(X.phi)]
+            xi <- X.xi %*% param[(ncol(X.phi) + 1):(ncol(X.phi) + ncol(X.xi))]
 
             n <- length(data)
             data <- xi * data / exp(phi) + 1
@@ -270,11 +270,12 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         if (missing(jump.cov)){ cov <- o$cov }
 		else { cov <- jump.cov }
         ######################## Run the Metropolis algorithm...
+        proposals <- proposal(iter, o$coefficients, cov*jump.const)
         for(i in 2:iter){
             if( verbose){
                 if( i %% trace == 0 ) cat(i, " steps taken\n" )
             }
-			prop <- proposal(o$coefficients, cov*jump.const)
+	    prop <- proposals[i - 1,]
             bottom <- prior(res[i - 1,], priorParameters[[1]], priorParameters[[2]], log=TRUE ) +
                       gpdlik(res[ i - 1 , ] , y-u, X.phi, X.xi)
             top <- prior(prop, priorParameters[[1]], priorParameters[[2]], log=TRUE) +
