@@ -1,0 +1,7 @@
+# Export all names
+exportPattern(".")
+
+# Just import the dmvnorm and rmvnorm names
+# from mvtnorm
+importFrom(mvtnorm, dmvnorm, rmvnorm)
+
