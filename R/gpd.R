@@ -211,41 +211,28 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
         u <- th
 
-	    ##################### Set up prior - account for differences between R & S+
-		if (is.R()){
-			prior <- dmvnorm
-		}
-		else {
-			prior <- function(x, mean, cov, log.=TRUE){ log(dmvnorm(x, mean, cov)) }
-		}
+        prior <- .internal.make.mvn.prior(priorParameters)
 
-	    ################# Set up proposal - account for differences bewteen R & S+
-	    if (is.R()){
-	    	proposal <- function(count, mean, sigma){
-		    	rmvnorm(count, mean, sigma = sigma)
-	    	}
-	    }
-	    else {
-	    	proposal <- function(mean, sigma){
-	    		rmvnorm(count, mean, cov=sigma)
-	    	}
-	    }
+################# Set up proposal - account for differences bewteen R & S+
+        if (is.R()){
+          proposal <- function(count, mean, sigma){
+            rmvnorm(count, mean, sigma = sigma)
+          }
+        }
+        else {
+          proposal <- function(mean, sigma){
+            rmvnorm(count, mean, cov=sigma)
+          }
+        }
 
        ############################# Define log-likelihood
 
         gpdlik <- # Positive loglikelihood
         function(param, data, X.phi, X.xi){
-            phi <- X.phi %*% param[1:ncol(X.phi)]
-            xi <- X.xi %*% param[(ncol(X.phi) + 1):(ncol(X.phi) + ncol(X.xi))]
-
-            n <- length(data)
-            data <- xi * data / exp(phi) + 1
-            if(any(data <= 0)){ #| ( xi <= -.50 ) ) -(10^10)
-                -(10^10)
-            }
-            else  {
-                - sum(phi) - sum(log(data) * (1/xi + 1))
-            }
+          n.phi <- ncol(X.phi)
+          phi <- X.phi %*% param[1:n.phi]
+          xi <- X.xi %*% param[(1 + n.phi):length(param)]
+          sum(dgpd(data, exp(phi), xi, u=0, log.d=TRUE))
         } # Close gpdlik <- function
 
         # Need to check for convergence failure here. Otherwise, end up simulating
@@ -260,7 +247,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         if (missing(start)) {
             res[1, ] <- o$coefficients
         }
-	    else { 
+	    else {
             res[1, ] <- start
         }
 
@@ -271,18 +258,21 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 		else { cov <- jump.cov }
         ######################## Run the Metropolis algorithm...
         proposals <- proposal(iter, o$coefficients, cov*jump.const)
+        last.cost <- prior(res[1,]) +
+          gpdlik(res[1, ] , y-u, X.phi, X.xi)
         for(i in 2:iter){
             if( verbose){
                 if( i %% trace == 0 ) cat(i, " steps taken\n" )
             }
 	    prop <- proposals[i - 1,]
-            bottom <- prior(res[i - 1,], priorParameters[[1]], priorParameters[[2]], log=TRUE ) +
-                      gpdlik(res[ i - 1 , ] , y-u, X.phi, X.xi)
-            top <- prior(prop, priorParameters[[1]], priorParameters[[2]], log=TRUE) +
-                   gpdlik(prop, y-u, X.phi, X.xi)
-            r <- exp(top - bottom)
-            res[ i , ] <- if (runif(1) < r ){ prop }
-                          else{ res[i -1, ] }
+            top <- prior(prop) + gpdlik(prop, y-u, X.phi, X.xi)
+            r <- exp(top - last.cost)
+            if (runif(1) < r) {
+              res[i, ] <- prop
+              last.cost <- top
+            } else {
+              res[ i , ] <- res[i-1,]
+            }
         } # Close for(i in 2:iter
 
         acc <- length(unique(res[,1])) / iter
@@ -297,16 +287,48 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
           data <- allY
         }
         res <- list(call=theCall, threshold=u , map = o,
-                    burn = burn, thin = thin, 
+                    burn = burn, thin = thin,
                     chains=res, y=y, data=data,
                     X.phi = X.phi, X.xi = X.xi,
-					acceptance=acc, seed=seed 
-                    )
+                    acceptance=acc, seed=seed)
+
         oldClass(res) <- "bgpd"
         res <- thinAndBurn(res)
         res
-    } # Close else 
+    } # Close else
 
+}
+
+.internal.make.mvn.prior <- function(priorParameters) {
+  mean <- priorParameters[[1]]
+  cov <- priorParameters[[2]]
+  if (!isSymmetric(cov, tol=sqrt(.Machine$double.eps),
+                   check.attributes = FALSE)) {
+    stop("Covariance must be a symmetric matrix")
+  }
+  # we should also check for a positive definite matrix
+  # but hey
+  factors <- svd(as.matrix(cov))
+  if (min(factors$d) <= 0) {
+    stop("Covariance must be nonsingular.")
+  }
+  num.vars <- length(mean)
+  if (ncol(cov) != num.vars) {
+    stop("Covariance and mean must be the same size.")
+  }
+
+  logdet <- sum(log(factors$d))
+  base.ret <- -(num.vars * log(2 * pi) + logdet) / 2
+  stacked <- rbind(t(factors$u), t(factors$v))
+
+  function(param) {
+    delta <- param - mean
+    prod <- as.numeric(stacked %*% delta)
+    first <- prod[1:num.vars]
+    last <- prod[(1 + num.vars):(2*num.vars)]
+    mahab <- as.numeric(first %*% (last / factors$d))
+    base.ret - 0.5 * mahab
+  }
 }
 
 test.gpd <- function(){

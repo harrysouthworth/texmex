@@ -8,7 +8,8 @@ dgpd <- function(x, sigma, xi, u = 0, log.d=FALSE ){
 
     .C(.c.dgpd, result=double(n), as.integer(n),
        as.double(x), as.double(sigma), as.double(xi),
-       as.double(u), as.integer(log.d))$result
+       as.double(u), as.integer(log.d),
+       NAOK=TRUE)$result
 }
 
 test.dgpd <- function(){
