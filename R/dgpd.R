@@ -1,5 +1,4 @@
-`dgpd` <-
-function(x, sigma, xi, u = 0, log.d=FALSE ){
+dgpd <- function(x, sigma, xi, u = 0, log.d=FALSE ){
 
     n <- length(x)
 
@@ -7,25 +6,10 @@ function(x, sigma, xi, u = 0, log.d=FALSE ){
     xi <- rep(xi, length=n)
     u <- rep(u, length=n)
 
-    if (all(xi == 0)){
-      res <- dexp(x-u, 1/sigma, log=TRUE)
-    }
-    else if (any(xi == 0)){
-      res <- numeric(n)
-	    wh <- xi == 0
-	    res[wh] <- dexp(x[wh] - u[wh], 1/sigma[wh], log=TRUE)
-	    res[!wh] <- logb(1 + (xi[!wh] * (x[!wh] - u[!wh]))/sigma[!wh] ) * ( -1/xi[!wh] - 1) - log(sigma[!wh])
-    }
-    else{
-      res <- logb(1 + (xi * (x - u))/sigma ) * ( -1/xi - 1) - log(sigma)
-    }
-
-    res <- ifelse( exp(res) >=0, res, 0 )
-	
-    if (!log.d){
-        res <- exp(res)
-    }
-    res
+    .C(.c.dgpd, result=double(n), as.integer(n),
+       as.double(x), as.double(sigma), as.double(xi),
+       as.double(u), as.integer(log.d),
+       NAOK=TRUE)$result
 }
 
 test.dgpd <- function(){

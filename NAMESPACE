@@ -1,0 +1,9 @@
+# Export all names that don't start with "."
+exportPattern("^[^\\.]")
+
+useDynLib(texmex, .c.rgpd, .c.dgpd)
+
+# Just import the dmvnorm and rmvnorm names
+# from mvtnorm
+importFrom(mvtnorm, dmvnorm, rmvnorm)
+
