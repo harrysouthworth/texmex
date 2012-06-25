@@ -481,9 +481,10 @@ test.gpd <- function(){
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- .ismev.gpd.fit(liver$ALT.M, 
-                          threshold=quantile(liver$ALT.M, .7), 
-                          ydat = m, sigl=2:ncol(m), siglink=exp, show=FALSE)
+  ismod <- texmex:::.ismev.gpd.fit(liver$ALT.M,
+                                   threshold=quantile(liver$ALT.M, .7),
+                                   ydat = m, sigl=2:ncol(m),
+                                   siglink=exp, show=FALSE)
 
   checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol,msg="gpd: covariates in phi only, point ests")
 
@@ -498,9 +499,9 @@ test.gpd <- function(){
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- .ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B), 
-                          threshold=quantile(log(liver$ALT.M / liver$ALT.B), .7), 
-                          ydat = m, shl=2:ncol(m), show=FALSE)
+  ismod <- texmex:::.ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B), 
+                                   threshold=quantile(log(liver$ALT.M / liver$ALT.B), .7), 
+                                   ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
 
@@ -529,8 +530,11 @@ test.gpd <- function(){
   m <- model.matrix(~ a+b, data)
   
   mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
-  ismod <- .ismev.gpd.fit(data$y,threshold=quantile(data$y,0.7),
-                   ydat=m,shl=3,sigl=2,siglink=exp, show=FALSE)
+  ismod <- texmex:::.ismev.gpd.fit(data$y,
+                                   threshold=quantile(data$y,0.7),
+                                   ydat=m,shl=3,sigl=2,
+                                   siglink=exp,
+                                   show=FALSE)
 
   checkEqualsNumeric(ismod$mle, coef(mod),tolerance = tol,msg="gpd: covariates in phi and xi: point ests")
   checkEqualsNumeric(ismod$se, sqrt(diag(mod$cov)),tolerance = tol,msg="gpd: covariates in phi and xi: std errs")

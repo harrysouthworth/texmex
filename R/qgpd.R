@@ -33,11 +33,11 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 test.qgpd <- function(){
   
   set.seed(201110101)
-  
+  evd.qgpd <- texmex:::.evd.qgpd
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))
-    eq <- sapply(1:nreps, function(i) .evd.qgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+    eq <- sapply(1:nreps, function(i) evd.qgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
     checkEqualsNumeric(eq,myq,msg=paste(msg,"test using .evd.qgpd"))
     checkEqualsNumeric(x,myp,msg=paste(msg,"test using qgpd"))
   }
@@ -82,7 +82,7 @@ test.qgpd <- function(){
   x <- runif(nsim)
 
   myq <- qgpd(x, sig, xi, thresh)
-  eq <- sapply(1:nsim, function(i).evd.qgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+  eq <- sapply(1:nsim, function(i)evd.qgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
 
   checkEqualsNumeric(eq,myq,msg="qgpd: vectorisation")
   

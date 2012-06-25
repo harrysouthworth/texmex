@@ -13,10 +13,11 @@ dgpd <- function(x, sigma, xi, u = 0, log.d=FALSE ){
 }
 
 test.dgpd <- function(){
+  evd.dgpd <- texmex:::.evd.dgpd
 
   myTest <- function(sig,xi,thresh,msg){
     myd <- sapply(1:nreps,function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
-    ed <- sapply(1:nreps, function(i) .evd.dgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+    ed <- sapply(1:nreps, function(i) evd.dgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
     checkEqualsNumeric(ed,myd,msg=msg)
     }
 
@@ -56,7 +57,7 @@ test.dgpd <- function(){
   x <- rgpd(nsim, sig, xi,u=thresh)
   myd <- dgpd(x, sig, xi,u=thresh)
   
-  ed <- sapply(1:nsim, function(i).evd.dgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+  ed <- sapply(1:nsim, function(i) evd.dgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
   checkEqualsNumeric(ed,myd,msg="dgpd: vectorisation")
 
 #*************************************************************
