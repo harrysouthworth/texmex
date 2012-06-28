@@ -30,6 +30,7 @@
 \alias{plotRLgpd}
 \alias{rFrechet}
 \alias{rMaxAR}
+\alias{test.closures}
 \alias{.extRemes.decluster.intervals}
 \alias{.extRemes.decluster.runs}
 \alias{.extRemes.exi.intervals}

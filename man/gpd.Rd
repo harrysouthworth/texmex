@@ -19,7 +19,9 @@ gpd(y, data, ...)
 \method{gpd}{default}(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
     prior = "gaussian", method = "optimize", cov="observed", start = NULL, 
     priorParameters = NULL, maxit = 10000, trace = NULL,
-    iter = 10500, burn = 500, thin = 1, jump.cov, jump.const, verbose = TRUE,...)
+    iter = 10500, burn = 500, thin = 1,
+    proposal.dist = c("gaussian", "cauchy"),
+    jump.cov, jump.const, verbose = TRUE,...)
 
 \method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
@@ -90,7 +92,9 @@ gpd(y, data, ...)
   \item{burn}{ The number of initial steps to be discarded. }
   \item{thin}{ The degree of thinning of the resulting Markov chains. Defaults
                to 1 (no thinning). A value of 0.5 (for example) would result in
-               every other step being discarded. }
+               every other step being discarded.}
+  \item{proposal.dist}{The proposal distribution to use, either
+    multivariate gaussian or a multivariate Cauchy.}
   \item{jump.cov}{Covariance matrix for proposal distribution of Metropolis algorithm.  This is scaled by \code{jump.const}.}
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to

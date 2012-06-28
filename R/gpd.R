@@ -7,12 +7,15 @@ gpd <- function(y, data, ...){
   UseMethod("gpd",y)
 }
 
-gpd.default <- 
+gpd.default <-
 function (y, data, th, qu, phi = ~1, xi = ~1,
-          penalty = "gaussian", prior = "gaussian", method = "optimize",
-		      cov="observed",
-          start = NULL, priorParameters = NULL, maxit = 10000, trace=NULL,
-          iter = 10500, burn=500, thin = 1, jump.cov, jump.const, verbose=TRUE,...) {
+          penalty = "gaussian", prior = "gaussian",
+          method = "optimize", cov="observed",
+          start = NULL, priorParameters = NULL,
+          maxit = 10000, trace=NULL,
+          iter = 10500, burn=500, thin = 1,
+          proposal.dist = c("gaussian", "cauchy"),
+          jump.cov, jump.const, verbose=TRUE,...) {
 
     theCall <- match.call()
 
@@ -189,15 +192,15 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     o$counts <- NULL
     oldClass(o) <- "gpd"
 
-    if (cov == "numeric") { 
-      o$cov <- solve(o$hessian) 
-    } else if (cov == "observed") { 
+    if (cov == "numeric") {
+      o$cov <- solve(o$hessian)
+    } else if (cov == "observed") {
       o$cov <- solve(info.gpd(o))
-    } else { 
-      stop("cov must be either 'numeric' or 'observed'") 
+    } else {
+      stop("cov must be either 'numeric' or 'observed'")
     }
 
-	  o$se <- sqrt(diag(o$cov))
+    o$se <- sqrt(diag(o$cov))
     if (method == "o"){
 		  o
     }
@@ -205,130 +208,92 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     ################################# Simulate from posteriors....
 
     else { # Method is "simulate"...
-        if (missing(jump.const)){
-            jump.const <- (2.4/sqrt(ncol(X.phi) + ncol(X.xi)))^2
+      proposal.fn <- switch(match.arg(proposal.dist),
+                            gaussian=rmvnorm,
+                            cauchy=.rmvcauchy,
+                            function () {stop("Bad proposal distribution")})
+      if (missing(jump.const)){
+        jump.const <- (2.4/sqrt(ncol(X.phi) + ncol(X.xi)))^2
+      }
+      u <- th
+
+      prior <- .make.mvn.prior(priorParameters)
+
+############################# Define log-likelihood
+
+      gpd.log.lik <- .make.gpd.loglikelihood(y, u, X.phi, X.xi)
+
+      log.lik <- function(param) {
+        gpd.log.lik(param) + prior(param)
+      }
+
+      # Need to check for convergence failure here. Otherwise, end up simulating
+      # proposals from distribution with zero variance in 1 dimension.
+       checkNA <- any(is.na(sqrt(diag(o$cov))))
+      if (checkNA){
+        stop("MAP estimates have not converged. Cannot proceed. Try a different prior" )
+      }
+
+      res <- matrix(ncol=ncol(X.phi) + ncol(X.xi), nrow=iter)
+      res[1,] <- if (missing(start)) { o$coefficients } else { start }
+
+
+      if (!exists(".Random.seed")){ runif(1)  }
+      seed <- .Random.seed # Retain and add to output
+
+      cov <- if (missing(jump.cov)) { o$cov } else { jump.cov }
+                                        # create proposals en bloc
+      proposals <- proposal.fn(iter,
+                               double(length(o$coefficients)),
+                               cov*jump.const)
+      last.cost <- log.lik(res[1,])
+      if (!is.finite(last.cost)) {
+        stop("Start is infeasible.")
+      }
+######################## Run the Metropolis algorithm...
+      acc <- 0
+      for(i in 2:iter){
+        if( verbose){
+          if( i %% trace == 0 ) cat(i, " steps taken\n" )
         }
-
-        u <- th
-
-        prior <- .internal.make.mvn.prior(priorParameters)
-
-################# Set up proposal - account for differences bewteen R & S+
-        if (is.R()){
-          proposal <- function(count, mean, sigma){
-            rmvnorm(count, mean, sigma = sigma)
-          }
+        prop <- proposals[i - 1,] + res[i - 1,]
+        top <- log.lik(prop)
+        delta <- top - last.cost
+        if (is.finite(top) && ((delta >= 0) ||
+                               (runif(1) <= exp(delta)))) {
+          res[i, ] <- prop
+          last.cost <- top
+          acc <- 1 + acc
+        } else {
+          res[ i , ] <- res[i-1,]
         }
-        else {
-          proposal <- function(mean, sigma){
-            rmvnorm(count, mean, cov=sigma)
-          }
+      } # Close for(i in 2:iter
+
+      acc <- acc / iter
+      if (acc < .1) {
+        warning("Acceptance rate in Metropolis algorithm is low.")
+      }
+
+      if (trace < iter) {
+        if(verbose) {
+          cat("Acceptance rate:", round( acc , 3 ) , "\n")
         }
+      }
 
-       ############################# Define log-likelihood
+      if (missing(data)) {
+        data <- allY
+      }
+      res <- list(call=theCall, threshold=u , map = o,
+                  burn = burn, thin = thin,
+                  chains=res, y=y, data=data,
+                  X.phi = X.phi, X.xi = X.xi,
+                  acceptance=acc, seed=seed)
 
-        gpdlik <- # Positive loglikelihood
-        function(param, data, X.phi, X.xi){
-          n.phi <- ncol(X.phi)
-          phi <- X.phi %*% param[1:n.phi]
-          xi <- X.xi %*% param[(1 + n.phi):length(param)]
-          sum(dgpd(data, exp(phi), xi, u=0, log.d=TRUE))
-        } # Close gpdlik <- function
-
-        # Need to check for convergence failure here. Otherwise, end up simulating
-        # proposals from distribution with zero variance in 1 dimension.
-        checkNA <- any(is.na(sqrt(diag(o$cov))))
-        if ( checkNA ){
-            stop( "MAP estimates have not converged. Cannot proceed. Try a different prior" )
-        }
-
-        res <- matrix( ncol=ncol(X.phi) + ncol(X.xi), nrow=iter )
-
-        if (missing(start)) {
-            res[1, ] <- o$coefficients
-        }
-	    else {
-            res[1, ] <- start
-        }
-
-        if (!exists(".Random.seed")){ runif(1)  }
-        seed <- .Random.seed # Retain and add to output
-
-        if (missing(jump.cov)){ cov <- o$cov }
-		else { cov <- jump.cov }
-        ######################## Run the Metropolis algorithm...
-        proposals <- proposal(iter, o$coefficients, cov*jump.const)
-        last.cost <- prior(res[1,]) +
-          gpdlik(res[1, ] , y-u, X.phi, X.xi)
-        for(i in 2:iter){
-            if( verbose){
-                if( i %% trace == 0 ) cat(i, " steps taken\n" )
-            }
-	    prop <- proposals[i - 1,]
-            top <- prior(prop) + gpdlik(prop, y-u, X.phi, X.xi)
-            r <- exp(top - last.cost)
-            if (runif(1) < r) {
-              res[i, ] <- prop
-              last.cost <- top
-            } else {
-              res[ i , ] <- res[i-1,]
-            }
-        } # Close for(i in 2:iter
-
-        acc <- length(unique(res[,1])) / iter
-        if (acc < .1){ warning("Acceptance rate in Metropolis algorithm is low.") }
-        if (trace < iter){
-            if(verbose) {
-                cat("Acceptance rate:", round( acc , 3 ) , "\n")
-            }
-        }
-
-        if (missing(data)) {
-          data <- allY
-        }
-        res <- list(call=theCall, threshold=u , map = o,
-                    burn = burn, thin = thin,
-                    chains=res, y=y, data=data,
-                    X.phi = X.phi, X.xi = X.xi,
-                    acceptance=acc, seed=seed)
-
-        oldClass(res) <- "bgpd"
-        res <- thinAndBurn(res)
-        res
+      oldClass(res) <- "bgpd"
+      res <- thinAndBurn(res)
+      res
     } # Close else
 
-}
-
-.internal.make.mvn.prior <- function(priorParameters) {
-  mean <- priorParameters[[1]]
-  cov <- priorParameters[[2]]
-  if (!isSymmetric(cov, tol=sqrt(.Machine$double.eps),
-                   check.attributes = FALSE)) {
-    stop("Covariance must be a symmetric matrix")
-  }
-  # we should also check for a positive definite matrix
-  # but hey
-  factors <- svd(as.matrix(cov))
-  if (min(factors$d) <= 0) {
-    stop("Covariance must be nonsingular.")
-  }
-  num.vars <- length(mean)
-  if (ncol(cov) != num.vars) {
-    stop("Covariance and mean must be the same size.")
-  }
-
-  logdet <- sum(log(factors$d))
-  base.ret <- -(num.vars * log(2 * pi) + logdet) / 2
-  stacked <- rbind(t(factors$u), t(factors$v))
-
-  function(param) {
-    delta <- param - mean
-    prod <- as.numeric(stacked %*% delta)
-    first <- prod[1:num.vars]
-    last <- prod[(1 + num.vars):(2*num.vars)]
-    mahab <- as.numeric(first %*% (last / factors$d))
-    base.ret - 0.5 * mahab
-  }
 }
 
 test.gpd <- function(){
@@ -355,10 +320,14 @@ test.gpd <- function(){
   mod.loglik <- mod$loglik
   mod.cov22 <- mod$cov[2, 2]
 
-  checkEqualsNumeric(cparas, mod.coef, tolerance = tol,msg="gpd: parameter ests page 85 Coles")
-  checkEqualsNumeric(cse[2], mod$se[2], tolerance = tol,msg="gpd: standard errors page 85 Coles")
-  checkEqualsNumeric(ccov[2,2], mod$cov[2, 2], tolerance = tol,msg="gpd: Covariance page 85 Coles")
-  checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol,msg="gpd: loglik page 85 Coles")
+  checkEqualsNumeric(cparas, mod.coef, tolerance = tol,
+                     msg="gpd: parameter ests page 85 Coles")
+  checkEqualsNumeric(cse[2], mod$se[2], tolerance = tol,
+                     msg="gpd: standard errors page 85 Coles")
+  checkEqualsNumeric(ccov[2,2], mod$cov[2, 2], tolerance = tol,
+                     msg="gpd: Covariance page 85 Coles")
+  checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol,
+                     msg="gpd: loglik page 85 Coles")
   
 ###################################################################
 #   Logical checks on the effect of Gaussian penalization. The smaller the
@@ -373,8 +342,10 @@ test.gpd <- function(){
   mod1 <- gpd(rain, th=30, priorParameters=gp1)
   mod2 <- gpd(rain, th=30, priorParameters=gp2)
 
-  checkTrue(coef(mod)[2] > coef(mod1)[2],msg="gpd: Gaussian penalization xi being drawn to 0")
-  checkTrue(coef(mod1)[2] > coef(mod2)[2],msg="gpd: Gaussian penalization xi being drawn to 0")
+  checkTrue(coef(mod)[2] > coef(mod1)[2],
+            msg="gpd: Gaussian penalization xi being drawn to 0")
+  checkTrue(coef(mod1)[2] > coef(mod2)[2],
+            msg="gpd: Gaussian penalization xi being drawn to 0")
 
 # 2.2 Tests for phi being drawn to 0
 
@@ -384,8 +355,10 @@ test.gpd <- function(){
   mod3 <- gpd(rain, th=30, priorParameters=gp3)
   mod4 <- gpd(rain, th=30, priorParameters=gp4)
 
-  checkTrue(coef(mod)[1] > coef(mod3)[1],msg="gpd: Gaussian penalization phi being drawn to 0")
-  checkTrue(coef(mod3)[1] > coef(mod4)[1],msg="gpd: Gaussian penalization phi being drawn to 0")
+  checkTrue(coef(mod)[1] > coef(mod3)[1],
+            msg="gpd: Gaussian penalization phi being drawn to 0")
+  checkTrue(coef(mod3)[1] > coef(mod4)[1],
+            msg="gpd: Gaussian penalization phi being drawn to 0")
   
 # 2.3 Tests for xi being drawn to 1
   gp5 <- list(c(0, 1), diag(c(10^4, .25)))
@@ -394,8 +367,10 @@ test.gpd <- function(){
   mod5 <- gpd(rain, th=30, priorParameters=gp5)
   mod6 <- gpd(rain, th=30, priorParameters=gp6)
 
-  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],msg="gpd: Gaussian penalization xi being drawn to 1")
-  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],msg="gpd: Gaussian penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],
+            msg="gpd: Gaussian penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],
+            msg="gpd: Gaussian penalization xi being drawn to 1")
   
 # 2.4 Tests for phi being drawn to 4 (greater than mle for phi)
 
@@ -405,8 +380,10 @@ test.gpd <- function(){
   mod7 <- gpd(rain, th=30, priorParameters=gp7)
   mod8 <- gpd(rain, th=30, priorParameters=gp8)
 
-  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd: Gaussian penalization phi being drawn to 4")
-  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd: Gaussian penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],
+            msg="gpd: Gaussian penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],
+            msg="gpd: Gaussian penalization phi being drawn to 4")
   
 ###################################################################
 #   Logical checks on the effect of penalization using lasso or L1 penalization. The smaller the
@@ -421,8 +398,10 @@ test.gpd <- function(){
   mod1 <- gpd(rain, th=30, priorParameters=gp1, penalty="lasso")
   mod2 <- gpd(rain, th=30, priorParameters=gp2, penalty="lasso")
 
-  checkTrue(coef(mod)[2] > coef(mod1)[2],msg="gpd: lasso penalization xi being drawn to 0")
-  checkTrue(coef(mod1)[2] > coef(mod2)[2],msg="gpd: lasso penalization xi being drawn to 0")
+  checkTrue(coef(mod)[2] > coef(mod1)[2],
+            msg="gpd: lasso penalization xi being drawn to 0")
+  checkTrue(coef(mod1)[2] > coef(mod2)[2],
+            msg="gpd: lasso penalization xi being drawn to 0")
 
 # 2a.2 Tests for phi being drawn to 0
 
@@ -432,8 +411,10 @@ test.gpd <- function(){
   mod3 <- gpd(rain, th=30, priorParameters=gp3, penalty="lasso")
   mod4 <- gpd(rain, th=30, priorParameters=gp4, penalty="lasso")
 
-  checkTrue(coef(mod)[1] > coef(mod3)[1],msg="gpd: lasso penalization phi being drawn to 0")
-  checkTrue(coef(mod3)[1] > coef(mod4)[1],msg="gpd: lasso penalization phi being drawn to 0")
+  checkTrue(coef(mod)[1] > coef(mod3)[1],
+            msg="gpd: lasso penalization phi being drawn to 0")
+  checkTrue(coef(mod3)[1] > coef(mod4)[1],
+            msg="gpd: lasso penalization phi being drawn to 0")
   
 # 2a.3 Tests for xi being drawn to 1
   gp5 <- list(c(0, 1), solve(diag(c(10^4, .25))))
@@ -442,8 +423,10 @@ test.gpd <- function(){
   mod5 <- gpd(rain, th=30, priorParameters=gp5, penalty="lasso")
   mod6 <- gpd(rain, th=30, priorParameters=gp6, penalty="lasso")
 
-  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],msg="gpd: lasso penalization xi being drawn to 1")
-  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],msg="gpd: lasso penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],
+            msg="gpd: lasso penalization xi being drawn to 1")
+  checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],
+            msg="gpd: lasso penalization xi being drawn to 1")
   
 # 2a.4 Tests for phi being drawn to 4 (greater than mle for phi)
 
@@ -453,8 +436,10 @@ test.gpd <- function(){
   mod7 <- gpd(rain, th=30, priorParameters=gp7, penalty="lasso")
   mod8 <- gpd(rain, th=30, priorParameters=gp8, penalty="lasso")
 
-  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],msg="gpd: lasso penalization phi being drawn to 4")
-  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],msg="gpd: lasso penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],
+            msg="gpd: lasso penalization phi being drawn to 4")
+  checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],
+            msg="gpd: lasso penalization phi being drawn to 4")
 
 ########################################################
 # Tests on including covariates. Once more, gpd.fit in ismev
@@ -468,7 +453,8 @@ test.gpd <- function(){
 
   mod <- gpd(rainfall, th=30, data=d, phi= ~ time, penalty="none")
 
-  checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol,msg="gpd: loglik Coles page 119")
+  checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol,
+                     msg="gpd: loglik Coles page 119")
   
 ####################################################################
 # 3.1 Use liver data, compare with ismev. 
@@ -486,10 +472,16 @@ test.gpd <- function(){
                                    ydat = m, sigl=2:ncol(m),
                                    siglink=exp, show=FALSE)
 
-  checkEqualsNumeric(ismod$mle, coef(mod), tolerance = tol,msg="gpd: covariates in phi only, point ests")
+  checkEqualsNumeric(ismod$mle,
+                     coef(mod),
+                     tolerance=tol,
+                     msg="gpd: covariates in phi only, point ests")
 
 # SEs for phi will not be same as for sigma, but we can test xi
-  checkEqualsNumeric(ismod$se[length(ismod$se)], mod$se[length(mod$se)], tolerance = tol,msg="gpd: covariates in phi only, standard errors")
+  checkEqualsNumeric(ismod$se[length(ismod$se)],
+                     mod$se[length(mod$se)],
+                     tolerance=tol,
+                     msg="gpd: covariates in phi only, standard errors")
 
 ######################################################################
 # 3.2 Test xi alone.
@@ -505,9 +497,15 @@ test.gpd <- function(){
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
 
-  checkEqualsNumeric(ismod$mle, mco, tolerance = tol,msg="gpd: covariates in xi only: point ests")
+  checkEqualsNumeric(ismod$mle,
+                     mco,
+                     tolerance=tol,
+                     msg="gpd: covariates in xi only: point ests")
 # SEs for phi will not be same as for sigma, but we can test xi
-  checkEqualsNumeric(ismod$se[-1], mod$se[-1], tolerance = tol, msg="gpd: covariates in xi only: standard errors")
+  checkEqualsNumeric(ismod$se[-1],
+                     mod$se[-1],
+                     tolerance = tol,
+                     msg="gpd: covariates in xi only: standard errors")
 
 ######################################################################
 # 3.3 Test phi & xi simultaneously. Use simulated data.
@@ -518,10 +516,10 @@ test.gpd <- function(){
   # lengths of a and b should divide n exactly
   # returns data set size 2n made up of uniform variates (size n) below threshold u and 
   # gpd (size n) with scale parameter exp(a) and shape b above threshold u
-  { 
+  {
     gpd <- rgpd(n,exp(a),b,u=u)
     unif <- runif(n,u-10,u)
-    as.data.frame(cbind(a=a,b=b,y=c(gpd,unif))) 
+    as.data.frame(cbind(a=a,b=b,y=c(gpd,unif)))
   }
 
   mya <- seq(0.1,1,len=10)
@@ -536,8 +534,14 @@ test.gpd <- function(){
                                    siglink=exp,
                                    show=FALSE)
 
-  checkEqualsNumeric(ismod$mle, coef(mod),tolerance = tol,msg="gpd: covariates in phi and xi: point ests")
-  checkEqualsNumeric(ismod$se, sqrt(diag(mod$cov)),tolerance = tol,msg="gpd: covariates in phi and xi: std errs")
+  checkEqualsNumeric(ismod$mle,
+                     coef(mod),
+                     tolerance = tol,
+                     msg="gpd: covariates in phi and xi: point ests")
+  checkEqualsNumeric(ismod$se,
+                     sqrt(diag(mod$cov)),
+                     tolerance = tol,
+                     msg="gpd: covariates in phi and xi: std errs")
 
 ####################################################################
 # Check that using priors gives expected behaviour when covariates are included.
@@ -554,8 +558,10 @@ test.gpd <- function(){
   mod1 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
   mod2 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
 
-  checkTrue(all(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3])),msg="gpd: with covariates, xi drawn to zero")
-  checkTrue(abs(coef(mod1)[3]) > abs(coef(mod2)[3]),msg="gpd: with covariates, xi drawn to zero")
+  checkTrue(all(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3])),
+            msg="gpd: with covariates, xi drawn to zero")
+  checkTrue(abs(coef(mod1)[3]) > abs(coef(mod2)[3]),
+            msg="gpd: with covariates, xi drawn to zero")
 
 # 2.2 Tests for phi being drawn to 0
 
@@ -573,8 +579,10 @@ test.gpd <- function(){
   mod4 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
   mod5 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
 
-  checkTrue(all(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2])),msg="gpd: with covariates, phi being drawn to 0")
-  checkTrue(all(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2])),msg="gpd: with covariates, phi being drawn to 0")
+  checkTrue(all(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2])),
+            msg="gpd: with covariates, phi being drawn to 0")
+  checkTrue(all(abs(coef(mod4)[1:2]) > abs(coef(mod5)[1:2])),
+            msg="gpd: with covariates, phi being drawn to 0")
 
 # 2.3 Tests for xi being drawn to 2
   myb <- rep(c(-0.5,0.5),each=5)
@@ -587,8 +595,10 @@ test.gpd <- function(){
   mod7 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
   mod8 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
 
-  checkTrue(all(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3])),msg="gpd: with covariates, xi drawn to 2")
-  checkTrue(all(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3])),msg="gpd: with covariates, xi drawn to 2")
+  checkTrue(all(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3])),
+            msg="gpd: with covariates, xi drawn to 2")
+  checkTrue(all(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3])),
+            msg="gpd: with covariates, xi drawn to 2")
 
 # 2.4 Tests for phi being drawn to 4 
 
@@ -603,8 +613,10 @@ test.gpd <- function(){
   mod10 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp10)
   mod11 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp11)
 
-  checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]),msg="gpd: with covariates, phi drawn to 4")
-  checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]),msg="gpd: with covariates, phi drawn to 4")
+  checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]),
+            msg="gpd: with covariates, phi drawn to 4")
+  checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]),
+            msg="gpd: with covariates, phi drawn to 4")
 
 #*************************************************************
   postSum <- function(x){
@@ -617,28 +629,38 @@ test.gpd <- function(){
   save.seed <- .Random.seed
 
   set.seed(save.seed)
-  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7), iter=1000,verbose=FALSE, method="sim")
+  bmod <- gpd(ALT.M, data=liver,
+              th=quantile(liver$ALT.M, .7),
+              iter=1000,verbose=FALSE, method="sim")
   
   set.seed(save.seed)
-  bmod2 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7), iter=1000,verbose=FALSE, method="sim")
+  bmod2 <- gpd(ALT.M, data=liver,
+               th=quantile(liver$ALT.M, .7),
+               iter=1000,verbose=FALSE, method="sim")
   
-  checkEqualsNumeric(bmod$param,bmod2$param,msg="gpd: test simulation reproducibility 1")
+  checkEqualsNumeric(bmod$param, bmod2$param,
+                     msg="gpd: test simulation reproducibility 1")
 
   set.seed(bmod$seed)
-  bmod3 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7), iter=1000,verbose=FALSE, method="sim")
-  checkEqualsNumeric(bmod$param, bmod3$param,msg="gpd: test simulation reproducibility 2")
+  bmod3 <- gpd(ALT.M, data=liver,
+               th=quantile(liver$ALT.M, .7),
+               iter=1000,verbose=FALSE, method="sim")
+  checkEqualsNumeric(bmod$param, bmod3$param,
+                     msg="gpd: test simulation reproducibility 2")
 
 #*************************************************************  
 # 4.2. Logical test of burn-in
 
-  checkEqualsNumeric(nrow(bmod$chains) - bmod$burn, nrow(bmod$param),msg="gpd: Logical test of burn-in 1")
+  checkEqualsNumeric(nrow(bmod$chains) - bmod$burn, nrow(bmod$param),
+                     msg="gpd: Logical test of burn-in 1")
 
   iter <- sample(500:1000,1)
   burn <- sample(50,1)
   bmod2 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                 iter=iter, burn=burn, verbose=FALSE, method="sim")
 
-  checkEqualsNumeric(iter-burn, nrow(bmod2$param),msg="gpd: Logical test of burn-in 2")
+  checkEqualsNumeric(iter-burn, nrow(bmod2$param),
+                     msg="gpd: Logical test of burn-in 2")
 
 #*************************************************************
 # 4.3. Logical test of thinning
@@ -648,14 +670,16 @@ test.gpd <- function(){
   bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                iter=iter, thin = thin,verbose=FALSE, method="sim")
 
-  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param),msg="gpd: Logical test of thinning 1")
+  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param),
+                     msg="gpd: Logical test of thinning 1")
 
   thin <- 2
   iter <- 1000
   bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                iter=iter, thin = thin, verbose=FALSE, method="sim")
 
-  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),msg="gpd: Logical test of thinning 1")
+  checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),
+                     msg="gpd: Logical test of thinning 1")
 
 #*************************************************************  
 ## Checks of gpd simulation. Centres of distributions and standard deviations 
@@ -668,10 +692,13 @@ test.gpd <- function(){
 # 4.4. Compare MAP and posterior summaries for simple model
 
   mod <- gpd(ALT.M, data=liver, qu=.7)
-  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),verbose=FALSE, method="sim")
+  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
+              verbose=FALSE, method="sim")
 
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for simple model - point ests")
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for simple model - std errs")
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,
+                     msg="gpd: Compare MAP and posterior summaries for simple model - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,
+                     msg="gpd: Compare MAP and posterior summaries for simple model - std errs")
 
 # 4.4a now not so simple model:
 
@@ -681,14 +708,20 @@ test.gpd <- function(){
   mod12 <- gpd(ALT.M,qu=0.7,data=liver,priorParameters=gp12)
   mod13 <- gpd(ALT.M,qu=0.7,data=liver,priorParameters=gp13)
   
-  bmod12 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),verbose=FALSE, method="sim",priorParameters=gp12)
-  bmod13 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),verbose=FALSE, method="sim",priorParameters=gp13)
+  bmod12 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
+                verbose=FALSE, method="sim",priorParameters=gp12)
+  bmod13 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
+                verbose=FALSE, method="sim",priorParameters=gp13)
   
-  checkEqualsNumeric(coef(mod12), postSum(bmod12)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for penalized model 1 - point ests")
-  checkEqualsNumeric(mod12$se, postSum(bmod12)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for penalized model 1 - std errs")
+  checkEqualsNumeric(coef(mod12), postSum(bmod12)[,1], tolerance=tol,
+                     msg="gpd: Compare MAP and posterior summaries for penalized model 1 - point ests")
+  checkEqualsNumeric(mod12$se, postSum(bmod12)[,2], tolerance=tol.se,
+                     msg="gpd: Compare MAP and posterior summaries for penalized model 1 - std errs")
 
-  checkEqualsNumeric(coef(mod13), postSum(bmod13)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for penalized model 2 - point ests")
-  checkEqualsNumeric(mod13$se, postSum(bmod13)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for penalized model 2 - std errs")
+  checkEqualsNumeric(coef(mod13), postSum(bmod13)[,1], tolerance=tol,
+                     msg="gpd: Compare MAP and posterior summaries for penalized model 2 - point ests")
+  checkEqualsNumeric(mod13$se, postSum(bmod13)[,2], tolerance=tol.se,
+                     msg="gpd: Compare MAP and posterior summaries for penalized model 2 - std errs")
 #*************************************************************
 # 4.5. Covariates in phi
 
@@ -702,7 +735,7 @@ test.gpd <- function(){
 
 # function rlm : Fit a linear model by robust regression using an M estimator:
 
-  rmod <- rlm(log(ALT.M) ~ log(ALT.B) + dose, data=liver) 
+  rmod <- rlm(log(ALT.M) ~ log(ALT.B) + dose, data=liver)
   liver$resids <- resid(rmod)
 
   mod <- gpd(resids, data=liver, qu=.7, phi = ~ ndose)
@@ -710,8 +743,10 @@ test.gpd <- function(){
   bmod <- gpd(resids, data=liver, th=quantile(liver$resids, .7),
               phi = ~ ndose,verbose=FALSE, method="sim")
 
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for Covariates in phi - point ests")
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for Covariates in phi - std errs")
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,
+                     msg="gpd: Compare MAP and posterior summaries for Covariates in phi - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,
+                     msg="gpd: Compare MAP and posterior summaries for Covariates in phi - std errs")
 
 #*************************************************************
 # 4.6. Covariates in xi
@@ -721,10 +756,12 @@ test.gpd <- function(){
 
   mod <- gpd(resids, data=liver, qu=.7, xi = ~ ndose)
   bmod <- gpd(resids, data=liver, th=quantile(liver$resids, .7),
-               xi = ~ ndose,verbose=FALSE, method="sim")
+              xi = ~ ndose,verbose=FALSE, method="sim")
 
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for Covariates in xi - point ests")
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for Covariates in xi - std errs")  
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,
+                     msg="gpd: Compare MAP and posterior summaries for Covariates in xi - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,
+                     msg="gpd: Compare MAP and posterior summaries for Covariates in xi - std errs")
 
 #*************************************************************
 # 4.7. Covariates in xi and phi
@@ -736,14 +773,18 @@ test.gpd <- function(){
   tol <- 0.03
   tol.se <- 0.3
 
-  mod <- gpd(resids, data=liver, qu=.7,
-             xi = ~ ndose, 
+  mod <- gpd(resids, data=liver,
+             qu=.7,
+             xi = ~ ndose,
              phi = ~ ndose)
-  bmod <- gpd(resids, data=liver, th=quantile(liver$resids, .7),
-               xi = ~ ndose, 
-               phi = ~ ndose,verbose=FALSE, method="sim")
+  bmod <- gpd(resids, data=liver,
+              th=quantile(liver$resids, .7),
+              xi = ~ ndose,
+              phi = ~ ndose,verbose=FALSE, method="sim")
 
-  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,msg="gpd: Compare MAP and posterior summaries for Covariates in phi and xi - point ests")
-  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,msg="gpd: Compare MAP and posterior summaries for Covariates in phi and xi - std errs")  
+  checkEqualsNumeric(coef(mod), postSum(bmod)[,1], tolerance=tol,
+                     msg="gpd: Compare MAP and posterior summaries for Covariates in phi and xi - point ests")
+  checkEqualsNumeric(mod$se, postSum(bmod)[,2], tolerance=tol.se,
+                     msg="gpd: Compare MAP and posterior summaries for Covariates in phi and xi - std errs")
 }
 
