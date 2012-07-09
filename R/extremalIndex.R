@@ -250,6 +250,7 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
 }
 
 gpd.declustered <- function(y, ...){
+  theCall <- match.call()
   if(is.null(y$data)){
     res <- gpd(y$clusterMaxima, th = y$threshold, ...)
   } else {
@@ -264,9 +265,8 @@ gpd.declustered <- function(y, ...){
   } else if(class(res) == "bgpd") {
     res$map$rate <- clusterRate
   }
-  
+  res$call <- theCall
   res
-  
 }
 
 test.extremalIndex <- function(){
