@@ -30,4 +30,25 @@ Changes from version 1.1:
    part of the plot method for a gpd object.
 5. A returned gpd object now has residuals attached.
 
-bleargh
+---------------------------------- Version 1.3 ------------------------------------
+
+Changes from version 1.2:
+
+1. predict method added for objects of class gpd, bgpd, bootgpd. This ought to
+   make computation of return levels easier and more reliable. See the help
+   files.
+2. Bug fix. The 'Metropolis algorithm' as it was implemented was not actually
+   a Metropolis algorithm due to a bug. The proposal distribution never changed
+   from iteration to iteration. (Checks on the effects of the bug suggest it
+   didn't produce distributions that were very different from those produced by
+   an actual Metropolis algorithm.)
+3. Cauchy distribution added as a proposal distribution. Defaults to Gaussian.
+4. Speed improvement due to simulation of random numbers (and thus lots of
+   matrix decomposition operations) being taken outside the simulation loop.
+   The speed gain is largely offset by the need to run the chains for longer
+   due to the bug fix described in item 2. Nevertheless, Dr. Metcalfe is a very
+   clever boy.
+5. Vignettes added. One for modelling clinical trial lab safety data; one for
+   declustering.
+6. NAMESPACE added.
+7. Fixed bug in using linear predictor formulas when not passing a data.frame in.
