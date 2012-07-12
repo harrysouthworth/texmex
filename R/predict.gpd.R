@@ -42,10 +42,10 @@ linearPredictors.gpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
                              alpha=.050, unique.=TRUE, full.cov=FALSE, ...){
 
     if (!is.null(newdata)){
-        xi.fo <- object$call$xi
-        phi.fo <- object$call$phi
-        X.xi <-  if (!is.null(xi.fo)) { model.matrix(as.formula(xi.fo),  newdata) } else { matrix(1, nrow(newdata)) }
-        X.phi <- if (!is.null(phi.fo)){ model.matrix(as.formula(phi.fo), newdata) } else { matrix(1, nrow(newdata)) }
+        xi.fo <- object$formulae$xi
+        phi.fo <- object$formulae$phi
+        X.xi <-  if (!is.null(xi.fo)) { model.matrix(xi.fo,  newdata) } else { matrix(1, nrow(newdata)) }
+        X.phi <- if (!is.null(phi.fo)){ model.matrix(phi.fo, newdata) } else { matrix(1, nrow(newdata)) }
     } else {
         X.xi <- object$X.xi
         X.phi <- object$X.phi
