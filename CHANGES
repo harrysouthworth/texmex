@@ -29,3 +29,5 @@ Changes from version 1.1:
 4. New diagnostic plots for GPD models when there are covariates, as 
    part of the plot method for a gpd object.
 5. A returned gpd object now has residuals attached.
+
+bleargh
