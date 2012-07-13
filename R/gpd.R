@@ -168,6 +168,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     names(o$coefficients) <- c(paste("phi:", colnames(X.phi)), 
                                paste("xi:", colnames(X.xi)))
 
+    o$formulae <- list(phi=phi, xi=xi)
     o$par <- NULL
     o$rate <- rate
     o$call <- theCall
