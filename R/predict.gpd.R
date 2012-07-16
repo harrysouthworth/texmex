@@ -248,8 +248,8 @@ predict.bgpd <- function(object, M=1000, newdata=NULL, type="return level",
 linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                               alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
     if (!is.null(newdata)){
-        xi.fo <- object$map$call$xi
-        phi.fo <- object$map$call$phi
+        xi.fo <- object$map$formulae$xi
+        phi.fo <- object$map$formulae$phi
         X.xi <-  if (!is.null(xi.fo))  model.matrix(as.formula(xi.fo),  newdata) else matrix(1, nrow(newdata)) 
         X.phi <- if (!is.null(phi.fo)) model.matrix(as.formula(phi.fo), newdata) else matrix(1, nrow(newdata))
     } else {
