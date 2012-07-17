@@ -13,7 +13,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
           method = "optimize", cov="observed",
           start = NULL, priorParameters = NULL,
           maxit = 10000, trace=NULL,
-          iter = 10500, burn=500, thin = 1,
+          iter = 40500, burn=500, thin = 4,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const, verbose=TRUE,...) {
 
