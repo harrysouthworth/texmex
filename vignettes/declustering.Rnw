@@ -73,8 +73,10 @@ Dependence in the original sequence of random variables may or may not persist i
 \subsection{The extremal index}
 %
 The extremal index is a measure of the extent to which threshold exceedances from the sequence $\{\xi_n:n=1,2,\ldots\}$ cluster in the limit as the threshold tends to the upper endpoint of the support of $F$.  Its formal definition is as follows (see Leadbetter, 1983~\cite{Leadbetter1983}). The sequence $\{\xi_n: n=1,2,\ldots \}$ has an \emph{extremal index} $\theta\in[0,1]$ if for each $\tau>0$ there is a sequence $\{u_n:n=1,2,\ldots\}$ for which both:
-\begin{eqnarray*}  n \overline F(u_n) &\rightarrow& \tau\\
-  \mbox{ and } P(M_n\leq u_n) &\rightarrow& \exp(-\theta \tau)\end{eqnarray*}
+\begin{eqnarray*}
+  n \overline F(u_n) &\rightarrow& \tau\\
+  \mbox{ and } P(M_n\leq u_n) &\rightarrow& \exp(-\theta \tau)
+\end{eqnarray*}
 as $n\rightarrow\infty$. The first condition here ensures that $u_n$ increases at an appropriate rate to find the dependence structure in the process; the second shows that the growth of process maxima is mitigated by any dependence within the sequence. Values of $\theta<1$ indicate a tendancy of threshold exceedances to cluster together as the threshold approaches its limit, whereas if $\theta=1$ then threshold excesses occur in isolation in the limit.  The extremal index, when it exists, characterises the size of clusters of threshold exceedances, having the interpretation as one over the mean cluster size (see~\cite{Leadbetter1983}).
 %
 \subsection{Estimation of the Extremal Index}
@@ -87,9 +89,18 @@ In the development of their {\it intervals estimator} of the extremal index, Fer
 \end{description}
 Inter-cluster times are necessarily larger in distribution than intra-cluster times.  The \emph{intervals estimator} of Ferro and Segers models the distribution of all exceedance times as a mixture of inter-cluster and intra-cluster times, and identifies the two components of this mixture distribution as follows.
 
-Let $T(u)$ be a random variable having the same distribution as the interexceedances times associated with threshold $u$:\begin{eqnarray*}  \min\{n\geq1: \xi_{n+1}>u\} \mbox{ given that } \xi_1>u.\end{eqnarray*}
-Ferro and Segers show that as the threshold $u$ tends to the upper limit of the support of $F$,\begin{eqnarray}\label{eqn:interexceedTimeLimit}\overline F(u) T(u) \stackrel{\rm D}{\rightarrow} T_\theta,\end{eqnarray}
-where $\stackrel{\rm D}{\rightarrow}$ denotes convergence in distribution and the random variable $T_\theta$ follows the mixture distribution:\begin{eqnarray*} (1-\theta) \epsilon_0 + \theta \mu_\theta.\end{eqnarray*}
+Let $T(u)$ be a random variable having the same distribution as the interexceedances times associated with threshold $u$:
+\begin{eqnarray*}
+  \min\{n\geq1: \xi_{n+1}>u\} \mbox{ given that } \xi_1>u.
+\end{eqnarray*}
+Ferro and Segers show that as the threshold $u$ tends to the upper limit of the support of $F$,
+\begin{eqnarray}\label{eqn:interexceedTimeLimit}
+\overline F(u) T(u) \stackrel{\rm D}{\rightarrow} T_\theta,
+\end{eqnarray}
+where $\stackrel{\rm D}{\rightarrow}$ denotes convergence in distribution and the random variable $T_\theta$ follows the mixture distribution:
+\begin{eqnarray*}
+ (1-\theta) \epsilon_0 + \theta \mu_\theta.
+\end{eqnarray*}
 Here $\epsilon_0$ is the degenerate distribution with point mass at zero, and $\mu_\theta$ is the exponential distribution with mean $1/\theta$.  The extremal index has a dual purpose here: $\theta$ is the limiting proportion of non-zero interexceedance times (the proportion of interexceedance times which are also inter-cluster times); it is also one over the mean of the non-zero interexceedance times.  These properties are exploited to obtain a moment estimator of the extremal index $\theta$, the \emph{intervals estimator}, based on equation~(\ref{eqn:interexceedTimeLimit}).  In practice, the estimation is carried out by using a fixed threshold, which is chosen at a suitably high level.  We discuss the choice of this threshold in Section~\ref{sect:thresholdChoice}.
 %
 \subsection{Cluster identification}
