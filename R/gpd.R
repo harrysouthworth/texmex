@@ -632,7 +632,7 @@ test.gpd <- function(){
   set.seed(save.seed)
   bmod <- gpd(ALT.M, data=liver,
               th=quantile(liver$ALT.M, .7),
-              iter=1000,verbose=FALSE, method="sim")
+              iter=1000, thin=1, verbose=FALSE, method="sim")
   
   set.seed(save.seed)
   bmod2 <- gpd(ALT.M, data=liver,

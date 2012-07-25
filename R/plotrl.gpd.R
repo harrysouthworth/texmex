@@ -42,7 +42,7 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
          cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ...){
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
-    if (missing(main) || is.null(main)) { 
+    if (missing(main) || is.null(main)) {
       main <- "Return Level Plot"
       SetMain <- TRUE
     } else {
@@ -64,13 +64,13 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
     if(!SetMain & length(main) != ncov){
       stop("main must be length 1 or number of unique covariates for prediction")
     }
-    
+
     if(length(ValNames) == 1 |  length(grep("%",ValNames)) < 2){
       stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
     }
-      
+
     Array <- array(unlist(x),c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
-      
+
     if( class(x) == "rl.gpd"){
       if(any(dimnames(x[[1]])[[2]] == "se.fit")){
         which <- dimnames(x[[1]])[[2]] != "se.fit"
@@ -92,7 +92,7 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
         ValNames <- ValNames[which]
         Unlist <- unlist(x)[rep(which,each=ncov)]
     }
-     
+
     Array <- array(Unlist,c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
 
     m <- as.numeric(substring(dimnames(Array)[[3]],first=3))
@@ -105,18 +105,18 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
 
     if(sameAxes){
        yrange <- range(Array[,1:3,])
-    }    
-  
+    }
+
     for(i in 1:ncov){
       xm <- t(Array[i,,])
       cov <- xm[1,-(1:3)]
-      
-      if(!sameAxes){ 
+
+      if(!sameAxes){
         yrange <- range(xm[,1:3])
       }
 
       if(SetMain){
-        if(covnames != ""){
+        if(length(covnames) == 1 && covnames != ""){
           Main <- paste(main,"\n", paste(covnames,"=",signif(cov,2),collapse=", "))
         } else {
           Main <- main
