@@ -57,7 +57,9 @@ C.A.T Ferro and J. Segers, Inference for Clusters of Extreme Values, Journal of 
 # Analyse the winter data used by Heffernan and Tawn
 mymex <- mex(winter, mqu = .7, penalty="none", dqu=.7, which = "NO")
 plot(mymex)
-myboot <- bootmex(mymex)
+# Only do 20 replicates to keep CRAN happy. Do many more in any
+# real application
+myboot <- bootmex(mymex, R=20)
 plot(myboot)
 mypred <- predict(myboot,  pqu=.95)
 summary(mypred , probs = c( .025, .5, .975 ))
@@ -96,7 +98,7 @@ altmod4 <- gpd(alt, qu=.7, data=r)
 
 # Prefer model 3, with term for xi on basis of AIC
 
-# Lines commented out to keep CRAN robots happy
+# Lines commented out to keep CRAN happy
 #balt3 <- gpd(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
 #par(mfrow=c(3,3))
 #plot(balt3)

@@ -36,7 +36,10 @@ Harry Southworth, Janet E. Heffernan
 }
 \examples{
   x <- rnorm(1000)
-  mod <- gpd(x, qu=.7, method="sim")
+  # For the values of burn and thin below, we should do many more iterations.
+  # The number of iterations is kept low here due to the run time allowed
+  # by CRAN.
+  mod <- gpd(x, qu=.7, method="sim", iter=11000)
   mod
   par(mfrow=c(3, 2))
   plot(mod)

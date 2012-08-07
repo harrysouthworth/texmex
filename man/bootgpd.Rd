@@ -59,7 +59,9 @@ The \code{plot} method displays histograms and kernel density estimates.
 \seealso{\code{\link{gpd}}, \code{\link{bootmex}}}
 \examples{
 mod <- gpd(log(ALT.M), data=liver, qu=.7, xi=~as.numeric(dose))
-bmod <- bootgpd(mod)
+# Keep R low to keep CRAN happy. Use many more than this in any
+# real application.
+bmod <- bootgpd(mod, R=20)
 summary(bmod)
 par(mfrow=c(1,3))
 plot(bmod) 

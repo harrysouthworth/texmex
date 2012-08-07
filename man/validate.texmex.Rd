@@ -95,7 +95,7 @@ As a result, the function takes a while to run.
 \code{\link{texmex-package}}
 }
 \examples{
-# Uncomment the following lines to run - commented out to make CRAN robots happy
+# Uncomment the following lines to run - commented out to make CRAN happy
 ## open device to save plotted output
 #library(RUnit)
 #pdf("texmexPlots.pdf")

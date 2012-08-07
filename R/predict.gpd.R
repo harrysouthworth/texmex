@@ -586,7 +586,7 @@ test.predict.gpd <- function(){
 # check multiple M
   M <- c(10,50,100,500,1000)
 
-  target <- sapply(M,function(m,sig,xi,u) qgpd(1-1/m,sig,xi,u=u),sig=sig,xi=xi,u=0)
+  target <- sapply(M,function(m,sig,xi,u) qgpd(1-1/m,sig,xi,u=u),sigma=sig,xi=xi,u=0)
   current <- predict(fit,M=M)
 
   for(i in 1:length(M)){
@@ -601,7 +601,7 @@ test.predict.gpd <- function(){
   sig <- exp(co[1] + newX[[1]] * co[2])
   xi <- co[3] + newX[[2]] * co[4]
 
-  checkEqualsNumeric(target=qgpd(1-1/M,sig=sigma,xi=xi,u=0),current=predict(fit,M=M,newdata=newX)[[1]][,1],msg="predict.gpd: ret level ests with new data")
+  checkEqualsNumeric(target=qgpd(1-1/M,sigma=sig,xi=xi,u=0),current=predict(fit,M=M,newdata=newX)[[1]][,1],msg="predict.gpd: ret level ests with new data")
 
   checkEqualsNumeric(c(nx,5),dim(predict(fit,ci=TRUE,newdata=newX)[[1]]), msg="predict.gpd: dimension or return object for ci calc")
   checkEqualsNumeric(c(nx,4),dim(predict(fit,se=TRUE,newdata=newX)[[1]]), msg="predict.gpd: dimension or return object for se calc")

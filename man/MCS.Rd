@@ -65,7 +65,7 @@ Multivariate Analysis, 98, 1123 -- 1140, 2007 }
 \examples{
 D <- liver[liver$dose == "D",]
 plot(D)
-# Following lines commented out to keep CRAN robots happy
+# Following lines commented out to keep CRAN happy
 #Dmcs <- bootMCS(D[, 5:6])
 #Dmcs
 #plot(Dmcs)

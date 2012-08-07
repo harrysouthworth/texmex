@@ -230,9 +230,9 @@ gpd(y, data, ...)
   to simulate from the posterior, but finding a good proposal distribution
   might be difficult and you should take care to get an acceptance rate
   that is reasonably high (around 40\% when there are no covariates, lower
-  otherwise). 
+  otherwise).
   }
-  
+
 \seealso{ \code{\link{rl.gpd}}, \code{\link{predict.gpd}}, \code{\link{gpd.declustered}}.}
 
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on the \code{gpd.fit} function
@@ -248,13 +248,13 @@ gpd(y, data, ...)
   mod
   par(mfrow=c(2, 2))
   plot(mod)
-  
+
   x <- runif(100,-0.2,0.2)
   data <- data.frame(x=x,y=rgpd(100,sigma=exp(3 + 2*x),xi=x))
   mod <- gpd(y, data, phi = ~x, xi = ~x, th = 0)
   plot(mod)
-  
-# Following lines commented out to keep CRAN robots happy
+
+# Following lines commented out to keep CRAN happy
 #  mod <- gpd(x, qu=.7, method="sim")
 #  mod
 #  par(mfrow=c(3, 2))

@@ -315,7 +315,7 @@ jhWdepPM10 <- matrix(c(
 
 # test functionality with 2-d data
 
-  wavesurge.fit <- migpd(wavesurge,mq=.7)
+  wavesurge.fit <- migpd(wavesurge,mqu=.7)
   dqu <- 0.8
   which <- 1
   wavesurge.mex <- mexDependence(wavesurge.fit,which=which,dqu=dqu)

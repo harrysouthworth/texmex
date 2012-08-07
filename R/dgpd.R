@@ -40,11 +40,11 @@ test.dgpd <- function(){
 # 6.13. Test dgpd when some or all of xi == 0
 
   p[sample(1:nreps,nreps/2),2] <- 0
-  x <- sapply(1:nreps,function(i)rgpd(nsim,sig=p[i,1],xi=p[i,2],u=thresh[i]))
+  x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
   myTest(sig=p[,1], xi=p[,2], thresh=thresh, msg="dgpd: some zero xi")
 
   p[,2] <-  0
-  x <- sapply(1:nreps,function(i)rgpd(nsim,sig=p[i,1],xi=p[i,2],u=thresh[i]))
+  x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
   myTest(sig=p[,1], xi=p[,2], thresh=thresh, msg="dgpd: all zero xi")
 
 #*************************************************************

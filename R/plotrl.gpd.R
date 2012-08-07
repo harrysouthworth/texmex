@@ -22,7 +22,7 @@ function(object, alpha = .050,
     }
 
     m <- unique( c(1/object$rate, 10^jj) )
-    xm <- matrix(unlist(rl(object,M=m,ci=TRUE,alpha=alpha)),ncol=3,byrow=TRUE)
+    xm <- matrix(unlist(rl(object,M=m,ci.fit=TRUE,alpha=alpha)),ncol=3,byrow=TRUE)
 
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
