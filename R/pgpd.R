@@ -58,17 +58,17 @@ test.pgpd <- function(){
     }
 
   set.seed(20101111)
-  
+
 #*************************************************************
 # 6.7. Test pgpd. Note that .evd.pgpd is NOT vectorized.
 
   nreps <- 100
   nsim <- 1000
-  p <- matrix(runif(2*nreps, -1, 1),ncol=2) 
+  p <- matrix(runif(2*nreps, -1, 1),ncol=2)
   p[, 1] <- p[, 1] + 1
-  thresh <- rep(0,nreps) 
+  thresh <- rep(0,nreps)
 
-  x <- sapply(1:nreps,function(i)rgpd(nsim,sig=p[i,1],xi=p[i,2],u=thresh[i]))
+  x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
 
   myTest(sig=p[,1], xi=p[,2],thresh=thresh, msg="pgpd: random xi")
 
@@ -89,19 +89,19 @@ test.pgpd <- function(){
   sig <- runif(nsim, 0, 2)
   xi <- runif(nsim)
   thresh <- rnorm(nsim)
-  
+
   x <- rgpd(nsim, sig, xi,u=thresh)
   myp <- pgpd(x, sig, xi,u=thresh)
-  
+
   ep <- sapply(1:nsim, function(i)evd.pgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
   checkEqualsNumeric(ep,myp,msg="pgpd: vectorisation")
 
 #*************************************************************
 # 6.10 test log.p argument
-  
+
   lp <- pgpd(x,sig,xi,u=thresh,log.p=TRUE)
   checkEqualsNumeric(myp,exp(lp),msg="pgpd: log probabilities")
-  
+
 #*************************************************************
 # 6.11 test lower tail argument
 

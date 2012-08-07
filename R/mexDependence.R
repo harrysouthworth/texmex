@@ -8,12 +8,12 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
 
    x$margins <-  casefold(margins)
    x <- mexTransform(x, margins = casefold(margins),method = marTransform)
-   
+
    if (margins == "gumbel" & constrain){
      warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
      constrain <- FALSE
    }
-   
+
    if (missing(which)) {
        cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
        which <- 1
@@ -22,25 +22,25 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
        stop("which must be of length 1")
    else if (is.character(which))
        which <- match(which, dimnames(x$transformed)[[2]])
-   
+
    if (missing(dqu)) {
        cat("Assuming same quantile for thesholding as was used to fit corresponding marginal model...\n")
        dqu <- x$mqu[which]
    }
    dth <- quantile(x$transformed[, which], dqu)
-       
+
    dependent <- (1:(dim(x$data)[[2]]))[-which]
    if (length(dqu) < length(dependent))
        dqu <- rep(dqu, length = length(dependent))
 
    # Allowable range of 'a' depends on marginal distributions
    aLow <- ifelse(x$margins == "gumbel", 10^(-10),-1 + 10^(-10))
-  
-   if (missing(start)){ 
+
+   if (missing(start)){
      start <- c(.01, .01)
    } else if(class(start) == "mex"){
      start <- start$dependence$coefficients[1:2,]
-   } 
+   }
 
    if( length(start) == 2 ){
      start <- matrix(rep(start,length(dependent)),nrow=2)
@@ -48,12 +48,12 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
 
    if( length(start) != 2*length(dependent)){
      stop("start should be of type 'mex' or be a vector of length 2, or be a matrix with 2 rows and ncol equal to the number of dependence models to be estimated")
-   }  
+   }
 
    if( ! missing(PlotLikRange) ){
      PlotLikDo <- TRUE
    }
-     
+
    qfun <- function(X, yex, wh, aLow, margins, constrain, v, maxit, start){
      Qpos <- function(param, yex, ydep, constrain, v, aLow) {
 
@@ -64,7 +64,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
        res$profLik
      } # Close Qpos <- function
 
-     o <- try(optim(par=start, fn=Qpos, 
+     o <- try(optim(par=start, fn=Qpos,
               control=list(maxit=maxit),
               yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
 
@@ -77,18 +77,18 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
         warning("Non-convergence in mexDependence")
         o <- as.list(o)
         o$par <- rep(NA, 6)
-        
+
      } else if(nOptim > 1) {
-     
+
         for( i in 2:nOptim ){
-           o <- try(optim(par=o$par, fn=Qpos, 
+           o <- try(optim(par=o$par, fn=Qpos,
                     control=list(maxit=maxit),
                     yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
-           if (class(o) == "try-error"){   
+           if (class(o) == "try-error"){
              warning("Error in optim call from mexDependence")
              o <- as.list(o)
              o$par <- rep(NA, 6)
-             o$value <- NA             
+             o$value <- NA
              break()
            } else if (o$convergence != 0) {
              warning("Non-convergence in mexDependence")
@@ -98,7 +98,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
            }
         }
      }
-     
+
      if ( PlotLikDo ){# plot profile likelihood for (a,b)
        nGridPlotLik <- 50
        a.grid <- seq(PlotLikRange$a[1],PlotLikRange$a[2],length=nGridPlotLik)
@@ -112,7 +112,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
        }
        NegProfLik[NegProfLik > 10^10] <- NA
        if(sum(!is.na(NegProfLik))){
-          filled.contour(a.grid,b.grid,-NegProfLik,main=paste("Profile likelihood",PlotLikTitle),color = terrain.colors,
+          filled.contour(a.grid,b.grid,-NegProfLik,main=paste("Profile likelihood",PlotLikTitle),color.palette = terrain.colors,
                          xlab="a",ylab="b",plot.axes={ axis(1); axis(2); points(o$par[1],o$par[2]) })
        }
      }
@@ -136,10 +136,10 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
                res <- sum(obj(yex, ydep, b, cee, d, m, s))
                res
           }
-          o <- try(optim(c(0, 0, 0, 0, 0, 1), Qneg, method = "L-BFGS-B", lower=lo, 
+          o <- try(optim(c(0, 0, 0, 0, 0, 1), Qneg, method = "L-BFGS-B", lower=lo,
                    upper=c(1, 1-10^(-10), Inf, 1-10^(-10), Inf, Inf),
                    yex = yex[wh], ydep = X[wh]), silent=TRUE)
-                   
+
           if (class(o) == "try-error" || o$convergence != 0) {
              warning("Non-convergence in mexDependence")
              o <- as.list(o)
@@ -152,15 +152,15 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
     }
     c(o$par[1:6], o$value) # Parameters and negative loglik
    } # Close qfun <- function(
-   
+
    yex <- c(x$transformed[, which])
    wh <- yex > unique(dth)
-         
+
    res <- sapply(1:length(dependent),
                  function(X,dat,yex,wh,aLow,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,aLow,margins,constrain,v,maxit,start[,X]),
                  dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins, 
                  constrain=constrain, v=v, maxit=maxit, start=start)
-                
+
    loglik <- -res[7,]
    res <- matrix(res[1:6,], nrow=6)
 
@@ -197,7 +197,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
                dqu = unique(dqu), which = which, conditioningVariable= colnames(x$data)[which],
 	             loglik=loglik, margins=margins, constrain=constrain, v=v)
    oldClass(res2) <- "mexDependence"
-   
+
    output <- list(margins=x, dependence=res2, call=theCall)
    oldClass(output) <- "mex"
    output
@@ -222,7 +222,7 @@ test.mexDependence <- function(){
   mySdepPM10 <- mexDependence(smarmod,which=5,dqu=0.7,margins="gumbel",constrain=FALSE)
   myWdepPM10 <- mexDependence(wmarmod,which=5,dqu=0.7,margins="gumbel",constrain=FALSE)
 
-  
+
 jhSdepO3 <- matrix(c(
 0.56627103,  0.37272912, 0.0000000, 0.0000000,
 0.22029334,  0.36865296, 0.0000000, 0.0000000,
@@ -254,7 +254,7 @@ jhSdepPM10 <- matrix(c(
 0.00000000,  0.43255493, 0.0000000, 0.0000000), byrow=FALSE,nrow=4)
 
 
-  
+
 jhWdepO3 <- matrix(c(
 0.00000000,  0.008072046,  0.00000000, 0.0000000,
 0.00000000,  0.034283871,  0.00000000, 0.0000000,
@@ -284,7 +284,7 @@ jhWdepPM10 <- matrix(c(
 0.86288696,  0.584629421,  0.00000000, 0.0000000,
 0.59510081,  0.569002154,  0.00000000, 0.0000000,
 0.10412199,  0.207529741,  0.00000000, 0.0000000),byrow=FALSE,nrow=4)
-  
+
   tol <- 0.23
   if(FALSE){
   par(mfrow=c(2,5))
@@ -301,18 +301,18 @@ jhWdepPM10 <- matrix(c(
   plot(jhSdepPM10,mySdepPM10$dependence$coefficients);abline(0,1)
   }
 
-  checkEqualsNumeric(jhWdepO3,  myWdepO3$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Winter O3")
-  checkEqualsNumeric(jhWdepNO2, myWdepNO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Winter NO2")
-  checkEqualsNumeric(jhWdepNO,  myWdepNO$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Winter NO")
-  checkEqualsNumeric(jhWdepSO2, myWdepSO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Winter SO2")
-  checkEqualsNumeric(jhWdepPM10,myWdepPM10$dependence$coefficients[1:4,],tol=tol,msg="mexDependence: Winter PM10")
+  checkEqualsNumeric(jhWdepO3,  myWdepO3$dependence$coefficients[1:4,],  tolerance=tol,msg="mexDependence: Winter O3")
+  checkEqualsNumeric(jhWdepNO2, myWdepNO2$dependence$coefficients[1:4,], tolerance=tol,msg="mexDependence: Winter NO2")
+  checkEqualsNumeric(jhWdepNO,  myWdepNO$dependence$coefficients[1:4,],  tolerance=tol,msg="mexDependence: Winter NO")
+  checkEqualsNumeric(jhWdepSO2, myWdepSO2$dependence$coefficients[1:4,], tolerance=tol,msg="mexDependence: Winter SO2")
+  checkEqualsNumeric(jhWdepPM10,myWdepPM10$dependence$coefficients[1:4,],tolerance=tol,msg="mexDependence: Winter PM10")
 
-  checkEqualsNumeric(jhSdepO3,  mySdepO3$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Summer O3")
-  checkEqualsNumeric(jhSdepNO2, mySdepNO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Summer NO2")
-  checkEqualsNumeric(jhSdepNO,  mySdepNO$dependence$coefficients[1:4,],  tol=tol,msg="mexDependence: Summer NO")
-  checkEqualsNumeric(jhSdepSO2, mySdepSO2$dependence$coefficients[1:4,], tol=tol,msg="mexDependence: Summer SO2")
-  checkEqualsNumeric(jhSdepPM10,mySdepPM10$dependence$coefficients[1:4,],tol=tol,msg="mexDependence: Summer PM10")
-  
+  checkEqualsNumeric(jhSdepO3,  mySdepO3$dependence$coefficients[1:4,],  tolerance=tol,msg="mexDependence: Summer O3")
+  checkEqualsNumeric(jhSdepNO2, mySdepNO2$dependence$coefficients[1:4,], tolerance=tol,msg="mexDependence: Summer NO2")
+  checkEqualsNumeric(jhSdepNO,  mySdepNO$dependence$coefficients[1:4,],  tolerance=tol,msg="mexDependence: Summer NO")
+  checkEqualsNumeric(jhSdepSO2, mySdepSO2$dependence$coefficients[1:4,], tolerance=tol,msg="mexDependence: Summer SO2")
+  checkEqualsNumeric(jhSdepPM10,mySdepPM10$dependence$coefficients[1:4,], tolerance=tol,msg="mexDependence: Summer PM10")
+
 # test functionality with 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mq=.7)
@@ -323,7 +323,7 @@ jhWdepPM10 <- matrix(c(
   checkEqualsNumeric(dim(wavesurge.mex$dependence$Z),c(578,1),msg="mexDependence: execution for 2-d data")
   checkEqualsNumeric(wavesurge.mex$dependence$dqu, dqu, msg="mexDependence: execution for 2-d data")
   checkEqualsNumeric(wavesurge.mex$dependence$which,which,msg="mexDependence: execution for 2-d data")
-  
+
 # test specification of starting values
 
   which <- 2
@@ -335,15 +335,15 @@ jhWdepPM10 <- matrix(c(
   summer.mex4 <- mexDependence(summer.fit,which=which,dqu=dqu,start=c(0.01,0.03))
 
   tol <- 0.005
-  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex2$dependence$coefficients,tol=tol,msg="mexDependence: summer starting values: class(start)='mex'")
-  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex3$dependence$coefficients,tol=tol,msg="mexDependence: summer starting values: start= matrix ")
-  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex4$dependence$coefficients,tol=tol,msg="mexDependence: summer starting values: start= vector")
- 
+  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex2$dependence$coefficients,tolerance=tol,msg="mexDependence: summer starting values: class(start)='mex'")
+  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex3$dependence$coefficients,tolerance=tol,msg="mexDependence: summer starting values: start= matrix ")
+  checkEqualsNumeric(summer.mex1$dependence$coefficients,summer.mex4$dependence$coefficients,tolerance=tol,msg="mexDependence: summer starting values: start= vector")
+
 # test laplace constrained estimation against independent coding of implementation by Yiannis Papastathopoulos (see test.functions.R file)
 # do all the possible pairs generated by the winter data set.  This covers negative and positive dependence with cases on and off the boundary.
 
   set.seed(20111010)
-  pairs <- expand.grid(1:5,1:5) 
+  pairs <- expand.grid(1:5,1:5)
   pairs <- as.matrix(pairs[pairs[,1] != pairs[,2], 2:1])
   margins <- casefold("laplace")
   marTransform <- c("mixture","empirical")
@@ -361,7 +361,7 @@ jhWdepPM10 <- matrix(c(
         mar.trans <- mexTransform(mar.model,margins=margins,method=marTrans)
         X <- list(mar.trans$transformed)
         Dqu <- 1 - mean(mar.trans$transformed[,1] > dth)
-        init <- initial_posneg(D=1,listdata=X,u=dth,v=v) 
+        init <- initial_posneg(D=1,listdata=X,u=dth,v=v)
         a <- estimate_HT_KPT_joint_posneg_nm(pars=init,x=dth,listr=X,params=FALSE,k=k,v=v)
         KTPest[i,] <- a$par
         b <- mexDependence(mar.trans,which=1,dqu=Dqu,margins=margins,constrain=TRUE,v=v,
@@ -369,7 +369,7 @@ jhWdepPM10 <- matrix(c(
         HTSest[i,] <- coef(b)$dependence[1:2]
       }
 
-    checkEqualsNumeric(KTPest,HTSest,tol=tol,mesg=paste("mexDependence: constrained estimation threshold",i))
+    checkEqualsNumeric(KTPest,HTSest,tolerance=tol,mesg=paste("mexDependence: constrained estimation threshold",i))
     }
   }
 }

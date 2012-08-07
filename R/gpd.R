@@ -637,7 +637,7 @@ test.gpd <- function(){
   set.seed(save.seed)
   bmod2 <- gpd(ALT.M, data=liver,
                th=quantile(liver$ALT.M, .7),
-               iter=1000,verbose=FALSE, method="sim")
+               iter=1000, thin=1, verbose=FALSE, method="sim")
   
   checkEqualsNumeric(bmod$param, bmod2$param,
                      msg="gpd: test simulation reproducibility 1")
@@ -645,7 +645,7 @@ test.gpd <- function(){
   set.seed(bmod$seed)
   bmod3 <- gpd(ALT.M, data=liver,
                th=quantile(liver$ALT.M, .7),
-               iter=1000,verbose=FALSE, method="sim")
+               iter=1000, thin=1, verbose=FALSE, method="sim")
   checkEqualsNumeric(bmod$param, bmod3$param,
                      msg="gpd: test simulation reproducibility 2")
 
@@ -658,7 +658,7 @@ test.gpd <- function(){
   iter <- sample(500:1000,1)
   burn <- sample(50,1)
   bmod2 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
-                iter=iter, burn=burn, verbose=FALSE, method="sim")
+                iter=iter, burn=burn, thin=1, verbose=FALSE, method="sim")
 
   checkEqualsNumeric(iter-burn, nrow(bmod2$param),
                      msg="gpd: Logical test of burn-in 2")

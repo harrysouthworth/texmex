@@ -8,15 +8,15 @@ function(object, which, coefs){
   if (class(object) != "migpd"){
     stop("object must be of class \'migpd\'")
   }
-  
+
   if (length(which) != length(coefs)){
     stop("which and coefs should have the same length")
   }
-  
+
   if (length(which) == 1){
     object$models[[which]]$coefficients <- coefs
   }
-  
+
   for (i in 1:length(which)){
     object$models[[i]]$coefficients <- coefs[[i]]
   }
@@ -27,7 +27,7 @@ test.migpdCoefs <- function(){
 
   liver <- liver
   liver$ndose <- as.numeric(liver$dose)
-  require(MASS,quiet=TRUE) # For rlm
+  require(MASS,quietly=TRUE) # For rlm
 
   ralt <- resid(rlm(log(ALT.M) ~ log(ALT.B) + ndose, data=liver))
   rast <- resid(rlm(log(AST.M) ~ log(AST.B) + ndose, data=liver))
@@ -58,7 +58,7 @@ test.migpdCoefs <- function(){
 
 # Change 2 sets of coefficients at once
 
-  lmod <- migpdCoefs(Dmod, which=c("alt", "ast"), coef=list(altco, astco))
+  lmod <- migpdCoefs(Dmod, which=c("alt", "ast"), coefs=list(altco, astco))
 
   newCo <- coef(lmod)[3:4, 1:2]
   oldCo <- coef(Dmod)[3:4, 1:2]

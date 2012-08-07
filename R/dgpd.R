@@ -22,17 +22,17 @@ test.dgpd <- function(){
     }
 
   set.seed(20101111)
-  
+
 #*************************************************************
 # 6.12. Test dgpd. Note that .evd.dgpd is NOT vectorized.
 
   nreps <- 100
   nsim <- 1000
-  p <- matrix(runif(2*nreps, -1, 1),ncol=2) 
+  p <- matrix(runif(2*nreps, -1, 1),ncol=2)
   p[, 1] <- p[, 1] + 1
-  thresh <- rep(0,nreps) 
+  thresh <- rep(0,nreps)
 
-  x <- sapply(1:nreps,function(i)rgpd(nsim,sig=p[i,1],xi=p[i,2],u=thresh[i]))
+  x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
 
   myTest(sig=p[,1], xi=p[,2], thresh=thresh, msg="dgpd: random xi")
 
@@ -53,16 +53,16 @@ test.dgpd <- function(){
   sig <- runif(nsim, 0, 2)
   xi <- runif(nsim)
   thresh <- rnorm(nsim)
-  
+
   x <- rgpd(nsim, sig, xi,u=thresh)
   myd <- dgpd(x, sig, xi,u=thresh)
-  
+
   ed <- sapply(1:nsim, function(i) evd.dgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
   checkEqualsNumeric(ed,myd,msg="dgpd: vectorisation")
 
 #*************************************************************
 # 6.15 test log.d argument
-  
+
   ld <- dgpd(x,sig,xi,u=thresh,log.d=TRUE)
   checkEqualsNumeric(myd,exp(ld),msg="dgpd: log density")
 }

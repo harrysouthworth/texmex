@@ -1,7 +1,7 @@
 `predict.mex` <-
 function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	theCall <- match.call()
-	
+
   # Class can be either mex or bootmex
   theClass <- class(object)[1]
   if (! theClass %in% c("mex", "bootmex")){
@@ -21,7 +21,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
       constrain <- object$dependence$constrain
       dall <- object
   }
-	
+
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
     ui <- runif( nsim , min=pqu )
@@ -32,21 +32,20 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
       y <- ifelse(ui < .5,  log(2 * ui), -log(2 * (1 - ui) ))
       distFun <- function(x) ifelse(x<0, exp(x)/2, 1-exp(-x)/2)
     }
-    
-  	z <- as.matrix(z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,])
+
+    z <- as.matrix(z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,])
     ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )
-  
+
     xmi <- apply( ymi, 2, distFun )
 
     xi <- u2gpd( ui, p = 1 - migpd$mqu[ which ], th=migpd$mth[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
-	
+
   	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
 		  xmi[, i ] <- revTransform( xmi[ ,i ], as.matrix(data[,-which])[, i ],
 								             th = migpd$mth[ -which ][ i ],
 								             qu = migpd$mqu[ -which ][ i ],
 								             sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )
 	  }
-    
     sim <- data.frame( xi , xmi )
     names( sim ) <- c( colnames( migpd$data )[ which ], colnames( migpd$data )[ -which ])
     sim
@@ -68,27 +67,27 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 			a + ( y^v[ 2 ] ) * z
 		}
 
-  ###############################################################    
+  ###############################################################
   if (theClass == "bootmex"){
 	# The function lfun does most of the work
   lfun <- function( i , bo, pqu, nsim , migpd, which ){
 	   if ( i %% trace == 0 ) cat( i, "sets done\n" )
-    
+
      res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
                           coxmi = as.matrix(bo[[ i ]]$GPD[,-which]),
                           data = bo[[i]]$Y)
 	   res
-  } 
+  }
 
 	bootRes <- lapply( 1:length( object$boot ) , lfun ,
 	        			    migpd=migpd, pqu=pqu, bo = object$boot, nsim=nsim,
 	        			    which = which )
-	    # bootRes contains the bootstrap simulated complete vectors X on the original 
+	    # bootRes contains the bootstrap simulated complete vectors X on the original
       # scale of the data, conditional on having the _which_ component above the pqu quantile.
-	} else { 
-    bootRes <- NULL 
+	} else {
+    bootRes <- NULL
   }
-  
+
 	##########################################################################
 	# Get a sample using the point estimates of the parameters
 	# that are suggested by the data
@@ -97,22 +96,22 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
   coxmi <- as.matrix(coef(migpd)[3:4, -which])
 
   sim <- MakeThrowData(dco=dall$dependence$coefficients,z=dall$dependence$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
-                
+
   m <- 1 / ( 1 - pqu ) # Need to estimate pqu quantile
  	zeta <- 1 - migpd$mqu[ which ] # Coles, page 81
 	pth <- migpd$mth[ which ] + cox[ 1 ] / cox[ 2 ] * ( ( m*zeta )^cox[ 2 ] - 1 )
 
 	data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ), simulated = sim, pth=pth)
-  names(data$real)[1] <- colnames(migpd$data)[which] 
-  
+  names(data$real)[1] <- colnames(migpd$data)[which]
+
   res <- list( call = theCall , replicates = bootRes, data = data,
 				       which = which, pqu = pqu,
 				       mth=c( migpd$mth[ which ], migpd$mth[ -which ] ),
                gpd.coef = coef(migpd)[,c(which,(1:dim(data$real)[2])[-which])])
-	
-	oldClass( res ) <- "predict.mex"
 
-	res
+  oldClass( res ) <- "predict.mex"
+
+  res
 }
 
 test.predict.mex <- function(){
@@ -130,10 +129,10 @@ set.seed(20111010)
                       c(1.2, 4.4, 45.2, 6.7, 8.2))
   Table5summer <- rbind(c(39.6,62.2,213.5,48.5,83.7),
                         c(4.3,4.3,17.5,11.8, 7.9))
-                      
+
   dimnames(Table5winter) <- dimnames(Table5summer) <- list(c("E(x)", "SE"),
                             c("O3", "NO2", "NO", "SO2", "PM10"))
-                        
+
   Table5summer <- Table5summer[, c("NO", "O3", "NO2", "SO2", "PM10")]
   Table5winter <- Table5winter[, c("NO", "O3", "NO2", "SO2", "PM10")]
 
@@ -145,24 +144,24 @@ set.seed(20111010)
 
   tol <- 0.05
 
-  checkEqualsNumeric(Table5summer, resSummer,tol=tol,msg="predict.mex: Table 5 summer data")
-  checkEqualsNumeric(Table5winter, resWinter,tol=tol,msg="predict.mex: Table 5 winter data")
-  
-  checkEqualsNumeric(pointEstSummer, resSummer[1,],tol=tol,msg="predict.mex: point est vs boot, summer data")
-  checkEqualsNumeric(pointEstWinter, resWinter[1,],tol=tol,msg="predict.mex: point est vs boot, winter data")
+  checkEqualsNumeric(Table5summer, resSummer,tolerance=tol,msg="predict.mex: Table 5 summer data")
+  checkEqualsNumeric(Table5winter, resWinter,tolerance=tol,msg="predict.mex: Table 5 winter data")
+
+  checkEqualsNumeric(pointEstSummer, resSummer[1,],tolerance=tol,msg="predict.mex: point est vs boot, summer data")
+  checkEqualsNumeric(pointEstWinter, resWinter[1,],tolerance=tol,msg="predict.mex: point est vs boot, winter data")
 
 # check execution for 2-d data
 
   R <- 20
   nsim <- 100
-  wavesurge.mex <- mex(wavesurge,mq=.7,dqu=0.7,margins="laplace",which=1)
+  wavesurge.mex <- mex(wavesurge,mqu=.7,dqu=0.7,margins="laplace",which=1)
   wavesurge.boot <- bootmex(wavesurge.mex,R=R,trace=R+1)
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim,trace=R+1)
 
   checkEqualsNumeric(length(wavesurge.pred$replicates),R,msg="predict.mex execution for 2-d data")
   checkEqualsNumeric(dim(wavesurge.pred$replicates[[3]]),c(nsim,2))
   checkEquals(names(wavesurge.pred$replicates[[4]]),names(wavesurge),msg="predict.mex execution for 2-d data")
-  
+
 # check predictions Laplace estimation equal to Gumbel for large samples and high threshold
 
   tol <- 0.01
@@ -187,7 +186,7 @@ set.seed(20111010)
 
     lap.ans <- summary(lap.pred)$ans
     gum.ans <- summary(gum.pred)$ans
-    
-    checkEqualsNumeric(lap.ans,gum.ans,tol=tol,msg=paste("predict.mex Laplace predictions equal to Gumbel, test replicate",i))
+
+    checkEqualsNumeric(lap.ans,gum.ans,tolerance=tol,msg=paste("predict.mex Laplace predictions equal to Gumbel, test replicate",i))
   }
 }

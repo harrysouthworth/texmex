@@ -26,13 +26,13 @@ function(object, alpha = .050,
 
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
-    
+
     xrange <- range(m)
     yrange <- range(c(xdat, range(xm[plotX,])))
-    
+
     plotRLgpd(m[plotX],xm[plotX,],polycol,cicol,linecol,ptcol,n,xdat,pch,
               smooth,xlab,ylab,main,xrange=xrange,yrange=yrange)
-              
+
     invisible(list(m=m, xm=xm))
 }
 
@@ -127,19 +127,19 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
       plotRLgpd(m,xm,polycol = polycol,cicol=cicol,linecol=linecol,ptcol=ptcol,pch=pch,
                 smooth=smooth,xlab=xlab,ylab=ylab,main=Main,xrange=range(m),yrange=yrange)
     }
-    
+
     invisible(list(m=m,xm=Array))
 }
 
 plot.rl.bootgpd <- plot.rl.bgpd <- plot.rl.gpd
 
-plotRLgpd <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){ 
+plotRLgpd <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
 # worker function - called by plotrl.gpd, plot.rl.gpd, plot.rl.bgpd
 
     o <- order(M) # in case the return period are not in ascending order.
     M <- M[o]
     xm <- xm[o,]
-    
+
     plot(M, xm[,1], log = "x", type = "n",
          xlim=xrange, ylim=yrange, xlab = xlab, ylab = ylab, main = main)
 
@@ -162,8 +162,8 @@ plotRLgpd <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,yl
             lines(M, xm[,2], col = cicol)
             lines(M, xm[,3], col = cicol)
         }
-      }      
-	
+      }
+
       lines(M, xm[,1], col = linecol[ 1 ] )
 
     # Add observed data to the plot
@@ -173,11 +173,11 @@ plotRLgpd <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,yl
       box()
     }
  }
-    
+
 test.plotrl.gpd <- function()
 {
 # no covariates
-  
+
   rain.fit <- gpd(rain,th=14)
   par(mfrow=c(1,1))
   plotrl.gpd(rain.fit)
@@ -190,19 +190,19 @@ test.plotrl.gpd <- function()
   X$Y <- Y
   fit <- gpd(Y,data=X,phi=~a,xi=~b,th=0)
   rl <- predict(fit,ci=TRUE)
-  
+
   checkException(plotrl.gpd(fit),silent=TRUE,msg="plotrl.gpd : failure for model with covariates")
   checkException(plot(rl),silent=TRUE,msg="plot.rl.gpd : failure when use only 1 value of M for RL calc")
 
   nx <- 6
   M <- seq(5,500,length=30)
-  newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))  
-  rl <- predict(fit,newdata=newX,ci=TRUE,se=TRUE,M=M)
+  newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
+  rl <- predict(fit,newdata=newX,ci.fit=TRUE,se=TRUE,M=M)
   par(mfrow=n2mfrow(nx))
   plot(rl,sameAxes=TRUE,main=paste("Validation suite plot",1:nx),polycol="cyan")
   plot(rl,sameAxes=FALSE,polycol="magenta")
-    
+
   checkException(plot(predict(fit,newdata=newX,ci=FALSE)),silent=TRUE,msg="plotrl.gpd: failure if no conf ints supplied")
-  
+
 }
 
