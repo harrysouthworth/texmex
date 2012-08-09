@@ -158,8 +158,3 @@ test.bootgpd <- function(){
     checkTrue(max(rest) < 1.1, msg="bootgpd: medians in line with point ests")
 }
 
-
-
-
-
-

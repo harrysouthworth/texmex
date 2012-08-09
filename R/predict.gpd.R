@@ -586,7 +586,7 @@ test.predict.gpd <- function(){
 # check multiple M
   M <- c(10,50,100,500,1000)
 
-  target <- sapply(M,function(m,sig,xi,u) qgpd(1-1/m,sig,xi,u=u),sigma=sig,xi=xi,u=0)
+  target <- sapply(M,function(m,sig,xi,u) qgpd(1-1/m,sig,xi,u=u),sig=sig,xi=xi,u=0)
   current <- predict(fit,M=M)
 
   for(i in 1:length(M)){
@@ -714,7 +714,7 @@ test.predict.bgpd <- function(){
   xi <-      cbind(rep(1,nx),newX[,2]) %*% t(fit$param[,3:4])
 
   checkEqualsNumeric(target = as.matrix(newX), current = predict(fit,M=M,newdata=newX)[[1]][,2:3],msg="predict.bgpd : ret level estimation with new data, covariates aded correctly to output")
-  checkEqualsNumeric(target = qbgpd(1-1/M,sigma=sig,xi=xi,u=0),
+  checkEqualsNumeric(target = qbgpd(1-1/M,sig=sig,xi=xi,u=0),
                      current = predict(fit,M=M,newdata=newX)[[1]][,1],msg="predict.bgpd : ret level estimation with new data")
 
   p <- predict(fit,all=TRUE,newdata=newX)

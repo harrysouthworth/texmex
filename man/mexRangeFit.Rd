@@ -51,10 +51,11 @@ Harry Southworth, Janet E. Heffernan
 }
 
 \examples{
-  w <- migpd(winter, mqu=.7)
-  w
-  par(mfrow=c(4,2))
-  mexRangeFit(w,which=1,main="Winter data, Heffernan and Tawn 2004",cex=0.5)
+# Example commented out to reduce R CMD check time
+#  w <- migpd(winter, mqu=.7)
+#  w
+#  par(mfrow=c(4,2))
+#  mexRangeFit(w,which=1,main="Winter data, Heffernan and Tawn 2004",cex=0.5)
   }
 
 \keyword{ models }

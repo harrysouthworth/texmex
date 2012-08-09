@@ -88,15 +88,6 @@ function (xdat, threshold, npy = 365, ydat = NULL, sigl = NULL,
     ...)
 {
 
-	if (!is.R()){
-		if (missing(shlink)){
-			shlink <- function(x){ x }
-		}
-		if (missing(siglink)){
-			siglink <- function(x){ x }
-		}
-	}
-
     z <- list()
     npsc <- length(sigl) + 1
     npsh <- length(shl) + 1
@@ -142,29 +133,25 @@ function (xdat, threshold, npy = 365, ydat = NULL, sigl = NULL,
     z$data <- xdatu
 
 
-	    gpd.lik <- function(a) {
-	        sc <- siglink(sigmat %*% (a[seq(1, length = npsc)]))
-	        xi <- shlink(shmat %*% (a[seq(npsc + 1, length = npsh)]))
-	        y <- (xdatu - u)/sc
-	        y <- 1 + xi * y
-	        if (min(sc) <= 0)
-	            l <- 10^6
-	        else {
-	            if (min(y) <= 0)
-	                l <- 10^6
-	            else {
-	                l <- sum(log(sc)) + sum(log(y) * (1/xi + 1))
-	            }
-	        }
-	        l
-	    } # Close gpd.lik <- function
+    gpd.lik <- function(a) {
+        sc <- siglink(sigmat %*% (a[seq(1, length = npsc)]))
+        xi <- shlink(shmat %*% (a[seq(npsc + 1, length = npsh)]))
+        y <- (xdatu - u)/sc
+        y <- 1 + xi * y
+        if (min(sc) <= 0)
+            l <- 10^6
+        else {
+            if (min(y) <= 0)
+                l <- 10^6
+            else {
+                l <- sum(log(sc)) + sum(log(y) * (1/xi + 1))
+            }
+        }
+        l
+    } # Close gpd.lik <- function
 
-	    x <- optim(init, gpd.lik, hessian = TRUE, method = method,
-	        control = list(maxit = maxit))
-
-	    x <- optim(init, gpd.lik, hessian = TRUE, method = method,
-	        	   control = list(maxit = maxit, ...), siglink=siglink, shlink=shlink,
-	        	   sigmat=sigmat, shmat=shmat, npsc=npsc, npsh=npsh, xdatu=xdatu, th=u)
+    x <- optim(init, gpd.lik, hessian = TRUE, method = method,
+               control = list(maxit = maxit))
 
     sc <- siglink(sigmat %*% (x$par[seq(1, length = npsc)]))
     xi <- shlink(shmat %*% (x$par[seq(npsc + 1, length = npsh)]))

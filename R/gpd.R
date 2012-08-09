@@ -308,16 +308,16 @@ test.gpd <- function(){
 
   cparas <- c(7.44, 0.184)
   cse <- c(0.958432, 0.101151)
-  
+
   ccov <- matrix(c(.9188, -.0655, -.0655, .0102), nrow=2)
   cloglik <- -485.1
 
   mod <- gpd(rain, th=30, penalty="none")
   mod.coef <- coef(mod)
-  
+
   mod.coef[1] <- exp(mod.coef[1])
   names(mod.coef)[1] <- "sigma"
-  
+
   mod.loglik <- mod$loglik
   mod.cov22 <- mod$cov[2, 2]
 
@@ -329,7 +329,7 @@ test.gpd <- function(){
                      msg="gpd: Covariance page 85 Coles")
   checkEqualsNumeric(cloglik, mod.loglik, tolerance = tol,
                      msg="gpd: loglik page 85 Coles")
-  
+
 ###################################################################
 #   Logical checks on the effect of Gaussian penalization. The smaller the
 #    variance, the more the parameter should be drawn towards the

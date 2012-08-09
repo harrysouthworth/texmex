@@ -1,14 +1,14 @@
 info.gpd <-
     # Compute the observed information matrix from a gpd object.
-    # The expressions are given in Appendix A of Davison & Smith 1990. 
-    # Note we are using a simpler parameterisation in which phi = log(sigma) 
+    # The expressions are given in Appendix A of Davison & Smith 1990.
+    # Note we are using a simpler parameterisation in which phi = log(sigma)
     # and xi are both linear in their covariates. Xi is -k used in Davison and Smith.
 	# If penalization is used, the calculation accounts for this, but the resulting
 	# estimates of variance will be too low and bias might dominate MSE
-function(o, method="observed"){	
+function(o, method="observed"){
   if (class(o) != "gpd"){ stop("object must be of class 'gpd'") }
 	if (method != "observed"){ stop("only 'observed' information is implemented") }
-	
+
 	x <- o$X.phi; z <- o$X.xi
 	ns <- ncol(x); nk <- ncol(z)
 	phi <- coef(o)[1:ns]
@@ -28,16 +28,16 @@ function(o, method="observed"){
 			}
 		}
 	}
-	
+
 # Second and mixed derivatives of log-lik wrt coefficients of linear predictors
-	
+
   d2li.dphi2 <- -(1 + 1/xi.i) * xi.i * w.i / (1 + xi.i*w.i)^2
   d2li.dphidxi <- 1/xi.i^2 * (1/(1 + xi.i*w.i) - 1) + (1+1/xi.i)*w.i/(1 + xi.i*w.i)^2
   d2li.dxi2 <- -2/xi.i^3 * log(1 + xi.i*w.i) + 2*w.i/(xi.i^2 * (1 + xi.i*w.i)) + (1 + 1/xi.i)*w.i^2/(1 + xi.i*w.i)^2
-  
+
 # Matrix has 4 blocks, 2 of which are transposes of each other. Need block for phi parameters,
 # block for xi parameters and block for the cross of them.
-	
+
   Ip <- matrix(0, ncol=ns, nrow=ns)
   for (u in 1:ns){
 	  for (v in 1:ns){
@@ -48,21 +48,21 @@ function(o, method="observed"){
 	Ix <- matrix(0, ncol=nk, nrow=nk)
 	for (s in 1:nk){
 		for (t in 1:nk){
-			Ix[s,t] <- -sum(z[,s] * z[,t] * d2li.dxi2) 
+			Ix[s,t] <- -sum(z[,s] * z[,t] * d2li.dxi2)
 		}
 	}
-	
+
 	Ipx <- matrix(0, ncol=nk, nrow=ns)
 	for (u in 1:ns){
 		for (s in 1:nk){
 			Ipx[u,s] <- -sum(z[,s] * x[,u] * d2li.dphidxi )
 		}
 	}
-  
+
 	i <- rbind( cbind(Ip, Ipx), cbind(t(Ipx), Ix))
 
-	# return observed Information matrix.   Note that an estimate of the covariance matrix is given by the inverse of this matrix.  
-  i - p 
+	# return observed Information matrix.   Note that an estimate of the covariance matrix is given by the inverse of this matrix.
+  i - p
 }
 
 test.info.gpd <- function(){
@@ -73,11 +73,10 @@ test.info.gpd <- function(){
 	set.seed(20110923)
 	tol <- 10^(-3)
 	for (i in 1:10){
-		x <- rt(10000, 10)
-
-		junk <- gpd(x, qu=.9, penalty="none", cov="numeric")
-		msg <- paste("info.gpd: t", i, "equality to numerical", sep="")
-		checkEqualsNumeric(junk$cov, solve(info.gpd(junk)), tolerance=tol, msg=msg)
+            x <- rt(10000, 10)
+            junk <- gpd(x, qu=.9, penalty="none", cov="numeric")
+            msg <- paste("info.gpd: t", i, "equality to numerical", sep="")
+            checkEqualsNumeric(junk$cov, solve(info.gpd(junk)), tolerance=tol, msg=msg)
 
   # check estimation when we have a penalty
     gp1 <- list(c(0, 0), diag(c(10^4, .05)))
@@ -89,7 +88,7 @@ test.info.gpd <- function(){
     tol <- 0.01
 		checkEqualsNumeric(junk1$cov, solve(info.gpd(junk1)), tolerance=tol, msg=msg1)
 		checkEqualsNumeric(junk2$cov, solve(info.gpd(junk2)), tolerance=tol, msg=msg2)
-    
+
   # check estimation when we have covariates
     n <- 10000
     x <- 1/runif(n)
@@ -98,10 +97,10 @@ test.info.gpd <- function(){
     junk3 <- gpd(y,data=data,phi =~ x,th=0)
     msg3 <- paste("info.gpd: t",i,"equality to numerical, covariates in phi",sep="")
     checkEqualsNumeric(junk3$cov, solve(info.gpd(junk3)), tolerance=tol, msg=msg3)
-    
+
     x <- runif(n,-0.5,0.5)
     data <- data.frame(x=x,y = rgpd(n,sigma = exp(3+2*x), xi=x))
-    
+
     junk4 <- gpd(y,data=data,phi=~x, xi = ~ x,th=0)
     msg4 <- paste("info.gpd: t",i,"equality to numerical, covariates in phi and xi",sep="")
     checkEqualsNumeric(junk4$cov, solve(info.gpd(junk4)), tolerance=tol, msg=msg4)
