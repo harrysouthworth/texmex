@@ -19,66 +19,34 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     theCall <- match.call()
 
-    ##################### Sort out penalties, priors, methods...
+    ##################### Sort out method, penalty/prior, trace...
 
-    if (!missing(penalty) & !missing(prior)){
-        stop("specify one or neither of penalty and prior, not both")
-    }
-    if (!missing(penalty)){
-        prior <- penalty
-    }
+    method <- texmexMethod(method)
+    prior <- texmexPrior(prior, penalty, method)
 
-    method <- casefold(method)
-    prior <- casefold(prior)
+    trace <- texmexTrace(trace, method)
+    otrace <- trace[1]; trace <- trace[2]
 
-    if (method %in% c("o", "opt", "optim", "optimize", "optimise")){
-        method <- "o"
-    }
-    else if (method %in% c("s", "sim", "simulate")){
-        method <- "s"
-    }
-    else {
-        stop("method should be either 'optimize' or 'simulate'")
-    }
-
-    if (method == "s" & prior != "gaussian"){
-        stop("only Gaussian prior can be used when simulating from the posterior")
-    }
-
-    ##################### Sort out trace
-    if (method == "o"){
-      if (!missing(trace)){
-          otrace <- trace
-      } else {
-          otrace <- 0
-      }
-    } else{
-      otrace <- 0
-      if (missing(trace)){
-         trace <- 1000
-      }
-    }
-              
     ############################## Construct data to use...
 
     if (!missing(data)) {
       y <- deparse(substitute(y))
       y <- formula(paste(y, "~ 1"))
       y <- model.response(model.frame(y, data=data))
-     
+
       if (!is.R() & length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
         X.phi <- matrix(rep(1, nrow(data)), ncol=1)
       } else {
         X.phi <- model.matrix(phi, data)
       }
-    
+
       if (!is.R() & length(as.character(xi)) == 2 & as.character(xi)[2] == "1"){
         X.xi <- matrix(rep(1, nrow(data)), ncol=1)
       } else {
         X.xi <- model.matrix(xi, data)
       }
     } else {
-      if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){  
+      if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
         X.phi <- matrix(ncol = 1, rep(1, length(y)))
       } else {
         X.phi <- model.matrix(phi)
@@ -93,7 +61,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
         th <- quantile(y, qu)
     }
     X.phi <- X.phi[y > th, ]
-    X.xi <- X.xi[y > th, ]    
+    X.xi <- X.xi[y > th, ]
     rate <- mean(y > th)
 
     allY <- y
@@ -112,7 +80,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     if (prior %in% c("quadratic", "gaussian")) {
         if (is.null(priorParameters)) {
-            priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)), 
+            priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)),
                 diag(rep(10^4, ncol(X.phi) + ncol(X.xi))))
         }
         if (length(priorParameters) != 2 | !is.list(priorParameters)) {
