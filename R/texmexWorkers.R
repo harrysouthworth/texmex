@@ -5,7 +5,7 @@
 #
 ###########################################################################
 
-texmexMethod <-
+.texmexMethod <-
     # Take character string passed by user and coerce to standard format
 function(method){
     method <- casefold(method)
@@ -21,7 +21,7 @@ function(method){
     method
 }
 
-texmexPrior <-
+.texmexPrior <-
     # Take character string(s) passed by user and coerce to standard format
 function(prior, penalty, method){
     prior <- casefold(prior)
@@ -42,7 +42,7 @@ function(prior, penalty, method){
     prior
 }
 
-texmexTrace <-
+.texmexTrace <-
     # Get tracing frequency for optimizer and for Markov chain
 function(trace, method){
     if (method == "o"){
@@ -60,4 +60,92 @@ function(trace, method){
       }
     }
     c(otrace, trace)
+}
+
+.texmexPrepareData <-
+    # Get design matrices
+function(y, data, params){
+    D <- vector('list', length=length(params))
+    if (!is.null(data)){
+        y <- formula(paste(y, "~ 1"))
+        y <- model.response(model.frame(y, data=data))
+
+        for (i in 1:length(params)){
+          D[[i]] <- model.matrix(params[[i]], data)
+        }
+    } # Close if(!is.null(data
+    else {                                        # XXX UNTESTED CODEBLOCK XXX <---------- XXX
+        for (i in 1:length(params)){
+            if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
+                D[[i]] <- matrix(ncol = 1, rep(1, length(y)))
+            }
+            else {
+                D[[i]] <- model.matrix(params[[i]])
+            }
+        } # Close for
+    } # Close else
+
+    # Matrices with one column get coerced to vectors. Revert.
+    D <- lapply(D, function(x){
+                      if (!is.matrix(x)){ matrix(x, ncol=1) }
+                      else { x }})
+
+    list(y=y, D=D)
+}
+
+.texmexThresholdData <- function(threshold, data){
+    # Need to subset design matrices on y > th, so do those
+    # first, then threshold y
+
+    for (i in 1:length(data$D)){
+        data$D[[i]] <- data$D[[i]][data$y > threshold, ]
+    }
+
+    data$y <- data$y[data$y > threshold]
+    if (length(data$y) == 0){
+      stop("No observations above the threshold.")
+    }
+
+    data
+}
+
+.texmexPriorParameters <-
+    # Pre-process prior distribution parameters
+function(prior, priorParameters, data){
+    # Get total number of parameters
+    nc <- sum(sapply(data$D, ncol))
+
+    if (prior %in% c("quadratic", "gaussian")) {
+        if (is.null(priorParameters)) {
+            priorParameters <- list(rep(0, nc), diag(rep(10^4, nc)))
+        }
+        if (length(priorParameters) != 2 | !is.list(priorParameters)) {
+            stop("For Gaussian prior or quadratic penalty, priorParameters should be a list of length 2, the second element of which should be a symmetric (covariance) matrix")
+        }
+    }
+    else if (prior %in% c("lasso", "l1", "laplace")) {
+        if (is.null(priorParameters)) {
+            priorParameters <- list(rep(0, nc), diag(rep(10^(-4), nc)))
+        }
+        if (length(priorParameters) != 2 | !is.list(priorParameters)) {
+            stop("For Laplace prior or L1 or Lasso penalty, priorParameters should be a list of length 2, the second element of which should be a diagonal (precision) matrix")
+        }
+        if (!is.matrix(priorParameters[[2]])) {
+            priorParameters[[2]] <- diag(rep(priorParameters[[2]], nc))
+        }
+        if (!all(priorParameters[[2]] == diag(diag(priorParameters[[2]])))) {
+            warning("some off-diagonal elements of the covariance are non-zero. Only the diagonal is used in penalization")
+        }
+    }
+
+    #### If priorParameters given but of wrong dimension, kill
+    if (!is.null(priorParameters)) {
+        if (length(priorParameters[[1]]) != nc) {
+            stop("wrong number of parameters in prior (doesn't match phi and xi formulas)")
+        }
+        else if (length(diag(priorParameters[[2]])) != nc) {
+            stop("wrong dimension of prior covariance (doesn't match phi and xi formulas)")
+        }
+    }
+    priorParameters
 }

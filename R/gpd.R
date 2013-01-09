@@ -3,7 +3,7 @@ gpd <- function(y, data, ...){
       y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
       y <- formula(paste(y, "~ 1"))
       y <- model.response(model.frame(y, data=data))
-  } 
+  }
   UseMethod("gpd",y)
 }
 
@@ -21,102 +21,43 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ##################### Sort out method, penalty/prior, trace...
 
-    method <- texmexMethod(method)
-    prior <- texmexPrior(prior, penalty, method)
+    method <- .texmexMethod(method)
+    prior <- .texmexPrior(prior, penalty, method)
 
-    trace <- texmexTrace(trace, method)
+    trace <- .texmexTrace(trace, method)
     otrace <- trace[1]; trace <- trace[2]
 
     ############################## Construct data to use...
 
-    if (!missing(data)) {
-      y <- deparse(substitute(y))
-      y <- formula(paste(y, "~ 1"))
-      y <- model.response(model.frame(y, data=data))
+    if (missing(data)){ data <- NULL }
+    else { y <- deparse(substitute(y)) }
 
-      if (!is.R() & length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
-        X.phi <- matrix(rep(1, nrow(data)), ncol=1)
-      } else {
-        X.phi <- model.matrix(phi, data)
-      }
+    # Get list containing response (y) and design matrix for each parameter
+    modelData <- .texmexPrepareData(y, data, list(phi, xi)) # XXX <------------------- NEED TO SORT OUT PARAMS NEAR TOP
 
-      if (!is.R() & length(as.character(xi)) == 2 & as.character(xi)[2] == "1"){
-        X.xi <- matrix(rep(1, nrow(data)), ncol=1)
-      } else {
-        X.xi <- model.matrix(xi, data)
-      }
-    } else {
-      if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
-        X.phi <- matrix(ncol = 1, rep(1, length(y)))
-      } else {
-        X.phi <- model.matrix(phi)
-      }
-      if (length(as.character(xi)) == 2 & as.character(xi)[2] == "1"){
-        X.xi <- matrix(ncol = 1, rep(1, length(y)))
-      } else {
-        X.xi <- model.matrix(xi)
-      }
-    }
     if (missing(th)) {
-        th <- quantile(y, qu)
+        th <- quantile(modelData$y, qu)
     }
-    X.phi <- X.phi[y > th, ]
-    X.xi <- X.xi[y > th, ]
-    rate <- mean(y > th)
 
-    allY <- y
-    y <- y[y > th]
-    if (!is.matrix(X.phi)) {
-        X.phi <- matrix(X.phi, ncol = 1)
-    }
-    if (!is.matrix(X.xi)) {
-        X.xi <- matrix(X.xi, ncol = 1)
-    }
-    if (length(y) == 0) {
-        stop("No observations over threshold")
-    }
+    # Threshold the response and the design matrices
+    modelData <- .texmexThresholdData(th, modelData)
+
+    rate <- mean(y > th)
+    allY <- y # XXX <--------------------------------------------- Relic
 
     ###################### Check and sort out prior parameters...
 
-    if (prior %in% c("quadratic", "gaussian")) {
-        if (is.null(priorParameters)) {
-            priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)),
-                diag(rep(10^4, ncol(X.phi) + ncol(X.xi))))
-        }
-        if (length(priorParameters) != 2 | !is.list(priorParameters)) {
-            stop("For Gaussian prior or quadratic penalty, priorParameters should be a list of length 2, the second element of which should be a symmetric (covariance) matrix")
-        }
-    } else if (prior %in% c("lasso", "l1", "laplace")) {
-        if (is.null(priorParameters)) {
-            priorParameters <- list(rep(0, ncol(X.phi) + ncol(X.xi)), 
-                diag(rep(10^(-4), ncol(X.phi) + ncol(X.xi))))
-        }
-        if (length(priorParameters) != 2 | !is.list(priorParameters)) {
-            stop("For Laplace prior or L1 or Lasso penalty, priorParameters should be a list of length 2, the second element of which should be a diagonal (precision) matrix")
-        }
-        if (!is.matrix(priorParameters[[2]])) {
-            priorParameters[[2]] <- diag(rep(priorParameters[[2]], 
-                ncol(X.phi) + ncol(X.xi)))
-        }
-        if (!all(priorParameters[[2]] == diag(diag(priorParameters[[2]])))) {
-            warning("some off-diagonal elements of the covariance are non-zero. Only the diagonal is used in penalization")
-        }
-    }
+    priorParameters <- .texmexPriorParameters(prior, priorParameters, modelData)
 
-    #### If priorParameters given but of wrong dimension, kill
-    if (!is.null(priorParameters)) {
-        dimp <- ncol(X.phi) + ncol(X.xi)
-        if (length(priorParameters[[1]]) != dimp) {
-            stop("wrong number of parameters in prior (doesn't match phi and xi formulas)")
-        }
-        else if (length(diag(priorParameters[[2]])) != dimp) {
-            stop("wrong dimension of prior covariance (doesn't match phi and xi formulas)")
-        }
-    }
 
     ################################## Do the optimization....
 
-    o <- gpdFit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior, start=start, 
+    # XXXXXXXXXXXXXXXXXXXXXXXXXX NEXT CODEBLOCK IS FOR TESTING AND IS JUNK XXX XXX XXX
+    y <- modelData$y
+    X.phi <- modelData$D[[1]]
+    X.xi <- modelData$D[[2]]
+
+    o <- gpdFit(y=y, th=th, X.phi=X.phi, X.xi=X.xi, penalty=prior, start=start,
                  hessian = cov == "numeric",
                  priorParameters = priorParameters, maxit = maxit, trace = otrace)
 
@@ -133,7 +74,7 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     o$threshold <- th
     o$penalty <- prior
     o$coefficients <- o$par
-    names(o$coefficients) <- c(paste("phi:", colnames(X.phi)), 
+    names(o$coefficients) <- c(paste("phi:", colnames(X.phi)),
                                paste("xi:", colnames(X.xi)))
 
     o$formulae <- list(phi=phi, xi=xi)
@@ -328,7 +269,7 @@ test.gpd <- function(){
             msg="gpd: Gaussian penalization phi being drawn to 0")
   checkTrue(coef(mod3)[1] > coef(mod4)[1],
             msg="gpd: Gaussian penalization phi being drawn to 0")
-  
+
 # 2.3 Tests for xi being drawn to 1
   gp5 <- list(c(0, 1), diag(c(10^4, .25)))
   gp6 <- list(c(0, 1), diag(c(10^4, .05)))
@@ -340,7 +281,7 @@ test.gpd <- function(){
             msg="gpd: Gaussian penalization xi being drawn to 1")
   checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],
             msg="gpd: Gaussian penalization xi being drawn to 1")
-  
+
 # 2.4 Tests for phi being drawn to 4 (greater than mle for phi)
 
   gp7 <- list(c(4, 0), diag(c(1, 10^4)))
@@ -353,7 +294,7 @@ test.gpd <- function(){
             msg="gpd: Gaussian penalization phi being drawn to 4")
   checkTrue(4 - coef(mod3)[1] > 4 - coef(mod8)[1],
             msg="gpd: Gaussian penalization phi being drawn to 4")
-  
+
 ###################################################################
 #   Logical checks on the effect of penalization using lasso or L1 penalization. The smaller the
 #    variance, the more the parameter should be drawn towards the
@@ -384,7 +325,7 @@ test.gpd <- function(){
             msg="gpd: lasso penalization phi being drawn to 0")
   checkTrue(coef(mod3)[1] > coef(mod4)[1],
             msg="gpd: lasso penalization phi being drawn to 0")
-  
+
 # 2a.3 Tests for xi being drawn to 1
   gp5 <- list(c(0, 1), solve(diag(c(10^4, .25))))
   gp6 <- list(c(0, 1), solve(diag(c(10^4, .05))))
@@ -396,7 +337,7 @@ test.gpd <- function(){
             msg="gpd: lasso penalization xi being drawn to 1")
   checkTrue(1 - coef(mod1)[2] > 1 - coef(mod6)[2],
             msg="gpd: lasso penalization xi being drawn to 1")
-  
+
 # 2a.4 Tests for phi being drawn to 4 (greater than mle for phi)
 
   gp7 <- list(c(4, 0), solve(diag(c(1, 10^4))))
@@ -424,9 +365,9 @@ test.gpd <- function(){
 
   checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol,
                      msg="gpd: loglik Coles page 119")
-  
+
 ####################################################################
-# 3.1 Use liver data, compare with ismev. 
+# 3.1 Use liver data, compare with ismev.
 #     These are not necessarily sensible models!
 #     Start with phi alone.
 
@@ -460,8 +401,8 @@ test.gpd <- function(){
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- texmex:::.ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B), 
-                                   threshold=quantile(log(liver$ALT.M / liver$ALT.B), .7), 
+  ismod <- texmex:::.ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B),
+                                   threshold=quantile(log(liver$ALT.M / liver$ALT.B), .7),
                                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
@@ -480,10 +421,10 @@ test.gpd <- function(){
 # 3.3 Test phi & xi simultaneously. Use simulated data.
 
   set.seed(25111970)
-  
+
   makeData <- function(a,b,n=500,u=10)
   # lengths of a and b should divide n exactly
-  # returns data set size 2n made up of uniform variates (size n) below threshold u and 
+  # returns data set size 2n made up of uniform variates (size n) below threshold u and
   # gpd (size n) with scale parameter exp(a) and shape b above threshold u
   {
     gpd <- rgpd(n,exp(a),b,u=u)
@@ -495,7 +436,7 @@ test.gpd <- function(){
   myb <- rep(c(-0.2,0.2),each=5)
   data <- makeData(mya,myb)
   m <- model.matrix(~ a+b, data)
-  
+
   mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
   ismod <- texmex:::.ismev.gpd.fit(data$y,
                                    threshold=quantile(data$y,0.7),
@@ -519,7 +460,7 @@ test.gpd <- function(){
 
   myb <- rep(c(0.5,1.5),each=5)
   data <- makeData(a=1,b=myb,n=3000)
-  
+
   gp1 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.25)))
   gp2 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.01)))
 
@@ -556,7 +497,7 @@ test.gpd <- function(){
 # 2.3 Tests for xi being drawn to 2
   myb <- rep(c(-0.5,0.5),each=5)
   data <- makeData(a=1,b=myb,n=3000)
- 
+
   gp7 <- list(c(0, 2, 2), diag(c(10^4, 0.25, 0.25)))
   gp8 <- list(c(0, 2, 2), diag(c(10^4, 0.05, 0.05)))
 
@@ -569,12 +510,12 @@ test.gpd <- function(){
   checkTrue(all(abs(2 - coef(mod7)[2:3]) > abs(2 - coef(mod8)[2:3])),
             msg="gpd: with covariates, xi drawn to 2")
 
-# 2.4 Tests for phi being drawn to 4 
+# 2.4 Tests for phi being drawn to 4
 
   mya <- seq(0.1,1,len=10)
   data <- makeData(2 + mya,b=-0.1,n=3000)
   data$a <- rep(mya, len=nrow(data))
-  
+
   gp10 <- list(c(0, 4, 0), diag(c(10^4, 1,   10^4)))
   gp11 <- list(c(0, 4, 0), diag(c(10^4, 0.1, 10^4)))
 
@@ -601,12 +542,12 @@ test.gpd <- function(){
   bmod <- gpd(ALT.M, data=liver,
               th=quantile(liver$ALT.M, .7),
               iter=1000, thin=1, verbose=FALSE, method="sim")
-  
+
   set.seed(save.seed)
   bmod2 <- gpd(ALT.M, data=liver,
                th=quantile(liver$ALT.M, .7),
                iter=1000, thin=1, verbose=FALSE, method="sim")
-  
+
   checkEqualsNumeric(bmod$param, bmod2$param,
                      msg="gpd: test simulation reproducibility 1")
 
@@ -617,7 +558,7 @@ test.gpd <- function(){
   checkEqualsNumeric(bmod$param, bmod3$param,
                      msg="gpd: test simulation reproducibility 2")
 
-#*************************************************************  
+#*************************************************************
 # 4.2. Logical test of burn-in
 
   checkEqualsNumeric(nrow(bmod$chains) - bmod$burn, nrow(bmod$param),
