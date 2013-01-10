@@ -157,3 +157,15 @@ function(prior, priorParameters, data){
     }
     priorParameters
 }
+
+findFormulae <-
+    # Find formulae in a call
+function(call){
+    wh <- sapply(call, function(x){ try(class(eval(x)), silent=TRUE) })
+    wh <- names(wh)[wh == 'formula']
+    as.list(call[wh])
+}
+
+
+
+
