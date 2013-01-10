@@ -71,6 +71,7 @@ function(y, data, params){
         y <- model.response(model.frame(y, data=data))
 
         for (i in 1:length(params)){
+#          browser()
           D[[i]] <- model.matrix(params[[i]], data)
         }
     } # Close if(!is.null(data
@@ -87,6 +88,7 @@ function(y, data, params){
 
     # Matrices with one column get coerced to vectors. Revert.
     D <- texmexReverseUnaskedCoercion(D)
+
     list(y=y, D=D)
 }
 
@@ -163,9 +165,19 @@ findFormulae <-
 function(call){
     wh <- sapply(call, function(x){ try(class(eval(x)), silent=TRUE) })
     wh <- names(wh)[wh == 'formula']
-    as.list(call[wh])
+    res <- as.list(call[wh])
+    lapply(res, eval)
 }
 
+texmexParameters <- function(call, fam){
+    # Create intercept formula for every parameter
 
+    mp <- lapply(fam$param, function(x) ~1)
+    names(mp) <- fam$param
 
+    # Splice in parameters from function call
+    p <- findFormulae(call)
+    mp[names(p)] <- p
 
+    mp
+}

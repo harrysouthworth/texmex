@@ -3,8 +3,6 @@ evm.fit <- function(data, family, ...,
                     priorParameters = NULL,
                     maxit = 10000, trace = 0, hessian=TRUE) {
 
-  log.lik <- family()$log.lik(data)
-
   penFactory <- switch(prior,
                        laplace=.make.lasso.penalty,
                        lasso=.make.lasso.penalty,
@@ -20,14 +18,17 @@ evm.fit <- function(data, family, ...,
   }
 
    if (is.null(start)){
-     start <- c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
+     start <- family()$start(data)
    }
 
-   s <- c(apply(X.phi, 2, sd), apply(X.xi, 2, sd))
+  log.lik <- family()$log.lik(start)
+
+   s <- unlist(lapply(data$D, function(x){ apply(x, 2, sd) }))
+#   s <- c(apply(X.phi, 2, sd), apply(X.xi, 2, sd))
    s[s == 0] <- 1
    o <- optim(par = start, fn = evm.lik,
               control = list(maxit = maxit,
-                trace = trace, parscale=s),
+              trace = trace, parscale=s),
               hessian = hessian)
 
     invisible(o)

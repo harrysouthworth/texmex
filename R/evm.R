@@ -43,7 +43,7 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
     # XXX NEXT 2 OPERATIONS SHOULD TAKE PLACE INSIDE texmexPrepareData XXX XXX
     # XXX THEN TIDY UP THE rate AND allY LINES XXX XXX
 
-    if (!is.element(names(dots), 'th')) {
+    if (!is.element('th', names(dots))) {
         th <- quantile(modelData$y, dots$qu)
     }
 
@@ -58,13 +58,13 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
 
     ################################## Do the optimization....
 
-    o <- evm.fit(data = modelData, family=family,..., # th=th,
+    o <- evm.fit(data = modelData, family=family, ..., # th=th,
                  penalty=prior,
                  start=start, hessian = cov == "numeric",
                  priorParameters = priorParameters,
                  maxit = maxit, trace = otrace)
 
-
+cat("meow\n")
     if (o$convergence != 0) {
         warning("Non-convergence in evm.default")
     }

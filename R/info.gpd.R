@@ -1,4 +1,4 @@
-info.gpd <-
+gpd.info <-
     # Compute the observed information matrix from a gpd object.
     # The expressions are given in Appendix A of Davison & Smith 1990.
     # Note we are using a simpler parameterisation in which phi = log(sigma)

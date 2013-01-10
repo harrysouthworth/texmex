@@ -1,4 +1,4 @@
-gpd.loglik <- function(data) {
+gpd.loglik <- function(param) {
   y <- data$y
   X.phi <- data$D$phi
   X.xi <- data$D$xi
@@ -13,17 +13,29 @@ gpd.loglik <- function(data) {
   }
 }
 
+gpd.start <- function(data){
+    y <- data$y
+    X.phi <- data$D[[1]]
+    X.xi <- data$D[[2]]
 
+    c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
+}
 
 
 gpd <- function(){
   res <-  list(name = 'GPD',
                log.lik = gpd.loglik,
                param = c('phi', 'xi'),
-               info = gpd.info)
+               info = gpd.info,
+               start = gpd.start)
   oldClass(res) <- 'texmexFamily'
   res
 }
-                                  #,             # function(o, ...)
-#            start = gpd.start            # function
+
 #            resid = gpd.resid,           # function       )
+
+print.texmexFamily <- function(x, ...){
+    cat('Family: ', x$name, '\n')
+    cat('Param: ', x$param)
+    invisible()
+}
