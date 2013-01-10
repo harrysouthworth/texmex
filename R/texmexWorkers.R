@@ -5,7 +5,7 @@
 #
 ###########################################################################
 
-.texmexMethod <-
+texmexMethod <-
     # Take character string passed by user and coerce to standard format
 function(method){
     method <- casefold(method)
@@ -21,7 +21,7 @@ function(method){
     method
 }
 
-.texmexPrior <-
+texmexPrior <-
     # Take character string(s) passed by user and coerce to standard format
 function(prior, penalty, method){
     prior <- casefold(prior)
@@ -42,7 +42,7 @@ function(prior, penalty, method){
     prior
 }
 
-.texmexTrace <-
+texmexTrace <-
     # Get tracing frequency for optimizer and for Markov chain
 function(trace, method){
     if (method == "o"){
@@ -62,7 +62,7 @@ function(trace, method){
     c(otrace, trace)
 }
 
-.texmexPrepareData <-
+texmexPrepareData <-
     # Get design matrices
 function(y, data, params){
     D <- vector('list', length=length(params))
@@ -86,20 +86,27 @@ function(y, data, params){
     } # Close else
 
     # Matrices with one column get coerced to vectors. Revert.
-    D <- lapply(D, function(x){
-                      if (!is.matrix(x)){ matrix(x, ncol=1) }
-                      else { x }})
-
+    D <- texmexReverseUnaskedCoercion(D)
     list(y=y, D=D)
 }
 
-.texmexThresholdData <- function(threshold, data){
+texmexReverseUnaskedCoercion <-
+    # R forces single column data into a vector
+function(x){
+    lapply(x, function(z){
+                  if (!is.matrix(z)){ z <- matrix(z, ncol=1) }
+                  z })
+}
+
+texmexThresholdData <- function(threshold, data){
     # Need to subset design matrices on y > th, so do those
     # first, then threshold y
 
     for (i in 1:length(data$D)){
         data$D[[i]] <- data$D[[i]][data$y > threshold, ]
     }
+
+    data$D <- texmexReverseUnaskedCoercion(data$D)
 
     data$y <- data$y[data$y > threshold]
     if (length(data$y) == 0){
@@ -109,9 +116,10 @@ function(y, data, params){
     data
 }
 
-.texmexPriorParameters <-
+texmexPriorParameters <-
     # Pre-process prior distribution parameters
 function(prior, priorParameters, data){
+
     # Get total number of parameters
     nc <- sum(sapply(data$D, ncol))
 

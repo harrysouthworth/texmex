@@ -21,10 +21,10 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
 
     ##################### Sort out method, penalty/prior, trace...
 
-    method <- .texmexMethod(method)
-    prior <- .texmexPrior(prior, penalty, method)
+    method <- texmexMethod(method)
+    prior <- texmexPrior(prior, penalty, method)
 
-    trace <- .texmexTrace(trace, method)
+    trace <- texmexTrace(trace, method)
     otrace <- trace[1]; trace <- trace[2]
 
     ############################## Construct data to use...
@@ -33,22 +33,20 @@ function (y, data, th, qu, phi = ~1, xi = ~1,
     else { y <- deparse(substitute(y)) }
 
     # Get list containing response (y) and design matrix for each parameter
-    modelData <- .texmexPrepareData(y, data, list(phi, xi)) # XXX <------------------- NEED TO SORT OUT PARAMS NEAR TOP
+    modelData <- texmexPrepareData(y, data, list(phi, xi)) # XXX <------------------- NEED TO SORT OUT PARAMS NEAR TOP
 
     if (missing(th)) {
         th <- quantile(modelData$y, qu)
     }
 
     # Threshold the response and the design matrices
-    modelData <- .texmexThresholdData(th, modelData)
+    modelData <- texmexThresholdData(th, modelData)
 
     rate <- mean(y > th)
     allY <- y # XXX <--------------------------------------------- Relic
 
     ###################### Check and sort out prior parameters...
-
-    priorParameters <- .texmexPriorParameters(prior, priorParameters, modelData)
-
+    priorParameters <- texmexPriorParameters(prior, priorParameters, modelData)
 
     ################################## Do the optimization....
 
