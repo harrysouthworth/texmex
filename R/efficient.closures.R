@@ -69,16 +69,6 @@
 }
 
 
-.make.gpd.loglikelihood <- function(y, th, X.phi, X.xi) {
-  n.phi <- ncol(X.phi)
-  n.end <- n.phi + ncol(X.xi)
-  function(param) {
-    stopifnot(length(param) == n.end)
-    phi <- X.phi %*% param[1:n.phi]
-    xi <- X.xi %*% param[(1 + n.phi):n.end]
-    sum(dgpd(y, exp(phi), xi, u=th, log.d=TRUE))
-  }
-}
 
 .random.spd.matrix <- function(dimn) {
   # generate a random symmetric positive definite matrix
