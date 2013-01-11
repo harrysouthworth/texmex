@@ -64,44 +64,43 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
                  priorParameters = priorParameters,
                  maxit = maxit, trace = otrace)
 
-cat("meow\n")
     if (o$convergence != 0) {
         warning("Non-convergence in evm.default")
     }
 
     ################################## If method = "optimize", construct object and return...
 
+    # For model-specific arguments, add the dots
+    for (i in names(dots)){ o[[i]] <- dots[[i]] }
+    o$threshold <- th
+
     if( cov == "observed" ){
       o$hessian <- NULL
     }
-    o$threshold <- th
+
     o$penalty <- prior
+
     o$coefficients <- o$par
-#    names(o$coefficients) <- c(paste("phi:", colnames(X.phi)),
-#                               paste("xi:", colnames(X.xi)))
     nms <- unlist(lapply(names(modelData$D),
                          function(x){
                              paste(x, ": ", colnames(modelData$D[[x]]), sep = "")
                          } ) )
-
+    names(o$coefficients) <- nms
+    
     o$formulae <- modelParameters #list(phi=phi, xi=xi)
     o$par <- NULL
     o$rate <- rate
     o$call <- theCall
- #   o$y <- y
- #   o$X.phi <- X.phi
- #   o$X.xi <- X.xi
     o$data <- modelData
-	  o$priorParameters <- priorParameters
+
+    o$residuals <- family()$resid(o)
+
+    o$priorParameters <- priorParameters
 #	  if (missing(data)) {
 #        data <- allY
 #    }
 #    o$data <- data
 
-#    fittedScale <- fittedGPDscale(o)
-#    fittedShape <- fittedGPDshape(o)
-#    scaledY <- fittedShape * (o$y - o$threshold) / fittedScale
-#    o$residuals <- 1/fittedShape * log(1 + scaledY) # Standard exponential
 #    if(any(fittedShape < -0.5)){
 #      warning("fitted shape parameter xi < -0.5\n")
 #    }

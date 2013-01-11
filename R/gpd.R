@@ -26,21 +26,26 @@ gpd.start <- function(data){
     c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
 }
 
+gpd.residuals <- function(o){
+    fittedScale <- fittedGPDscale(o)
+    fittedShape <- fittedGPDshape(o)
+    scaledY <- fittedShape * (o$data$y - o$threshold) / fittedScale
+    c(1/fittedShape * log(1 + scaledY)) # Standard exponential
+}
 
 gpd <- function(){
   res <-  list(name = 'GPD',
                log.lik = gpd.loglik,
                param = c('phi', 'xi'),
                info = gpd.info,
-               start = gpd.start)
+               start = gpd.start,
+               resid = gpd.residuals)
   oldClass(res) <- 'texmexFamily'
   res
 }
 
-#            resid = gpd.resid,           # function       )
-
 print.texmexFamily <- function(x, ...){
-    cat('Family: ', x$name, '\n')
-    cat('Param: ', x$param)
+    cat('Family:     ', x$name, '\n')
+    cat('Parameters: ', x$param)
     invisible()
 }

@@ -16,7 +16,7 @@ function(o, method="observed"){
 
     phi.i <- colSums(phi * t(x))
     xi.i <- colSums(xi * t(z))
-    w.i <- (o$y - o$threshold) / exp(phi.i)
+    w.i <- (o$data$y - o$threshold) / exp(phi.i)
 
     # Second derivatives of penalties
     p <- matrix(0, nrow=ns+nk, ncol=ns+nk)

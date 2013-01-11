@@ -25,11 +25,11 @@ endPoint.bgpd <- function(y,verbose=TRUE,...){
 }
 
 fittedGPDscale <- function(o){
-  exp(o$coefficients[1:ncol(o$X.phi)] %*% t(o$X.phi))
+  exp(o$coefficients[1:ncol(o$data$D$phi)] %*% t(o$data$D$phi))
 }
 
 fittedGPDshape <- function(o){
-  o$coefficients[(ncol(o$X.phi) + 1):length(o$coefficients)] %*% t(o$X.xi)
+  o$coefficients[(ncol(o$data$D$phi) + 1):length(o$coefficients)] %*% t(o$data$D$xi)
 }
 
 test.endPoint <- function(){
