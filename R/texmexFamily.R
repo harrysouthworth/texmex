@@ -13,7 +13,7 @@ texmexFamily <- function(name, log.lik, param,
 }
 
 
-print.texmexFamily <- function(x, ...){
+print.texmexFamily <- function(x, verbose=TRUE, ...){
     if (is.null(x$info)){ info <- 'Numerical approximation' }
     else { info <- 'Closed form' }
 
@@ -21,10 +21,11 @@ print.texmexFamily <- function(x, ...){
     else { start <- 'Data dependent' }
 
     cat('Family:      ', x$name, '\n')
-    cat('Parameters:  ', x$param, '\n')
-    cat('Information: ', info, '\n')
-    cat('Start:       ', start, '\n')
-
+    if (verbose){
+        cat('Parameters:  ', x$param, '\n')
+        cat('Information: ', info, '\n')
+        cat('Start:       ', start, '\n')
+    }
     
     invisible()
 }

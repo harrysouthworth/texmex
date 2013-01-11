@@ -20,11 +20,6 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     theCall <- match.call()
 
-    if (missing(th) & !missing(qu)) {
-        th <- quantile(modelData$y, qu)
-    }
-
-
     modelParameters <- texmexParameters(theCall, family())
 
     ##################### Sort out method, penalty/prior, trace...
@@ -42,7 +37,11 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     # Get list containing response (y) and design matrix for each parameter
 
-    modelData <- texmexPrepareData(y, data, modelParameters, th)
+    modelData <- texmexPrepareData(y, data, modelParameters)
+    if (missing(th) & !missing(qu)) {
+        th <- quantile(modelData$y, qu)
+        modelData <- texmexThresholdData(th, modelData)
+    }
 
     rate <- mean(y > th)
     allY <- y # XXX <--------------------------------------------- Relic
@@ -52,7 +51,7 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     ################################## Do the optimization....
 
-    o <- evm.fit(data = modelData, family=family, ..., # th=th,
+    o <- evm.fit(data = modelData, family=family, th=th,
                  penalty=prior,
                  start=start, hessian = cov == "numeric",
                  priorParameters = priorParameters,
@@ -65,7 +64,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     ################################## If method = "optimize", construct object and return...
 
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,
-                      modelData, priorParameters){
+                      modelData, priorParameters, cov)
  
     if (method == "o"){ o }
 

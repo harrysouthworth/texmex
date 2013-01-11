@@ -1,7 +1,8 @@
-`print.gpd` <-
+print.evm <-
 function( x , digits=max(3, getOption("digits") - 3), ... ){
 	cat( "Call: " )
 	print( x$call, ... )
+	print(x$family, verbose=FALSE)
 	if ( is.null( x$penalty ) | x$penalty=="none" ){
 	    cat( "\nModel fit by maximum likelihood.\n" )
 	}
@@ -27,4 +28,4 @@ function( x , digits=max(3, getOption("digits") - 3), ... ){
 	cat( "\n" )
 	invisible()
 }
-show.gpd <- print.gpd
+show.evm <- print.evm
