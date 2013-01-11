@@ -77,29 +77,34 @@ cat("meow\n")
     o$threshold <- th
     o$penalty <- prior
     o$coefficients <- o$par
-    names(o$coefficients) <- c(paste("phi:", colnames(X.phi)),
-                               paste("xi:", colnames(X.xi)))
+#    names(o$coefficients) <- c(paste("phi:", colnames(X.phi)),
+#                               paste("xi:", colnames(X.xi)))
+    nms <- unlist(lapply(names(modelData$D),
+                         function(x){
+                             paste(x, ": ", colnames(modelData$D[[x]]), sep = "")
+                         } ) )
 
-    o$formulae <- list(phi=phi, xi=xi)
+    o$formulae <- modelParameters #list(phi=phi, xi=xi)
     o$par <- NULL
     o$rate <- rate
     o$call <- theCall
-    o$y <- y
-    o$X.phi <- X.phi
-    o$X.xi <- X.xi
+ #   o$y <- y
+ #   o$X.phi <- X.phi
+ #   o$X.xi <- X.xi
+    o$data <- modelData
 	  o$priorParameters <- priorParameters
-	  if (missing(data)) {
-        data <- allY
-    }
-    o$data <- data
+#	  if (missing(data)) {
+#        data <- allY
+#    }
+#    o$data <- data
 
-    fittedScale <- fittedGPDscale(o)
-    fittedShape <- fittedGPDshape(o)
-    scaledY <- fittedShape * (o$y - o$threshold) / fittedScale
-    o$residuals <- 1/fittedShape * log(1 + scaledY) # Standard exponential
-    if(any(fittedShape < -0.5)){
-      warning("fitted shape parameter xi < -0.5\n")
-    }
+#    fittedScale <- fittedGPDscale(o)
+#    fittedShape <- fittedGPDshape(o)
+#    scaledY <- fittedShape * (o$y - o$threshold) / fittedScale
+#    o$residuals <- 1/fittedShape * log(1 + scaledY) # Standard exponential
+#    if(any(fittedShape < -0.5)){
+#      warning("fitted shape parameter xi < -0.5\n")
+#    }
     o$loglik <- -o$value
     o$value <- NULL
     o$counts <- NULL
@@ -109,7 +114,7 @@ cat("meow\n")
       o$cov <- solve(o$hessian)
     }
     else if (cov == "observed") {
-      o$cov <- solve(family$info(o))
+      o$cov <- solve(family()$info(o))
     }
     else {
       stop("cov must be either 'numeric' or 'observed'")

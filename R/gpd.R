@@ -1,4 +1,9 @@
-gpd.loglik <- function(param) {
+gpd.loglik <- function(data, ...) {
+  dots <- as.list(substitute(list(...)))[-1]
+  if (!is.element('th', names(dots))) {
+    th <- quantile(data$y, dots$qu)
+  }
+
   y <- data$y
   X.phi <- data$D$phi
   X.xi <- data$D$xi

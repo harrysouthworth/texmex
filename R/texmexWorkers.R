@@ -71,7 +71,6 @@ function(y, data, params){
         y <- model.response(model.frame(y, data=data))
 
         for (i in 1:length(params)){
-#          browser()
           D[[i]] <- model.matrix(params[[i]], data)
         }
     } # Close if(!is.null(data
@@ -88,6 +87,7 @@ function(y, data, params){
 
     # Matrices with one column get coerced to vectors. Revert.
     D <- texmexReverseUnaskedCoercion(D)
+    names(D) <- names(params)
 
     list(y=y, D=D)
 }
