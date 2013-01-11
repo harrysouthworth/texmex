@@ -1,9 +1,4 @@
-gpd.loglik <- function(data, ...) {
-  dots <- as.list(substitute(list(...)))[-1]
-  if (!is.element('th', names(dots))) {
-    th <- quantile(data$y, dots$qu)
-  }
-
+gpd.loglik <- function(data, th, ...) {
   y <- data$y
   X.phi <- data$D$phi
   X.xi <- data$D$xi
@@ -33,19 +28,10 @@ gpd.residuals <- function(o){
     c(1/fittedShape * log(1 + scaledY)) # Standard exponential
 }
 
-gpd <- function(){
-  res <-  list(name = 'GPD',
-               log.lik = gpd.loglik,
-               param = c('phi', 'xi'),
-               info = gpd.info,
-               start = gpd.start,
-               resid = gpd.residuals)
-  oldClass(res) <- 'texmexFamily'
-  res
-}
+gpd <- texmexFamily(name = 'GPD',
+                    log.lik = gpd.loglik,
+                    param = c('phi', 'xi'),
+                    info = gpd.info,
+                    start = gpd.start,
+                    resid = gpd.residuals)
 
-print.texmexFamily <- function(x, ...){
-    cat('Family:     ', x$name, '\n')
-    cat('Parameters: ', x$param)
-    invisible()
-}

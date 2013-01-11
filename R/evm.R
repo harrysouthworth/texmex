@@ -8,8 +8,8 @@ evm <- function(y, data, family=gpd, ...){
 }
 
 evm.default <-
-function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
-          ..., # arguments specific to family such as phi = ~ 1, qu =.5, etc.
+function (y, data, family=gpd, th= -Inf, qu,
+          ..., # arguments specific to family such as phi = ~ 1
           penalty = "gaussian", prior = "gaussian",
           method = "optimize", cov="observed",
           start = NULL, priorParameters = NULL,
@@ -19,7 +19,11 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
           jump.cov, jump.const, verbose=TRUE) {
 
     theCall <- match.call()
-    dots <- as.list(substitute(list(...)))[-1]
+
+    if (missing(th) & !missing(qu)) {
+        th <- quantile(modelData$y, qu)
+    }
+
 
     modelParameters <- texmexParameters(theCall, family())
 
@@ -38,17 +42,7 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
 
     # Get list containing response (y) and design matrix for each parameter
 
-    modelData <- texmexPrepareData(y, data, modelParameters)
-
-    # XXX NEXT 2 OPERATIONS SHOULD TAKE PLACE INSIDE texmexPrepareData XXX XXX
-    # XXX THEN TIDY UP THE rate AND allY LINES XXX XXX
-
-    if (!is.element('th', names(dots))) {
-        th <- quantile(modelData$y, dots$qu)
-    }
-
-    # Threshold the response and the design matrices
-    modelData <- texmexThresholdData(th, modelData)
+    modelData <- texmexPrepareData(y, data, modelParameters, th)
 
     rate <- mean(y > th)
     allY <- y # XXX <--------------------------------------------- Relic
@@ -70,59 +64,10 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
 
     ################################## If method = "optimize", construct object and return...
 
-    # For model-specific arguments, add the dots
-    for (i in names(dots)){ o[[i]] <- dots[[i]] }
-    o$threshold <- th
-
-    if( cov == "observed" ){
-      o$hessian <- NULL
-    }
-
-    o$penalty <- prior
-
-    o$coefficients <- o$par
-    nms <- unlist(lapply(names(modelData$D),
-                         function(x){
-                             paste(x, ": ", colnames(modelData$D[[x]]), sep = "")
-                         } ) )
-    names(o$coefficients) <- nms
-    
-    o$formulae <- modelParameters #list(phi=phi, xi=xi)
-    o$par <- NULL
-    o$rate <- rate
-    o$call <- theCall
-    o$data <- modelData
-
-    o$residuals <- family()$resid(o)
-
-    o$priorParameters <- priorParameters
-#	  if (missing(data)) {
-#        data <- allY
-#    }
-#    o$data <- data
-
-#    if(any(fittedShape < -0.5)){
-#      warning("fitted shape parameter xi < -0.5\n")
-#    }
-    o$loglik <- -o$value
-    o$value <- NULL
-    o$counts <- NULL
-    oldClass(o) <- "gpd"
-
-    if (cov == "numeric") {
-      o$cov <- solve(o$hessian)
-    }
-    else if (cov == "observed") {
-      o$cov <- solve(family()$info(o))
-    }
-    else {
-      stop("cov must be either 'numeric' or 'observed'")
-    }
-
-    o$se <- sqrt(diag(o$cov))
-    if (method == "o"){
-        o
-    }
+    o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,
+                      modelData, priorParameters){
+ 
+    if (method == "o"){ o }
 
     ################################# Simulate from posteriors....
 
@@ -138,19 +83,21 @@ function (y, data, family=gpd, #th, qu, phi = ~1, xi = ~1,
 
       prior <- .make.mvn.prior(priorParameters)
 
-############################# Define log-likelihood
+      ############################# Define log-likelihood
 
-      gpd.log.lik <- .make.gpd.loglikelihood(y, u, X.phi, X.xi)
+      #gpd.log.lik <- .make.gpd.loglikelihood(y, u, X.phi, X.xi)
+      evm.log.lik <- family()$log.lik(data, ...)
+
 
       log.lik <- function(param) {
-        gpd.log.lik(param) + prior(param)
+        evm.log.lik(param) + prior(param)
       }
 
       # Need to check for convergence failure here. Otherwise, end up simulating
       # proposals from distribution with zero variance in 1 dimension.
        checkNA <- any(is.na(sqrt(diag(o$cov))))
       if (checkNA){
-        stop("MAP estimates have not converged. Cannot proceed. Try a different prior" )
+        stop("MAP estimates have not converged or have converged on values for which the variance cannot be computed. Cannot proceed. Try a different prior" )
       }
 
       res <- matrix(ncol=ncol(X.phi) + ncol(X.xi), nrow=iter)

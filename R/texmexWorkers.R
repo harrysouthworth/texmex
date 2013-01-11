@@ -64,7 +64,7 @@ function(trace, method){
 
 texmexPrepareData <-
     # Get design matrices
-function(y, data, params){
+function(y, data, params, threshold){
     D <- vector('list', length=length(params))
     if (!is.null(data)){
         y <- formula(paste(y, "~ 1"))
@@ -89,7 +89,10 @@ function(y, data, params){
     D <- texmexReverseUnaskedCoercion(D)
     names(D) <- names(params)
 
-    list(y=y, D=D)
+    res <- list(y=y, D=D)
+    if (is.finite(threshold)){ res <- texmexThresholdData(threshold, res) }
+    
+    res
 }
 
 texmexReverseUnaskedCoercion <-
