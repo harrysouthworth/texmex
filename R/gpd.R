@@ -34,7 +34,9 @@ gpd <- function(){
                  param = c('phi', 'xi'),
                  info = gpd.info,
                  start = gpd.start,
-                 resid = gpd.residuals)
+                 resid = gpd.residuals,
+                 density=dgpd,
+                 rng=rgpd)
     oldClass(res) <- 'texmexFamily'
     res
 }

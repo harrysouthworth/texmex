@@ -1,29 +1,28 @@
-`summary.gpd` <-
-function( object , nsim = 1000 , alpha = .050, ... ){
-
-    if (ncol(object$X.phi) == 1 && ncol(object$X.xi) == 1){
-    	env <- qqgpd(object, plot = FALSE, nsim = nsim, alpha = alpha)
+summary.evm <-
+function(object, nsim = 1000, alpha = .050, ...){
+    if (ncol(object$data$D$phi) == 1 && ncol(object$data$D$xi) == 1){
+    	env <- qqevm(object, plot = FALSE, nsim = nsim, alpha = alpha)
     }
     else {
         x <- object
-        x$y <- object$residuals # Standard exponential if GPD model true
+        x$data$y <- object$residuals # Standard exponential if GPD model true
         x$threshold <- 0
         x$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
 
-        env <- qqgpd(x, plot = FALSE, nsim=nsim, alpha=alpha )
+        env <- qqevm(x, plot = FALSE, nsim=nsim, alpha=alpha)
     }
 
     co <- cbind(object$coefficients, object$se, object$coefficients / object$se)
     dimnames(co) <- list(names(coef(object)), c("Value", "SE", "t"))
     
-	res <- list( model = object, coefficients=co, envelope = env , nsim = nsim, alpha = alpha )
-	oldClass( res ) <- "summary.gpd"
+	res <- list(model = object, coefficients=co, envelope = env,
+	            nsim = nsim, alpha = alpha)
+
+	oldClass(res) <- "summary.evm"
 	res
 }
 
-`print.summary.gpd` <-
-    function(x, digits = 3 , ... ){
-    
+print.summary.evm <- function(x, digits = 3 , ...){
     co <- coef(x)
     env <- x$envelope
     nsim <- x$nsim
@@ -65,4 +64,4 @@ function( object , nsim = 1000 , alpha = .050, ... ){
     invisible()
 }
 
-show.summary.gpd <- print.summary.gpd
+show.summary.evm <- print.summary.evm
