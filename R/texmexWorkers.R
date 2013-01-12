@@ -165,8 +165,12 @@ findFormulae <-
 function(call){
     wh <- sapply(call, function(x){ try(class(eval(x)), silent=TRUE) })
     wh <- names(wh)[wh == 'formula']
-    res <- as.list(call[wh])
-    lapply(res, eval)
+    if (length(wh) > 0){
+        res <- as.list(call[wh])
+        res <- lapply(res, eval)
+    }
+    else { res <- NULL }
+    res
 }
 
 texmexParameters <- function(call, fam){

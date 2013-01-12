@@ -1,4 +1,4 @@
-ppgpd <-
+ppevm <-
 function( object , nsim = 1000, alpha = .050,
 		  xlab, ylab,  main, # labels and titles
 		  pch=1, col = 2, cex = .75, linecol = 4 ,
@@ -6,7 +6,7 @@ function( object , nsim = 1000, alpha = .050,
     a <- object$coefficients
     a[1] <- exp(a[1])
     u <- object$threshold
-    dat <- object$y
+    dat <- object$data$y
 
     pfun <- object$family()$prob
 

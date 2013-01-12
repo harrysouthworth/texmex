@@ -40,11 +40,9 @@ function (y, data, family=gpd, th= -Inf, qu,
     modelData <- texmexPrepareData(y, data, modelParameters)
     if (missing(th) & !missing(qu)) {
         th <- quantile(modelData$y, qu)
+        rate <- mean(modelData$y > th)
         modelData <- texmexThresholdData(th, modelData)
     }
-
-    rate <- mean(y > th)
-    allY <- y # XXX <--------------------------------------------- Relic
 
     ###################### Check and sort out prior parameters...
     priorParameters <- texmexPriorParameters(prior, priorParameters, modelData)
@@ -145,13 +143,9 @@ function (y, data, family=gpd, th= -Inf, qu,
         }
       }
 
-      if (missing(data)) {
-        data <- allY
-      }
       res <- list(call=theCall, threshold=u , map = o,
                   burn = burn, thin = thin,
-                  chains=res, y=y, data=data,
-                  X.phi = X.phi, X.xi = X.xi,
+                  chains=res, y=y, data=modelData,
                   acceptance=acc, seed=seed)
 
       oldClass(res) <- "bgpd"

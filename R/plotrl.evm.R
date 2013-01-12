@@ -1,17 +1,17 @@
-plotrl.gpd <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
+plotrl.evm <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
 function(object, alpha = .050,
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = TRUE,RetPeriodRange=NULL ){
 
-    if(dim(object$X.phi)[2] > 1 | dim(object$X.xi)[2] > 1){
+    if(dim(object$data$D$phi)[2] > 1 | dim(object$data$D$xi)[2] > 1){
       stop("use plot method for object returned by predict.gpd to see rl plots if covariates in model")
     }
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
     if (missing(main) || is.null(main)) { main <- "Return Level Plot" }
 
-    xdat <- object$y
+    xdat <- object$data$y
     n <- length(xdat) / object$rate # Number of obs prior to thresholding
 
     if(!is.null(RetPeriodRange)){
@@ -22,7 +22,7 @@ function(object, alpha = .050,
     }
 
     m <- unique( c(1/object$rate, 10^jj) )
-    xm <- matrix(unlist(rl(object,M=m,ci.fit=TRUE,alpha=alpha)),ncol=3,byrow=TRUE)
+    xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
 
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
