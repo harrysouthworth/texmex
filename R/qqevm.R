@@ -9,19 +9,19 @@ qqevm <- function(object, nsim=1000, alpha=.050,
     u <- object$threshold
     dat <- object$data$y
 
-    dfun <- object$family$density
-    rfun <- object$family$rng
+    qfun <- object$family()$quant
+    rfun <- object$family()$rng
 
     if (missing(xlab) || is.null(xlab)) { xlab <- "Model" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Empirical" }
     if (missing(main) || is.null(main)) { main <- "Quantile Plot" }
 
-    ModPoints <- qgpd(ppoints(dat), a[1], a[2], u)
+    ModPoints <- qfun(ppoints(dat), a[1], a[2], u)
 
     # If doing the envelope, simulate, sort and get the quantiles
     if (nsim > 0){
         n <- length(dat)
-        sim <- matrix(rng(nsim * n, a[1], a[2], u), ncol = nsim)
+        sim <- matrix(rfun(nsim * n, a[1], a[2], u), ncol = nsim)
         sim <- apply(sim, 2, sort)
         # Get the simulated MSEs
         sim.mse <- apply(sim, 2, function(x, m) mean((x - m)^2), m = ModPoints)

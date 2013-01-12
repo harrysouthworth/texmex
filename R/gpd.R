@@ -36,7 +36,9 @@ gpd <- function(){
                  start = gpd.start,
                  resid = gpd.residuals,
                  density=dgpd,
-                 rng=rgpd)
+                 rng=rgpd,
+                 prob=pgpd,
+                 quant=qgpd)
     oldClass(res) <- 'texmexFamily'
     res
 }
