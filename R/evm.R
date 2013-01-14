@@ -63,7 +63,7 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,
                       modelData, priorParameters, cov)
- 
+
     if (method == "o"){ o }
 
     ################################# Simulate from posteriors....

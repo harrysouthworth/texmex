@@ -3,7 +3,7 @@ addCoefficients <-
 function(o){
     coefficients <- o$par
     o$par <- NULL
-    
+
     nms <- unlist(lapply(names(o$data$D),
                          function(x){
                              paste(x, ": ", colnames(o$data$D[[x]]), sep = "")
@@ -13,11 +13,11 @@ function(o){
 }
 
 addCovariance <- function(o, family, cov){
-    if (cov == "numeric" | is.null(family()$info)) {
+    if (cov == "numeric" | is.null(family$info)) {
       cov <- solve(o$hessian)
     }
     else if (cov == "observed") {
-      cov <- solve(family()$info(o))
+      cov <- solve(family$info(o))
     }
     else {
       stop("cov must be either 'numeric' or 'observed'")
@@ -36,10 +36,10 @@ constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
     o$coefficients <- addCoefficients(o)
     o$formulae <- modelParameters
     o$call <- call
-    o$residuals <- family()$resid(o)
+    o$residuals <- family$resid(o)
     o$priorParameters <- priorParameters
     o$loglik <- -o$value
-    
+
     o$value <- o$counts <- o$hessian <- NULL
 
     oldClass(o) <- 'evm'
