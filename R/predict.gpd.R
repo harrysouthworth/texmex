@@ -84,7 +84,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
         covar <- rep(0, nrow(X.xi))
         for(k in 1:length(covar)){
 
-          
+
             for (i in 1:ncol(X.phi)){
                 for (j in 1:ncol(X.xi)){
                     covar[k] <- covar[k] + X.phi[k, i] * X.xi[k, j] * object$cov[i, ncol(X.phi) + j]
@@ -137,9 +137,9 @@ gpdDelta <- function(A, K){
    out
 }
 
-rl.gpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                    alpha=.050, unique.=TRUE, ...){
-    co <- linearPredictors.gpd(object, newdata=newdata, unique.=unique., full.cov=TRUE)
+    co <- linearPredictors.evm(object, newdata=newdata, unique.=unique., full.cov=TRUE)
     covs <- co[[2]] # list(phi.var=phi.var, xi.var=xi.var, covariances=covar)
     co <- co[[1]]
     X <- co[,-(1:2)]
