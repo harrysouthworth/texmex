@@ -19,7 +19,7 @@
 ################################################################################
 ## gpd
 
-predict.gpd <-
+predict.evm <-
     # Get predictions for a gpd object. These can either be the linear predictors
     # or return levels.
 function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
@@ -27,10 +27,10 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl"=, "return level" = rl.gpd(object, M, newdata,
+                  "rl"=, "return level" = rl.evm(object, M, newdata,
                                                  se.fit=se.fit, ci.fit=ci.fit,
                                                  alpha=alpha, unique.=unique.),
-                  "lp" =,"link" = linearPredictors.gpd(object, newdata, se.fit,
+                  "lp" =,"link" = linearPredictors.evm(object, newdata, se.fit,
                                                    ci.fit, alpha, unique.=unique.)
                   )
     res
@@ -38,75 +38,67 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
 
 ## Linear predictor functions for GPD
 
-linearPredictors.gpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                              alpha=.050, unique.=TRUE, full.cov=FALSE, ...){
 
     if (!is.null(newdata)){
-        xi.fo <- object$formulae$xi
-        phi.fo <- object$formulae$phi
-        X.xi <-  if (!is.null(xi.fo)) { model.matrix(xi.fo,  newdata) } else { matrix(1, nrow(newdata)) }
-        X.phi <- if (!is.null(phi.fo)){ model.matrix(phi.fo, newdata) } else { matrix(1, nrow(newdata)) }
-    } else {
-        X.xi <- object$X.xi
-        X.phi <- object$X.phi
+        D <- vector('list', length=length(object$formulae))
+        for (i in 1:length(formulae)){
+            D[[i]] <- model.matrix(formulae[[i]], newdata)
+        }
+        names(D) <- names(formulae)
     }
+    else { D <- object$data$D }
 
     if (unique.){
-        u <- !duplicated(cbind(X.phi,X.xi))
-        X.xi  <- if(is.matrix(X.xi[u,]))  X.xi[u, ]  else if(ncol(X.xi) == 1)  cbind(X.xi[u,])  else t(cbind(X.xi[u,]))
-        X.phi <- if(is.matrix(X.phi[u,])) X.phi[u, ] else if(ncol(X.phi) == 1) cbind(X.phi[u,]) else t(cbind(X.phi[u,]))
+        z <- do.call('cbind', D)
+        u <- !duplicated(z)
+        D <- lapply(D, function(x, u) {
+                           if(is.matrix(x[u,]))  x[u, ]
+                           else if(ncol(x) == 1)  cbind(x[u,])
+                           else t(cbind(x[u,]))
+                       }, u=u )
     }
 
-    whichPhi <- 1:ncol(X.phi)
-    whichXi  <- (ncol(X.phi) + 1):length(object$coefficients)
-    phi <- c(object$coefficients[whichPhi] %*% t(X.phi))
-    xi  <- c(object$coefficients[whichXi]  %*% t(X.xi))
+    res <- texmexMakeParams(coef(object), D)
 
-    res <- cbind(phi, xi)
 
     if(ci.fit | se.fit | full.cov){
-       phi.cov <- as.matrix(object$cov[whichPhi, whichPhi])
-       xi.cov  <- as.matrix(object$cov[whichXi,  whichXi])
-
-       if(ci.fit | se.fit){
-          phi.se <- sqrt(rowSums((X.phi %*% phi.cov) * X.phi))
-          xi.se <-  sqrt(rowSums((X.xi  %*% xi.cov)  * X.xi))
-       }
+      cov.se <- texmexMakeCovariance(object)
     }
 
     if (ci.fit){
-        z <- qnorm(1 - alpha/2)
-
-        phi.lo <- phi - phi.se*z
-        phi.hi <- phi + phi.se*z
-        xi.lo <- xi - xi.se*z
-        xi.hi <- xi + xi.se*z
-
-        res <- cbind(res, phi.lo, phi.hi, xi.lo, xi.hi)
+        ci <- texmexMakeCI(res, cov.se)
+        res <- cbind(res, ci)
     } # Close if(ci.fit
 
     if (se.fit){
-        res <- cbind(res, phi.se, xi.se)
+        res <- cbind(res, do.call('cbind', cov.se$se))
     } # Close if(se.fit
 
-    res <- addCov(res,X.phi)
-    res <- addCov(res,X.xi)
+    for (i in 1:length(data$D)){
+      res <- addCov(res, data$D[[i]])
+    }
 
     if (full.cov){ # Covariance of (phi, xi) for each unique (phi, xi) pair
         covar <- rep(0, nrow(X.xi))
         for(k in 1:length(covar)){
+
+          
             for (i in 1:ncol(X.phi)){
                 for (j in 1:ncol(X.xi)){
                     covar[k] <- covar[k] + X.phi[k, i] * X.xi[k, j] * object$cov[i, ncol(X.phi) + j]
                 } # Close for j
             } # Close for i
+
+            
         } # Close for k
         phi.var <- rowSums((X.phi %*% phi.cov) * X.phi)
         xi.var <- rowSums((X.xi %*% xi.cov) * X.xi)
 
         res <- list(link=res, cov=list(phi.var=phi.var, xi.var=xi.var, covariances=covar))
     }
-    oldClass(res) <- "lp.gpd"
+    oldClass(res) <- "lp.evm"
     res
 }
 

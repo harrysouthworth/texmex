@@ -28,17 +28,16 @@ gpd.residuals <- function(o){
     c(1/fittedShape * log(1 + scaledY)) # Standard exponential
 }
 
-gpd <- function(){
-    res <-  list(name = 'GPD',
-                 log.lik = gpd.loglik,
-                 param = c('phi', 'xi'),
-                 info = gpd.info,
-                 start = gpd.start,
-                 resid = gpd.residuals,
-                 density=dgpd,
-                 rng=rgpd,
-                 prob=pgpd,
-                 quant=qgpd)
-    oldClass(res) <- 'texmexFamily'
-    res
-}
+gpd <- list(name = 'GPD',
+            log.lik = gpd.loglik,
+            param = c('phi', 'xi'),
+            info = gpd.info,
+            start = gpd.start,
+            resid = gpd.residuals,
+            density=dgpd,
+            rng=rgpd,
+            prob=pgpd,
+            quant=qgpd)
+oldClass(gpd) <- 'texmexFamily'
+
+

@@ -77,16 +77,16 @@ function(y, data, params){
     else {                                        # XXX UNTESTED CODEBLOCK XXX <---------- XXX
         for (i in 1:length(params)){
             if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
-                D[[i]] <- matrix(ncol = 1, rep(1, length(y)))
+                D[[i]] <- matrix(ncol = 1, rep(1, length(y)),, drop=FALSE)
             }
             else {
-                D[[i]] <- model.matrix(params[[i]])
+                D[[i]] <- model.matrix(params[[i]],, drop=FALSE)
             }
         } # Close for
     } # Close else
 
     # Matrices with one column get coerced to vectors. Revert.
-    D <- texmexReverseUnaskedCoercion(D)
+#    D <- texmexReverseUnaskedCoercion(D)
     names(D) <- names(params)
 
     list(y=y, D=D)
@@ -105,10 +105,10 @@ texmexThresholdData <- function(threshold, data){
     # first, then threshold y
 
     for (i in 1:length(data$D)){
-        data$D[[i]] <- data$D[[i]][data$y > threshold, ]
+        data$D[[i]] <- data$D[[i]][data$y > threshold, , drop=FALSE]
     }
 
-    data$D <- texmexReverseUnaskedCoercion(data$D)
+#    data$D <- texmexReverseUnaskedCoercion(data$D)
 
     data$y <- data$y[data$y > threshold]
     if (length(data$y) == 0){

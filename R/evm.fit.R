@@ -13,7 +13,7 @@ evm.fit <- function(data, family, ...,
                        function() {stop("Bad penalty ref.")})
   prior <- penFactory(priorParameters)
 
-  log.lik <- family()$log.lik(data, ...)
+  log.lik <- family$log.lik(data, ...)
 
   evm.lik <- function(par) {
     min(-log.lik(par), 1e6) + prior(par)
@@ -23,7 +23,7 @@ evm.fit <- function(data, family, ...,
   s[s == 0] <- 1
 
   if (is.null(start)){
-    start <- family()$start(data)
+    start <- family$start(data)
     if (is.null(start)){ start <- runif(length(s), -.1, .1) }
   }
 

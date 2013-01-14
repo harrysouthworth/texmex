@@ -20,7 +20,7 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     theCall <- match.call()
 
-    modelParameters <- texmexParameters(theCall, family())
+    modelParameters <- texmexParameters(theCall, family)
 
     ##################### Sort out method, penalty/prior, trace...
 
@@ -83,7 +83,7 @@ function (y, data, family=gpd, th= -Inf, qu,
       ############################# Define log-likelihood
 
       #gpd.log.lik <- .make.gpd.loglikelihood(y, u, X.phi, X.xi)
-      evm.log.lik <- family()$log.lik(data, ...)
+      evm.log.lik <- family$log.lik(data, ...)
 
 
       log.lik <- function(param) {
