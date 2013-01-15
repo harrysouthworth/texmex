@@ -61,7 +61,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     }
 
     res <- texmexMakeParams(coef(object), D)
-
+    colnames(res) <- names(D)
 
     if(ci.fit | se.fit | full.cov){
       cov.se <- texmexMakeCovariance(object)
@@ -76,10 +76,10 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
         res <- cbind(res, do.call('cbind', cov.se$se))
     } # Close if(se.fit
 
-    for (i in 1:length(data$D)){
-      res <- addCov(res, data$D[[i]])
+    for (i in 1:length(D)){
+      res <- addCov(res, D[[i]])
     }
-
+if (FALSE){
     if (full.cov){ # Covariance of (phi, xi) for each unique (phi, xi) pair
         covar <- rep(0, nrow(X.xi))
         for(k in 1:length(covar)){
@@ -91,13 +91,15 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
                 } # Close for j
             } # Close for i
 
-            
+
         } # Close for k
         phi.var <- rowSums((X.phi %*% phi.cov) * X.phi)
         xi.var <- rowSums((X.xi %*% xi.cov) * X.xi)
 
         res <- list(link=res, cov=list(phi.var=phi.var, xi.var=xi.var, covariances=covar))
-    }
+    } # Close if (full.cov
+  } # Close if (FALSE
+
     oldClass(res) <- "lp.evm"
     res
 }
@@ -416,21 +418,6 @@ predict.bootgpd <- function(object, M=1000, newdata=NULL, type="return level",
     res
 
 }
-
-addCov <- function(res,X){ # used in linearPredictors.* to add covariates to columns reported in output
-  if(!is.null(dim(X))){
-    if(dim(X)[2] > 1){
-       cov <- X[,colnames(X) != "(Intercept)"]
-       res <- cbind(res,cov)
-       if(is.vector(cov)) colnames(res)[dim(res)[2]] <- colnames(X)[colnames(X) != "(Intercept)"]
-    } else {
-      if( any(X != 1) ){
-        res <- cbind(res,X)
-      }
-    }
-  }
-  res
- }
 
 namesBoot2bgpd <- function(bootobject){
     names(bootobject) <- c("call", "param", "original", "map")

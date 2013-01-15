@@ -1,3 +1,19 @@
+addCov <- function(res, X){ # used in linearPredictors.* to add covariates to columns reported in output
+  if(!is.null(dim(X))){
+    if(dim(X)[2] > 1){
+       cov <- X[,colnames(X) != "(Intercept)"]
+       res <- cbind(res,cov)
+       if(is.vector(cov)) colnames(res)[dim(res)[2]] <- colnames(X)[colnames(X) != "(Intercept)"]
+    }
+    else {
+      if( any(X != 1) ){
+        res <- cbind(res, X)
+      }
+    }
+  }
+  res
+}
+
 texmexMakeParams <-
     # Take parameter vector and list of datasets to compute
     # parameters for each row of the data.
@@ -10,9 +26,10 @@ function(co, data){
     for (i in 1:np){
         which <- wh:(wh -1 + ncol(data[[i]]))
         p[[i]] <- c(co[which] %*% t(data[[i]]))
-
+        wh <- wh + ncol(data[[i]])
     }
-    do.call('do.call', p)
+
+    do.call('cbind', p)
 }
 
 
