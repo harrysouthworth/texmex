@@ -36,15 +36,51 @@ function(co, data){
 texmexMakeCovariance <-
     # Get covariance matrix for each parameter and get coefficents for each row of the data
 function(object){
-    cov <- se <- vector('list', length=length(object$data$D))
+    data <- object$data$D
+    cov <- v <- vector('list', length=length(data))
 
+    # First get covariance matrix for each main parameter (e.g. phi=a'X1, xi=b'X2)
     wh <- 1
-    for (i in 1:length(res)){
+    for (i in 1:length(cov)){
         which <- wh:(wh -1 + ncol(data[[i]]))
         cov[[i]] <- as.matrix(object$cov[which, which])
-        se[[i]] <- sqrt(rowSums(object$data$D[[i]] %*% cov[[i]]) * object$data$D)
+        # cov[[]i] contains the block of the full covariance which relates to parameter[i]
+
+       # Get the variance of the linear predictors
+        v[[i]] <- rowSums(data[[i]] %*% cov[[i]]) * data[[i]]
+
+        wh <- wh + ncol(data[[i]])
     }
-    list(cov=cov, se=se)
+
+    # We now need the off-diagonal elements of the covariance matrix. The dimensions
+    # of the covariance will depend on the length of object$data$D
+    obs <- rep(0, nrow(data[[1]]))
+
+    getOffDiagonal <- function(k, x1, x2, cov){
+        covar <- 0
+        for (i in 1:ncol(x1)){
+            for (j in 1:ncol(x2)){
+                covar <- covar + x1[k, i] * x2[k, j] * object$cov[i, ncol(x1) + j]
+            } # Close for j
+        } # Close for i
+        covar
+    } # Close getOffDiagonal
+
+    getCovEntry <- function(data){
+        x1 <- data[[1]]
+        if (length(data) == 1){
+            x2 <- data[[2]]
+            sapply(1:nrow(x1), getOffDiagonal, x1, x2, cov)
+        }
+        else {
+            
+        }
+    }
+
+}}
+
+ #   list(cov=cov, se=se)
+    cov
 }
 
 texmexMakeCI <-
@@ -54,7 +90,7 @@ function(params, ses, alpha){
 
     lohi <- t(sapply(1:length(params), function(x, s, z){
                                            x <- x[[i]]
-                                           x <- s[[i]]
+                                           s <- s[[i]]
                                            c(x - s*z, x + s*z)
                                        }, z=z, s=ses))
     lohi

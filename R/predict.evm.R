@@ -154,7 +154,7 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
         res <- u + exp(phi) / xi *((m * theta)^xi -1)
         cbind(RL=res)
     }
-
+cat("meow\n")
     res <- lapply(M, gpdrl,
                   u=object$threshold, theta=object$rate, phi=co[,1], xi=co[,2])
 
@@ -180,7 +180,7 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     }
 
     co <- cbind(rep(object$rate, nrow(co)), co)
-
+cat("purr\n")
     if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
         ci.fun <- function(i, object, co, M, res, alpha){
             wh <- res[[i]];
