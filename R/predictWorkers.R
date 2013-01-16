@@ -51,10 +51,11 @@ function(object){
 
         wh <- wh + ncol(data[[i]])
     }
+    names(v) <- names(D)
+    # Each element of v contains the variance for one linear predictor for every observation
 
     # We now need the off-diagonal elements of the covariance matrix. The dimensions
     # of the covariance will depend on the length of object$data$D
-    obs <- rep(0, nrow(data[[1]]))
 
     getOffDiagonal <- function(k, x1, x2, cov){
         covar <- 0
@@ -67,21 +68,40 @@ function(object){
     } # Close getOffDiagonal
 
     getCovEntry <- function(data){
+        # Recursively produce off-diagonal elements of the covariance.
+        # These are computed by row.
         x1 <- data[[1]]
-        if (length(data) == 1){
-            x2 <- data[[2]]
-            sapply(1:nrow(x1), getOffDiagonal, x1, x2, cov)
+        data[[1]] <- NULL
+        n <- length(data)
+
+        for (i in 1:n){
+            res[[i]] <- sapply(1:nrow(x1), getOffDiagonal, x1, data[[i]], cov)
+        }
+        if (length(data) > 1){
+            res <- c(res, getCovEntry(data))
         }
         else {
-            
+            res[[length(res) + 1]] <- getOffDiagonal(1:nrow(x1), x1, data[[1]], cov)
+            res
         }
+    } # Close getCovEntry
+
+    co <- getCovEntry(data)
+
+    # Now need to restructure to return a list of covariance matrices,
+    # one element for every observation.
+    getM <- function(i, variance, covariance){
+        va <- lapply(variance, function(x){ x[[i]] })
+        co <- lapply(covariance, function(x){ x[[i]] })
+
+        res <- diag(unlist(va))
+        res[upper.tri(res)] <-  res[lower.tri(res)] <- unlist(co)
+        res
     }
 
-}}
-
- #   list(cov=cov, se=se)
-    cov
+    lapply(1:nrow(data[[1]]), getM, v, co)
 }
+
 
 texmexMakeCI <-
     # Compute CIs from point estimates and standard errors

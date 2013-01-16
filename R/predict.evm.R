@@ -68,7 +68,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     }
 
     if (ci.fit){
-        ci <- texmexMakeCI(res, cov.se)
+        ci <- texmexMakeCI(res, cov.se$se, alpha)
         res <- cbind(res, ci)
     } # Close if(ci.fit
 
@@ -79,24 +79,10 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     for (i in 1:length(D)){
       res <- addCov(res, D[[i]])
     }
-if (FALSE){
-    if (full.cov){ # Covariance of (phi, xi) for each unique (phi, xi) pair
-        covar <- rep(0, nrow(X.xi))
-        for(k in 1:length(covar)){
 
+    cov <- texmexMakeCovariance(object)
 
-            for (i in 1:ncol(X.phi)){
-                for (j in 1:ncol(X.xi)){
-                    covar[k] <- covar[k] + X.phi[k, i] * X.xi[k, j] * object$cov[i, ncol(X.phi) + j]
-                } # Close for j
-            } # Close for i
-
-
-        } # Close for k
-        phi.var <- rowSums((X.phi %*% phi.cov) * X.phi)
-        xi.var <- rowSums((X.xi %*% xi.cov) * X.xi)
-
-        res <- list(link=res, cov=list(phi.var=phi.var, xi.var=xi.var, covariances=covar))
+        res <- list(link=res, cov=cov)
     } # Close if (full.cov
   } # Close if (FALSE
 
@@ -154,7 +140,7 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
         res <- u + exp(phi) / xi *((m * theta)^xi -1)
         cbind(RL=res)
     }
-cat("meow\n")
+
     res <- lapply(M, gpdrl,
                   u=object$threshold, theta=object$rate, phi=co[,1], xi=co[,2])
 
@@ -180,7 +166,7 @@ cat("meow\n")
     }
 
     co <- cbind(rep(object$rate, nrow(co)), co)
-cat("purr\n")
+
     if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
         ci.fun <- function(i, object, co, M, res, alpha){
             wh <- res[[i]];
