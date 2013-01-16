@@ -92,13 +92,13 @@ function(y, data, params){
     list(y=y, D=D)
 }
 
-texmexReverseUnaskedCoercion <-
-    # R forces single column data into a vector
-function(x){
-    lapply(x, function(z){
-                  if (!is.matrix(z)){ z <- matrix(z, ncol=1) }
-                  z })
-}
+#texmexReverseUnaskedCoercion <-
+#    # R forces single column data into a vector
+#function(x){
+#    lapply(x, function(z){
+#                  if (!is.matrix(z)){ z <- matrix(z, ncol=1) }
+#                  z })
+#}
 
 texmexThresholdData <- function(threshold, data){
     # Need to subset design matrices on y > th, so do those

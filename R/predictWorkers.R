@@ -32,7 +32,6 @@ function(co, data){
     do.call('cbind', p)
 }
 
-
 texmexMakeCovariance <-
     # Get covariance matrix for each parameter and get coefficents for each row of the data
 function(object){
@@ -74,6 +73,7 @@ function(object){
         data[[1]] <- NULL
         n <- length(data)
 
+        res <- vector('list', length=n)
         for (i in 1:n){
             res[[i]] <- sapply(1:nrow(x1), getOffDiagonal, x1, data[[i]], cov)
         }
@@ -81,7 +81,7 @@ function(object){
             res <- c(res, getCovEntry(data))
         }
         else {
-            res[[length(res) + 1]] <- getOffDiagonal(1:nrow(x1), x1, data[[1]], cov)
+            #res[[length(res) + 1]] <- getOffDiagonal(1:nrow(x1), x1, data[[1]], cov)
             res
         }
     } # Close getCovEntry
@@ -89,7 +89,8 @@ function(object){
     co <- getCovEntry(data)
 
     # Now need to restructure to return a list of covariance matrices,
-    # one element for every observation.
+    # one element for every observation. The covariance is of the linear
+    # predictors.
     getM <- function(i, variance, covariance){
         va <- lapply(variance, function(x){ x[[i]] })
         co <- lapply(covariance, function(x){ x[[i]] })
@@ -102,16 +103,20 @@ function(object){
     lapply(1:nrow(data[[1]]), getM, v, co)
 }
 
+texmexPredictSE <- function(x){
+    # x is an object returned by texmexMakeCovariance. It
+    # is a list, each element of which is a covariance matrix.
+
+    se <- sapply(x, function(x){ sqrt(diag(x)) })
+}
 
 texmexMakeCI <-
     # Compute CIs from point estimates and standard errors
 function(params, ses, alpha){
     z <- qnorm(1 - alpha/2)
 
-    lohi <- t(sapply(1:length(params), function(x, s, z){
-                                           x <- x[[i]]
-                                           s <- s[[i]]
-                                           c(x - s*z, x + s*z)
-                                       }, z=z, s=ses))
-    lohi
+    lo <- params - z*ses
+    hi <- params + z * ses
+
+    list(lo=lo, hi=hi)
 }
