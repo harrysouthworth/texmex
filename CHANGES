@@ -52,3 +52,13 @@ Changes from version 1.2:
    declustering.
 6. NAMESPACE added.
 7. Fixed bug in using linear predictor formulas when not passing a data.frame in.
+
+---------------------------------- Version 2?? ------------------------------------
+
+Changes from version 1.2:
+
+1. Main modelling function switched from gpd to evm.
+2. Added Collate to DESCRIPTION.
+3. Covariance of predictions for GPD model does now NOT take account of the
+   uncertainty in the rate, so estimated variances will be a little lower
+   than in previous versions.

@@ -64,7 +64,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     colnames(res) <- names(D)
 
     if(ci.fit | se.fit | full.cov){
-      cov.se <- texmexMakeCovariance(object)
+      cov.se <- texmexMakeCovariance(object$cov, D)
     }
 
     ses <- t(sapply(cov.se, function(x){ sqrt(diag(x)) }))
@@ -75,16 +75,16 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     } # Close if(ci.fit
 
     if (se.fit){
-        res <- cbind(res, do.call('cbind', cov.se$se))
+        res <- cbind(res, ses) # do.call('cbind', ses))
     } # Close if(se.fit
 
     for (i in 1:length(D)){
       res <- addCov(res, D[[i]])
     }
 
-    cov <- texmexMakeCovariance(object)
+#    cov <- texmexMakeCovariance(object$cov, D)
 
-    res <- list(link=res, cov=cov)
+    res <- list(link=res, cov=cov.se)
 
     oldClass(res) <- "lp.evm"
     res

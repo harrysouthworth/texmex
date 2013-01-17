@@ -34,19 +34,19 @@ function(co, data){
 
 texmexMakeCovariance <-
     # Get covariance matrix for each parameter and get coefficents for each row of the data
-function(object){
-    data <- object$data$D
-    cov <- v <- vector('list', length=length(data))
+function(cov, data){
+#    data <- object$data$D
+    covs <- v <- vector('list', length=length(data))
 
     # First get covariance matrix for each main parameter (e.g. phi=a'X1, xi=b'X2)
     wh <- 1
-    for (i in 1:length(cov)){
+    for (i in 1:length(covs)){
         which <- wh:(wh -1 + ncol(data[[i]]))
-        cov[[i]] <- as.matrix(object$cov[which, which])
-        # cov[[]i] contains the block of the full covariance which relates to parameter[i]
+        covs[[i]] <- as.matrix(cov[which, which])
+        # covs[[]i] contains the block of the full covariance which relates to parameter[i]
 
        # Get the variance of the linear predictors
-        v[[i]] <- rowSums(data[[i]] %*% cov[[i]]) * data[[i]]
+        v[[i]] <- rowSums(data[[i]] %*% covs[[i]]) * data[[i]]
 
         wh <- wh + ncol(data[[i]])
     }
@@ -60,7 +60,7 @@ function(object){
         covar <- 0
         for (i in 1:ncol(x1)){
             for (j in 1:ncol(x2)){
-                covar <- covar + x1[k, i] * x2[k, j] * object$cov[i, ncol(x1) + j]
+                covar <- covar + x1[k, i] * x2[k, j] * cov[i, ncol(x1) + j]
             } # Close for j
         } # Close for i
         covar
@@ -81,7 +81,6 @@ function(object){
             res <- c(res, getCovEntry(data))
         }
         else {
-            #res[[length(res) + 1]] <- getOffDiagonal(1:nrow(x1), x1, data[[1]], cov)
             res
         }
     } # Close getCovEntry
