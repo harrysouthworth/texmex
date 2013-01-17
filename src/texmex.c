@@ -76,6 +76,6 @@ static R_CMethodDef cMethods[] = {
   NULL
 };
 
-void R_init_texmex(DllInfo *info) {
+void R_init_texmex2(DllInfo *info) {
   R_registerRoutines(info, cMethods, NULL, NULL, NULL);
 }

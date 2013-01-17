@@ -1,4 +1,4 @@
-Package: texmex
+Package: texmex2
 Type: Package
 Title: Threshold exceedences and multivariate extremes
 Version: 1.4
@@ -20,7 +20,7 @@ Collate: AIC.evm.R                         plot.evm.R
     chi.R                             plot.predict.link.gpd.R
     coef.bgpd.R                       plotrl.evm.R
     coefficients.gpd.R                ppevm.R
-    coefficients.migpd.R              predict.gpd.R
+    coefficients.migpd.R              predict.evm.R
     constructObject.R                 predict.mex.R
     copulas.R                         predictWorkers.R
     dgpd.R                            print.bgpd.R
