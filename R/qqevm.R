@@ -9,8 +9,8 @@ qqevm <- function(object, nsim=1000, alpha=.050,
     u <- object$threshold
     dat <- object$data$y
 
-    qfun <- object$family()$quant
-    rfun <- object$family()$rng
+    qfun <- object$family$quant
+    rfun <- object$family$rng
 
     if (missing(xlab) || is.null(xlab)) { xlab <- "Model" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Empirical" }

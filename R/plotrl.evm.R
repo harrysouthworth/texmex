@@ -4,7 +4,8 @@ function(object, alpha = .050,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = TRUE,RetPeriodRange=NULL ){
 
-    if(dim(object$data$D$phi)[2] > 1 | dim(object$data$D$xi)[2] > 1){
+    wh <- sapply(object$data$D, ncol)
+    if (any(wh > 1)){
       stop("use plot method for object returned by predict.gpd to see rl plots if covariates in model")
     }
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
@@ -21,7 +22,7 @@ function(object, alpha = .050,
       jj <- seq(-1, max(3.75,log10(n)),by=0.1)
     }
 
-    m <- unique( c(1/object$rate, 10^jj) )
+    m <- unique(c(1/object$rate, 10^jj))
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
 
     U <- object$threshold - abs(object$threshold/100)

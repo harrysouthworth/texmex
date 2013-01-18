@@ -1,14 +1,15 @@
 ppevm <-
-function( object , nsim = 1000, alpha = .050,
-		  xlab, ylab,  main, # labels and titles
-		  pch=1, col = 2, cex = .75, linecol = 4 ,
-		  intcol = 0, polycol=15){
+function(object , nsim = 1000, alpha = .050,
+		 xlab, ylab,  main, # labels and titles
+		 pch=1, col = 2, cex = .75, linecol = 4 ,
+		 intcol = 0, polycol=15){
     a <- object$coefficients
     a[1] <- exp(a[1])
     u <- object$threshold
     dat <- object$data$y
 
-    pfun <- object$family()$prob
+    pfun <- object$family$prob
+    rfun <- object$family$rng
 
     if ( missing( xlab ) || is.null( xlab ) ) { xlab <- "Model" }
     if ( missing( ylab ) || is.null( ylab ) ) { ylab <- "Empirical" }
@@ -19,7 +20,7 @@ function( object , nsim = 1000, alpha = .050,
 	# If doing the envelope, simulate, sort and get the quantiles
     if (nsim > 0){
         n <- length(dat)
-        sim <- matrix(rgpd(nsim * n, a[1], a[2], u), ncol = nsim)
+        sim <- matrix(rfun(nsim * n, a[1], a[2], u), ncol = nsim)
         sim <- apply(sim, 2, sort)
         sim <- apply(sim, 2, pfun, sigma = a[1], xi = a[2] , u = u)
         sim <- apply(sim, 1, quantile, prob = c(alpha/2, 1 - alpha/2))

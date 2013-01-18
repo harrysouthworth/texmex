@@ -11,7 +11,7 @@ function(x, xlab, ylab, main, ...){
     }
     
     dat <- x$data$y
-    dfun <- x$family()$density
+    dfun <- x$family$density
 
     h <- hist(dat, plot = FALSE)
     x <- seq(u, min(UpperEndPoint, max(h$breaks)), length = 100)
