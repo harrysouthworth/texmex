@@ -78,7 +78,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     } # Close if(ci.fit
 
     if (se.fit){
-        res <- cbind(res, ses) # do.call('cbind', ses))
+        res <- cbind(res, ses)
     } # Close if(se.fit
 
     for (i in 1:length(D)){
@@ -122,22 +122,19 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     }
 
     delta <- object$family$delta
-
-
     rl <- object$family$rl
 
-    res <- lapply(M, rl,
-                  u=object$threshold, theta=object$rate, phi=co[,1], xi=co[,2])
+    res <- lapply(M, rl, param=co, model=object)
 
     getse <- function(o, co, M, delta, covs){
-        dxm <- lapply(split(co, 1:nrow(co)), delta, K=M)
+        dxm <- lapply(split(co, 1:nrow(co)), delta, K=M, model=o)
 
         # Get (4.15) of Coles, page 82, adjusted for phi = log(sigma)
-        se <- sapply(1:length(V),
+        se <- sapply(1:length(covs),
                      function(i, dxm, covs){
                         covs <- covs[[i]]; dxm <- c(dxm[[i]])
-browser()
-                        sqrt(mahalanobis(dxm, center=c(0, 0), cov=V, inverted=TRUE))
+#browser()
+                        sqrt(mahalanobis(dxm, center=c(0, 0), cov=covs, inverted=TRUE))
                      }, dxm=dxm, covs=covs)
         se
     }
@@ -145,9 +142,9 @@ browser()
 #    co <- cbind(rep(object$rate, nrow(co)), co)
 
     if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
-        ci.fun <- function(i, object, co, M, res, alpha, delta){
+        ci.fun <- function(i, object, co, M, res, alpha, delta, covs){
             wh <- res[[i]];
-            se <- getse(object, co, M[i], delta=delta)
+            se <- getse(object, co, M[i], delta=delta, covs=covs)
             lo <- wh - qnorm(1 - alpha/2)*se
             hi <- wh + qnorm(1 - alpha/2)*se
             wh <- cbind(wh, lo=lo, hi=hi)
@@ -158,19 +155,19 @@ browser()
         } # ci.fun
         res <- lapply(1:length(M), ci.fun, object=object, co=co,
                                            M=M, res=res, alpha=alpha,
-                                           delta=delta)
+                                           delta=delta, covs=covs)
     } # Close if (ci.fit
 
     if (se.fit){
-        se.fun <- function(i, object, co, M, res, alpha, delta){
+        se.fun <- function(i, object, co, M, res, alpha, delta, covs){
             wh <- res[[i]]
-            se <- getse(object, co, M[i], delta=delta)
+            se <- getse(object, co, M[i], delta=delta, covs=covs)
             wh <- cbind(RL=wh, se.fit=se)
             wh
         } # ci.fun
         res <- lapply(1:length(M), se.fun, object=object, co=co,
                                            M=M, res=res, alpha=alpha,
-                                           delta=delta)
+                                           delta=delta, covs=covs)
     }
 
     cov.fun <- function(i,res){
