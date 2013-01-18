@@ -85,8 +85,6 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
       res <- addCov(res, D[[i]])
     }
 
-#    cov <- texmexMakeCovariance(object$cov, D)
-
     if (full.cov){
         res <- list(link=res, cov=cov.se)
     }
@@ -111,35 +109,19 @@ linearPredictors <- function(object, newdata = NULL, se.fit = FALSE, ci.fit = FA
     UseMethod("linearPredictors")
 }
 
-gpdDelta <- function(A, K){
-   # This is not exact if a prior (penalty) function is used, but
-   # the CI is approximate anyway.
-
-    out <- matrix(0, nrow=3, ncol=length(K))
-
-    if (A[3] == 0){ # exponential case
-        out[1,] <- exp(A[2]) / A[1]
-        out[2,] <- exp(A[2]) * log(K * A[1])
-    } else {
-        out[1,] <- exp(A[2]) * K^A[3] * A[1]^(A[3] - 1)
-        out[2,] <- exp(A[2]) / A[3] * ((K*A[1])^A[3] - 1)
-        out[3,] <- -exp(A[2]) / (A[3]*A[3]) * ( (K * A[1] )^A[3] - 1 ) +
-                   exp(A[2]) / A[3] * (K * A[1])^A[3] * log(K * A[1])
-    }
-
-   out
-}
 
 rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                    alpha=.050, unique.=TRUE, ...){
     co <- linearPredictors.evm(object, newdata=newdata, unique.=unique., full.cov=TRUE)
-    covs <- co[[2]] # list(phi.var=phi.var, xi.var=xi.var, covariances=covar)
+    covs <- co[[2]] # list of covariance matrices, one for each (unique) observation
     co <- co[[1]]
     X <- co[,-(1:2)]
     if(is.null(dim(X))){
       X <- matrix(X)
       dimnames(X) <- list(dimnames(co)[[1]],dimnames(co)[[2]][-(1:2)])
     }
+
+    delta <- object$family$delta
 
     gpdrl <- function(u, theta, phi, xi, m){
         res <- u + exp(phi) / xi *((m * theta)^xi -1)
@@ -150,27 +132,27 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                   u=object$threshold, theta=object$rate, phi=co[,1], xi=co[,2])
 
     getse <- function(o, co, M){
-        dxm <- lapply(split(co, 1:nrow(co)), gpdDelta, K=M)
+        dxm <- lapply(split(co, 1:nrow(co)), delta, K=M)
 
-        V <- lapply(1:nrow(co),
-                    function(i, x, rate, n){
-                        # Construct covariance matrix
-                        cov <- matrix(c(x[[1]][i], rep(x[[3]][i], 2), x[[2]][i]), ncol=2)
-                        matrix(c(rate * (1 - rate) / n, 0, 0,
-                               0, cov[1,],
-                               0, cov[2,]), ncol=3)
-                    }, rate = o$rate, n = length(o$y) / o$rate, x=covs)
-
+#        V <- lapply(1:nrow(co),
+#                    function(i, x, rate, n){
+#                        # Construct covariance matrix
+#                        cov <- matrix(c(x[[1]][i], rep(x[[3]][i], 2), x[[2]][i]), ncol=2)
+#                        matrix(c(rate * (1 - rate) / n, 0, 0,
+#                               0, cov[1,],
+#                               0, cov[2,]), ncol=3)
+#                    }, rate = o$rate, n = length(o$y) / o$rate, x=covs)
+        V <- covs
         # Get (4.15) of Coles, page 82, adjusted for phi = log(sigma)
         se <- sapply(1:length(V),
                      function(i, dxm, V){
                         V <- V[[i]]; dxm <- c(dxm[[i]])
-                        sqrt(mahalanobis(dxm, center=c(0, 0, 0), cov=V, inverted=TRUE))
+                        sqrt(mahalanobis(dxm, center=c(0, 0), cov=V, inverted=TRUE))
                      }, dxm=dxm, V=V)
         se
     }
 
-    co <- cbind(rep(object$rate, nrow(co)), co)
+#    co <- cbind(rep(object$rate, nrow(co)), co)
 
     if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
         ci.fun <- function(i, object, co, M, res, alpha){

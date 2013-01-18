@@ -28,12 +28,31 @@ gpd.residuals <- function(o){
     c(1/fittedShape * log(1 + scaledY)) # Standard exponential
 }
 
+gpd.delta <- function(A, K){
+   # This is not exact if a prior (penalty) function is used, but
+   # the CI is approximate anyway.
+
+    out <- matrix(0, nrow=2, ncol=length(K))
+
+    if (A[3] == 0){ # exponential case
+        out[1,] <- exp(A[2]) * log(K * A[1])
+    } else {
+        out[1,] <- exp(A[2]) / A[3] * ((K*A[1])^A[3] - 1)
+        out[2,] <- -exp(A[2]) / (A[3]*A[3]) * ( (K * A[1] )^A[3] - 1 ) +
+                   exp(A[2]) / A[3] * (K * A[1])^A[3] * log(K * A[1])
+    }
+
+   out
+}
+
+
 gpd <- list(name = 'GPD',
             log.lik = gpd.loglik,
             param = c('phi', 'xi'),
             info = gpd.info,
             start = gpd.start,
             resid = gpd.residuals,
+            delta = gpd.delta,
             density=dgpd,
             rng=rgpd,
             prob=pgpd,
