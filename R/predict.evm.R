@@ -1,26 +1,26 @@
 # Author: Harry Southworth
 # Date: 2011-11-25
-## Purpose: Create a predict method for objects of class gpd and bgpd that
+## Purpose: Create a predict method for objects of class evm and bgpd that
 ##          returns parameters, return levels or (maybe) return periods,
 ##          depending on arguments given.
 #
-# predict.gpd
+# predict.evm
 # predict.bgpd
 # predict.bootgpd
 # rl
-# rl.gpd
+# rl.evm
 # rl.bgpd
 # rl.bootgpd
 # linearPredictors
-# linearPredictors.gpd
+# linearPredictors.evm
 # linearPredictors.bgpd
 # linearPredictors.bootgpd
 
 ################################################################################
-## gpd
+## evm
 
 predict.evm <-
-    # Get predictions for a gpd object. These can either be the linear predictors
+    # Get predictions for an evm object. These can either be the linear predictors
     # or return levels.
 function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
          ci.fit=FALSE, alpha=.050, unique.=TRUE, ...){
@@ -123,41 +123,31 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 
     delta <- object$family$delta
 
-    gpdrl <- function(u, theta, phi, xi, m){
-        res <- u + exp(phi) / xi *((m * theta)^xi -1)
-        cbind(RL=res)
-    }
 
-    res <- lapply(M, gpdrl,
+    rl <- object$family$rl
+
+    res <- lapply(M, rl,
                   u=object$threshold, theta=object$rate, phi=co[,1], xi=co[,2])
 
-    getse <- function(o, co, M){
+    getse <- function(o, co, M, delta, covs){
         dxm <- lapply(split(co, 1:nrow(co)), delta, K=M)
 
-#        V <- lapply(1:nrow(co),
-#                    function(i, x, rate, n){
-#                        # Construct covariance matrix
-#                        cov <- matrix(c(x[[1]][i], rep(x[[3]][i], 2), x[[2]][i]), ncol=2)
-#                        matrix(c(rate * (1 - rate) / n, 0, 0,
-#                               0, cov[1,],
-#                               0, cov[2,]), ncol=3)
-#                    }, rate = o$rate, n = length(o$y) / o$rate, x=covs)
-        V <- covs
         # Get (4.15) of Coles, page 82, adjusted for phi = log(sigma)
         se <- sapply(1:length(V),
-                     function(i, dxm, V){
-                        V <- V[[i]]; dxm <- c(dxm[[i]])
+                     function(i, dxm, covs){
+                        covs <- covs[[i]]; dxm <- c(dxm[[i]])
+browser()
                         sqrt(mahalanobis(dxm, center=c(0, 0), cov=V, inverted=TRUE))
-                     }, dxm=dxm, V=V)
+                     }, dxm=dxm, covs=covs)
         se
     }
 
 #    co <- cbind(rep(object$rate, nrow(co)), co)
 
     if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
-        ci.fun <- function(i, object, co, M, res, alpha){
+        ci.fun <- function(i, object, co, M, res, alpha, delta){
             wh <- res[[i]];
-            se <- getse(object, co, M[i])
+            se <- getse(object, co, M[i], delta=delta)
             lo <- wh - qnorm(1 - alpha/2)*se
             hi <- wh + qnorm(1 - alpha/2)*se
             wh <- cbind(wh, lo=lo, hi=hi)
@@ -166,17 +156,21 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                               paste(100*(1 - alpha/2), "%", sep = ""))
             wh
         } # ci.fun
-        res <- lapply(1:length(M), ci.fun, object=object, co=co, M=M, res=res, alpha=alpha)
+        res <- lapply(1:length(M), ci.fun, object=object, co=co,
+                                           M=M, res=res, alpha=alpha,
+                                           delta=delta)
     } # Close if (ci.fit
 
     if (se.fit){
-        se.fun <- function(i, object, co, M, res, alpha){
+        se.fun <- function(i, object, co, M, res, alpha, delta){
             wh <- res[[i]]
-            se <- getse(object, co, M[i])
+            se <- getse(object, co, M[i], delta=delta)
             wh <- cbind(RL=wh, se.fit=se)
             wh
         } # ci.fun
-        res <- lapply(1:length(M), se.fun, object=object, co=co, M=M, res=res, alpha=alpha)
+        res <- lapply(1:length(M), se.fun, object=object, co=co,
+                                           M=M, res=res, alpha=alpha,
+                                           delta=delta)
     }
 
     cov.fun <- function(i,res){
@@ -187,7 +181,7 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     res <- lapply(1:length(M), cov.fun,res=res)
 
     names(res) <- paste("M.", M, sep = "")
-    oldClass(res) <- "rl.gpd"
+    oldClass(res) <- "rl.evm"
     res
 }
 

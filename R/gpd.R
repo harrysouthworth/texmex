@@ -28,9 +28,11 @@ gpd.residuals <- function(o){
     c(1/fittedShape * log(1 + scaledY)) # Standard exponential
 }
 
-gpd.delta <- function(A, K){
+gpd.delta <- function(A, K, model){
    # This is not exact if a prior (penalty) function is used, but
    # the CI is approximate anyway.
+
+    A <- c(model$rate, A)
 
     out <- matrix(0, nrow=2, ncol=length(K))
 
@@ -45,6 +47,9 @@ gpd.delta <- function(A, K){
    out
 }
 
+gpd.rl <- function(p, m, model){
+        res <- model$threshold + exp(p[1]) / p[2] * ((m * model$rate)^p[2] -1)
+}
 
 gpd <- list(name = 'GPD',
             log.lik = gpd.loglik,
@@ -52,6 +57,7 @@ gpd <- list(name = 'GPD',
             info = gpd.info,
             start = gpd.start,
             resid = gpd.residuals,
+            rl = gpd.rl,
             delta = gpd.delta,
             density=dgpd,
             rng=rgpd,
