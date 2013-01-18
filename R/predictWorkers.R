@@ -113,8 +113,16 @@ texmexMakeCI <-
 function(params, ses, alpha){
     z <- qnorm(1 - alpha/2)
 
-    lo <- params - z*ses
-    hi <- params + z * ses
+    ci <- lapply(1:ncol(params), function(i, x, s, z){
+                                     cbind(x[, i] - z*s[, i], x[, i] + z*s[, i])
+                                 }, x=params, s=ses, z=z)
+    ci <- do.call('cbind', ci)
 
-    list(lo=lo, hi=hi)
+    nms <- rep('', ncol(ci))
+    nms[(1:ncol(ci)) %% 2 == 1] <- paste(colnames(params), '.lo', sep = '')
+    nms[(1:ncol(ci)) %% 2 == 0] <- paste(colnames(params), '.hi', sep = '')
+    colnames(ci) <- nms
+
+    ci
 }
+

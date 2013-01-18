@@ -63,10 +63,12 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     res <- texmexMakeParams(coef(object), D)
     colnames(res) <- names(D)
 
+    # Get the covariance matrices - one for every unique observation
     if(ci.fit | se.fit | full.cov){
       cov.se <- texmexMakeCovariance(object$cov, D)
     }
 
+    # Get standard errors
     ses <- t(sapply(cov.se, function(x){ sqrt(diag(x)) }))
     colnames(ses) <- paste(colnames(res), '.se', sep = '')
 
@@ -438,7 +440,7 @@ rl.bootgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 ################################################################################
 ## Method functions
 
-print.rl.gpd <- function(x, digits=3, ...){
+print.rl.evm <- function(x, digits=3, ...){
     nms <- names(x)
     newnms <- paste("M =", substring(nms, 3), "predicted return level:\n")
     lapply(1:length(x), function(i, o, title){
@@ -449,39 +451,39 @@ print.rl.gpd <- function(x, digits=3, ...){
     invisible(x)
 }
 
-summary.rl.gpd <- function(object, digits=3, ...){
-    print.rl.gpd(object, digits=digits, ...)
+summary.rl.evm <- function(object, digits=3, ...){
+    print.rl.evm(object, digits=digits, ...)
 }
 
-print.rl.bgpd    <- print.rl.gpd
-print.rl.bootgpd <- print.rl.gpd
+print.rl.bgpd    <- print.rl.evm
+print.rl.bootgpd <- print.rl.evm
 
-summary.rl.bgpd    <- summary.rl.gpd
-summary.rl.bootgpd <- summary.rl.gpd
+summary.rl.bgpd    <- summary.rl.evm
+summary.rl.bootgpd <- summary.rl.evm
 
 
-print.lp.gpd <- function(x, digits=3, ...){
+print.lp.evm <- function(x, digits=3, ...){
     cat("Linear predictors:\n")
     print(unclass(x), digits=3,...)
     invisible(x)
 }
 
-summary.lp.gpd <- function(object, digits=3, ...){
-    print.lp.gpd(object, digits=3, ...)
+summary.lp.evm <- function(object, digits=3, ...){
+    print.lp.evm(object, digits=3, ...)
 }
 
-summary.lp.gpd
+#summary.lp.gpd
 
-summary.lp.bgpd    <- summary.lp.gpd
-summary.lp.bootgpd <- summary.lp.gpd
+summary.lp.bgpd    <- summary.lp.evm
+summary.lp.bootgpd <- summary.lp.evm
 
-print.lp.bgpd    <- print.lp.gpd
-print.lp.bootgpd <- print.lp.gpd
+print.lp.bgpd    <- print.lp.evm
+print.lp.bootgpd <- print.lp.evm
 
 ################################################################################
-## test.predict.gpd()
+## test.predict.evm()
 
-test.predict.gpd <- function(){
+test.predict.evm <- function(){
 # no covariates
   u <- 14
   r.fit <- gpd(rain,th=u)
