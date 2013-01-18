@@ -68,6 +68,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
     }
 
     ses <- t(sapply(cov.se, function(x){ sqrt(diag(x)) }))
+    colnames(ses) <- paste(colnames(res), '.se', sep = '')
 
     if (ci.fit){
         ci <- texmexMakeCI(res, ses, alpha)
@@ -84,7 +85,9 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
 
 #    cov <- texmexMakeCovariance(object$cov, D)
 
-    res <- list(link=res, cov=cov.se)
+    if (full.cov){
+        res <- list(link=res, cov=cov.se)
+    }
 
     oldClass(res) <- "lp.evm"
     res

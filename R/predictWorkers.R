@@ -35,7 +35,6 @@ function(co, data){
 texmexMakeCovariance <-
     # Get covariance matrix for each parameter and get coefficents for each row of the data
 function(cov, data){
-#    data <- object$data$D
     covs <- v <- vector('list', length=length(data))
 
     # First get covariance matrix for each main parameter (e.g. phi=a'X1, xi=b'X2)
@@ -44,9 +43,9 @@ function(cov, data){
         which <- wh:(wh -1 + ncol(data[[i]]))
         covs[[i]] <- as.matrix(cov[which, which])
         # covs[[]i] contains the block of the full covariance which relates to parameter[i]
-
-       # Get the variance of the linear predictors
-        v[[i]] <- rowSums(data[[i]] %*% covs[[i]]) * data[[i]]
+ 
+        # Get the variance of the linear predictors
+        v[[i]] <- rowSums((data[[i]] %*% covs[[i]]) * data[[i]])
 
         wh <- wh + ncol(data[[i]])
     }
