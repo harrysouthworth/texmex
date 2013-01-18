@@ -133,13 +133,10 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
         se <- sapply(1:length(covs),
                      function(i, dxm, covs){
                         covs <- covs[[i]]; dxm <- c(dxm[[i]])
-#browser()
                         sqrt(mahalanobis(dxm, center=c(0, 0), cov=covs, inverted=TRUE))
                      }, dxm=dxm, covs=covs)
         se
     }
-
-#    co <- cbind(rep(object$rate, nrow(co)), co)
 
     if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
         ci.fun <- function(i, object, co, M, res, alpha, delta, covs){
