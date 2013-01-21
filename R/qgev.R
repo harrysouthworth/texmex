@@ -11,6 +11,6 @@ qgev <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
     xi <- rep(xi, length = n)
     mu <- rep(mu, length = n)
 
-    mu - sigma/xi * (1 - (-log(1-p))^(-xi))
+    mu - sigma/xi * (1 - (-log(p))^(-xi))
 
 }
