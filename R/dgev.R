@@ -1,4 +1,4 @@
-dgev.R <- function(x, sigma, xi, log.d=FALSE){
+dgev <- function(x, sigma, xi, log.d=FALSE){
     n <- length(x)
     
     mu <- rep(mu, length=n)

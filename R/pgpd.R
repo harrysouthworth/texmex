@@ -9,22 +9,12 @@ function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
     u <- rep(u, length=n)
 
     if (all(xi == 0)){
-		if (is.R()){
-	        res <- pexp(q, log.p=TRUE, lower.tail = FALSE)
-		}
-		else {
-			res <- log(1 - pexp(q))
-		}
+        res <- pexp(q, log.p=TRUE, lower.tail = FALSE)
     }
     else if (any(xi == 0)){
         res <- numeric(n)
         wh <- xi == 0
-		if (is.R()){
-	        res[wh] <- pexp(q[wh], log.p=TRUE , lower.tail=FALSE)
-		}
-		else {
-			res[wh] <- log(1 - pexp(q[wh]))
-		}
+        res[wh] <- pexp(q[wh], log.p=TRUE , lower.tail=FALSE)
         res[!wh] <- log(1 + xi[!wh]*q[!wh]) * (-1/xi[!wh])
     }
     else {
