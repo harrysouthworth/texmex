@@ -19,12 +19,9 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
         res <- numeric(length=n)
         wh <- xi == 0
         res[wh] <- qexp(p[wh], 1/sigma[wh])
-        res[!wh] <- u[!wh] + (sigma[!wh] / xi[!wh] * p[!wh] ^ (-xi[!wh]) - 1)
-
+        res[!wh] <- u[!wh] + (sigma[!wh] / xi[!wh] * (1 - p[!wh]) ^ (-xi[!wh]) - 1)
     }
 	else {
-		res <- u + ( sigma * (p^(xi) - 1)) / xi
-
         res <- (sigma / xi) * ((1 - p)^(-xi) - 1) + u
 	}
     res
