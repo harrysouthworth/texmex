@@ -41,3 +41,4 @@ gev <- list(name = 'GEV',
             density = dgev,
             prob = pgev,
             quant = qgev,
+            resid=NULL)
