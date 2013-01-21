@@ -7,6 +7,6 @@ dgev <- function(x, sigma, xi, log.d=FALSE){
 
     tx <- (1 + xi/sigma * (x - mu))^(-1/xi)
 
-    if (log.d) { -tx }
-    else { exp(-tx) }
+    if (!log.d){ (tx)^(xi+1) / sigma * exp(-tx) }
+    else { -tx + (xi+1)*tx - sigma }
 }
