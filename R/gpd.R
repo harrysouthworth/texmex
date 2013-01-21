@@ -28,20 +28,20 @@ gpd.residuals <- function(o){
     c(1/fittedShape * log(1 + scaledY)) # Standard exponential
 }
 
-gpd.delta <- function(A, K, model){
+gpd.delta <- function(param, m, model){
    # This is not exact if a prior (penalty) function is used, but
    # the CI is approximate anyway.
 
-    A <- c(model$rate, A)
+    param <- c(model$rate, param)
 
-    out <- matrix(0, nrow=2, ncol=length(K))
+    out <- matrix(0, nrow=2, ncol=length(m))
 
-    if (A[3] == 0){ # exponential case
-        out[1,] <- exp(A[2]) * log(K * A[1])
+    if (param[3] == 0){ # exponential case
+        out[1,] <- exp(param[2]) * log(m * param[1])
     } else {
-        out[1,] <- exp(A[2]) / A[3] * ((K*A[1])^A[3] - 1)
-        out[2,] <- -exp(A[2]) / (A[3]*A[3]) * ( (K * A[1] )^A[3] - 1 ) +
-                   exp(A[2]) / A[3] * (K * A[1])^A[3] * log(K * A[1])
+        out[1,] <- exp(param[2]) / param[3] * ((m * param[1])^param[3] - 1)
+        out[2,] <- -exp(param[2]) / (param[3] * param[3]) * ( (m * param[1] )^param[3] - 1 ) +
+                   exp(param[2]) / param[3] * (m * param[1])^param[3] * log(m * param[1])
     }
 
    out
