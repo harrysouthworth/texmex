@@ -115,10 +115,10 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     co <- linearPredictors.evm(object, newdata=newdata, unique.=unique., full.cov=TRUE)
     covs <- co[[2]] # list of covariance matrices, one for each (unique) observation
     co <- co[[1]]
-    X <- co[,-(1:2)]
+    X <- co[,-(1:length(object$data$D))]
     if(is.null(dim(X))){
       X <- matrix(X)
-      dimnames(X) <- list(dimnames(co)[[1]],dimnames(co)[[2]][-(1:2)])
+      dimnames(X) <- list(dimnames(co)[[1]],dimnames(co)[[2]][-(1:length(object$data$D))])
     }
 
     delta <- object$family$delta
@@ -127,13 +127,13 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     res <- lapply(M, rl, param=co, model=object)
 
     getse <- function(o, co, M, delta, covs){
-        dxm <- lapply(split(co, 1:nrow(co)), delta, K=M, model=o)
+        dxm <- lapply(split(co, 1:nrow(co)), delta, m=M, model=o)
 
         # Get (4.15) of Coles, page 82, adjusted for phi = log(sigma)
         se <- sapply(1:length(covs),
                      function(i, dxm, covs){
                         covs <- covs[[i]]; dxm <- c(dxm[[i]])
-                        sqrt(mahalanobis(dxm, center=c(0, 0), cov=covs, inverted=TRUE))
+                        sqrt(mahalanobis(dxm, center=rep(0, ncol(covs)), cov=covs, inverted=TRUE))
                      }, dxm=dxm, covs=covs)
         se
     }

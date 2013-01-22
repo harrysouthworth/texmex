@@ -25,8 +25,9 @@ gev.delta <- function(param, m, model){ # model not used but required by a calli
     y <- -log(1 - 1/m)
     out <- rep(1, 3)
 
-    out[2] <- -1/param[3] * (1 - y^(-xi))
-    out[3] <- param[2] * param[3]^(-2) * (1 - y^(-xi)) - param[2]/param[3] * y^(-xi) * log(y)
+    out[2] <- -exp(param[2])/param[3] * (1 - y^(-param[3]))
+    out[3] <- exp(param[2]) * param[3]^(-2) * (1 - y^(-param[3])) -
+              exp(param[2])/param[3] * y^(-param[3]) * log(y)
     out
 }
 
@@ -57,6 +58,7 @@ gev <- list(name = 'GEV',
             log.lik = gev.loglik,
             param = c('mu', 'phi', 'xi'),
             info = NULL,
+            delta = gev.delta,
             start = gev.start,
             rng = gev.rng,
             density = gev.dens,
