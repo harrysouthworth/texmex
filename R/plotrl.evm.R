@@ -2,7 +2,7 @@ plotrl.evm <- # intended as a diagnostic for a gpd fitted with no covariates. Ca
 function(object, alpha = .050,
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
-         cicol = 0, polycol = 15, smooth = TRUE,RetPeriodRange=NULL ){
+         cicol = 0, polycol = 15, smooth = TRUE, RetPeriodRange=NULL ){
 
     wh <- sapply(object$data$D, ncol)
     if (any(wh > 1)){
@@ -23,21 +23,21 @@ function(object, alpha = .050,
     }
 
     m <- unique(c(1/object$rate, 10^jj))
+ m <- 1/seq(1/n, 1 - 1/n, len=n)
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
-
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
 
     xrange <- range(m)
     yrange <- range(c(xdat, range(xm[plotX,])))
 
-    plotRLgpd(m[plotX],xm[plotX,],polycol,cicol,linecol,ptcol,n,xdat,pch,
+    plotRLevm(m[plotX],xm[plotX,],polycol,cicol,linecol,ptcol,n,xdat,pch,
               smooth,xlab,ylab,main,xrange=xrange,yrange=yrange)
 
     invisible(list(m=m, xm=xm))
 }
 
-plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
+plot.rl.evm <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ...){
@@ -72,7 +72,7 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
 
     Array <- array(unlist(x),c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
 
-    if( class(x) == "rl.gpd"){
+    if( class(x) == "rl.evm"){
       if(any(dimnames(x[[1]])[[2]] == "se.fit")){
         which <- dimnames(x[[1]])[[2]] != "se.fit"
         nd <- nd-1
@@ -125,22 +125,22 @@ plot.rl.gpd <- function(x, # method for rl.(boot or b)gpd object, which may have
       } else {
         Main <- main[i]
       }
-      plotRLgpd(m,xm,polycol = polycol,cicol=cicol,linecol=linecol,ptcol=ptcol,pch=pch,
+      plotRLevm(m,xm,polycol = polycol,cicol=cicol,linecol=linecol,ptcol=ptcol,pch=pch,
                 smooth=smooth,xlab=xlab,ylab=ylab,main=Main,xrange=range(m),yrange=yrange)
     }
 
     invisible(list(m=m,xm=Array))
 }
 
-plot.rl.bootgpd <- plot.rl.bgpd <- plot.rl.gpd
+plot.rl.bootgpd <- plot.rl.bgpd <- plot.rl.evm
 
-plotRLgpd <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
+plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
 # worker function - called by plotrl.gpd, plot.rl.gpd, plot.rl.bgpd
 
     o <- order(M) # in case the return period are not in ascending order.
     M <- M[o]
     xm <- xm[o,]
-
+#browser()
     plot(M, xm[,1], log = "x", type = "n",
          xlim=xrange, ylim=yrange, xlab = xlab, ylab = ylab, main = main)
 
@@ -156,7 +156,7 @@ plotRLgpd <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,yl
          lines( exp(sphi$x), sphi$y, col = cicol )
       } else{
         if (polycol != 0){
-            polygon(c( M,        rev( M)),
+            polygon(c(M, rev( M)),
                     c(xm[,2],rev(xm[,3])),
                     col=polycol, border = FALSE) # Close polygon
         } else {
