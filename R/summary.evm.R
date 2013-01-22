@@ -42,11 +42,14 @@ print.summary.evm <- function(x, digits = 3 , ...){
     else conv <- FALSE
     cat( "\nConvergence:\t\t")
     cat(conv)
-    cat( "\nThreshold:\t\t")
-    cat(format(unname(x$threshold), digits=digits, ...))
-    cat( "\nRate of excess:\t\t")
-    cat(format(x$rate, digits=digits, ...))
     
+    if (x$rate < 1){
+        cat( "\nThreshold:\t\t")
+        cat(format(unname(x$threshold), digits=digits, ...))
+        cat( "\nRate of excess:\t\t")
+        cat(format(x$rate, digits=digits, ...))
+    }
+
     cat("\n\nLog-lik.\t\tAIC\n")
     cat(format(x$loglik, digits, ...), "\t\t", format(AIC(x), digits=digits, ...))
     

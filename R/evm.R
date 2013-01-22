@@ -62,7 +62,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     if (o$convergence != 0) {
         warning("Non-convergence in evm.default")
     }
-browser()
+
     ################################## If method = "optimize", construct object and return...
 
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,

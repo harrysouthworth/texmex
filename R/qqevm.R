@@ -5,7 +5,7 @@ qqevm <- function(object, nsim=1000, alpha=.050,
                   intcol = 0, polycol = 15){
 
     a <- object$coefficients
-    a[1] <- exp(a[1])
+#    a[1] <- exp(a[1])
     u <- object$threshold
     dat <- object$data$y
 
@@ -16,12 +16,12 @@ qqevm <- function(object, nsim=1000, alpha=.050,
     if (missing(ylab) || is.null(ylab)) { ylab <- "Empirical" }
     if (missing(main) || is.null(main)) { main <- "Quantile Plot" }
 
-    ModPoints <- qfun(ppoints(dat), a[1], a[2], u)
+    ModPoints <- qfun(ppoints(dat), a, object)
 
     # If doing the envelope, simulate, sort and get the quantiles
     if (nsim > 0){
         n <- length(dat)
-        sim <- matrix(rfun(nsim * n, a[1], a[2], u), ncol = nsim)
+        sim <- matrix(rfun(nsim * n, a, object), ncol = nsim)
         sim <- apply(sim, 2, sort)
         # Get the simulated MSEs
         sim.mse <- apply(sim, 2, function(x, m) mean((x - m)^2), m = ModPoints)

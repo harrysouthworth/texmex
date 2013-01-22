@@ -1,21 +1,25 @@
 hist.evm <-
 function(x, xlab, ylab, main, ...){
     a <- x$coefficients
-    a[1] <- exp(a[1])
+#    a[1] <- exp(a[1])
     u <- x$threshold
-    if(a[2] < 0){
-         UpperEndPoint <- u - a[1]/a[2]
-    }
-    else {
+
+    # FOLLOWING if BLOCK COMMENTED OUT TO ACCOUNT FOR DIFFERENCE
+    # BETWEEN GEV AND GPD. MIGHT HAVE TO DO SOMETHING MORE
+    # SENSIBLE LATER.
+#    if(a[2] < 0){
+#         UpperEndPoint <- u - a[1]/a[2]
+#    }
+#    else {
         UpperEndPoint <- Inf
-    }
+#    }
     
     dat <- x$data$y
     dfun <- x$family$density
 
     h <- hist(dat, plot = FALSE)
     x <- seq(u, min(UpperEndPoint, max(h$breaks)), length = 100)
-    y <- dfun(x, a[1], a[2], u)
+    y <- dfun(x, a, object)
 
     if (missing(xlab) || is.null(xlab)) xlab <- "Data"
     if (missing(ylab) || is.null(ylab)) ylab <- ""

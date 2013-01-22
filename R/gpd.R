@@ -51,6 +51,20 @@ gpd.rl <- function(m, param, model){
         model$threshold + exp(param[1]) / param[2] * ((m * model$rate)^param[2] -1)
 }
 
+gpd.rng <- function(n, param, model){
+    rgpd(n, exp(param[1]), param[2], u=model$threshold)
+}
+gpd.dens <- function(n, param, model){
+    dgpd(n, exp(param[1]), param[2], u=model$threshold)
+}
+gpd.prob <- function(n, param, model){
+    pgpd(n, exp(param[1]), param[2], u=model$threshold)
+}
+gpd.quant <- function(n, param, model){
+    qgpd(n, exp(param[1]), param[2], u=model$threshold)
+}
+
+
 gpd <- list(name = 'GPD',
             log.lik = gpd.loglik,
             param = c('phi', 'xi'),
@@ -59,10 +73,10 @@ gpd <- list(name = 'GPD',
             resid = gpd.residuals,
             rl = gpd.rl,
             delta = gpd.delta,
-            density=dgpd,
-            rng=rgpd,
-            prob=pgpd,
-            quant=qgpd)
+            density=gpd.dens,
+            rng=gpd.rng,
+            prob=gpd.prob,
+            quant=gpd.quant)
 oldClass(gpd) <- 'texmexFamily'
 
 

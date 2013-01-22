@@ -17,8 +17,6 @@ gev.loglik <- function(data, ...) {
   }
 }
 
-# delta, rl, resid
-
 rl.gev <- function(m, param, model){ # model not used but required by a calling function
     param[1] - param[2]/param[3] * (1 - (-log(1 - 1/m))^(-1/param[3]))
 }
@@ -42,14 +40,28 @@ gev.start <- function(data){
       rep(.01, -1 + ncol(X.phi) + ncol(X.xi)))
 }
 
+gev.rng <- function(n, param, model){
+   rgev(n, param[1], exp(param[2]), param[3])
+}
+gev.dens <- function(n, param, model){
+   dgev(n, param[1], exp(param[2]), param[3])
+}
+gev.prob <- function(n, param, model){
+    pgev(n, param[1], exp(param[2]), param[3])
+}
+gev.quant <- function(n, param, model){
+    qgev(n, param[1], exp(param[2]), param[3])
+}
+
 gev <- list(name = 'GEV',
             log.lik = gev.loglik,
             param = c('mu', 'phi', 'xi'),
             info = NULL,
-            start = NULL,
-            rng = rgev,
-            density = dgev,
-            prob = pgev,
-            quant = qgev,
+            start = gev.start,
+            rng = gev.rng,
+            density = gev.dens,
+            prob = gev.prob,
+            quant = gev.quant,
             resid=function(o){ NULL },
             rl=rl.gev)
+
