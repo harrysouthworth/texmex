@@ -18,7 +18,7 @@ gev.loglik <- function(data, ...) {
 }
 
 rl.gev <- function(m, param, model){ # model not used but required by a calling function
-    param[1] - param[2]/param[3] * (1 - (-log(1 - 1/m))^(-1/param[3]))
+    param[1] - exp(param[2])/param[3] * (1 - (-log(1 - 1/m))^(-param[3]))
 }
 
 gev.delta <- function(param, m, model){ # model not used but required by a calling function
