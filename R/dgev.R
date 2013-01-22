@@ -1,12 +1,14 @@
-dgev <- function(x, sigma, xi, log.d=FALSE){
+dgev <- function(x, mu, sigma, xi, log.d=FALSE){
     n <- length(x)
 
     mu <- rep(mu, length=n)
     sigma <- rep(sigma, length=n)
     xi <- rep(xi, length=n)
 
-    tx <- (1 + xi/sigma * (x - mu))^(-1/xi)
+    tx <- (1 + xi/sigma * (x - mu))
 
-    if (!log.d){ (tx)^(xi+1) / sigma * exp(-tx) }
-    else { -tx + (xi+1)*tx - sigma }
+    ld <- -log(sigma) - (1 + 1/xi)*log(tx) - tx^(-1/xi)
+
+    if (!log.d){ exp(ld) }
+    else { ld }
 }

@@ -31,6 +31,7 @@ Collate: AIC.evm.R                         plot.evm.R
     extremalIndex.R                   print.migpd.R
     gpd.info.R                        qgpd2.R
     rgpd.R   pgpd.R   qgpd.R
+    rgev.R   pgev.R   qgev.R   dgev.R   gev.R
     gpd.R
     gpdRangeFit.R                     qqevm.R
     hist.evm.R                        revTransform.R

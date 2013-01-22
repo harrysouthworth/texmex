@@ -36,13 +36,17 @@ function (y, data, family=gpd, th= -Inf, qu,
     else { y <- deparse(substitute(y)) }
 
     # Get list containing response (y) and design matrix for each parameter
-
     modelData <- texmexPrepareData(y, data, modelParameters)
+
     if (missing(th) & !missing(qu)) {
         th <- quantile(modelData$y, qu)
         rate <- mean(modelData$y > th)
         modelData <- texmexThresholdData(th, modelData)
     }
+    if (!is.finite(th)){ rate <- 1 }
+
+    ###################### If family does not give info matrix...
+    if (is.null(family$info)){ cov <- "numeric" }
 
     ###################### Check and sort out prior parameters...
     priorParameters <- texmexPriorParameters(prior, priorParameters, modelData)
@@ -58,7 +62,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     if (o$convergence != 0) {
         warning("Non-convergence in evm.default")
     }
-
+browser()
     ################################## If method = "optimize", construct object and return...
 
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,

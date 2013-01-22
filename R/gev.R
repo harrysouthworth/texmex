@@ -32,8 +32,18 @@ gev.delta <- function(param, m, model){ # model not used but required by a calli
     out
 }
 
+gev.start <- function(data){
+    y <- data$y
+    X.mu <- data$D[[1]]
+    X.phi <- data$D[[2]]
+    X.xi <- data$D[[3]]
+
+    c(mean(y), rep(.1, ncol(X.mu)-1), log(IQR(y)/2),
+      rep(.01, -1 + ncol(X.phi) + ncol(X.xi)))
+}
+
 gev <- list(name = 'GEV',
-            loglik = gev.loglik,
+            log.lik = gev.loglik,
             param = c('mu', 'phi', 'xi'),
             info = NULL,
             start = NULL,
@@ -41,4 +51,5 @@ gev <- list(name = 'GEV',
             density = dgev,
             prob = pgev,
             quant = qgev,
-            resid=NULL)
+            resid=function(o){ NULL },
+            rl=rl.gev)

@@ -11,6 +11,7 @@ evm.fit <- function(data, family, ...,
                        gaussian=texmex:::.make.quadratic.penalty,
                        none=texmex:::.make.dummy.penalty,
                        function() {stop("Bad penalty ref.")})
+
   prior <- penFactory(priorParameters)
 
   log.lik <- family$log.lik(data, ...)
@@ -23,8 +24,8 @@ evm.fit <- function(data, family, ...,
   s[s == 0] <- 1
 
   if (is.null(start)){
-    start <- family$start(data)
-    if (is.null(start)){ start <- runif(length(s), -.1, .1) }
+    if (is.null(family$start)){ start <- runif(length(s), -.1, .1) }
+    else { start <- family$start(data) }
   }
 
    o <- optim(par = start, fn = evm.lik,
