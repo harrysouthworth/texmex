@@ -1,4 +1,4 @@
-plotrl.evm <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
+plotrl.evm.opt <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
 function(object, alpha = .050,
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,

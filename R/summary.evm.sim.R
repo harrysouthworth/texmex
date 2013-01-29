@@ -1,4 +1,4 @@
-summary.bgpd <- function(object, ...){
+summary.evm.sim <- function(object, ...){
    co <- coef(object)
    se <- apply(object$param, 2, sd)
    res <- cbind(co, se)
@@ -7,9 +7,9 @@ summary.bgpd <- function(object, ...){
    res
 }
 
-print.summary.bgpd <- function(x, ...){
+print.summary.evm.sim <- function(x, ...){
    print(unclass(x))
    invisible()
 }
 
-show.summary.bgpd <- print.summary.bgpd
+show.summary.evm.sim <- print.summary.evm.sim

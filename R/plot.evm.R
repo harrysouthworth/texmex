@@ -1,4 +1,4 @@
-plot.evm <-
+plot.evm.opt <-
 function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     if (!missing(main)){
         if (length(main) != 1 & length(main) != 4){
@@ -10,8 +10,8 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     if (ncol(x$data$D$phi) == 1 && ncol(x$data$D$xi) == 1){
         ppevm(x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha)
         qqevm(x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha)
-        plotrl.evm(x, main=main[3], xlab=xlab[3], ...)
-        hist.evm(x, main=main[4], xlab=xlab[4])
+        plotrl.evm.opt(x, main=main[3], xlab=xlab[3], ...)
+        hist.evm.opt(x, main=main[4], xlab=xlab[4])
     }
     else { # Covariates in the model
         fittedScale <- exp(coef(x)[1:ncol(x$data$D$phi)] %*% t(x$data$D$phi))
@@ -23,13 +23,13 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
         ppevm(x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha)
         qqevm(x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha)
         
-        if(ncol(x$X.phi) > 1){
+        if(ncol(x$data$D[[1]]) > 1){ # phi
           plot(fittedScale,resid(x), 
                main="Residuals vs Fitted Scale",
                xlab="Fitted scale",ylab="Residuals")
           panel.smooth(fittedScale, resid(x), col.smooth=2)
         }
-        if(ncol(x$X.xi) > 1){
+        if(ncol(x$data$D[[2]]) > 1){ # xi
           plot(fittedShape,resid(x),
                main="Residuals vs Fitted Shape",
                xlab="Fitted shape",ylab="Residuals")
@@ -40,7 +40,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     invisible()
 }
 
-test.plot.gpd <- function(){
+test.plot.evm.opt <- function(){
   par(mfrow=c(2,2))
   mod <- gpd(rain, th=30, penalty="none")
   res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),

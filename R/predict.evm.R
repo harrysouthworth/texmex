@@ -19,7 +19,7 @@
 ################################################################################
 ## evm
 
-predict.evm <-
+predict.evm.opt <-
     # Get predictions for an evm object. These can either be the linear predictors
     # or return levels.
 function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
@@ -27,10 +27,10 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl"=, "return level" = rl.evm(object, M, newdata,
+                  "rl"=, "return level" = rl.evm.opt(object, M, newdata,
                                                  se.fit=se.fit, ci.fit=ci.fit,
                                                  alpha=alpha, unique.=unique.),
-                  "lp" =,"link" = linearPredictors.evm(object, newdata, se.fit,
+                  "lp" =,"link" = linearPredictors.evm.opt(object, newdata, se.fit,
                                                    ci.fit, alpha, unique.=unique.)
                   )
     res
@@ -38,7 +38,7 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
 
 ## Linear predictor functions for GPD
 
-linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+linearPredictors.evm.opt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                              alpha=.050, unique.=TRUE, full.cov=FALSE, ...){
 
     if (!is.null(newdata)){
@@ -89,7 +89,7 @@ linearPredictors.evm <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALS
         res <- list(link=res, cov=cov.se)
     }
 
-    oldClass(res) <- "lp.evm"
+    oldClass(res) <- "lp.evm.opt"
     res
 }
 
@@ -110,9 +110,9 @@ linearPredictors <- function(object, newdata = NULL, se.fit = FALSE, ci.fit = FA
 }
 
 
-rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
-                   alpha=.050, unique.=TRUE, ...){
-    co <- linearPredictors.evm(object, newdata=newdata, unique.=unique., full.cov=TRUE)
+rl.evm.opt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+                       alpha=.050, unique.=TRUE, ...){
+    co <- linearPredictors.evm.opt(object, newdata=newdata, unique.=unique., full.cov=TRUE)
     covs <- co[[2]] # list of covariance matrices, one for each (unique) observation
     co <- co[[1]]
     X <- co[,-(1:length(object$data$D))]
@@ -175,24 +175,24 @@ rl.evm <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     res <- lapply(1:length(M), cov.fun,res=res)
 
     names(res) <- paste("M.", M, sep = "")
-    oldClass(res) <- "rl.evm"
+    oldClass(res) <- "rl.evm.opt"
     res
 }
 
 ################################################################################
 ## bgpd
 
-predict.bgpd <- function(object, M=1000, newdata=NULL, type="return level",
+predict.evm.sim <- function(object, M=1000, newdata=NULL, type="return level",
                          se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
                          all=FALSE, sumfun=NULL, ...){
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl" = , "return level" = rl.bgpd(object, M=M, newdata=newdata,
+                  "rl" = , "return level" = rl.evm.sim(object, M=M, newdata=newdata,
                                                     se.fit=se.fit, ci.fit=ci.fit,
                                                     alpha=alpha, unique.=unique., all=all,
                                                     sumfun=sumfun,...),
-                  "lp" = , "link" = linearPredictors.bgpd(object, newdata=newdata,
+                  "lp" = , "link" = linearPredictors.evm.sim(object, newdata=newdata,
                                                       se.fit=se.fit, ci.fit=ci.fit,
                                                       alpha=alpha, unique.=unique., all=all,
                                                       sumfun=sumfun,...)
@@ -200,8 +200,8 @@ predict.bgpd <- function(object, M=1000, newdata=NULL, type="return level",
     res
 }
 
-linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
-                              alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
+linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+                                     alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
     if (!is.null(newdata)){
         xi.fo <- object$map$formulae$xi
         phi.fo <- object$map$formulae$phi
@@ -297,7 +297,7 @@ linearPredictors.bgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FAL
     res
 }
 
-rl.bgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
+rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
 
     co <- linearPredictors.bgpd(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
     Covs <- linearPredictors.bgpd(object, newdata=newdata, unique.=unique., sumfun=NULL)
@@ -354,24 +354,24 @@ rl.bgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, al
     }
 
     names(res) <- paste("M.", M, sep = "")
-    oldClass(res) <- "rl.bgpd"
+    oldClass(res) <- "rl.evm.sim"
     res
 }
 
 ################################################################################
 ## bootgpd
 
-predict.bootgpd <- function(object, M=1000, newdata=NULL, type="return level",
+predict.evm.boot <- function(object, M=1000, newdata=NULL, type="return level",
                             se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
                             all=FALSE, sumfun=NULL, ...){
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl" = , "return level" = rl.bootgpd(object, newdata=newdata, M=M,
+                  "rl" = , "return level" = rl.evm.boot(object, newdata=newdata, M=M,
                                                        se.fit=se.fit, ci.fit=ci.fit,
                                                        alpha=alpha, unique.=TRUE,
                                                        all=all, sumfun=sumfun,...),
-                  "lp" = , "link" = linearPredictors.bootgpd(object, newdata=newdata,
+                  "lp" = , "link" = linearPredictors.evm.boot(object, newdata=newdata,
                                                          se.fit=se.fit, ci.fit=ci.fit,
                                                          alpha=alpha, unique.=TRUE,
                                                          all=all, sumfun=sumfun,...)
@@ -388,13 +388,13 @@ namesBoot2bgpd <- function(bootobject){
     bootobject
 }
 
-linearPredictors.bootgpd <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050,
+linearPredictors.evm.boot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050,
                                  unique.=TRUE, all=FALSE, sumfun=NULL,...){
     # This should just be the same as for a bgpd object, but some
     # names and stuff are different.
   object <- namesBoot2bgpd(object)
-  res <- linearPredictors.bgpd(object, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit, all=all, unique.=unique., alpha=alpha, sumfun=sumfun,...)
-  oldClass(res) <- "lp.bootgpd"
+  res <- linearPredictors.evm.sim(object, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit, all=all, unique.=unique., alpha=alpha, sumfun=sumfun,...)
+  oldClass(res) <- "lp.evm.boot"
   res
 }
 
@@ -402,15 +402,15 @@ rl.bootgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     # This should just be the same as for a bgpd object, but some
     # names are different.
   object <- namesBoot2bgpd(object)
-  res <- rl.bgpd(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
-  oldClass(res) <- "rl.bootgpd"
+  res <- rl.evm.sim(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
+  oldClass(res) <- "rl.evm.boot"
   res
 }
 
 ################################################################################
 ## Method functions
 
-print.rl.evm <- function(x, digits=3, ...){
+print.rl.evm.opt <- function(x, digits=3, ...){
     nms <- names(x)
     newnms <- paste("M =", substring(nms, 3), "predicted return level:\n")
     lapply(1:length(x), function(i, o, title){
@@ -421,34 +421,34 @@ print.rl.evm <- function(x, digits=3, ...){
     invisible(x)
 }
 
-summary.rl.evm <- function(object, digits=3, ...){
-    print.rl.evm(object, digits=digits, ...)
+summary.rl.evm.opt <- function(object, digits=3, ...){
+    print.rl.evm.opt(object, digits=digits, ...)
 }
 
-print.rl.bgpd    <- print.rl.evm
-print.rl.bootgpd <- print.rl.evm
+print.rl.evm.sim    <- print.rl.evm.opt
+print.rl.evm.boot <- print.rl.evm.opt
 
-summary.rl.bgpd    <- summary.rl.evm
-summary.rl.bootgpd <- summary.rl.evm
+summary.rl.evm.sim    <- summary.rl.evm.opt
+summary.rl.evm.boot <- summary.rl.evm.opt
 
 
-print.lp.evm <- function(x, digits=3, ...){
+print.lp.evm.opt <- function(x, digits=3, ...){
     cat("Linear predictors:\n")
     print(unclass(x), digits=3,...)
     invisible(x)
 }
 
-summary.lp.evm <- function(object, digits=3, ...){
-    print.lp.evm(object, digits=3, ...)
+summary.lp.evm.opt <- function(object, digits=3, ...){
+    print.lp.evm.opt(object, digits=3, ...)
 }
 
 #summary.lp.gpd
 
-summary.lp.bgpd    <- summary.lp.evm
-summary.lp.bootgpd <- summary.lp.evm
+summary.lp.evm.sim    <- summary.lp.evm.opt
+summary.lp.evm.boot <- summary.lp.evm.opt
 
-print.lp.bgpd    <- print.lp.evm
-print.lp.bootgpd <- print.lp.evm
+print.lp.evm.sim    <- print.lp.evm.opt
+print.lp.evm.boot <- print.lp.evm.opt
 
 ################################################################################
 ## test.predict.evm()

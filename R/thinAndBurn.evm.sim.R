@@ -2,7 +2,7 @@ thinAndBurn <- function (object, burn, thin){
   UseMethod("thinAndBurn")
 }
 
-thinAndBurn.bgpd <- function(object, burn, thin){
+thinAndBurn.evm.sim <- function(object, burn, thin){
 
   if(missing(burn)){
     burn <- object$burn
@@ -21,9 +21,9 @@ thinAndBurn.bgpd <- function(object, burn, thin){
     stop("burn must be a non-negative integer, for no burn in use burn=0")
   }
 
-  if ( thin < 1 ) thin <- 1 / thin
-  if ( thin %% 1 > 10^(-6) ) stop("thin, or its reciprocal, should be an integer" )
-  if ( burn > dim(object$chains)[1] ) stop( "burn-in is longer that the whole chain" )
+  if (thin < 1) thin <- 1 / thin
+  if (thin %% 1 > 10^(-6)) stop("thin, or its reciprocal, should be an integer")
+  if (burn > dim(object$chains)[1]) stop("burn-in is longer that the whole chain")
 
   if (burn > 0){
      object$param <- object$chains[-(1:burn), ] # Remove burn-in

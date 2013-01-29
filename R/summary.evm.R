@@ -1,4 +1,4 @@
-summary.evm <-
+summary.evm.opt <-
 function(object, nsim = 1000, alpha = .050, ...){
     if (ncol(object$data$D$phi) == 1 && ncol(object$data$D$xi) == 1){
     	env <- qqevm(object, plot = FALSE, nsim = nsim, alpha = alpha)
@@ -18,11 +18,11 @@ function(object, nsim = 1000, alpha = .050, ...){
 	res <- list(model = object, coefficients=co, envelope = env,
 	            nsim = nsim, alpha = alpha)
 
-	oldClass(res) <- "summary.evm"
+	oldClass(res) <- "summary.evm.opt"
 	res
 }
 
-print.summary.evm <- function(x, digits = 3 , ...){
+print.summary.evm.opt <- function(x, digits = 3 , ...){
     co <- coef(x)
     env <- x$envelope
     nsim <- x$nsim
@@ -67,4 +67,4 @@ print.summary.evm <- function(x, digits = 3 , ...){
     invisible()
 }
 
-show.summary.evm <- print.summary.evm
+show.summary.evm.opt <- print.summary.evm.opt
