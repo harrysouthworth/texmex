@@ -156,7 +156,7 @@ function (y, data, family=gpd, th= -Inf, qu,
                   chains=res, y=y, data=modelData,
                   acceptance=acc, seed=seed)
 
-      oldClass(res) <- "bgpd"
+      oldClass(res) <- "evm.sim"
       res <- thinAndBurn(res)
       res
     } # Close else
