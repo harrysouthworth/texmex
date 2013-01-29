@@ -84,7 +84,7 @@ function (y, data, family=gpd, th= -Inf, qu,
       if (missing(jump.const)){
           jump.const <- (2.4/sqrt(nc))^2
       }
-      u <- th
+#      u <- th
 
       prior <- .make.mvn.prior(priorParameters)
 
@@ -124,7 +124,7 @@ function (y, data, family=gpd, th= -Inf, qu,
       acc <- 0
       for(i in 2:iter){
         if( verbose){
-          if( i %% trace == 0 ) cat(i, " steps taken\n" )
+          if(i %% trace == 0) cat(i, " steps taken\n" )
         }
         prop <- proposals[i - 1,] + res[i - 1,]
         top <- log.lik(prop)
@@ -134,8 +134,9 @@ function (y, data, family=gpd, th= -Inf, qu,
           res[i, ] <- prop
           last.cost <- top
           acc <- 1 + acc
-        } else {
-          res[ i , ] <- res[i-1,]
+        }
+        else {
+          res[i, ] <- res[i-1,]
         }
       } # Close for(i in 2:iter
 
@@ -146,11 +147,11 @@ function (y, data, family=gpd, th= -Inf, qu,
 
       if (trace < iter) {
         if(verbose) {
-          cat("Acceptance rate:", round( acc , 3 ) , "\n")
+          cat("Acceptance rate:", round(acc , 3) , "\n")
         }
       }
 
-      res <- list(call=theCall, threshold=u , map = o,
+      res <- list(call=theCall, threshold=th , map = o,
                   burn = burn, thin = thin,
                   chains=res, y=y, data=modelData,
                   acceptance=acc, seed=seed)

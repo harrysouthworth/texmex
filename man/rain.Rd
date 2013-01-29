@@ -1,22 +1,26 @@
-\name{rain and wavesurge}
+\name{rain, wavesurge and portpirie}
 \alias{rain}
 \alias{wavesurge}
+\alias{portpirie}
 \docType{data}
 \title{
-Rain and wavesurge datasets.
+Rain, wavesurge and portpirie datasets.
 }
 \description{
-Rainfall and wave-surge data sets.
+Rainfall, wave-surge and Port Pirie data sets.
 }
 \usage{data(rain)
 data(wavesurge)
+data(portpirie)
 }
 \format{
   The format of the rain data is:
  num [1:17531] 0 2.3 1.3 6.9 4.6 0 1 1.5 1.8 1.8 ...
 
   The wave-surge data is biviate and is used for testing
-functions in \code{texmex}.
+  functions in \code{texmex}.
+
+  The Port Pirie data has two columns: 'Year' and 'SeaLevel'.
 }
 \details{
 The datasets are used by Coles and appear in the \code{ismev} package.
