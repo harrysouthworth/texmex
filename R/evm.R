@@ -77,8 +77,12 @@ function (y, data, family=gpd, th= -Inf, qu,
                             gaussian=rmvnorm,
                             cauchy=.rmvcauchy,
                             function () {stop("Bad proposal distribution")})
+
+      # Get total number of parameters
+      nc <- sum(unlist(lapply(o$data$D, ncol)))
+
       if (missing(jump.const)){
-        jump.const <- (2.4/sqrt(ncol(X.phi) + ncol(X.xi)))^2
+          jump.const <- (2.4/sqrt(nc))^2
       }
       u <- th
 
@@ -87,8 +91,7 @@ function (y, data, family=gpd, th= -Inf, qu,
       ############################# Define log-likelihood
 
       #gpd.log.lik <- .make.gpd.loglikelihood(y, u, X.phi, X.xi)
-      evm.log.lik <- family$log.lik(data, ...)
-
+      evm.log.lik <- family$log.lik(modelData, th=th, ...)
 
       log.lik <- function(param) {
         evm.log.lik(param) + prior(param)
@@ -96,14 +99,13 @@ function (y, data, family=gpd, th= -Inf, qu,
 
       # Need to check for convergence failure here. Otherwise, end up simulating
       # proposals from distribution with zero variance in 1 dimension.
-       checkNA <- any(is.na(sqrt(diag(o$cov))))
-      if (checkNA){
-        stop("MAP estimates have not converged or have converged on values for which the variance cannot be computed. Cannot proceed. Try a different prior" )
+      checkNA <- any(is.na(sqrt(diag(o$cov))))
+      if (checkNA) {
+          stop("MAP estimates have not converged or have converged on values for which the variance cannot be computed. Cannot proceed. Try a different prior" )
       }
 
-      res <- matrix(ncol=ncol(X.phi) + ncol(X.xi), nrow=iter)
+      res <- matrix(ncol=nc, nrow=iter)
       res[1,] <- if (missing(start)) { o$coefficients } else { start }
-
 
       if (!exists(".Random.seed")){ runif(1)  }
       seed <- .Random.seed # Retain and add to output
@@ -113,6 +115,7 @@ function (y, data, family=gpd, th= -Inf, qu,
       proposals <- proposal.fn(iter,
                                double(length(o$coefficients)),
                                cov*jump.const)
+
       last.cost <- log.lik(res[1,])
       if (!is.finite(last.cost)) {
         stop("Start is infeasible.")
