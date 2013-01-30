@@ -5,16 +5,16 @@
 ##          depending on arguments given.
 #
 # predict.evm
-# predict.bgpd
-# predict.bootgpd
+# predict.evm.sim
+# predict.evm.boot
 # rl
 # rl.evm
-# rl.bgpd
-# rl.bootgpd
+# rl.evm.sim
+# rl.evm.boot
 # linearPredictors
 # linearPredictors.evm
-# linearPredictors.bgpd
-# linearPredictors.bootgpd
+# linearPredictors.evm.sim
+# linearPredictors.evm.boot
 
 ################################################################################
 ## evm
@@ -41,14 +41,7 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
 linearPredictors.evm.opt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                              alpha=.050, unique.=TRUE, full.cov=FALSE, ...){
 
-    if (!is.null(newdata)){
-        D <- vector('list', length=length(object$formulae))
-        for (i in 1:length(formulae)){
-            D[[i]] <- model.matrix(formulae[[i]], newdata)
-        }
-        names(D) <- names(formulae)
-    }
-    else { D <- object$data$D }
+    D <- texmexMakeNewdataD(object, newdata)
 
     if (unique.){
         z <- do.call('cbind', D)
@@ -180,7 +173,7 @@ rl.evm.opt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 }
 
 ################################################################################
-## bgpd
+## evm.sim
 
 predict.evm.sim <- function(object, M=1000, newdata=NULL, type="return level",
                          se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
@@ -202,73 +195,53 @@ predict.evm.sim <- function(object, M=1000, newdata=NULL, type="return level",
 
 linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                                      alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
-    if (!is.null(newdata)){
-        xi.fo <- object$map$formulae$xi
-        phi.fo <- object$map$formulae$phi
-        X.xi <-  if (!is.null(xi.fo))  model.matrix(as.formula(xi.fo),  newdata) else matrix(1, nrow(newdata))
-        X.phi <- if (!is.null(phi.fo)) model.matrix(as.formula(phi.fo), newdata) else matrix(1, nrow(newdata))
-    } else {
-        X.xi <- object$X.xi
-        X.phi <- object$X.phi
-    }
+    D <- texmexMakeNewdataD(object$map, newdata)
 
-    X.phi.xi <- cbind(X.phi, X.xi)
-    ModelHasCovs <- ncol(X.phi.xi) > 2
+    X.all <- do.call("cbind", D)
+    ModelHasCovs <- ncol(X.all) > length(D)
+
     if(ModelHasCovs){
-      covCols <- apply(X.phi.xi, 2, function(x) !all(x==1))
-      Xnames <- colnames(X.phi.xi)
+      covCols <- apply(X.all, 2, function(x) !all(x==1))
+      Xnames <- colnames(X.all)
       if(sum(covCols) == 1){
-        X.phi.xi <- cbind(X.phi.xi[, covCols]) # cbind forces returned object to have a dim attribute
-      } else {
-        X.phi.xi <- X.phi.xi[, covCols]
+        X.all <- X.all[, covCols, drop=FALSE]
       }
-      colnames(X.phi.xi) <- Xnames[covCols]
+      else {
+        X.all <- X.all[, covCols]
+      }
+      colnames(X.all) <- Xnames[covCols]
     }
 
     if (unique.){
-        X.phi.xi <- unique(X.phi.xi)
-        u <- !duplicated(cbind(X.phi,X.xi))
-        X.xi  <- if(is.matrix(X.xi[u,]))  X.xi[u, ]
-                 else if(ncol(X.xi) == 1)  cbind(X.xi[u,])
-                 else t(cbind(X.xi[u,]))
-        X.phi <- if(is.matrix(X.phi[u,])) X.phi[u, ]
-                 else if(ncol(X.phi) == 1) cbind(X.phi[u,])
-                 else t(cbind(X.phi[u,]))
+        X.all <- unique(X.all)
+        u <- !duplicated(do.call("cbind", D))
+        D <- lapply(D, function(x, u){ x[u,, drop=FALSE] }, u=u)
     }
 
-    phi <- cbind(object$param[, 1:ncol(X.phi)])
-    xi <- cbind(object$param[, (ncol(X.phi) + 1):(ncol(X.phi) + ncol(X.xi))])
+    # Get idices of parameter matrix last columns
+    mend <- cumsum(unlist(lapply(D, ncol)))
+    mstart <- c(1, mend+1)[-(length(mend) + 1)]
 
-    # Get point estimates (means)
-    res <- lapply(1:nrow(X.xi),
-                  function(i, phi, xi, Xphi, Xxi){
-                      phi <- rowSums(t(t(phi) * c(Xphi[i, ])))
-                      xi <- rowSums(t(t(xi) * c(Xxi[i, ])))
-                      cbind(phi=phi, xi=xi)
-                    }, phi=phi, xi=xi, Xphi=X.phi, Xxi=X.xi)
+    param <- lapply(1:length(mend), function(i, m, start, end){
+                                        m[,start[i]:end[i],drop=FALSE]
+                                    },
+                    m=object$param, start=mstart, end=mend)
+
+    # Get linear predictors
+    res <- lapply(1:length(D),          #nrow(D[[1]]),
+              function(i, x, p){
+                  unlist(lapply(1:nrow(x[[i]]),
+                             function(i, x, p){
+                                 rowSums(t(t(p) * c(x[i, ])))
+                             }, x=x[[i]], p=p[[i]]))
+              }, x=D, p=param)
+#    res <- do.call("cbind", res)
 
     ############################################################################
     ## Hard part should be done now. Just need to summarize
 
-    if (ci.fit){
-        if (is.null(sumfun)){
-            sumfun <- function(x){
-                c(mean(x), quantile(x, prob=c(.50, alpha/2,  1 - alpha/2)) )
-            }
-            neednames <- TRUE
-        } else {
-            neednames <- FALSE
-        }
-
-        res <- t(sapply(res, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
-
-        if (neednames){
-            nms <- c("Mean","50%", paste(100*alpha/2, "%", sep = ""),
-                    paste(100*(1-alpha/2), "%", sep = ""))
-
-            colnames(res) <- c(paste("phi:", nms), paste("xi:", nms))
-        }
-    } else if (se.fit){ warning("se.fit not implemented - ignoring") }
+    if (ci.fit){ res <- texmexMakeCISim(res, alpha, object, sumfun) }
+    else if (se.fit){ warning("se.fit not implemented - ignoring") }
     else if (all){ res <- res }
     else { # Just point estimates
         res <- t(sapply(res, function(x){ apply(x, 2, mean) }))
@@ -276,31 +249,34 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
 
     if(!all){
       if(ModelHasCovs){
-        res <- addCov(res,X.phi)
-        res <- addCov(res,X.xi)
+        for (i in 1:length(D)){
+            res <- addCov(res,D[[i]])
+        }
       }
     } else {
-        if (ModelHasCovs & nrow(X.phi.xi) != length(res)){
+        if (ModelHasCovs & nrow(X.all) != length(res)){
             stop("Number of unique combinations of covariates doesn't match the number of parameters")
         }
         for (i in 1:length(res)){
           if(ModelHasCovs){
-            res[[i]] <- cbind(res[[i]], matrix(rep(X.phi.xi[i,], nrow(res[[i]])), nrow=nrow(res[[i]]), byrow=TRUE))
-            colnames(res[[i]]) <- c("phi", "xi", colnames(X.phi.xi))
+browser()
+            res[[i]] <- cbind(res[[i]], matrix(rep(X.all[i,], nrow(res[[i]])),
+                                               nrow=nrow(res[[i]]), byrow=TRUE))
+            colnames(res[[i]]) <- c(names(object$data$D), colnames(X.all))
           } else {
-            colnames(res[[i]]) <- c("phi","xi")
+            colnames(res[[i]]) <- names(object$data$D)
           }
         }
     }
 
-    oldClass(res) <- "lp.bgpd"
+    oldClass(res) <- "lp.evm.sim"
     res
 }
 
 rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
 
-    co <- linearPredictors.bgpd(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
-    Covs <- linearPredictors.bgpd(object, newdata=newdata, unique.=unique., sumfun=NULL)
+    co <- linearPredictors.evm.sim(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
+    Covs <- linearPredictors.evm.sim(object, newdata=newdata, unique.=unique., sumfun=NULL)
     X <- Covs[,-(1:2)]
     if(is.null(dim(X))){
       X <- matrix(X)
@@ -359,7 +335,7 @@ rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 }
 
 ################################################################################
-## bootgpd
+## evm.boot
 
 predict.evm.boot <- function(object, M=1000, newdata=NULL, type="return level",
                             se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
@@ -601,9 +577,9 @@ test.predict.evm <- function(){
 }
 
 ################################################################################
-## test.predict.bgpd()
+## test.predict.evm.sim()
 
-test.predict.bgpd <- function(){
+test.predict.evm.sim <- function(){
 # no covariates
   u <- 14
   r.fit <- gpd(rain,th=u,method="sim",trace=20000)

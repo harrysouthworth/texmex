@@ -126,3 +126,34 @@ function(params, ses, alpha){
     ci
 }
 
+texmexMakeNewdataD <- function(x, newdata){
+    if (is.null(newdata)){
+        res <- x$data$D
+    }
+    else {
+        fo <- x$formulae
+        res <- lapply(fo, function(x, data) model.matrix(as.formula(x), data),
+                      data=newdata)
+      }
+    invisible(res)
+}
+
+texmexMakeCISim <- function(x, alpha, object, sumfun){
+    if (is.null(sumfun)){
+        sumfun <- function(x){
+            c(mean(x), quantile(x, prob=c(.50, alpha/2,  1 - alpha/2)) )
+        }
+        neednames <- TRUE
+    } else {
+        neednames <- FALSE
+    }
+
+    res <- t(sapply(res, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
+
+    if (neednames){
+        nms <- c("Mean","50%", paste0(100*alpha/2, "%"),
+                 paste0(100*(1-alpha/2), "%"))
+        colnames(res) <- apply(expand.grid(names(object$data$D), nms), 1, paste0, collapse="")
+    }
+    res
+}
