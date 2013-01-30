@@ -2,10 +2,12 @@ print.evm.sim <-
 function(x , print.seed=FALSE, ...){
 
 	print(x$call)
-	if (print.seed){
+        print(x$map$family, verbose=FALSE)
+
+        if (print.seed){
 		cat("Random seed:", x$seed, "\n")
 	}
-	cat("Acceptance rate: ", format(x$acc))
+	cat("Acceptance rate: ", signif(x$acc, 3))
 
 	cat("\n\nMAP estimates:\n")
     co <- coef(x)
@@ -16,7 +18,7 @@ function(x , print.seed=FALSE, ...){
 	cat("\nPosterior means:\n")
 	m <- coef(x)
 	print(m , ...)
-	
+
 	invisible()
 }
 

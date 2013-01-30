@@ -67,3 +67,4 @@ gev <- list(name = 'GEV',
             resid=function(o){ NULL },
             rl=rl.gev)
 
+oldClass(gev) <- 'texmexFamily'

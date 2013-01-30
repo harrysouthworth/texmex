@@ -14,12 +14,12 @@ function(object, nsim = 1000, alpha = .050, ...){
 
     co <- cbind(object$coefficients, object$se, object$coefficients / object$se)
     dimnames(co) <- list(names(coef(object)), c("Value", "SE", "t"))
-    
-	res <- list(model = object, coefficients=co, envelope = env,
-	            nsim = nsim, alpha = alpha)
 
-	oldClass(res) <- "summary.evm.opt"
-	res
+    res <- list(model = object, coefficients=co, envelope = env,
+                nsim = nsim, alpha = alpha)
+
+    oldClass(res) <- "summary.evm.opt"
+    res
 }
 
 print.summary.evm.opt <- function(x, digits = 3 , ...){
@@ -27,22 +27,25 @@ print.summary.evm.opt <- function(x, digits = 3 , ...){
     env <- x$envelope
     nsim <- x$nsim
     alpha <- x$alpha
-    
+
     x <- x$model
 
-    cat( "Call: " )
-    print( x$call, ... )
-    if ( is.null( x$penalty ) | x$penalty=="none" ){
-        cat( "\nModel fit by maximum likelihood.\n" )
+    cat("Call: ")
+    print(x$call, ... )
+
+    cat("\n")
+    print(x$family, verbose=TRUE, ...)
+    if (is.null(x$penalty) | x$penalty=="none"){
+        cat("\nModel fit by maximum likelihood.\n")
     }
     else {
-        cat( "\nModel fit by penalized maximum likelihood.\n" )
+        cat("\nModel fit by penalized maximum likelihood.\n")
     }
-    if ( x$conv == 0 ) conv <- TRUE
+    if (x$conv == 0) conv <- TRUE
     else conv <- FALSE
     cat( "\nConvergence:\t\t")
     cat(conv)
-    
+
     if (x$rate < 1){
         cat( "\nThreshold:\t\t")
         cat(format(unname(x$threshold), digits=digits, ...))
@@ -52,7 +55,7 @@ print.summary.evm.opt <- function(x, digits = 3 , ...){
 
     cat("\n\nLog-lik.\t\tAIC\n")
     cat(format(x$loglik, digits, ...), "\t\t", format(AIC(x), digits=digits, ...))
-    
+
     cat( "\n\nCoefficients:\n" )
     print.default(format(co, digits=digits, ...), print.gap=2, quote=FALSE)
     cat( "\n" )
