@@ -27,6 +27,7 @@ Collate: AIC.evm.R                         plot.evm.R
     efficient.closures.R              print.bootmex.R
     endPoint.R                        print.evm.R
     evm.fit.R                         print.mexDependence.R
+    metropolis.R
     evm.R                             print.mexPrediction.R
     extremalIndex.R                   print.migpd.R
     gpd.info.R                        qgpd2.R

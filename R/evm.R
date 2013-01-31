@@ -73,30 +73,6 @@ function (y, data, family=gpd, th= -Inf, qu,
     ################################# Simulate from posteriors....
 
     else { # Method is "simulate"...
-      proposal.fn <- switch(match.arg(proposal.dist),
-                            gaussian=rmvnorm,
-                            cauchy=.rmvcauchy,
-                            function () {stop("Bad proposal distribution")})
-
-      # Get total number of parameters
-      nc <- sum(unlist(lapply(o$data$D, ncol)))
-
-      if (missing(jump.const)){
-          jump.const <- (2.4/sqrt(nc))^2
-      }
-#      u <- th
-
-      prior <- .make.mvn.prior(priorParameters)
-
-      ############################# Define log-likelihood
-
-      #gpd.log.lik <- .make.gpd.loglikelihood(y, u, X.phi, X.xi)
-      evm.log.lik <- family$log.lik(modelData, th=th, ...)
-
-      log.lik <- function(param) {
-        evm.log.lik(param) + prior(param)
-      }
-
       # Need to check for convergence failure here. Otherwise, end up simulating
       # proposals from distribution with zero variance in 1 dimension.
       checkNA <- any(is.na(sqrt(diag(o$cov))))
@@ -104,8 +80,23 @@ function (y, data, family=gpd, th= -Inf, qu,
           stop("MAP estimates have not converged or have converged on values for which the variance cannot be computed. Cannot proceed. Try a different prior" )
       }
 
-      res <- matrix(ncol=nc, nrow=iter)
-      res[1,] <- if (missing(start)) { o$coefficients } else { start }
+      proposal.fn <- switch(match.arg(proposal.dist),
+                            gaussian=rmvnorm,
+                            cauchy=.rmvcauchy,
+                            function () {stop("Bad proposal distribution")})
+
+      if (missing(jump.const)){
+          jump.const <- (2.4/sqrt(length(o$coefficients)))^2
+      }
+
+      prior <- .make.mvn.prior(priorParameters)
+
+      ############################# Define log-likelihood
+      evm.log.lik <- family$log.lik(modelData, th=th, ...)
+
+      log.lik <- function(param) {
+        evm.log.lik(param) + prior(param)
+      }
 
       if (!exists(".Random.seed")){ runif(1)  }
       seed <- .Random.seed # Retain and add to output
@@ -116,45 +107,18 @@ function (y, data, family=gpd, th= -Inf, qu,
                                double(length(o$coefficients)),
                                cov*jump.const)
 
-      last.cost <- log.lik(res[1,])
-      if (!is.finite(last.cost)) {
-        stop("Start is infeasible.")
-      }
-######################## Run the Metropolis algorithm...
-      acc <- 0
-      for(i in 2:iter){
-        if( verbose){
-          if(i %% trace == 0) cat(i, " steps taken\n" )
-        }
-        prop <- proposals[i - 1,] + res[i - 1,]
-        top <- log.lik(prop)
-        delta <- top - last.cost
-        if (is.finite(top) && ((delta >= 0) ||
-                               (runif(1) <= exp(delta)))) {
-          res[i, ] <- prop
-          last.cost <- top
-          acc <- 1 + acc
-        }
-        else {
-          res[i, ] <- res[i-1,]
-        }
-      } # Close for(i in 2:iter
+      # Initialize matrix to hold chain
+      res <- matrix(ncol=length(o$coefficients), nrow=iter)
+      res[1,] <- if (missing(start)) { o$coefficients } else { start }
 
-      acc <- acc / iter
-      if (acc < .1) {
-        warning("Acceptance rate in Metropolis algorithm is low.")
-      }
-
-      if (trace < iter) {
-        if(verbose) {
-          cat("Acceptance rate:", round(acc , 3) , "\n")
-        }
-      }
+      ######################## Run the Metropolis algorithm...
+      res <- texmexMetropolis(res, log.lik, proposals, verbose, trace)
 
       res <- list(call=theCall, threshold=th , map = o,
                   burn = burn, thin = thin,
                   chains=res, y=y, data=modelData,
-                  acceptance=acc, seed=seed)
+                  acceptance=attr(res, "acceptance"),
+                  seed=seed)
 
       oldClass(res) <- "evm.sim"
       res <- thinAndBurn(res)
