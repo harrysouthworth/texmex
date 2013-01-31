@@ -219,14 +219,8 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
         D <- lapply(D, function(x, u){ x[u,, drop=FALSE] }, u=u)
     }
 
-    # Get idices of parameter matrix last columns
-    mend <- cumsum(unlist(lapply(D, ncol)))
-    mstart <- c(1, mend+1)[-(length(mend) + 1)]
-
-    param <- lapply(1:length(mend), function(i, m, start, end){
-                                        m[,start[i]:end[i],drop=FALSE]
-                                    },
-                    m=object$param, start=mstart, end=mend)
+    # Get matrices of parameters (i.e. split full parameter matrix into phi, xi whatever)
+    param <- texmexGetParam(D, object$param)
 
     # Get linear predictors
     res <- lapply(1:nrow(D[[1]]), # For each observation get matrix of parameters

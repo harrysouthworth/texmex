@@ -48,7 +48,7 @@ gpd.delta <- function(param, m, model){
 }
 
 gpd.rl <- function(m, param, model){
-        model$threshold + exp(param[1]) / param[2] * ((m * model$rate)^param[2] -1)
+        model$threshold + exp(param[, 1]) / param[, 2] * ((m * model$rate)^param[, 2] -1)
 }
 
 gpd.rng <- function(n, param, model){

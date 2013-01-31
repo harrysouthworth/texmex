@@ -166,3 +166,4 @@ texmexMakeCISim <- function(x, alpha, object, sumfun, M){
     }
     res
 }
+

@@ -1,24 +1,19 @@
-bootgpd <- function(x, R=100, trace=10){
-    if (class(x) != "gpd"){
-        stop("x must be of class 'gpd'")
+evm.boot <- function(o, R=100, trace=10, theCall){
+    if (class(o) != "evm"){
+        stop("o must be of class 'evm'")
     }
 
-    theCall <- match.call()
+    if (missing(theCall)){ theCall <- match.call() }
 
-    nphi <- ncol(x$X.phi); nxi <- ncol(x$X.xi)
-    phi <- coef(x)[1:nphi]
-    xi <- coef(x)[(nphi+1):(nphi+nxi)]
-    phi <- colSums(phi * t(x$X.phi))
-    xi <- colSums(xi *t(x$X.xi))
+    data <- o$map$data
+    param <- texmexGetParam(D, object$param)
+    param <- lapply(param, c) # Coerce from matrices with single row
+# XXX NEED TO CHECK HERE AND BENEATH NEXT CODEBLOCK
+    param <- lapply(1:nrow(data[[1]]), function(i, co, d){
+                                           colSums(co[[i]], t(d[[i]]))
+                                       }, co=unlist(param), d=data)
 
-    if ("priorParameters" %in% names(x$call)){
-        pp <- x$priorParameters
-    }
-    else {
-        pp <- list(rep(0, nphi+nxi), diag(rep(10^4, nphi+nxi)))
-    }
-
-    bfun <- function(i, xi, phi, X.phi, X.xi, co, pp, prior){
+    bfun <- function(i, param, data, co, pp, prior){
         if (i %% trace == 0){ cat("Replicate", i, "\n") }
 
         r <- rgpd(length(xi), xi=xi, sigma=exp(phi))
@@ -34,19 +29,19 @@ bootgpd <- function(x, R=100, trace=10){
         warning("Ratio of bias to standard error is high")
     }
 
-    res <- list(call=theCall, replicates=res, original=coef(x), map=x)
+    res <- list(call=theCall, replicates=res, map=x)
 
-    oldClass(res) <- "bootgpd"
+    oldClass(res) <- "evm.boot"
     res
 }
 
-print.bootgpd <- function(x, ...){
+print.evm.boot <- function(x, ...){
     print(x$call)
     means <- apply(x$replicates, 2, mean)
     medians <- apply(x$replicates, 2, median)
     sds <- apply(x$replicates, 2, sd)
-    bias <- means - x$original
-    res <- rbind(x$original, means, bias, sds, medians)
+    bias <- means - x$map$coefficients
+    res <- rbind(x$map$coefficients, means, bias, sds, medians)
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
     #colnames(res) <- names(summary(rnorm(3)))
     print(res, ...)
@@ -56,7 +51,7 @@ print.bootgpd <- function(x, ...){
     invisible(res)
 }
 
-summary.bootgpd <- function(object, ...){
+summary.evm.boot <- function(object, ...){
     means <- apply(object$replicates, 2, mean)
     medians <- apply(object$replicates, 2, median)
     sds <- apply(object$replicates, 2, sd)
@@ -70,11 +65,11 @@ summary.bootgpd <- function(object, ...){
 
 	covs <- var(object$replicates)
 	res <- list(call = object$call, margins=res, covariance=covs)
-	oldClass(res) <- "summary.bootgpd"
+	oldClass(res) <- "summary.evm.boot"
     res
 }
 
-print.summary.bootgpd <- function(x, ...){
+print.summary.evm.boot <- function(x, ...){
 	print(x$call)
 	print(x$margins)
 	cat("\nCorrelation:\n")
@@ -82,7 +77,7 @@ print.summary.bootgpd <- function(x, ...){
     invisible()
 }
 
-plot.bootgpd <- function(x, col=4, border=FALSE, ...){
+plot.evm.boot <- function(x, col=4, border=FALSE, ...){
 	pfun <- function(x, col, border, xlab,...){
 		d <- density(x, n=100)
 		hist(x, prob=TRUE, col=col, border=border, main="", xlab=xlab, ...)
@@ -96,10 +91,10 @@ plot.bootgpd <- function(x, col=4, border=FALSE, ...){
 	invisible()
 }
 
-show.bootgpd <- print.bootgpd
-show.summary.bootgpd <- print.summary.bootgpd
+show.evm.boot <- print.evm.boot
+show.summary.evm.boot <- print.summary.evm.boot
 
-test.bootgpd <- function(){
+test.evm.boot <- function(){
     set.seed(20111007)
     # Compare bootstrap standard errors with those given by Coles
     # page 85

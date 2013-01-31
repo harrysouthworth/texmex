@@ -173,3 +173,17 @@ texmexParameters <- function(call, fam){
 
     mp
 }
+
+texmexGetParam <- function(data, co){
+    if (is.vector(co)){ co <- matrix(co, nrow=1) }
+
+    mend <- cumsum(unlist(lapply(data, ncol)))
+    mstart <- c(1, mend+1)[-(length(mend) + 1)]
+
+    param <- lapply(1:length(mend), function(i, m, start, end){
+                                        m[,start[i]:end[i],drop=FALSE]
+                                    },
+                    m=co, start=mstart, end=mend)
+    param
+}
+
