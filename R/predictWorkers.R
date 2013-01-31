@@ -148,7 +148,7 @@ texmexMakeCISim <- function(x, alpha, object, sumfun){
         neednames <- FALSE
     }
 
-    res <- t(sapply(res, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
+    res <- t(sapply(x, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
 
     if (neednames){
         nms <- c("Mean","50%", paste0(100*alpha/2, "%"),

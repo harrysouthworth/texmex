@@ -247,9 +247,9 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
     ## Hard part should be done now. Just need to summarize
 
     if (ci.fit){ res <- texmexMakeCISim(res, alpha, object, sumfun) }
-    else if (se.fit){ warning("se.fit not implemented - ignoring") }
     else if (all){ res <- res }
     else { # Just point estimates
+        if (se.fit){ warning("se.fit not implemented - ignoring") }
         res <- t(sapply(res, function(x){ apply(x, 2, mean) }))
     }
     if(!all){
