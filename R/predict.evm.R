@@ -1,6 +1,7 @@
 # Author: Harry Southworth
 # Date: 2011-11-25
-## Purpose: Create a predict method for objects of class evm and bgpd that
+## Purpose: Create a predict method for objects of class evm.opt, evm.sim
+##          and evm.boot that
 ##          returns parameters, return levels or (maybe) return periods,
 ##          depending on arguments given.
 #
@@ -131,7 +132,7 @@ rl.evm.opt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
         se
     }
 
-    if (ci.fit){ # need to update plotrl.gpd too once profile lik confidence intervals implemented here
+    if (ci.fit){ 
         ci.fun <- function(i, object, co, M, res, alpha, delta, covs){
             wh <- res[[i]];
             se <- getse(object, co, M[i], delta=delta, covs=covs)
@@ -228,14 +229,19 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
                     m=object$param, start=mstart, end=mend)
 
     # Get linear predictors
-    res <- lapply(1:length(D),          #nrow(D[[1]]),
+    res <- lapply(1:nrow(D[[1]]), # For each observation get matrix of parameters
               function(i, x, p){
-                  unlist(lapply(1:nrow(x[[i]]),
-                             function(i, x, p){
-                                 rowSums(t(t(p) * c(x[i, ])))
-                             }, x=x[[i]], p=p[[i]]))
-              }, x=D, p=param)
-#    res <- do.call("cbind", res)
+                  wh <- lapply(1:length(D),
+                               function(j, x, p, i){
+                                   rowSums(t(t(p[[j]]) * c(x[[j]][i, ])))
+                               }, x=x, p=p, i=i)
+                  wh <- do.call("cbind", wh)
+                  colnames(wh) <- names(x)
+                  wh
+                }, x=D, p=param)
+    # res should be a list containing a matrix for each observation.
+    # The matrix represents the simulated posterior, one column for each
+    # major parameter (i.e. linear predictors)
 
     ############################################################################
     ## Hard part should be done now. Just need to summarize
@@ -246,25 +252,24 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
     else { # Just point estimates
         res <- t(sapply(res, function(x){ apply(x, 2, mean) }))
     }
-
     if(!all){
       if(ModelHasCovs){
         for (i in 1:length(D)){
             res <- addCov(res,D[[i]])
         }
       }
-    } else {
+    }
+    else {
         if (ModelHasCovs & nrow(X.all) != length(res)){
             stop("Number of unique combinations of covariates doesn't match the number of parameters")
         }
         for (i in 1:length(res)){
           if(ModelHasCovs){
-browser()
             res[[i]] <- cbind(res[[i]], matrix(rep(X.all[i,], nrow(res[[i]])),
                                                nrow=nrow(res[[i]]), byrow=TRUE))
-            colnames(res[[i]]) <- c(names(object$data$D), colnames(X.all))
+            colnames(res[[i]]) <- c(names(D), colnames(X.all))
           } else {
-            colnames(res[[i]]) <- names(object$data$D)
+            colnames(res[[i]]) <- names(D)
           }
         }
     }
@@ -366,7 +371,7 @@ namesBoot2bgpd <- function(bootobject){
 
 linearPredictors.evm.boot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050,
                                  unique.=TRUE, all=FALSE, sumfun=NULL,...){
-    # This should just be the same as for a bgpd object, but some
+    # This should just be the same as for an evm.sim object, but some
     # names and stuff are different.
   object <- namesBoot2bgpd(object)
   res <- linearPredictors.evm.sim(object, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit, all=all, unique.=unique., alpha=alpha, sumfun=sumfun,...)
@@ -375,7 +380,7 @@ linearPredictors.evm.boot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit
 }
 
 rl.bootgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
-    # This should just be the same as for a bgpd object, but some
+    # This should just be the same as for an evm.sim object, but some
     # names are different.
   object <- namesBoot2bgpd(object)
   res <- rl.evm.sim(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
