@@ -16,7 +16,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           maxit = 10000, trace=NULL,
           iter = 40500, burn=500, thin = 4,
           proposal.dist = c("gaussian", "cauchy"),
-          jump.cov, jump.const, verbose=TRUE) {
+          jump.cov, jump.const=NULL, verbose=TRUE) {
 
     theCall <- match.call()
 
@@ -73,43 +73,34 @@ function (y, data, family=gpd, th= -Inf, qu,
     ################################# Simulate from posteriors....
 
     else { # Method is "simulate"...
-      # Need to check for convergence failure here. Otherwise, end up simulating
-      # proposals from distribution with zero variance in 1 dimension.
-      checkNA <- any(is.na(sqrt(diag(o$cov))))
-      if (checkNA) {
-          stop("MAP estimates have not converged or have converged on values for which the variance cannot be computed. Cannot proceed. Try a different prior" )
+
+      # Run checks and initialize algorithm
+      wh <- texmexCheckMap(o)
+      jump.const <- texmexJumpConst(jump.const, o)
+      seed <- initRNG()
+      cov <- if (missing(jump.cov)) { o$cov } else { jump.cov }
+
+      # Initialize matrix to hold chain
+      res <- matrix(ncol=length(o$coefficients), nrow=iter)
+      res[1,] <- if (missing(start)) { o$coefficients } else { start }
+
+      ############################# Get prior and log-likelihood
+      prior <- .make.mvn.prior(priorParameters)
+
+      evm.log.lik <- family$log.lik(modelData, th=th, ...)
+      log.lik <- function(param) {
+        evm.log.lik(param) + prior(param)
       }
 
+      # create proposals en bloc
       proposal.fn <- switch(match.arg(proposal.dist),
                             gaussian=rmvnorm,
                             cauchy=.rmvcauchy,
                             function () {stop("Bad proposal distribution")})
 
-      if (missing(jump.const)){
-          jump.const <- (2.4/sqrt(length(o$coefficients)))^2
-      }
-
-      prior <- .make.mvn.prior(priorParameters)
-
-      ############################# Define log-likelihood
-      evm.log.lik <- family$log.lik(modelData, th=th, ...)
-
-      log.lik <- function(param) {
-        evm.log.lik(param) + prior(param)
-      }
-
-      if (!exists(".Random.seed")){ runif(1)  }
-      seed <- .Random.seed # Retain and add to output
-
-      cov <- if (missing(jump.cov)) { o$cov } else { jump.cov }
-                                        # create proposals en bloc
       proposals <- proposal.fn(iter,
                                double(length(o$coefficients)),
                                cov*jump.const)
-
-      # Initialize matrix to hold chain
-      res <- matrix(ncol=length(o$coefficients), nrow=iter)
-      res[1,] <- if (missing(start)) { o$coefficients } else { start }
 
       ######################## Run the Metropolis algorithm...
       res <- texmexMetropolis(res, log.lik, proposals, verbose, trace)
