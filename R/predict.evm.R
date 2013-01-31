@@ -281,49 +281,36 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
 rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
 
     co <- linearPredictors.evm.sim(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
+    # XXX Next line seems silly! Why not compute it from the line above?
     Covs <- linearPredictors.evm.sim(object, newdata=newdata, unique.=unique., sumfun=NULL)
-    X <- Covs[,-(1:2)]
+    X <- Covs[,-(1:length(object$map$data$D))]
     if(is.null(dim(X))){
       X <- matrix(X)
       dimnames(X) <- list(dimnames(Covs)[[1]],dimnames(Covs)[[2]][-(1:2)])
     }
 
-    bgpdrl <- function(o, u, theta, m){
-        res <- u + exp(o[, 1]) / o[, 2] *((m * theta)^o[, 2] -1)
-        cbind(RL=res)
+    sim.rl <- function(m, param, model){
+        rl <- model$family$rl
+        cbind(apply(param, 1, rl, model=model, m=m))
     }
 
     # co is a list with one element for each unique item in
     # new data. Need to loop over vector M and the elements of co
 
-    getrl <- function(m, co, u, theta, ci.fit, alpha, all){
-        res <- sapply(co, bgpdrl, u=u, theta=theta, m=m)
+    getrl <- function(m, co, ci.fit, alpha, all, object){
+        res <- sapply(co, sim.rl, m=m, model=object$map)
 
         if (ci.fit){
-            if (is.null(sumfun)){
-                sumfun <- function(x){
-                    c(mean(x), quantile(x, prob=c(.50, alpha/2,  1 - alpha/2)))
-                }
-                neednames <- TRUE
-            } else {
-               neednames <- FALSE
-            }
-            res <- t(apply(res, 2, sumfun))
-            if (neednames){
-                colnames(res) <- c("Mean", "50%", paste(100*alpha/2, "%", sep = ""),
-                                   paste(100*(1-alpha/2), "%", sep = ""))
-            }
-
+            res <- texmexMakeCISim(res, alpha, object$map, sumfun)
         } # Close if (ci.fit
-        else if (se.fit){
-            warning("se.fit not implemented")
+        else if (!all){
             res <- apply(res, 2, mean)
+            if (se.fit){ warning("se.fit not implemented") }
         }
-        else if (!all){ res <- apply(res, 2, mean) }
         res
     }
 
-    res <- lapply(M, getrl, co=co, u=object$threshold, theta=object$map$rate, ci.fit=ci.fit, alpha=alpha, all=all)
+    res <- lapply(M, getrl, co=co, ci.fit=ci.fit, alpha=alpha, all=all, object=object)
 
     if(!all){
       cov.fun <- function(i,res){
