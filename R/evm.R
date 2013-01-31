@@ -1,4 +1,5 @@
 evm <- function(y, data, family=gpd, ...){
+  theCall <- match.call()
   if (!missing(data)) {
       y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
       y <- formula(paste(y, "~ 1"))
@@ -18,7 +19,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL, verbose=TRUE) {
 
-    theCall <- match.call()
+    #theCall <- match.call()
 
     modelParameters <- texmexParameters(theCall, family)
 

@@ -2,12 +2,12 @@ print.evm.sim <-
 function(x , print.seed=FALSE, ...){
 
 	print(x$call)
-        print(x$map$family, verbose=FALSE)
+    print(x$map$family, verbose=FALSE)
 
-        if (print.seed){
+    if (print.seed){
 		cat("Random seed:", x$seed, "\n")
 	}
-	cat("Acceptance rate: ", signif(x$acc, 3))
+	cat("Acceptance rate: ", signif(attr(x$chains, "acceptance"), 3))
 
 	cat("\n\nMAP estimates:\n")
     co <- coef(x)
