@@ -63,59 +63,23 @@ function (y, data, family=gpd, th= -Inf, qu,
         warning("Non-convergence in evm.default")
     }
 
-    ################################## If method = "optimize", construct object and return...
+    ##### Construct object containing the penalized likelihood estimates
 
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,
                       modelData, priorParameters, cov)
 
-    if (method == "o"){ o }
-
-    ################################# Simulate from posteriors....
-
-    else { # Method is "simulate"...
-
-      # Run checks and initialize algorithm
-      wh <- texmexCheckMap(o)
-      jump.const <- texmexJumpConst(jump.const, o)
-      seed <- initRNG()
-      cov <- if (missing(jump.cov)) { o$cov } else { jump.cov }
-
-      # Initialize matrix to hold chain
-      res <- matrix(ncol=length(o$coefficients), nrow=iter)
-      res[1,] <- if (missing(start)) { o$coefficients } else { start }
-
-      ############################# Get prior and log-likelihood
-      prior <- .make.mvn.prior(priorParameters)
-
-      evm.log.lik <- family$log.lik(modelData, th=th, ...)
-      log.lik <- function(param) {
-        evm.log.lik(param) + prior(param)
-      }
-
-      # create proposals en bloc
-      proposal.fn <- switch(match.arg(proposal.dist),
-                            gaussian=rmvnorm,
-                            cauchy=.rmvcauchy,
-                            function () {stop("Bad proposal distribution")})
-
-      proposals <- proposal.fn(iter,
-                               double(length(o$coefficients)),
-                               cov*jump.const)
-
-      ######################## Run the Metropolis algorithm...
-      res <- texmexMetropolis(res, log.lik, proposals, verbose, trace)
-
-      res <- list(call=theCall, threshold=th , map = o,
-                  burn = burn, thin = thin,
-                  chains=res, y=y, data=modelData,
-                  acceptance=attr(res, "acceptance"),
-                  seed=seed)
-
-      oldClass(res) <- "evm.sim"
-      res <- thinAndBurn(res)
-      res
+    #### Simulate from posteriors....
+    if (method == "s"){
+        proposal.dist <- match.arg(proposal.dist)
+        o <- evm.sim(o, priorParameters=priorParameters,
+                     prop.dist=proposal.dist,
+                     jump.const=jump.const, jump.cov=jump.cov,
+                     iter=iter, start=start, verbose=verbose,
+                     thin=thin, burn=burn,
+                     trace=trace, theCall)
     } # Close else
 
+    o
 }
 
 test.gpd <- function(){

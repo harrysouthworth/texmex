@@ -1,3 +1,50 @@
+evm.sim <- function(o, priorParameters, prop.dist,
+                    jump.const, jump.cov, iter, start,
+                    thin, burn,
+                    verbose, trace, theCall, ...){
+    # Run checks and initialize algorithm
+    wh <- texmexCheckMap(o)
+    jump.const <- texmexJumpConst(jump.const, o)
+    seed <- initRNG()
+    cov <- if (missing(jump.cov)) { o$cov } else { jump.cov }
+
+    # Initialize matrix to hold chain
+    res <- matrix(ncol=length(o$coefficients), nrow=iter)
+    res[1,] <- if (is.null(start)) { o$coefficients } else { start }
+
+    ############################# Get prior and log-likelihood
+    prior <- .make.mvn.prior(priorParameters)
+
+    evm.log.lik <- o$family$log.lik(o$data, th=o$threshold, ...)
+
+    log.lik <- function(param) {
+      evm.log.lik(param) + prior(param)
+    }
+
+    # create proposals en bloc
+    proposal.fn <- switch(prop.dist,
+                          gaussian=rmvnorm,
+                          cauchy=.rmvcauchy,
+                          function () {stop("Bad proposal distribution")})
+
+    proposals <- proposal.fn(iter,
+                             double(length(o$coefficients)),
+                             cov*jump.const)
+
+    ######################## Run the Metropolis algorithm...
+    res <- texmexMetropolis(res, log.lik, proposals, verbose, trace)
+
+    # XXX Tidy up the object below. Doesn't need any of the info in o, or acceptance
+    res <- list(call=theCall, map = o,
+                burn = burn, thin = thin,
+                chains=res, seed=seed)
+
+    oldClass(res) <- "evm.sim"
+    res <- thinAndBurn(res)
+    res
+}
+
+
 texmexMetropolis <-
     # Metropolis algorithm. 
     # x is a matrix, initialized to hold the chain. It's first row should be the

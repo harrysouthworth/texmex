@@ -22,7 +22,7 @@ bootgpd <- function(x, R=100, trace=10){
         if (i %% trace == 0){ cat("Replicate", i, "\n") }
 
         r <- rgpd(length(xi), xi=xi, sigma=exp(phi))
-		wh <- gpdFit(y=r,th=min(r), X.phi=X.phi, X.xi=X.xi, penalty=prior, priorParameters=pp, start=co)$par
+		wh <- gpd.fit(y=r, th=min(r), X.phi=X.phi, X.xi=X.xi, penalty=prior, priorParameters=pp, start=co)$par
     }
 
     res <- t(sapply(1:R, bfun, xi=xi, phi=phi, X.phi=x$X.phi, X.xi=x$X.xi, co=coef(x), pp=pp, prior=x$penalty))
