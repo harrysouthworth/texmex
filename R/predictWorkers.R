@@ -138,7 +138,9 @@ texmexMakeNewdataD <- function(x, newdata){
     invisible(res)
 }
 
-texmexMakeCISim <- function(x, alpha, object, sumfun){
+texmexMakeCISim <- function(x, alpha, object, sumfun, M){
+    if (!is.list(x)){ x <- list(x) }
+
     if (is.null(sumfun)){
         sumfun <- function(x){
             c(mean(x), quantile(x, prob=c(.50, alpha/2,  1 - alpha/2)) )
@@ -153,7 +155,14 @@ texmexMakeCISim <- function(x, alpha, object, sumfun){
     if (neednames){
         nms <- c("Mean","50%", paste0(100*alpha/2, "%"),
                  paste0(100*(1-alpha/2), "%"))
-        colnames(res) <- apply(expand.grid(names(object$data$D), nms), 1, paste0, collapse="")
+        if (missing(M)){
+            colnames(res) <- apply(expand.grid(names(object$data$D), nms), 1,
+                                   paste0, collapse="")
+        }
+        else {
+            colnames(res) <- apply(expand.grid(paste("M", M, sep=":"), nms), 1,
+                                   paste0, collapse="")
+        }
     }
     res
 }

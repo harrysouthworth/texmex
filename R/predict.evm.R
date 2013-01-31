@@ -299,9 +299,8 @@ rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 
     getrl <- function(m, co, ci.fit, alpha, all, object){
         res <- sapply(co, sim.rl, m=m, model=object$map)
-
         if (ci.fit){
-            res <- texmexMakeCISim(res, alpha, object$map, sumfun)
+            res <- texmexMakeCISim(res, alpha, object$map, sumfun, M=m)
         } # Close if (ci.fit
         else if (!all){
             res <- apply(res, 2, mean)
