@@ -17,7 +17,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           maxit = 10000, trace=NULL,
           iter = 40500, burn=500, thin = 4,
           proposal.dist = c("gaussian", "cauchy"),
-          jump.cov, jump.const=NULL, verbose=TRUE) {
+          jump.cov, jump.const=NULL, R=100, verbose=TRUE) {
 
     #theCall <- match.call()
 
@@ -79,6 +79,9 @@ function (y, data, family=gpd, th= -Inf, qu,
                      thin=thin, burn=burn,
                      trace=trace, theCall)
     } # Close else
+    else if (method == "b"){
+        o <- evm.boot(o, R=R)
+    }
 
     o
 }

@@ -2,8 +2,8 @@ evm.sim <- function(o, priorParameters, prop.dist,
                     jump.const, jump.cov, iter, start,
                     thin, burn,
                     verbose, trace, theCall, ...){
-    if (class(o) != "evm"){
-        stop("o must be of class 'gpd'")
+    if (class(o) != "evm.opt"){
+        stop("o must be of class 'evm.opt'")
     }
     # Run checks and initialize algorithm
     wh <- texmexCheckMap(o)

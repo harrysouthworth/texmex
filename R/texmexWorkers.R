@@ -15,6 +15,9 @@ function(method){
     else if (method %in% c("s", "sim", "simulate")){
         method <- "s"
     }
+    else if (method %in% c("b", "bs", "boot", "bootstrap")){
+        method <- "b"
+    }
     else {
         stop("method should be either 'optimize' or 'simulate'")
     }

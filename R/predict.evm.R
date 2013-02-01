@@ -285,7 +285,7 @@ rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 
     sim.rl <- function(m, param, model){
         rl <- model$family$rl
-        cbind(apply(param, 1, rl, model=model, m=m))
+        rl(m=m, param, model)
     }
 
     # co is a list with one element for each unique item in
@@ -302,9 +302,9 @@ rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
         }
         res
     }
-
+#cat("meow\n")
     res <- lapply(M, getrl, co=co, ci.fit=ci.fit, alpha=alpha, all=all, object=object)
-
+#cat("purr\n")
     if(!all){
       cov.fun <- function(i,res){
         wh <- res[[i]]
@@ -342,10 +342,7 @@ predict.evm.boot <- function(object, M=1000, newdata=NULL, type="return level",
 }
 
 namesBoot2bgpd <- function(bootobject){
-    names(bootobject) <- c("call", "param", "original", "map")
-    bootobject$X.phi <- bootobject$map$X.phi
-    bootobject$X.xi <- bootobject$map$X.xi
-    bootobject$threshold <- bootobject$map$threshold
+    names(bootobject) <- c("call", "param", "map")
     bootobject
 }
 
@@ -359,7 +356,7 @@ linearPredictors.evm.boot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit
   res
 }
 
-rl.bootgpd <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
+rl.evm.boot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
     # This should just be the same as for an evm.sim object, but some
     # names are different.
   object <- namesBoot2bgpd(object)
