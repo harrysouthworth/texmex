@@ -1,44 +1,49 @@
-\name{gpd}
-\alias{gpd}
-\alias{gpd.default}
-\alias{print.gpd}
-\alias{show.gpd}
-\alias{summary.gpd}
-\alias{plot.gpd}
-\alias{coef.gpd}
-\alias{AIC.gpd}
-\alias{print.bgpd}
-\alias{plot.bgpd}
-\title{ Generalized Pareto distribution modelling }
-\description{Likelihood based modelling and inference for the generalized
-Pareto distribution, possibly with explanatory variables.
-}
+\name{evm}
+\alias{evm}
+\alias{evm.default}
+\alias{evm.sim}
+\alias{evm.boot}
+\alias{print.evm}
+\alias{show.evm}
+\alias{summary.evm}
+\alias{plot.evm}
+\alias{coef.evm}
+\alias{AIC.evm}
+\alias{print.evm.sim}
+\alias{summary.evm.sim}
+\alias{plot.evm.sim}
+\alias{print.evm.boot}
+\alias{summary.evm.boot}
+\alias{plot.evm.boot}
+\title{Generalized Pareto distribution modelling}
+\description{Likelihood based modelling and inference for extreme value models,
+possibly with explanatory variables.}
 \usage{
-gpd(y, data, ...)
+evm(y, data, family, ...)
 
-\method{gpd}{default}(y, data, th, qu, phi = ~1, xi = ~1, penalty = "gaussian",
+\method{evm}{default}(y, data, family, th=-Inf, qu,
+    ..., penalty = "gaussian",
     prior = "gaussian", method = "optimize", cov="observed", start = NULL, 
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
     proposal.dist = c("gaussian", "cauchy"),
-    jump.cov, jump.const, verbose = TRUE,...)
+    jump.cov, jump.const, verbose = TRUE)
 
-\method{print}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
-\method{summary}{gpd}(object, nsim=1000, alpha=0.05, ...)
-\method{show}{gpd}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{print}{evm}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{summary}{evm.sim}(object, nsim=1000, alpha=0.05, ...)
+\method{show}{evm.sim}(x, digits=max(3, getOption("digits") - 3), ...)
 
-\method{plot}{gpd}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
-
-\method{AIC}{gpd}(object, ..., k=2)
-
-\method{print}{bgpd}(x, print.seed=FALSE, ...)
-\method{plot}{bgpd}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{plot}{evm.sim}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{AIC}{evm.sim}(object, ..., k=2)
+\method{print}{evm.sim}(x, print.seed=FALSE, ...)
+\method{plot}{evm}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
   \item{data}{ A data frame containing \code{y} and any covariates. }
-  \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the GPD upper tail model. }
+  \item{family}{An object of class 'texmexFamily'.}
+  \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the evm.sim upper tail model. }
   \item{qu}{An alternative to \code{th}, a probability defined such that \code{quantile(y,qu)} equals \code{th}.}
   \item{phi}{ Formula for the log of the scale parameter. Defaults to
       \code{phi = ~ 1} - i.e. no covariates. }
@@ -53,7 +58,8 @@ gpd(y, data, ...)
      and \code{prior} should be given. If \code{method = "simulate"},
      prior must be ``gaussian'' because no other prior distributions
      have been implemented.}
-  \item{method}{Should be either ``optimize'' (the default) or ``simulate''.
+  \item{method}{Should be either ``optimize'' (the default), ``simulate''
+     or ``bootstrap''.
      The first letter or various abbreviations will do. If ``optimize'' is
      used, the (penalized) likelihood is directly optimized using \code{optim}
      and point estimates (either ML or MAP estimates) are returned with other
@@ -99,28 +105,37 @@ gpd(y, data, ...)
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
- \item{x, object}{Object of class \code{gpd}, \code{bgpd}, \code{summary.gpd}
-                   or \code{summary.bgpd} returned by \code{gpd} or \code{summary.gpd}.}
+ \item{x, object}{Object of class \code{evm.sim}, \code{bevm.sim}, \code{summary.evm.sim}
+                   or \code{summary.bevm.sim} returned by \code{evm.sim} or \code{summary.evm.sim}.}
   \item{digits}{Number of digits for printing.}
-  \item{main}{In \code{plot} method for class \code{gpd}, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
+  \item{main}{In \code{plot} method for class \code{evm.sim}, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
   \item{xlab}{As for \code{main} but labels for x-axes rather than titles.}
-  \item{nsim}{In \code{plot} and \code{summary} methods for class \code{gpd}. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
-  \item{alpha}{In \code{plot} and \code{summary} methods for class \code{gpd}. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
+  \item{nsim}{In \code{plot} and \code{summary} methods for class \code{evm.sim}. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
+  \item{alpha}{In \code{plot} and \code{summary} methods for class \code{evm.sim}. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
   \item{k}{Constant used in calculation of AIC=-2*loglik + k*p, defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
                     \code{print.seed=FALSE}.}
-  \item{which.plots}{In \code{plot} method for class \code{bgpd}. Which plots to produce. Option 1 gives kernel density estimates,
+  \item{which.plots}{In \code{plot} method for class \code{bevm.sim}. Which plots to produce. Option 1 gives kernel density estimates,
                      2 gives traces of the Markov chains with superimposed
                      cumulative means, 3 gives autocorrelation functions.
                      Defaults to \code{which.plots=1:3}.}
-  \item{density.adjust}{In \code{plot} method for class \code{bgpd}. Passed into \code{density}. Controls the amount of
+  \item{density.adjust}{In \code{plot} method for class \code{bevm.sim}. Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
-  We use the following parameterisation of the GPD:
+  In previous versions of \code{texmex}, the main modelling
+  function was \code{gpd} and models using the generalized
+  Pareto distribution were used. In this version, the main
+  modelling function is now \code{evm} (\em{extreme value model}
+  and the distribution to be used is specified through the
+  \code{family} argument.
+  
+  Object \code{gpd} is now an object of class \code{texmexFamily}.
+
+  We use the following parameterisation of evm:
   
   \deqn{P(X \le x) = 1 - \left(1 + \frac{\xi x}{\sigma}\right)^{-1/\xi}}{%
         P(X \le x) = 1 - (1 + \xi x / \sigma)^(-1/\xi)}
@@ -129,12 +144,27 @@ gpd(y, data, ...)
   
   Working with the log of the scale parameter improves the
   stability of computations, making  a quadratic penalty more 
-  appropriate and enabling the inclusion of covariates in the model for the scale parameter, which must remain positive.  We therefore work with \eqn{\phi}=log(\eqn{\sigma}).  All specification of priors or penalty functions refer to \eqn{\phi} rather than \eqn{\sigma}.  A quadratic penalty can be 
-  thought of as a Gaussian prior distribution, whence the terminology of the function.
+  appropriate and enabling the inclusion of covariates in the model
+  for the scale parameter, which must remain positive.  We therefore
+  work with \eqn{\phi}=log(\eqn{\sigma}).  All specification of
+  priors or penalty functions refer to \eqn{\phi} rather
+  than \eqn{\sigma}.  A quadratic penalty can be thought of as a
+  Gaussian prior distribution, whence the terminology of the function.
   
-  Parameters of the GPD fitted to excesses above threshold \code{th} are estimated by using penalized maximum likelihood (\code{method="optimize"}), or by simulating from the posterior distribution of the model parameters using a Metropolis algorithm (\code{method="simulate"}).  In the latter case, \code{start} is used as a starting value for the Metropolis algorithm; in its absence, the maximum penalized likelhood point estimates are computed and used.
+  Parameters of the evm are estimated by using penalized maximum
+  likelihood (\code{method="optimize"}), or by simulating from the
+  posterior distribution of the model parameters using a
+  Metropolis algorithm (\code{method="simulate"}).  In the
+  latter case, \code{start} is used as a starting value for the
+  Metropolis algorithm; in its absence, the maximum penalized likelhood
+  point estimates are computed and used.
+  
+  A boostrap approach is also available (\code{method="bootstrap"}).
+  This runs a parametric bootstrap, simulating from the model fit
+  by optimization.
 
-  When a summary or plot is performed, a pointwise (1 - alpha)\% tolerance envelope is simulated, based on quantiles of the fitted
+  When a summary or plot is performed for the model fit by optimization,
+  a pointwise (1 - alpha)\% tolerance envelope is simulated, based on quantiles of the fitted
   model.  Since the ordered observations will be correlated, if any observation is outside
   the envelope, it is likely that a chain of observations will be outside the
   envelope. Therefore, if the number outside the envelope is a little more than
@@ -144,11 +174,11 @@ gpd(y, data, ...)
   diagnostic plots for the fitted generalized Pareto model. These differ 
   depending on whether or not there are covariates in the model.  If there 
   are no covariates then the diagnostic plots are PP- and QQ-plots, a 
-  return level plot (produced by \code{plotrl.gpd}) and a histogram of the data with superimposed generalized 
+  return level plot (produced by \code{plotrl.evm.sim}) and a histogram of the data with superimposed generalized 
   Pareto density estimate.  These are all calculated using the data on 
   the original scale. If there are covariates in the model then the 
   diagnostics consist of PP- and QQ- plots calculated by using the model 
-  residuals (which will be standard exponential devaiates under the GPD model), 
+  residuals (which will be standard exponential devaiates under the evm.sim model), 
   and plots of residuals versus fitted model parameters.
   
   The PP- and QQ-plots show simulated pointwise tolerance intervals.
@@ -162,6 +192,9 @@ gpd(y, data, ...)
   caterpillars" and their cumulative means should converge rapidly. Moreover, 
   the autocorrelation functions should converge quickly to zero.
 
+  When \code{method = "bootstrap"}, the \code{plot} function plots
+  the bootstrap distributions of the parameters.
+
   When \code{method = "simulate"} the \code{print} and \code{summary} functions 
   give posterior means and standard deviations. Posterior means are also 
   returned by the \code{coef} method. Depending on what you want to do 
@@ -169,41 +202,45 @@ gpd(y, data, ...)
   you might want to work with quantiles of the posterior distributions 
   instead of relying on standard errors.
   
- 
+  When \code{method = "bootstrap"}, summaries of the bootstrap distribution
+  and the bootstrap estimate of bias are displayed.
 }
 \value{
-    If \code{method = "optimize"}, an object of class \code{gpd}:
+    If \code{method = "optimize"}, an object of class \code{evm.opt}:
 
+    \item{call}{The call to \code{evm.sim} that produced the object.}
+    \item{data}{The original data (above and below the threshold for fitting if
+          a distribution for threshold excesses has been used). In detail,
+          \code{data} is a list with elements \code{y} and \code{D}. \code{y}
+          is the response variable and \code{D} is a list containing the design
+          matrices implied by any formlae used in the call to \code{evm}.}
     \item{convergence}{Output from \code{optim} relating to whether or
                        not the optimizer converged.}
     \item{message}{A message telling the user whether or not convergence
                    was achieved.}
-    \item{threshold}{The threshold of the data above which the GPD model was fit.}
+    \item{threshold}{The threshold of the data above which the evm.sim model was fit.}
     \item{penalty}{The type of penalty function used, if any.}
     \item{coefficients}{The parameter estimates as computed under maximum
                         likelihood or maximum penalized likelihood.}
     \item{rate}{The proportion of observations above the threshold.}
-    \item{call}{The call to \code{gpd} that produced the object.}
-    \item{y}{The response data above the threshold for fitting.}
-    \item{X.phi}{The design matrix for the log of the scale parameter.}
-    \item{X.xi}{The design matrix for the shape parameter.}
+
     \item{priorParameters}{See above.}
-    \item{data}{The original data (above and below the threshold for fitting).}
-    \item{residuals}{Data above the threshold for fitting after transformation 
-                     to standard exponential scale by using the fitted GPD.}
+
+    \item{residuals}{Residuals computed using the residual function in the
+            \code{texmexFamily} object, if any.}
     \item{loglik}{The value of the optimized log-likelihood.}
     \item{cov}{The estimated covariance of the parameters in the model.}
     \item{se}{The estimated standard errors of the parameters in the model.}
     
     
 
-    If \code{method = "simulate"}, an object of class \code{bgpd}:
+    If \code{method = "simulate"}, an object of class \code{evm.sim}:
 
-    \item{call}{The call to \code{gpd} that produced the object.}
+    \item{call}{The call to \code{evm.sim} that produced the object.}
     \item{threshold}{The threshold above which the model was fit.}
     \item{map}{The point estimates found by maximum penalized likelihood
                and which were used as the starting point for the Markov
-               chain.  This is of class \code{gpd} and methods for this 
+               chain.  This is of class \code{evm.sim} and methods for this 
                class (such as resid and plot) may be useful.}
     \item{burn}{The number of steps of the Markov chain that are to be 
                 treated as the burn-in and not used in inferences.}
@@ -211,15 +248,12 @@ gpd(y, data, ...)
     \item{chains}{The entire Markov chain generated by the Metropolis
                   algorithm.}
     \item{y}{The response data above the threshold for fitting.}  
-    \item{data}{The original data (above and below the threshold for fitting).}
-    \item{X.phi}{The design matrix for the log of the scale parameter.}
-    \item{X.xi}{The design matrix for the log of the shape parameter.}
-    \item{acceptance}{The proportion of proposals that were accepted by
-                      the Metropolis algorithm.}
     \item{seed}{The seed used by the random number generator.}
     \item{param}{The remainder of the chain after deleting the burn-in
                  and applying any thinning.}
-                 
+
+    If \code{method = "bootstrap"}, an object of class \code{evm.boot}:
+
     There are summary, plot, print and coefficients methods available for these classes.
 
 }
@@ -233,9 +267,10 @@ gpd(y, data, ...)
   otherwise).
   }
 
-\seealso{ \code{\link{rl.gpd}}, \code{\link{predict.gpd}}, \code{\link{gpd.declustered}}.}
+\seealso{ \code{\link{rl.evm.sim}}, \code{\link{predict.evm.sim}}, \code{\link{evm.sim.declustered}}.}
 
-\author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on the \code{gpd.fit} function
+\author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
+  the \code{gpd.fit} function
   in the \code{ismev} package and is due to Stuart Coles.}
 
 \references{A. C. Davison and R. L. Smith, Models for exceedances over
@@ -244,18 +279,18 @@ gpd(y, data, ...)
 
 \examples{
   x <- rnorm(1000)
-  mod <- gpd(x, qu = 0.7)
+  mod <- evm.sim(x, qu = 0.7)
   mod
   par(mfrow=c(2, 2))
   plot(mod)
 
   x <- runif(100,-0.2,0.2)
-  data <- data.frame(x=x,y=rgpd(100,sigma=exp(3 + 2*x),xi=x))
-  mod <- gpd(y, data, phi = ~x, xi = ~x, th = 0)
+  data <- data.frame(x=x,y=revm.sim(100,sigma=exp(3 + 2*x),xi=x))
+  mod <- evm.sim(y, data, phi = ~x, xi = ~x, th = 0)
   plot(mod)
 
 # Following lines commented out to keep CRAN happy
-#  mod <- gpd(x, qu=.7, method="sim")
+#  mod <- evm.sim(x, qu=.7, method="sim")
 #  mod
 #  par(mfrow=c(3, 2))
 #  plot(mod)

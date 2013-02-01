@@ -1,4 +1,4 @@
-evm.boot <- function(o, R=100, trace=10, theCall){
+evm.boot <- function(o, R=1000, trace=100, theCall){
     if (class(o) != "evm.opt"){
         stop("o must be of class 'evm.opt'")
     }
