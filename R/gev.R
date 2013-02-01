@@ -42,16 +42,16 @@ gev.start <- function(data){
 }
 
 gev.rng <- function(n, param, model){
-   rgev(n, param[1], exp(param[2]), param[3])
+   rgev(n, param[, 1], exp(param[, 2]), param[, 3])
 }
 gev.dens <- function(n, param, model){
-   dgev(n, param[1], exp(param[2]), param[3])
+   dgev(n, param[, 1], exp(param[, 2]), param[, 3])
 }
 gev.prob <- function(n, param, model){
-    pgev(n, param[1], exp(param[2]), param[3])
+    pgev(n, param[, 1], exp(param[, 2]), param[, 3])
 }
 gev.quant <- function(n, param, model){
-    qgev(n, param[1], exp(param[2]), param[3])
+    qgev(n, param[, 1], exp(param[, 2]), param[, 3])
 }
 
 gev <- list(name = 'GEV',

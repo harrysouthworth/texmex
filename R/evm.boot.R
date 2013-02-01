@@ -1,36 +1,40 @@
 evm.boot <- function(o, R=100, trace=10, theCall){
-    if (class(o) != "evm"){
-        stop("o must be of class 'evm'")
+    if (class(o) != "evm.opt"){
+        stop("o must be of class 'evm.opt'")
     }
 
     if (missing(theCall)){ theCall <- match.call() }
 
-    data <- o$map$data
-    param <- texmexGetParam(D, object$param)
-    param <- lapply(param, c) # Coerce from matrices with single row
-# XXX NEED TO CHECK HERE AND BENEATH NEXT CODEBLOCK
-    param <- lapply(1:nrow(data[[1]]), function(i, co, d){
-                                           colSums(co[[i]], t(d[[i]]))
-                                       }, co=unlist(param), d=data)
+    D <- o$data$D
+    param <- texmexGetParam(D, o$coefficients)
 
-    bfun <- function(i, param, data, co, pp, prior){
+    param <- lapply(1:length(D), function(i, co, d){
+                                           d[[i]] %*% co[[i]]
+                                       }, co=param, d=D)
+    param <- do.call("cbind", param)
+
+    rng <- o$family$rng
+
+    bfun <- function(i, param, o){
         if (i %% trace == 0){ cat("Replicate", i, "\n") }
-
-        r <- rgpd(length(xi), xi=xi, sigma=exp(phi))
-		wh <- gpd.fit(y=r, th=min(r), X.phi=X.phi, X.xi=X.xi, penalty=prior, priorParameters=pp, start=co)$par
+        d <- o$data
+        d$y <- rng(nrow(param), param, o)
+        
+		evm.fit(d, o$family, penalty=o$penalty,
+		        priorParameters=o$priorParameters,
+		        start=o$coefficients, hessian=FALSE)$par
     }
 
-    res <- t(sapply(1:R, bfun, xi=xi, phi=phi, X.phi=x$X.phi, X.xi=x$X.xi, co=coef(x), pp=pp, prior=x$penalty))
+    res <- t(sapply(1:R, bfun, param=param, o=o))
 
     se <- apply(res, 2, sd)
-    b <- apply(res, 2, mean) - coef(x)
+    b <- apply(res, 2, mean) - coef(o)
 
     if (any(abs(b/se) > .25)){
         warning("Ratio of bias to standard error is high")
     }
 
-    res <- list(call=theCall, replicates=res, map=x)
-
+    res <- list(call=theCall, replicates=res, map=o)
     oldClass(res) <- "evm.boot"
     res
 }
@@ -55,8 +59,8 @@ summary.evm.boot <- function(object, ...){
     means <- apply(object$replicates, 2, mean)
     medians <- apply(object$replicates, 2, median)
     sds <- apply(object$replicates, 2, sd)
-    bias <- means - object$original
-    res <- rbind(object$original, means, bias, sds, medians)
+    bias <- means - coef(object$map)
+    res <- rbind(coef(object$map), means, bias, sds, medians)
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
 
     if (any(abs(res[3,] / res[4,]) > .25)){
