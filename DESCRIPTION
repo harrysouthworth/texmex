@@ -13,6 +13,7 @@ Suggests: MASS, RUnit, lattice
 LazyLoad: yes
 LazyData: yes
 Packaged: 2010-10-14 11:47:02 UTC; kpzv097
+URL: http://code.google.com/p/texmex/
 Collate: AIC.evm.R                         plot.evm.R
     evm.simSetSeed.R                     plot.mexPrediction.R
     evm.boot.R                         plot.mex.R

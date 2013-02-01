@@ -2,25 +2,28 @@
 \alias{texmex-package}
 \alias{texmex}
 \docType{package}
-\title{
-Conditional multivariate extreme values modelling.
-}
-\description{
-Conditional multivariate extreme values modelling following the approach
-of Heffernan and Tawn, 2004.
-}
+\title{Extreme value modelling}
+\description{Extreme values modelling, including the conditional multivariate
+approach of Heffernan and Tawn (2004).}
 \details{
 \tabular{ll}{
 Package: \tab mex\cr
 Type: \tab Package\cr
-Version: \tab 1.2\cr
-Date: \tab 2011-10-06\cr
+Version: \tab 1.4\cr
+Date: \tab 2012-02-01\cr
 License: \tab GPL (>=2) | BSD\cr
 }
-\code{\link{gpd}}: Fit generalized Pareto distributions to data, possibly with
+The packages was originally called `texmex' for Threshold EXceedences and
+Multivariate EXtremes. However, it is no longer the case the only threshold
+excess models are implemented, so the `tex' bit doesn't make sense. So, the
+package is called `texmex' because it used to be called `texmex'.
+
+\code{\link{evm}}: Fit extreme value distributions to data, possibly with
             covariates. Use maximum likelihood estimation, maximum
             penalized likelihood estimation or simulate from the posterior
-            distribution.
+            distribution. Extreme value families include the generalized
+            Pareto distribution (\code{gpd}) and generalized extreme
+            value (\code{gev}) distribution.
 
 \code{\link{mex}}: Fit multiple, independent generalized Pareto models
             to the the upper tails of the columns of a data set, and estimate the conditional
@@ -39,8 +42,9 @@ License: \tab GPL (>=2) | BSD\cr
 \author{
 Harry Southworth, Janet E. Heffernan
 
-Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
+Maintainer: Harry Southworth <harry.southworth@gmail.com>
 
+URL: http://code.google.com/p/texmex/
 }
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach
@@ -91,15 +95,15 @@ plot(Dmex, col="blue")
 
 r$ndose <- liver$ndose
 
-altmod1 <- gpd(alt, qu=.7, phi = ~ ndose, xi = ~ ndose, data=r)
-altmod2 <- gpd(alt, qu=.7, phi = ~ ndose, data=r)
-altmod3 <- gpd(alt, qu=.7, xi = ~ ndose, data=r)
-altmod4 <- gpd(alt, qu=.7, data=r)
+altmod1 <- evm(alt, qu=.7, phi = ~ ndose, xi = ~ ndose, data=r)
+altmod2 <- evm(alt, qu=.7, phi = ~ ndose, data=r)
+altmod3 <- evm(alt, qu=.7, xi = ~ ndose, data=r)
+altmod4 <- evm(alt, qu=.7, data=r)
 
 # Prefer model 3, with term for xi on basis of AIC
 
-# Lines commented out to keep CRAN happy
-#balt3 <- gpd(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
+# Lines commented out to keep CRAN checks short
+#balt3 <- evm(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
 #par(mfrow=c(3,3))
 #plot(balt3)
 
