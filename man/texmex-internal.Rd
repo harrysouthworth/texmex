@@ -101,8 +101,7 @@ rMaxAR(n,theta)
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}
 \item{hessian}{Argument passed to \code{optim}. Logical.}
-\item{o}{An
-    object of class 'gpd'.}
+\item{o}{An object of class 'gpd'.}
 \item{a,b}{Dependence parameters of the Heffernan and Tawn dependence model.}
 \item{m,s}{Nuisance parameters of the Heffernan and Tawn dependence model.}
 \item{z,zpos,zneg}{Quantiles of the residuals under the fitted Heffernan and Tawn model, asymptotic positive dependence and asymptotic negative dependence respectively.}

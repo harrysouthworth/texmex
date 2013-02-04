@@ -39,8 +39,9 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     if (missing(th) & !missing(qu)) {
         th <- quantile(modelData$y, qu)
-        modelData <- texmexThresholdData(th, modelData)
     }
+    modelData <- texmexThresholdData(th, modelData)
+    
     if (!is.finite(th)){ rate <- 1 }
     else { rate <- mean(modelData$y > th) }
 
