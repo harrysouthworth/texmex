@@ -7,7 +7,7 @@ endPoint.evm.opt <- function(y,verbose=TRUE,...){
 #  fittedShape <- c(fittedGPDshape(y))
 
   p <- texmexMakeParams(coef(y), y$data$D)
-  ep <- y$family$endpoint
+  endpoint <- y$family$endpoint
   negShape <- p[, ncol(p)] < 0
 #  negShape <- fittedShape < 0
   if(any(negShape)){

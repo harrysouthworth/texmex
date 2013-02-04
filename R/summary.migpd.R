@@ -1,11 +1,11 @@
-`summary.migpd` <-
+summary.migpd <-
 function(object, verbose = TRUE, ...){
-	d <- dim(object$data)[2]
-	conv <- sapply(object$models, function(z) z$convergence)
+  d <- dim(object$data)[2]
+  conv <- sapply(object$models, function(z) z$convergence)
 
-	if (sum(conv) != 0) 
-		conv <- (1:d)[conv != 0]	
-	else conv <- NULL
+  if (sum(conv) != 0) 
+    conv <- (1:d)[conv != 0]	
+  else conv <- NULL
   
   co <- coefficients.migpd(object)
   
@@ -20,7 +20,6 @@ function(object, verbose = TRUE, ...){
     print(co, ...)
     cat("\n")
   }
-  
-	invisible(co)
+  invisible(co)
 }
 
