@@ -52,7 +52,7 @@ gpd.rl <- function(m, param, model){
 }
 
 gpd.endpoint <- function(param, model){
-    model$threshold - param[, 1] / param[, 2]
+    model$threshold - exp(param[, 1]) / param[, 2]
 }
 
 gpd.rng <- function(n, param, model){

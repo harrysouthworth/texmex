@@ -41,6 +41,16 @@ gev.start <- function(data){
       rep(.01, -1 + ncol(X.phi) + ncol(X.xi)))
 }
 
+gev.residuals <- function(o){
+    p <- texmexMakeParams(coef(o), o$data$D)
+    scaledY <- o$data$y - p[, 1]) * p[, 3] / exp(p[, 2])
+    (1 - scaledY)^(-1/xi)
+}
+
+gev.endpoint <- function(param, model){
+    param[, 1] - exp(param[, 2]) / param[, 3]
+}
+
 gev.rng <- function(n, param, model){
    rgev(n, param[, 1], exp(param[, 2]), param[, 3])
 }
