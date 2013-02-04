@@ -129,7 +129,7 @@ evm(y, data, family, ...)
   In previous versions of \code{texmex}, the main modelling
   function was \code{gpd} and models using the generalized
   Pareto distribution were used. In this version, the main
-  modelling function is now \code{evm} (\em{extreme value model}
+  modelling function is now \code{evm} (extreme value model)
   and the distribution to be used is specified through the
   \code{family} argument.
   

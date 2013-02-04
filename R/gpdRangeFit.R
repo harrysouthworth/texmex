@@ -1,4 +1,4 @@
-`gpdRangeFit` <-
+gpdRangeFit <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
           nint = 10, 
           penalty="gaussian", priorParameters=NULL, alpha=.05,
@@ -19,7 +19,7 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     u <- seq(umin, umax, length = nint)
     qz <- qnorm(1-alpha/2)
     for (i in 1:nint) {
-        z <- gpd(data, th=u[i], penalty=penalty, priorParameters=priorParameters)
+        z <- evm(data, th=u[i], penalty=penalty, priorParameters=priorParameters)
         m[i, ] <- z$coefficients
         m[i, 1] <- m[i, 1] - m[i, 2] * u[i]
         d <- matrix(c(1, -u[i]), ncol = 1)

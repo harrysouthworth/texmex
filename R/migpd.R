@@ -1,4 +1,4 @@
-`migpd` <-
+migpd <-
 function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
    trace = 0, verbose=FALSE, priorParameters = NULL)
 {
@@ -44,14 +44,14 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
        x <- c(x[, i])
        mth <- mth[i]
 
-       gpd(x, th=mth, penalty=penalty, priorParameters=priorParameters, maxit=maxit, trace=trace)
+       evm(x, th=mth, penalty=penalty, priorParameters=priorParameters, maxit=maxit, trace=trace)
        }
 
    modlist <- lapply(1:d, wrapgpd, x=data, penalty=penalty, mth=mth, verbose=verbose,
                         priorParameters=priorParameters,maxit=maxit,trace=trace)
    if (length(dimnames(data)[[2]]) == dim(data)[[2]]){
        names(modlist) <- dimnames(data)[[2]]
-       }
+   }
    names(mth) <- names(mqu) <- dimnames(data)[[2]]
    res <- list(call = theCall, models = modlist, data = data,
        mth = mth, mqu = mqu, penalty = penalty, priorParameters = priorParameters)

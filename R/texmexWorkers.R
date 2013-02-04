@@ -19,7 +19,7 @@ function(method){
         method <- "b"
     }
     else {
-        stop("method should be either 'optimize' or 'simulate'")
+        stop("method should be either 'optimize', 'simulate' or 'bootstrap'")
     }
     method
 }
@@ -77,13 +77,13 @@ function(y, data, params){
           D[[i]] <- model.matrix(params[[i]], data)
         }
     } # Close if(!is.null(data
-    else {                                        # XXX UNTESTED CODEBLOCK XXX <---------- XXX
+    else {
         for (i in 1:length(params)){
-            if (length(as.character(phi)) == 2 & as.character(phi)[2] == "1"){
-                D[[i]] <- matrix(ncol = 1, rep(1, length(y)),, drop=FALSE)
+            if (length(as.character(params[[i]])) == 2 & as.character(params[[i]])[2] == "1"){
+                D[[i]] <- matrix(ncol = 1, rep(1, length(y)))
             }
             else {
-                D[[i]] <- model.matrix(params[[i]],, drop=FALSE)
+                D[[i]] <- model.matrix(params[[i]])
             }
         } # Close for
     } # Close else
@@ -166,7 +166,6 @@ function(call){
 
 texmexParameters <- function(call, fam){
     # Create intercept formula for every parameter
-
     mp <- lapply(fam$param, function(x) ~1)
     names(mp) <- fam$param
 

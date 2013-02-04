@@ -19,8 +19,6 @@ function (y, data, family=gpd, th= -Inf, qu,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL, R=100, verbose=TRUE) {
 
-    #theCall <- match.call()
-
     modelParameters <- texmexParameters(theCall, family)
 
     ##################### Sort out method, penalty/prior, trace...
@@ -41,10 +39,10 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     if (missing(th) & !missing(qu)) {
         th <- quantile(modelData$y, qu)
-        rate <- mean(modelData$y > th)
         modelData <- texmexThresholdData(th, modelData)
     }
     if (!is.finite(th)){ rate <- 1 }
+    else { rate <- mean(modelData$y > th) }
 
     ###################### If family does not give info matrix...
     if (is.null(family$info)){ cov <- "numeric" }

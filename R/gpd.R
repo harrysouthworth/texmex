@@ -51,6 +51,10 @@ gpd.rl <- function(m, param, model){
         model$threshold + exp(param[, 1]) / param[, 2] * ((m * model$rate)^param[, 2] -1)
 }
 
+gpd.endpoint <- function(param, model){
+    model$threshold - param[, 1] / param[, 2]
+}
+
 gpd.rng <- function(n, param, model){
     rgpd(n, exp(param[1]), param[2], u=model$threshold)
 }
@@ -71,6 +75,7 @@ gpd <- list(name = 'GPD',
             info = gpd.info,
             start = gpd.start,
             resid = gpd.residuals,
+            endpoint <- gpd.endpoint,
             rl = gpd.rl,
             delta = gpd.delta,
             density=gpd.dens,

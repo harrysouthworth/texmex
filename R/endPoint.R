@@ -2,15 +2,19 @@ endPoint <- function(y,verbose=TRUE,...){
   UseMethod("endPoint",y)
 }
 
-endPoint.gpd <- function(y,verbose=TRUE,...){
-  fittedScale <- c(fittedGPDscale(y))
-  fittedShape <- c(fittedGPDshape(y))
-  negShape <- fittedShape < 0
+endPoint.evm.opt <- function(y,verbose=TRUE,...){
+#  fittedScale <- c(fittedGPDscale(y))
+#  fittedShape <- c(fittedGPDshape(y))
+
+  p <- texmexMakeParams(coef(y), y$data$D)
+  ep <- y$family$endpoint
+  negShape <- p[, ncol(p)] < 0
+#  negShape <- fittedShape < 0
   if(any(negShape)){
-    UpperEndPoint <- c(y$threshold - fittedScale/fittedShape)
+    UpperEndPoint <- endpoint(p, y) #c(y$threshold - fittedScale/fittedShape)
     UpperEndPoint[!negShape] <- Inf 
-    o <- unique(cbind(y$X.xi,FittedShape=fittedShape,UpperEndPoint=UpperEndPoint))
     if(verbose){
+      o <- unique(cbind(y$data$D[['xi']], param))
       print(signif(o,...))
     } else {
       invisible(unique(UpperEndPoint))
@@ -20,7 +24,7 @@ endPoint.gpd <- function(y,verbose=TRUE,...){
   }
 }
 
-endPoint.bgpd <- function(y,verbose=TRUE,...){
+endPoint.evm.boot <- endPoint.evm.sim <- function(y,verbose=TRUE,...){
   endPoint(y$map,verbose=verbose,...)
 }
 
