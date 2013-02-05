@@ -102,7 +102,7 @@ Ferro, C.A.T. and Segers, J., (2003) "Inference for clusters of Extreme Values",
 Janet E. Heffernan
 }
 \seealso{
-\code{\link{gpd}}
+\code{\link{evm}}
 }
 \examples{
 par(mfrow=c(2,2)); 
@@ -122,14 +122,14 @@ plot(so2) ## fits better
 
 so2.d <- declust(so2)
 par(mfrow=c(1,1)); plot(so2.d)
-so2.d.gpd <- gpd(so2.d) # AIC 661.1
+so2.d.gpd <- evm(so2.d) # AIC 661.1
 
-gpd(so2.d,phi=~NO)
-gpd(so2.d,phi=~NO2)
-gpd(so2.d,phi=~O3) # better AIC 651.9
-gpd(so2.d,phi=~PM10)
+evm(so2.d,phi=~NO)
+evm(so2.d,phi=~NO2)
+evm(so2.d,phi=~O3) # better AIC 651.9
+evm(so2.d,phi=~PM10)
 
-so2.d.gpd.o3 <- gpd(so2.d,phi=~O3)
+so2.d.gpd.o3 <- evm(so2.d,phi=~O3)
 
 par(mfrow=c(2,2)); plot(so2.d.gpd.o3)
 }

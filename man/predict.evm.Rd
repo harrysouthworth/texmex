@@ -3,7 +3,7 @@
 \alias{predict.evmSim}
 \alias{predict.evmBoot}
 \alias{linearPredictors}
-\alias{linearPredictors.evm}
+\alias{linearPredictors.evmOpt}
 \alias{linearPredictors.evmSim}
 \alias{linearPredictors.evmBoot}
 \alias{plot.lp.evmOpt}

@@ -1,8 +1,8 @@
 endPoint <- function(y,verbose=TRUE,...){
-  UseMethod("endPoint",y)
+  UseMethod("endPoint", y)
 }
 
-endPoint.evm.opt <- function(y,verbose=TRUE,...){
+endPoint.evmOpt <- function(y,verbose=TRUE,...){
 #  fittedScale <- c(fittedGPDscale(y))
 #  fittedShape <- c(fittedGPDshape(y))
 
@@ -14,7 +14,7 @@ endPoint.evm.opt <- function(y,verbose=TRUE,...){
     UpperEndPoint <- endpoint(p, y) #c(y$threshold - fittedScale/fittedShape)
     UpperEndPoint[!negShape] <- Inf
     if(verbose){
-      o <- unique(cbind(y$data$D[['xi']], param))
+      o <- unique(cbind(y$data$D[['xi']], p))
       print(signif(o,...))
     } else {
       invisible(unique(UpperEndPoint))
@@ -24,7 +24,7 @@ endPoint.evm.opt <- function(y,verbose=TRUE,...){
   }
 }
 
-endPoint.evm.boot <- endPoint.evm.sim <- function(y,verbose=TRUE,...){
+endPoint.evmBoot <- endPoint.evmSim <- function(y,verbose=TRUE,...){
   endPoint(y$map,verbose=verbose,...)
 }
 

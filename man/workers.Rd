@@ -1,4 +1,5 @@
-\name{texmexMethod}
+\name{texmexWorkers}
+\alias{texmexMethod}
 \alias{texmexPrior}
 \alias{texmexTrace}
 \alias{texmexPrepareData}

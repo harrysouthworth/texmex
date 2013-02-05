@@ -2,14 +2,18 @@
 \alias{evm}
 \alias{evm.default}
 \alias{evmSim}
+\alias{texmexMetropolis}
+\alias{texmexCheckMap}
+\alias{texmexJumpConst}
+\alias{initRNG}
 \alias{evmBoot}
-\alias{print.evm}
-\alias{show.evm}
-\alias{summary.evm}
-\alias{plot.evm}
-\alias{coef.evm}
-\alias{AIC.evm}
+\alias{print.evmOpt}
+\alias{show.evmOpt}
+\alias{summary.evmOpt}
+\alias{plot.evmOpt}
+\alias{coef.evmOpt}
 \alias{AIC.evmOpt}
+\alias{AIC.evmSim}
 \alias{print.evmSim}
 \alias{summary.evmSim}
 \alias{plot.evmSim}
@@ -39,6 +43,7 @@ evm(y, data, family, ...)
 \method{AIC}{evmSim}(object, ..., k=2)
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+texmexMetropolis(x, log.lik, proposals, verbose=TRUE, trace=10000)
 }
 
 \arguments{
@@ -107,8 +112,10 @@ evm(y, data, family, ...)
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
- \item{x, object}{Object of class \code{evmSim}, \code{bevmSim}, \code{summary.evmSim}
-                   or \code{summary.bevmSim} returned by \code{evmSim} or \code{summary.evmSim}.}
+ \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}
+                   or \code{summary.evmSim} returned by \code{evmSim} or \code{summary.evmSim}.
+                   In \code{texmexMetropolis}, \code{x} is a matrix, the first row of which
+                   is used as the starting point of the simulation.}
   \item{digits}{Number of digits for printing.}
   \item{main}{In \code{plot} method for class \code{evmSim}, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
   \item{xlab}{As for \code{main} but labels for x-axes rather than titles.}
@@ -125,6 +132,10 @@ evm(y, data, family, ...)
   \item{density.adjust}{In \code{plot} method for class \code{bevmSim}. Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
+  \item{log.lik, proposals}{The log-likelihood for the model, and a matrix of random
+        numbers drawn from the proposal distribution.}
+  \item{j}{The jumping constant used by the Metropolis algorithm.}
+  \item{map}{A model fit by maximum (penalized) likelihood.}
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{
@@ -269,10 +280,10 @@ evm(y, data, family, ...)
   otherwise).
   }
 
-\seealso{ \code{\link{rl.evmSim}}, \code{\link{predict.evmSim}}, \code{\link{evmSim.declustered}}.}
+\seealso{ \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}}, \code{\link{evmOpt.declustered}}.}
 
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
-  the \code{evm.fit} function
+  the \code{evmFit} function
   in the \code{ismev} package and is due to Stuart Coles.}
 
 \references{A. C. Davison and R. L. Smith, Models for exceedances over

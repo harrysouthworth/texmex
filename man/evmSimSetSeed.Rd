@@ -1,16 +1,16 @@
-\name{evm.simSetSeed}
-\alias{evm.simSetSeed}
+\name{evmSimSetSeed}
+\alias{evmSimSetSeed}
 
-\title{Set the seed from a fitted evm.sim object.}
+\title{Set the seed from a fitted evmSim object.}
 \description{
-Set the seed from a fitted \code{evm.sim} object to ensure reproducibility of output.
+Set the seed from a fitted \code{evmSim} object to ensure reproducibility of output.
 }
 \usage{
-evm.simSetSeed(x)
+evmSimSetSeed(x)
 }
 
 \arguments{
-  \item{x}{An object of class \code{evm.sim}, as returned by \code{evm}
+  \item{x}{An object of class \code{evmSim}, as returned by \code{evm}
      using \code{method = "simulate"}.}
 }
 \details{
@@ -26,6 +26,6 @@ Harry Southworth
 \examples{
 # data <- rnorm(1000)
 # mod <- evm(data, qu=.7, method="simulate")
-# evm.simSetSeed(mod)
+# evmSimSetSeed(mod)
 # mod1 <- evm(data, qu=.7, method="simulate") # this produces the same MCMC output as mod
 }

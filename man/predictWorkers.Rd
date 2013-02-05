@@ -1,9 +1,10 @@
-\name{addCov}
+\name{predictWorkers}
+\alias{addCov}
 \alias{texmexMakeParams}
 \alias{texmexMakeCovariance}
 \alias{texmexPredictSE}
 \alias{texmexMakeCI}
-\alias{texmexMakeNewDataD}
+\alias{texmexMakeNewdataD}
 \alias{texmexMakeCISim}
 \title{Worker functions for prediction}
 \description{Worker functions not intended for direct use.}

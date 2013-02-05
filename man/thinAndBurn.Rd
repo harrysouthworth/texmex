@@ -32,7 +32,7 @@ Harry Southworth, Janet E. Heffernan
 }
 
 \seealso{
-\code{\link{gpd}}
+\code{\link{evm}}
 }
 \examples{
   x <- rnorm(1000)

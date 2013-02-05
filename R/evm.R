@@ -53,7 +53,7 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     ################################## Do the optimization....
 
-    o <- evm.fit(data = modelData, family=family, th=th,
+    o <- evmFit(data = modelData, family=family, th=th,
                  penalty=prior,
                  start=start, hessian = cov == "numeric",
                  priorParameters = priorParameters,
