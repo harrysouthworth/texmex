@@ -22,13 +22,13 @@ possibly with explanatory variables.}
 \usage{
 evm(y, data, family, ...)
 
-\method{evm}{default}(y, data, family, th=-Inf, qu,
+\method{evm}{default}(y, data, family=gpd, th=-Inf, qu,
     ..., penalty = "gaussian",
     prior = "gaussian", method = "optimize", cov="observed", start = NULL, 
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
     proposal.dist = c("gaussian", "cauchy"),
-    jump.cov, jump.const, verbose = TRUE)
+    jump.cov, jump.const=NULL, R=100, verbose = TRUE)
 
 \method{print}{evm.opt}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{evm.opt}(object, nsim=1000, alpha=0.05, ...)
@@ -272,7 +272,7 @@ evm(y, data, family, ...)
 \seealso{ \code{\link{rl.evm.sim}}, \code{\link{predict.evm.sim}}, \code{\link{evm.sim.declustered}}.}
 
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
-  the \code{gpd.fit} function
+  the \code{evm.fit} function
   in the \code{ismev} package and is due to Stuart Coles.}
 
 \references{A. C. Davison and R. L. Smith, Models for exceedances over
@@ -287,7 +287,7 @@ evm(y, data, family, ...)
   plot(mod)
 
   x <- runif(100,-0.2,0.2)
-  data <- data.frame(x=x,y=revm.sim(100,sigma=exp(3 + 2*x),xi=x))
+  data <- data.frame(x=x,y=rgpd(100,sigma=exp(3 + 2*x),xi=x))
   mod <- evm(y, data, phi = ~x, xi = ~x, th = 0)
   plot(mod)
 
