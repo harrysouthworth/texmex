@@ -9,6 +9,7 @@
 \alias{plot.evm}
 \alias{coef.evm}
 \alias{AIC.evm}
+\alias{AIC.evm.opt}
 \alias{print.evm.sim}
 \alias{summary.evm.sim}
 \alias{plot.evm.sim}
@@ -29,16 +30,17 @@ evm(y, data, family, ...)
     proposal.dist = c("gaussian", "cauchy"),
     jump.cov, jump.const, verbose = TRUE)
 
-\method{print}{evm}(x, digits=max(3, getOption("digits") - 3), ...)
-\method{summary}{evm.sim}(object, nsim=1000, alpha=0.05, ...)
-\method{show}{evm.sim}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{print}{evm.opt}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{summary}{evm.opt}(object, nsim=1000, alpha=0.05, ...)
+\method{show}{evm.opt}(x, digits=max(3, getOption("digits") - 3), ...)
 
-\method{plot}{evm.sim}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{plot}{evm.opt}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{AIC}{evm.opt}(object, ..., k=2)
 \method{AIC}{evm.sim}(object, ..., k=2)
 \method{print}{evm.sim}(x, print.seed=FALSE, ...)
-\method{plot}{evm}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{plot}{evm.sim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
   \item{data}{ A data frame containing \code{y} and any covariates. }
@@ -279,14 +281,14 @@ evm(y, data, family, ...)
 
 \examples{
   x <- rnorm(1000)
-  mod <- evm.sim(x, qu = 0.7)
+  mod <- evm(x, qu = 0.7)
   mod
   par(mfrow=c(2, 2))
   plot(mod)
 
   x <- runif(100,-0.2,0.2)
   data <- data.frame(x=x,y=revm.sim(100,sigma=exp(3 + 2*x),xi=x))
-  mod <- evm.sim(y, data, phi = ~x, xi = ~x, th = 0)
+  mod <- evm(y, data, phi = ~x, xi = ~x, th = 0)
   plot(mod)
 
 # Following lines commented out to keep CRAN happy

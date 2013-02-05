@@ -43,7 +43,7 @@ gev.start <- function(data){
 
 gev.residuals <- function(o){
     p <- texmexMakeParams(coef(o), o$data$D)
-    scaledY <- o$data$y - p[, 1]) * p[, 3] / exp(p[, 2])
+    scaledY <- (o$data$y - p[, 1]) * p[, 3] / exp(p[, 2])
     (1 - scaledY)^(-1/xi)
 }
 

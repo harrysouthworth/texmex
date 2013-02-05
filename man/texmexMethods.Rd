@@ -1,9 +1,9 @@
 \name{methods}
-\alias{coef.bgpd}
+\alias{coef.evm.sim}
 \alias{coef.mex}
 \alias{coef.migpd}
-\alias{coefficients.bgpd}
- \alias{coefficients.gpd}
+\alias{coefficients.evm.sim}
+ \alias{coefficients.evm}
  \alias{coefficients.mex}
  \alias{coefficients.migpd}
  \alias{plot.extremalIndex}
@@ -17,8 +17,8 @@
  \alias{print.mexDependence}
  \alias{print.migpd}
  \alias{print.predict.mex}
- \alias{print.summary.bgpd}
- \alias{print.summary.gpd}
+ \alias{print.summary.evm.sim}
+ \alias{print.summary.evm}
  \alias{print.summary.predict.mex}
  \alias{show.MCS}
  \alias{show.bootMCS}
@@ -29,11 +29,11 @@
  \alias{show.mexDependence}
  \alias{show.migpd}
  \alias{show.predict.mex}
- \alias{show.summary.bgpd}
- \alias{show.summary.gpd}
+ \alias{show.summary.evm.sim}
+ \alias{show.summary.evm}
  \alias{show.summary.predict.mex}
  \alias{summary.MCS}
- \alias{summary.bgpd}
+ \alias{summary.evm.sim}
  \alias{summary.copula}
  \alias{summary.mex}
  \alias{summary.migpd}

@@ -22,10 +22,12 @@ gpd.start <- function(data){
 }
 
 gpd.residuals <- function(o){
-    fittedScale <- fittedGPDscale(o)
-    fittedShape <- fittedGPDshape(o)
-    scaledY <- fittedShape * (o$data$y - o$threshold) / fittedScale
-    c(1/fittedShape * log(1 + scaledY)) # Standard exponential
+    p <- texmexMakeParams(coef(o), o$data$D)
+#    fittedScale <- fittedGPDscale(o)
+#    fittedShape <- fittedGPDshape(o)
+#    scaledY <- fittedShape * (o$data$y - o$threshold) / fittedScale
+    scaledY <- p[, 2] * (o$data$y - o$threshold) / exp(p[, 1])
+    c(1/p[, 2] * log(1 + scaledY)) # Standard exponential
 }
 
 gpd.delta <- function(param, m, model){

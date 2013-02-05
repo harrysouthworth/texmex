@@ -1,4 +1,4 @@
-bgpdSetSeed <- function(x){
+evm.simSetSeed <- function(x){
   if (oldClass(x) != "bgpd"){
       stop("This function expects an object of class \'bgpd\'.")
   }
