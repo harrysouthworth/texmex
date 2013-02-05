@@ -1,21 +1,21 @@
 \name{evm}
 \alias{evm}
 \alias{evm.default}
-\alias{evm.sim}
-\alias{evm.boot}
+\alias{evmSim}
+\alias{evmBoot}
 \alias{print.evm}
 \alias{show.evm}
 \alias{summary.evm}
 \alias{plot.evm}
 \alias{coef.evm}
 \alias{AIC.evm}
-\alias{AIC.evm.opt}
-\alias{print.evm.sim}
-\alias{summary.evm.sim}
-\alias{plot.evm.sim}
-\alias{print.evm.boot}
-\alias{summary.evm.boot}
-\alias{plot.evm.boot}
+\alias{AIC.evmOpt}
+\alias{print.evmSim}
+\alias{summary.evmSim}
+\alias{plot.evmSim}
+\alias{print.evmBoot}
+\alias{summary.evmBoot}
+\alias{plot.evmBoot}
 \title{Generalized Pareto distribution modelling}
 \description{Likelihood based modelling and inference for extreme value models,
 possibly with explanatory variables.}
@@ -30,22 +30,22 @@ evm(y, data, family, ...)
     proposal.dist = c("gaussian", "cauchy"),
     jump.cov, jump.const=NULL, R=100, verbose = TRUE)
 
-\method{print}{evm.opt}(x, digits=max(3, getOption("digits") - 3), ...)
-\method{summary}{evm.opt}(object, nsim=1000, alpha=0.05, ...)
-\method{show}{evm.opt}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{print}{evmOpt}(x, digits=max(3, getOption("digits") - 3), ...)
+\method{summary}{evmOpt}(object, nsim=1000, alpha=0.05, ...)
+\method{show}{evmOpt}(x, digits=max(3, getOption("digits") - 3), ...)
 
-\method{plot}{evm.opt}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
-\method{AIC}{evm.opt}(object, ..., k=2)
-\method{AIC}{evm.sim}(object, ..., k=2)
-\method{print}{evm.sim}(x, print.seed=FALSE, ...)
-\method{plot}{evm.sim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{plot}{evmOpt}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
+\method{AIC}{evmOpt}(object, ..., k=2)
+\method{AIC}{evmSim}(object, ..., k=2)
+\method{print}{evmSim}(x, print.seed=FALSE, ...)
+\method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
 }
 
 \arguments{
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
   \item{data}{ A data frame containing \code{y} and any covariates. }
   \item{family}{An object of class 'texmexFamily'.}
-  \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the evm.sim upper tail model. }
+  \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the evmSim upper tail model. }
   \item{qu}{An alternative to \code{th}, a probability defined such that \code{quantile(y,qu)} equals \code{th}.}
   \item{phi}{ Formula for the log of the scale parameter. Defaults to
       \code{phi = ~ 1} - i.e. no covariates. }
@@ -107,22 +107,22 @@ evm(y, data, family, ...)
   \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
- \item{x, object}{Object of class \code{evm.sim}, \code{bevm.sim}, \code{summary.evm.sim}
-                   or \code{summary.bevm.sim} returned by \code{evm.sim} or \code{summary.evm.sim}.}
+ \item{x, object}{Object of class \code{evmSim}, \code{bevmSim}, \code{summary.evmSim}
+                   or \code{summary.bevmSim} returned by \code{evmSim} or \code{summary.evmSim}.}
   \item{digits}{Number of digits for printing.}
-  \item{main}{In \code{plot} method for class \code{evm.sim}, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
+  \item{main}{In \code{plot} method for class \code{evmSim}, titles for diagnostic plots. Should be a vector of length 4, with values corresponding to the character strings to appear on the titles of the pp- qq- return level and density estimate plots respectively.}
   \item{xlab}{As for \code{main} but labels for x-axes rather than titles.}
-  \item{nsim}{In \code{plot} and \code{summary} methods for class \code{evm.sim}. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
-  \item{alpha}{In \code{plot} and \code{summary} methods for class \code{evm.sim}. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
+  \item{nsim}{In \code{plot} and \code{summary} methods for class \code{evmSim}. The number of replicates to be simulated to produce the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
+  \item{alpha}{In \code{plot} and \code{summary} methods for class \code{evmSim}. A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
   \item{k}{Constant used in calculation of AIC=-2*loglik + k*p, defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
                     or to annotate the plots with it. Defaults to
                     \code{print.seed=FALSE}.}
-  \item{which.plots}{In \code{plot} method for class \code{bevm.sim}. Which plots to produce. Option 1 gives kernel density estimates,
+  \item{which.plots}{In \code{plot} method for class \code{bevmSim}. Which plots to produce. Option 1 gives kernel density estimates,
                      2 gives traces of the Markov chains with superimposed
                      cumulative means, 3 gives autocorrelation functions.
                      Defaults to \code{which.plots=1:3}.}
-  \item{density.adjust}{In \code{plot} method for class \code{bevm.sim}. Passed into \code{density}. Controls the amount of
+  \item{density.adjust}{In \code{plot} method for class \code{bevmSim}. Passed into \code{density}. Controls the amount of
                      smoothing of the kernel density estimate. Defaults to
                      \code{density.adjust=2}.}
   \item{...}{Further arguments to be passed to methods.}
@@ -176,11 +176,11 @@ evm(y, data, family, ...)
   diagnostic plots for the fitted generalized Pareto model. These differ 
   depending on whether or not there are covariates in the model.  If there 
   are no covariates then the diagnostic plots are PP- and QQ-plots, a 
-  return level plot (produced by \code{plotrl.evm.sim}) and a histogram of the data with superimposed generalized 
+  return level plot (produced by \code{plotrl.evmSim}) and a histogram of the data with superimposed generalized 
   Pareto density estimate.  These are all calculated using the data on 
   the original scale. If there are covariates in the model then the 
   diagnostics consist of PP- and QQ- plots calculated by using the model 
-  residuals (which will be standard exponential devaiates under the evm.sim model), 
+  residuals (which will be standard exponential devaiates under the evmSim model), 
   and plots of residuals versus fitted model parameters.
   
   The PP- and QQ-plots show simulated pointwise tolerance intervals.
@@ -208,9 +208,9 @@ evm(y, data, family, ...)
   and the bootstrap estimate of bias are displayed.
 }
 \value{
-    If \code{method = "optimize"}, an object of class \code{evm.opt}:
+    If \code{method = "optimize"}, an object of class \code{evmOpt}:
 
-    \item{call}{The call to \code{evm.sim} that produced the object.}
+    \item{call}{The call to \code{evmSim} that produced the object.}
     \item{data}{The original data (above and below the threshold for fitting if
           a distribution for threshold excesses has been used). In detail,
           \code{data} is a list with elements \code{y} and \code{D}. \code{y}
@@ -220,7 +220,7 @@ evm(y, data, family, ...)
                        not the optimizer converged.}
     \item{message}{A message telling the user whether or not convergence
                    was achieved.}
-    \item{threshold}{The threshold of the data above which the evm.sim model was fit.}
+    \item{threshold}{The threshold of the data above which the evmSim model was fit.}
     \item{penalty}{The type of penalty function used, if any.}
     \item{coefficients}{The parameter estimates as computed under maximum
                         likelihood or maximum penalized likelihood.}
@@ -236,13 +236,13 @@ evm(y, data, family, ...)
     
     
 
-    If \code{method = "simulate"}, an object of class \code{evm.sim}:
+    If \code{method = "simulate"}, an object of class \code{evmSim}:
 
-    \item{call}{The call to \code{evm.sim} that produced the object.}
+    \item{call}{The call to \code{evmSim} that produced the object.}
     \item{threshold}{The threshold above which the model was fit.}
     \item{map}{The point estimates found by maximum penalized likelihood
                and which were used as the starting point for the Markov
-               chain.  This is of class \code{evm.sim} and methods for this 
+               chain.  This is of class \code{evmSim} and methods for this 
                class (such as resid and plot) may be useful.}
     \item{burn}{The number of steps of the Markov chain that are to be 
                 treated as the burn-in and not used in inferences.}
@@ -254,7 +254,7 @@ evm(y, data, family, ...)
     \item{param}{The remainder of the chain after deleting the burn-in
                  and applying any thinning.}
 
-    If \code{method = "bootstrap"}, an object of class \code{evm.boot}:
+    If \code{method = "bootstrap"}, an object of class \code{evmBoot}:
 
     There are summary, plot, print and coefficients methods available for these classes.
 
@@ -269,7 +269,7 @@ evm(y, data, family, ...)
   otherwise).
   }
 
-\seealso{ \code{\link{rl.evm.sim}}, \code{\link{predict.evm.sim}}, \code{\link{evm.sim.declustered}}.}
+\seealso{ \code{\link{rl.evmSim}}, \code{\link{predict.evmSim}}, \code{\link{evmSim.declustered}}.}
 
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
   the \code{evm.fit} function
@@ -292,7 +292,7 @@ evm(y, data, family, ...)
   plot(mod)
 
 # Following lines commented out to keep CRAN happy
-#  mod <- evm.sim(x, qu=.7, method="sim")
+#  mod <- evmSim(x, qu=.7, method="sim")
 #  mod
 #  par(mfrow=c(3, 2))
 #  plot(mod)

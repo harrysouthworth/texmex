@@ -71,15 +71,15 @@ function (y, data, family=gpd, th= -Inf, qu,
     #### Simulate from posteriors....
     if (method == "s"){
         proposal.dist <- match.arg(proposal.dist)
-        o <- evm.sim(o, priorParameters=priorParameters,
-                     prop.dist=proposal.dist,
-                     jump.const=jump.const, jump.cov=jump.cov,
-                     iter=iter, start=start, verbose=verbose,
-                     thin=thin, burn=burn,
-                     trace=trace, theCall)
+        o <- evmSim(o, priorParameters=priorParameters,
+                    prop.dist=proposal.dist,
+                    jump.const=jump.const, jump.cov=jump.cov,
+                    iter=iter, start=start, verbose=verbose,
+                    thin=thin, burn=burn,
+                    trace=trace, theCall)
     } # Close else
     else if (method == "b"){
-        o <- evm.boot(o, R=R)
+        o <- evmBoot(o, R=R)
     }
 
     o

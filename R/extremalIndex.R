@@ -252,17 +252,17 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
 gpd.declustered <- function(y, ...){
   theCall <- match.call()
   if(is.null(y$data)){
-    res <- gpd(y$clusterMaxima, th = y$threshold, ...)
+    res <- evm(y$clusterMaxima, th = y$threshold, ...)
   } else {
     response <- y$clusterMaxima
     dat <- cbind(response,y$data[y$y>y$threshold,][y$isClusterMax,])
-    res <- gpd(response, data=dat, th = y$threshold, ...)
+    res <- evm(response, data=dat, th = y$threshold, ...)
   }
 
   clusterRate <- max(y$clusters) / length(y$y)
-  if(class(res) == "gpd"){
+  if(class(res) == "evm"){
     res$rate <- clusterRate
-  } else if(class(res) == "bgpd") {
+  } else if(class(res) == "evm.sim") {
     res$map$rate <- clusterRate
   }
   res$call <- theCall

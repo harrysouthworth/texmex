@@ -1,7 +1,7 @@
-evm.fit <- function(data, family, ...,
-                    prior="none", start=NULL,
-                    priorParameters = NULL,
-                    maxit = 10000, trace = 0, hessian=TRUE) {
+evmFit <- function(data, family, ...,
+                   prior="none", start=NULL,
+                   priorParameters = NULL,
+                   maxit = 10000, trace = 0, hessian=TRUE) {
 
   penFactory <- switch(prior,
                        laplace=texmex:::.make.lasso.penalty,

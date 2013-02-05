@@ -1,9 +1,9 @@
-evm.sim <- function(o, priorParameters, prop.dist,
+evmSim <- function(o, priorParameters, prop.dist,
                     jump.const, jump.cov, iter, start,
                     thin, burn,
                     verbose, trace, theCall, ...){
-    if (class(o) != "evm.opt"){
-        stop("o must be of class 'evm.opt'")
+    if (class(o) != "evmOpt"){
+        stop("o must be of class 'evmOpt'")
     }
     # Run checks and initialize algorithm
     wh <- texmexCheckMap(o)
@@ -42,7 +42,7 @@ evm.sim <- function(o, priorParameters, prop.dist,
                 burn = burn, thin = thin,
                 chains=res, seed=seed)
 
-    oldClass(res) <- "evm.sim"
+    oldClass(res) <- "evmSim"
     res <- thinAndBurn(res)
     res
 }

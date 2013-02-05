@@ -17,7 +17,7 @@ gev.loglik <- function(data, ...) {
   }
 }
 
-rl.gev <- function(m, param, model){ # model not used but required by a calling function
+gev.rl <- function(m, param, model){ # model not used but required by a calling function
     param[, 1] - exp(param[, 2])/param[, 3] * (1 - (-log(1 - 1/m))^(-param[, 3]))
 }
 
@@ -75,6 +75,6 @@ gev <- list(name = 'GEV',
             prob = gev.prob,
             quant = gev.quant,
             resid=function(o){ NULL },
-            rl=rl.gev)
+            rl=gev.rl)
 
 oldClass(gev) <- 'texmexFamily'

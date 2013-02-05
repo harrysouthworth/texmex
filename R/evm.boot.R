@@ -1,6 +1,6 @@
-evm.boot <- function(o, R=1000, trace=100, theCall){
-    if (class(o) != "evm.opt"){
-        stop("o must be of class 'evm.opt'")
+evmBoot <- function(o, R=1000, trace=100, theCall){
+    if (class(o) != "evmOpt"){
+        stop("o must be of class 'evmOpt'")
     }
 
     if (missing(theCall)){ theCall <- match.call() }
@@ -35,11 +35,11 @@ evm.boot <- function(o, R=1000, trace=100, theCall){
     }
 
     res <- list(call=theCall, replicates=res, map=o)
-    oldClass(res) <- "evm.boot"
+    oldClass(res) <- "evmBoot"
     res
 }
 
-print.evm.boot <- function(x, ...){
+print.evmBoot <- function(x, ...){
     print(x$call)
     means <- apply(x$replicates, 2, mean)
     medians <- apply(x$replicates, 2, median)
@@ -55,7 +55,7 @@ print.evm.boot <- function(x, ...){
     invisible(res)
 }
 
-summary.evm.boot <- function(object, ...){
+summary.evmBoot <- function(object, ...){
     means <- apply(object$replicates, 2, mean)
     medians <- apply(object$replicates, 2, median)
     sds <- apply(object$replicates, 2, sd)
@@ -73,7 +73,7 @@ summary.evm.boot <- function(object, ...){
     res
 }
 
-print.summary.evm.boot <- function(x, ...){
+print.summary.evmBoot <- function(x, ...){
 	print(x$call)
 	print(x$margins)
 	cat("\nCorrelation:\n")
@@ -81,7 +81,7 @@ print.summary.evm.boot <- function(x, ...){
     invisible()
 }
 
-plot.evm.boot <- function(x, col=4, border=FALSE, ...){
+plot.evmBoot <- function(x, col=4, border=FALSE, ...){
 	pfun <- function(x, col, border, xlab,...){
 		d <- density(x, n=100)
 		hist(x, prob=TRUE, col=col, border=border, main="", xlab=xlab, ...)
@@ -95,10 +95,10 @@ plot.evm.boot <- function(x, col=4, border=FALSE, ...){
 	invisible()
 }
 
-show.evm.boot <- print.evm.boot
-show.summary.evm.boot <- print.summary.evm.boot
+show.evmBoot <- print.evmBoot
+show.summary.evmBoot <- print.summary.evmBoot
 
-test.evm.boot <- function(){
+test.evmBoot <- function(){
     set.seed(20111007)
     # Compare bootstrap standard errors with those given by Coles
     # page 85
