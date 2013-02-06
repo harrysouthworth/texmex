@@ -43,7 +43,7 @@ evm(y, data, family, ...)
 \method{AIC}{evmSim}(object, ..., k=2)
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
-texmexMetropolis(x, log.lik, proposals, verbose=TRUE, trace=10000)
+texmexMetropolis(x, log.lik, proposals, verbose, trace)
 }
 
 \arguments{
@@ -52,10 +52,9 @@ texmexMetropolis(x, log.lik, proposals, verbose=TRUE, trace=10000)
   \item{family}{An object of class 'texmexFamily'.}
   \item{th}{ The threshold for \code{y}, exceedances above which will be used to fit the evmSim upper tail model. }
   \item{qu}{An alternative to \code{th}, a probability defined such that \code{quantile(y,qu)} equals \code{th}.}
-  \item{phi}{ Formula for the log of the scale parameter. Defaults to
-      \code{phi = ~ 1} - i.e. no covariates. }
-  \item{xi}{ Formula for the shape parameter. Defaults to
-      \code{xi = ~ 1} - i.e. no covariates. }
+  \item{...}{ In \code{evm}, formulae for the parameters in the family, e.g. \code{phi
+  = ~ x}. If none are specified, they all default to \code{~1}.}
+
   \item{penalty}{ How to penalize the likelhood. Currently, either
      ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments. 
      If \code{penalty} is "gaussian" or "lasso" then the parameters for 
@@ -109,7 +108,7 @@ texmexMetropolis(x, log.lik, proposals, verbose=TRUE, trace=10000)
   \item{proposal.dist}{The proposal distribution to use, either
     multivariate gaussian or a multivariate Cauchy.}
   \item{jump.cov}{Covariance matrix for proposal distribution of Metropolis algorithm.  This is scaled by \code{jump.const}.}
-  \item{jump.const}{ Control parameter for the Metropolis algorithm. }
+  \item{jump.const, j}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
                 \code{verbose=TRUE}.}
  \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}
@@ -136,6 +135,8 @@ texmexMetropolis(x, log.lik, proposals, verbose=TRUE, trace=10000)
         numbers drawn from the proposal distribution.}
   \item{j}{The jumping constant used by the Metropolis algorithm.}
   \item{map}{A model fit by maximum (penalized) likelihood.}
+  \item{R}{The number of parametric bootstrap samples to run when
+     \code{method='bootstrap'} is requested. Defaults to 100.
   \item{...}{Further arguments to be passed to methods.}
 }
 \details{

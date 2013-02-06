@@ -1,26 +1,26 @@
 # Author: Harry Southworth
 # Date: 2011-11-25
-## Purpose: Create a predict method for objects of class evm.opt, evm.sim
-##          and evm.boot that
+## Purpose: Create a predict method for objects of class evmOpt, evmSim
+##          and evmBoot that
 ##          returns parameters, return levels or (maybe) return periods,
 ##          depending on arguments given.
 #
 # predict.evm
-# predict.evm.sim
-# predict.evm.boot
+# predict.evmSim
+# predict.evmBoot
 # rl
 # rl.evm
-# rl.evm.sim
-# rl.evm.boot
+# rl.evmSim
+# rl.evmBoot
 # linearPredictors
 # linearPredictors.evm
-# linearPredictors.evm.sim
-# linearPredictors.evm.boot
+# linearPredictors.evmSim
+# linearPredictors.evmBoot
 
 ################################################################################
 ## evm
 
-predict.evm.opt <-
+predict.evmOpt <-
     # Get predictions for an evm object. These can either be the linear predictors
     # or return levels.
 function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
@@ -28,10 +28,10 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl"=, "return level" = rl.evm.opt(object, M, newdata,
+                  "rl"=, "return level" = rl.evmOpt(object, M, newdata,
                                                  se.fit=se.fit, ci.fit=ci.fit,
                                                  alpha=alpha, unique.=unique.),
-                  "lp" =,"link" = linearPredictors.evm.opt(object, newdata, se.fit,
+                  "lp" =,"link" = linearPredictors.evmOpt(object, newdata, se.fit,
                                                    ci.fit, alpha, unique.=unique.)
                   )
     res
@@ -39,7 +39,7 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
 
 ## Linear predictor functions for GPD
 
-linearPredictors.evm.opt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                              alpha=.050, unique.=TRUE, full.cov=FALSE, ...){
 
     D <- texmexMakeNewdataD(object, newdata)
@@ -83,7 +83,7 @@ linearPredictors.evm.opt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
         res <- list(link=res, cov=cov.se)
     }
 
-    oldClass(res) <- "lp.evm.opt"
+    oldClass(res) <- "lp.evmOpt"
     res
 }
 
@@ -104,9 +104,9 @@ linearPredictors <- function(object, newdata = NULL, se.fit = FALSE, ci.fit = FA
 }
 
 
-rl.evm.opt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+rl.evmOpt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                        alpha=.050, unique.=TRUE, ...){
-    co <- linearPredictors.evm.opt(object, newdata=newdata, unique.=unique., full.cov=TRUE)
+    co <- linearPredictors.evmOpt(object, newdata=newdata, unique.=unique., full.cov=TRUE)
     covs <- co[[2]] # list of covariance matrices, one for each (unique) observation
     co <- co[[1]]
     X <- co[,-(1:length(object$data$D))]
@@ -169,24 +169,24 @@ rl.evm.opt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     res <- lapply(1:length(M), cov.fun,res=res)
 
     names(res) <- paste("M.", M, sep = "")
-    oldClass(res) <- "rl.evm.opt"
+    oldClass(res) <- "rl.evmOpt"
     res
 }
 
 ################################################################################
-## evm.sim
+## evmSim
 
-predict.evm.sim <- function(object, M=1000, newdata=NULL, type="return level",
+predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
                          se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
                          all=FALSE, sumfun=NULL, ...){
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl" = , "return level" = rl.evm.sim(object, M=M, newdata=newdata,
+                  "rl" = , "return level" = rl.evmSim(object, M=M, newdata=newdata,
                                                     se.fit=se.fit, ci.fit=ci.fit,
                                                     alpha=alpha, unique.=unique., all=all,
                                                     sumfun=sumfun,...),
-                  "lp" = , "link" = linearPredictors.evm.sim(object, newdata=newdata,
+                  "lp" = , "link" = linearPredictors.evmSim(object, newdata=newdata,
                                                       se.fit=se.fit, ci.fit=ci.fit,
                                                       alpha=alpha, unique.=unique., all=all,
                                                       sumfun=sumfun,...)
@@ -194,7 +194,7 @@ predict.evm.sim <- function(object, M=1000, newdata=NULL, type="return level",
     res
 }
 
-linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                                      alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
     D <- texmexMakeNewdataD(object$map, newdata)
 
@@ -268,15 +268,15 @@ linearPredictors.evm.sim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
         }
     }
 
-    oldClass(res) <- "lp.evm.sim"
+    oldClass(res) <- "lp.evmSim"
     res
 }
 
-rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
+rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
 
-    co <- linearPredictors.evm.sim(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
+    co <- linearPredictors.evmSim(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
     # XXX Next line seems silly! Why not compute it from the line above?
-    Covs <- linearPredictors.evm.sim(object, newdata=newdata, unique.=unique., sumfun=NULL)
+    Covs <- linearPredictors.evmSim(object, newdata=newdata, unique.=unique., sumfun=NULL)
     X <- Covs[,-(1:length(object$map$data$D))]
     if(is.null(dim(X))){
       X <- matrix(X)
@@ -315,24 +315,24 @@ rl.evm.sim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     }
 
     names(res) <- paste("M.", M, sep = "")
-    oldClass(res) <- "rl.evm.sim"
+    oldClass(res) <- "rl.evmSim"
     res
 }
 
 ################################################################################
-## evm.boot
+## evmBoot
 
-predict.evm.boot <- function(object, M=1000, newdata=NULL, type="return level",
+predict.evmBoot <- function(object, M=1000, newdata=NULL, type="return level",
                             se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
                             all=FALSE, sumfun=NULL, ...){
     theCall <- match.call()
 
     res <- switch(type,
-                  "rl" = , "return level" = rl.evm.boot(object, newdata=newdata, M=M,
+                  "rl" = , "return level" = rl.evmBoot(object, newdata=newdata, M=M,
                                                        se.fit=se.fit, ci.fit=ci.fit,
                                                        alpha=alpha, unique.=TRUE,
                                                        all=all, sumfun=sumfun,...),
-                  "lp" = , "link" = linearPredictors.evm.boot(object, newdata=newdata,
+                  "lp" = , "link" = linearPredictors.evmBoot(object, newdata=newdata,
                                                          se.fit=se.fit, ci.fit=ci.fit,
                                                          alpha=alpha, unique.=TRUE,
                                                          all=all, sumfun=sumfun,...)
@@ -346,29 +346,29 @@ namesBoot2bgpd <- function(bootobject){
     bootobject
 }
 
-linearPredictors.evm.boot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050,
+linearPredictors.evmBoot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050,
                                  unique.=TRUE, all=FALSE, sumfun=NULL,...){
-    # This should just be the same as for an evm.sim object, but some
+    # This should just be the same as for an evmSim object, but some
     # names and stuff are different.
   object <- namesBoot2bgpd(object)
-  res <- linearPredictors.evm.sim(object, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit, all=all, unique.=unique., alpha=alpha, sumfun=sumfun,...)
-  oldClass(res) <- "lp.evm.boot"
+  res <- linearPredictors.evmSim(object, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit, all=all, unique.=unique., alpha=alpha, sumfun=sumfun,...)
+  oldClass(res) <- "lp.evmBoot"
   res
 }
 
-rl.evm.boot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
-    # This should just be the same as for an evm.sim object, but some
+rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
+    # This should just be the same as for an evmSim object, but some
     # names are different.
   object <- namesBoot2bgpd(object)
-  res <- rl.evm.sim(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
-  oldClass(res) <- "rl.evm.boot"
+  res <- rl.evmSim(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
+  oldClass(res) <- "rl.evmBoot"
   res
 }
 
 ################################################################################
 ## Method functions
 
-print.rl.evm.opt <- function(x, digits=3, ...){
+print.rl.evmOpt <- function(x, digits=3, ...){
     nms <- names(x)
     newnms <- paste("M =", substring(nms, 3), "predicted return level:\n")
     lapply(1:length(x), function(i, o, title){
@@ -379,34 +379,34 @@ print.rl.evm.opt <- function(x, digits=3, ...){
     invisible(x)
 }
 
-summary.rl.evm.opt <- function(object, digits=3, ...){
-    print.rl.evm.opt(object, digits=digits, ...)
+summary.rl.evmOpt <- function(object, digits=3, ...){
+    print.rl.evmOpt(object, digits=digits, ...)
 }
 
-print.rl.evm.sim    <- print.rl.evm.opt
-print.rl.evm.boot <- print.rl.evm.opt
+print.rl.evmSim    <- print.rl.evmOpt
+print.rl.evmBoot <- print.rl.evmOpt
 
-summary.rl.evm.sim    <- summary.rl.evm.opt
-summary.rl.evm.boot <- summary.rl.evm.opt
+summary.rl.evmSim    <- summary.rl.evmOpt
+summary.rl.evmBoot <- summary.rl.evmOpt
 
 
-print.lp.evm.opt <- function(x, digits=3, ...){
+print.lp.evmOpt <- function(x, digits=3, ...){
     cat("Linear predictors:\n")
     print(unclass(x), digits=3,...)
     invisible(x)
 }
 
-summary.lp.evm.opt <- function(object, digits=3, ...){
-    print.lp.evm.opt(object, digits=3, ...)
+summary.lp.evmOpt <- function(object, digits=3, ...){
+    print.lp.evmOpt(object, digits=3, ...)
 }
 
 #summary.lp.gpd
 
-summary.lp.evm.sim    <- summary.lp.evm.opt
-summary.lp.evm.boot <- summary.lp.evm.opt
+summary.lp.evmSim    <- summary.lp.evmOpt
+summary.lp.evmBoot <- summary.lp.evmOpt
 
-print.lp.evm.sim    <- print.lp.evm.opt
-print.lp.evm.boot <- print.lp.evm.opt
+print.lp.evmSim    <- print.lp.evmOpt
+print.lp.evmBoot <- print.lp.evmOpt
 
 ################################################################################
 ## test.predict.evm()
@@ -559,9 +559,9 @@ test.predict.evm <- function(){
 }
 
 ################################################################################
-## test.predict.evm.sim()
+## test.predict.evmSim()
 
-test.predict.evm.sim <- function(){
+test.predict.evmSim <- function(){
 # no covariates
   u <- 14
   r.fit <- gpd(rain,th=u,method="sim",trace=20000)

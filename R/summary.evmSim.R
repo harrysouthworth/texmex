@@ -1,4 +1,4 @@
-summary.evm.sim <- function(object, ...){
+summary.evmSim <- function(object, ...){
    co <- coef(object)
    se <- apply(object$param, 2, sd)
    res <- cbind(co, se)
@@ -8,11 +8,11 @@ summary.evm.sim <- function(object, ...){
    res
 }
 
-print.summary.evm.sim <- function(x, ...){
+print.summary.evmSim <- function(x, ...){
    print(x[[1]], verbose=FALSE, ...)
    cat("\nPosterior summary:\n")
    print(unclass(x[[2]]))
    invisible()
 }
 
-show.summary.evm.sim <- print.summary.evm.sim
+show.summary.evmSim <- print.summary.evmSim

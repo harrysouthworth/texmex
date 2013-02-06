@@ -19,8 +19,8 @@ evmBoot <- function(o, R=1000, trace=100, theCall){
         if (i %% trace == 0){ cat("Replicate", i, "\n") }
         d <- o$data
         d$y <- rng(nrow(param), param, o)
-        
-		evm.fit(d, o$family, penalty=o$penalty,
+
+		evmFit(d, o$family, penalty=o$penalty,
 		        priorParameters=o$priorParameters,
 		        start=o$coefficients, hessian=FALSE)$par
     }

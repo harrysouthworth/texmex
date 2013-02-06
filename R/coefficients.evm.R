@@ -1,4 +1,4 @@
-coefficients.evm <-
+coefficients.evmOpt <-
 function(object, ...){
     res <- object$coefficients
 #    if (length(res) == 2)
@@ -6,7 +6,7 @@ function(object, ...){
     res
 }
 
-coef.evm <- coefficients.evm
+coef.evmOpt <- coefficients.evmOpt
 #function(object, ...) {
 #  coefficients.evm(object)
 #}
