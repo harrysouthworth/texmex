@@ -1,20 +1,21 @@
 \name{endPoint}
 \alias{endPoint}
-\alias{endPoint.gpd}
-\alias{endPoint.bgpd}
-\title{ Calculate upper end point for fitted GPD}
+\alias{endPoint.evmOpt}
+\alias{endPoint.evmSim}
+\alias{endPoint.evmBoot}
+\title{ Calculate upper end point for fitted extreme value model}
 \description{
-  Calculate upper end point for fitted GPD
+  Calculate upper end point for fitted extreme value model
 }
 \usage{
 endPoint(y, verbose=TRUE,...)
 
-\method{endPoint}{gpd}(y,verbose=TRUE,...)
-\method{endPoint}{bgpd}(y,verbose=TRUE,...)
+\method{endPoint}{evmOpt}(y,verbose=TRUE,...)
+\method{endPoint}{evmSim}(y,verbose=TRUE,...)
 
 }
 \arguments{
-  \item{y}{ Object of class \code{gpd} or \code{bgpd}.}
+  \item{y}{ Object of class \code{evmOpt} or \code{evmSim}.}
   \item{verbose}{Whether to print output.}
   \item{...}{further arguments to be passed to the \code{\link{signif}} function.}
 }

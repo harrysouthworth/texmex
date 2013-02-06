@@ -1,4 +1,4 @@
-plot.lp.gpd <- function(x, main=NULL,
+plot.lp.evmOpt <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 1, polycol = 15, ...){
 
@@ -12,11 +12,11 @@ plot.lp.gpd <- function(x, main=NULL,
   Ests <- list(phi=x[,c(1,3,4)],xi=x[,c(2,5,6)])
   Names <- c("phi","xi")
   cn <- colnames(x)
-  which <- cn != "phi"    & cn != "xi" & 
-           cn != "phi.lo" & cn != "phi.hi" & 
-           cn != "xi.lo"  & cn != "xi.hi" & 
-           cn != "phi.se" & cn != "xi.se"  
-          
+  which <- cn != "phi"    & cn != "xi" &
+           cn != "phi.lo" & cn != "phi.hi" &
+           cn != "xi.lo"  & cn != "xi.hi" &
+           cn != "phi.se" & cn != "xi.se"
+
   X <- x[,which]
   if(is.null(dim(X))){
      X <- matrix(X)
@@ -31,7 +31,7 @@ plot.lp.gpd <- function(x, main=NULL,
           x <- X[ord,j]
           y <- Ests[[i]][ord,]
           plot(x, y[,1],type="n",ylab=Names[i],xlab=colnames(X)[j],main=main,ylim=range(y))
-          
+
           if (polycol != 0){
             polygon(c( x,        rev(x)),
                     c(y[,2],rev(y[,3])),
@@ -40,7 +40,7 @@ plot.lp.gpd <- function(x, main=NULL,
             lines(x, y[,2], col = cicol)
             lines(x, y[,3], col = cicol)
           }
-	
+
           lines(x, y[,1], col = linecol[ 1 ] )
         }
       }
@@ -49,7 +49,7 @@ plot.lp.gpd <- function(x, main=NULL,
   invisible()
 }
 
-plot.lp.bgpd <- function(x, type="median", ...){
+plot.lp.evmSim <- function(x, type="median", ...){
   if(dim(x)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
@@ -61,7 +61,7 @@ plot.lp.bgpd <- function(x, type="median", ...){
   } else {
     stop("type must be \"mean\" or \"median\" ")
   }
-  
+
   colnames(x)[1:6] <-  c("phi", "xi", "phi.lo", "phi.hi", "xi.lo", "xi.hi")
 
   plot.lp.gpd(x,...)
@@ -69,7 +69,7 @@ plot.lp.bgpd <- function(x, type="median", ...){
 
 plot.lp.bootgpd <- plot.lp.bgpd
 
-test.plot.lp.gpd <- function(){
+test.plot.lp.evm <- function(){
 # first with no covariates
 n <- 100
   Y <- rgpd(n,sigma=1,xi=0.1)
@@ -98,7 +98,7 @@ n <- 100
   checkException(plot(p.lp),msg="plot.gpd.lp.gpd: fail if no covariates")
   checkException(plot(pb.lp),msg="plot.bgpd.lp.gpd: fail if no covariates")
   checkException(plot(pboot.lp),msg="plot.bootgpd.lp.gpd: fail if no covariates")
-  
+
 # now with covariates
   n <- 100
   M <- 1000
@@ -110,7 +110,7 @@ n <- 100
   o <- options(warn=-1)
   fit.boot <- bootgpd(fit,R=20,trace=30)
   options(o)
-  
+
   nx <- 3
   M <- seq(5,1000,len=20)
   newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
@@ -122,22 +122,22 @@ n <- 100
   p.lp <- predict(fit,type="lp",newdata=newX,ci=TRUE)
   pb.lp <- predict(fitb,type="lp",newdata=newX,ci=TRUE)
   pboot.lp <- predict(fit.boot,type="lp",newdata=newX,ci=TRUE)
-  
+
   par(mfrow=c(3,3))
   plot(p,sameAxes=FALSE,main="MLE")
   plot(pb,sameAxes=FALSE,main="MCMC")
   plot(pboot,sameAxes=FALSE,main="Bootstrap")
-  
+
   par(mfrow=c(3,3))
   plot(p,sameAxes=TRUE,main="MLE")
   plot(pb,sameAxes=TRUE,main="MCMC")
   plot(pboot,sameAxes=TRUE,main="Bootstrap")
-  
+
   par(mfrow=c(3,4))
   plot(p.lp,main="MLE")
   plot(pb.lp,main="MCMC")
   plot(pboot.lp,main="Bootstrap")
-  
+
 # single covariate only:
 
   Y <- rgpd(n,exp(X[1,1]),X[,2])
@@ -145,22 +145,22 @@ n <- 100
   fit <- gpd(Y,data=X,xi=~b,th=0)
   fitb <- gpd(Y,data=X,xi=~b,th=0,method="sim",trace=20000)
   o <- options(warn=-1)
-  fit.boot <- bootgpd(fit,R=20,trace=30) 
+  fit.boot <- bootgpd(fit,R=20,trace=30)
   options(o)
-  
+
   p <- predict(fit,M=M,newdata=newX,ci=TRUE)
   pb <- predict(fitb,M=M,newdata=newX,ci=TRUE)
   pboot <- predict(fit.boot,M=M,newdata=newX,ci=TRUE)
-  
+
   p.lp <- predict(fit,type="lp",newdata=newX,ci=TRUE)
   pb.lp <- predict(fitb,type="lp",newdata=newX,ci=TRUE)
   pboot.lp <- predict(fit.boot,type="lp",newdata=newX,ci=TRUE)
-  
+
   par(mfrow=c(3,3))
   plot(p,sameAxes=FALSE,main="MLE")
   plot(pb,sameAxes=FALSE,main="MCMC")
   plot(pboot,sameAxes=FALSE,main="Bootstrap")
-  
+
   par(mfrow=c(3,1))
   plot(p.lp,main="MLE",polycol="cyan")
   plot(pb.lp,main="MCMC",polycol="cyan")

@@ -1,89 +1,66 @@
-gpd.loglik <- function(data, th, ...) {
-  y <- data$y
-  X.phi <- data$D$phi
-  X.xi <- data$D$xi
+gpd <- texmexFamily(name = 'GPD',
+                   log.lik <- function(data, th, ...) {
+                                y <- data$y
+                                X.phi <- data$D$phi
+                                X.xi <- data$D$xi
 
-  n.phi <- ncol(X.phi)
-  n.end <- n.phi + ncol(X.xi)
-  function(param) {
-    stopifnot(length(param) == n.end)
-    phi <- X.phi %*% param[1:n.phi]
-    xi <- X.xi %*% param[(1 + n.phi):n.end]
-    sum(dgpd(y, exp(phi), xi, u=th, log.d=TRUE))
-  }
-}
+                                n.phi <- ncol(X.phi)
+                                n.end <- n.phi + ncol(X.xi)
+                                function(param) {
+                                  stopifnot(length(param) == n.end)
+                                  phi <- X.phi %*% param[1:n.phi]
+                                  xi <- X.xi %*% param[(1 + n.phi):n.end]
+                                  sum(dgpd(y, exp(phi), xi, u=th, log.d=TRUE))
+                                 }
+                     }, # Close log.lik
+                   param = c('phi', 'xi'),
+                   info = gpd.info,
+                   start = function(data){
+                             y <- data$y
+                             X.phi <- data$D[[1]]
+                             X.xi <- data$D[[2]]
+                             c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
+                    }, # Close start
 
-gpd.start <- function(data){
-    y <- data$y
-    X.phi <- data$D[[1]]
-    X.xi <- data$D[[2]]
+                    resid = function(o){
+                              p <- texmexMakeParams(coef(o), o$data$D)
+                              scaledY <- p[, 2] * (o$data$y - o$threshold) / exp(p[, 1])
+                              c(1/p[, 2] * log(1 + scaledY)) # Standard exponential
+                    }, # Close resid
 
-    c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
-}
+                    endpoint = function(param, model){
+                                 model$threshold - exp(param[, 1]) / param[, 2]
+                    },
+                    rl = function(m, param, model){
+                           model$threshold + exp(param[, 1]) / param[, 2] * ((m * model$rate)^param[, 2] -1)
+                    },
+                    delta = function(param, m, model){
+                              # This is not exact if a prior (penalty) function is used, but
+                              # the CI is approximate anyway.
+                             param <- c(model$rate, param)
+                             out <- matrix(0, nrow=2, ncol=length(m))
+                             if (param[3] == 0){ # exponential case
+                               out[1,] <- exp(param[2]) * log(m * param[1])
+                             } else {
+                             out[1,] <- exp(param[2]) / param[3] * ((m * param[1])^param[3] - 1)
+                             out[2,] <- -exp(param[2]) / (param[3] * param[3]) * ( (m * param[1] )^param[3] - 1 ) +
+                             exp(param[2]) / param[3] * (m * param[1])^param[3] * log(m * param[1])
+                             }
+                             out
+                    }, # Close delta
+                    density = function(n, param, model){
+                                dgpd(n, exp(param[1]), param[2], u=model$threshold)
+                    },
 
-gpd.residuals <- function(o){
-    p <- texmexMakeParams(coef(o), o$data$D)
-#    fittedScale <- fittedGPDscale(o)
-#    fittedShape <- fittedGPDshape(o)
-#    scaledY <- fittedShape * (o$data$y - o$threshold) / fittedScale
-    scaledY <- p[, 2] * (o$data$y - o$threshold) / exp(p[, 1])
-    c(1/p[, 2] * log(1 + scaledY)) # Standard exponential
-}
-
-gpd.delta <- function(param, m, model){
-   # This is not exact if a prior (penalty) function is used, but
-   # the CI is approximate anyway.
-
-    param <- c(model$rate, param)
-
-    out <- matrix(0, nrow=2, ncol=length(m))
-
-    if (param[3] == 0){ # exponential case
-        out[1,] <- exp(param[2]) * log(m * param[1])
-    } else {
-        out[1,] <- exp(param[2]) / param[3] * ((m * param[1])^param[3] - 1)
-        out[2,] <- -exp(param[2]) / (param[3] * param[3]) * ( (m * param[1] )^param[3] - 1 ) +
-                   exp(param[2]) / param[3] * (m * param[1])^param[3] * log(m * param[1])
-    }
-
-   out
-}
-
-gpd.rl <- function(m, param, model){
-        model$threshold + exp(param[, 1]) / param[, 2] * ((m * model$rate)^param[, 2] -1)
-}
-
-gpd.endpoint <- function(param, model){
-    model$threshold - exp(param[, 1]) / param[, 2]
-}
-
-gpd.rng <- function(n, param, model){
-    rgpd(n, exp(param[1]), param[2], u=model$threshold)
-}
-gpd.dens <- function(n, param, model){
-    dgpd(n, exp(param[1]), param[2], u=model$threshold)
-}
-gpd.prob <- function(n, param, model){
-    pgpd(n, exp(param[1]), param[2], u=model$threshold)
-}
-gpd.quant <- function(n, param, model){
-    qgpd(n, exp(param[1]), param[2], u=model$threshold)
-}
-
-
-gpd <- list(name = 'GPD',
-            log.lik = gpd.loglik,
-            param = c('phi', 'xi'),
-            info = gpd.info,
-            start = gpd.start,
-            resid = gpd.residuals,
-            endpoint = gpd.endpoint,
-            rl = gpd.rl,
-            delta = gpd.delta,
-            density=gpd.dens,
-            rng=gpd.rng,
-            prob=gpd.prob,
-            quant=gpd.quant)
-oldClass(gpd) <- 'texmexFamily'
+                    rng = function(n, param, model){
+                            rgpd(n, exp(param[1]), param[2], u=model$threshold)
+                    },
+                    prob = function(n, param, model){
+                             pgpd(n, exp(param[1]), param[2], u=model$threshold)
+                    },
+                    quant = function(n, param, model){
+                              qgpd(n, exp(param[1]), param[2], u=model$threshold)
+                    }
+)
 
 

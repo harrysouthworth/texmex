@@ -2,7 +2,7 @@ thinAndBurn <- function (object, burn, thin){
   UseMethod("thinAndBurn")
 }
 
-thinAndBurn.evm.sim <- function(object, burn, thin){
+thinAndBurn.evmSim <- function(object, burn, thin){
 
   if(missing(burn)){
     burn <- object$burn
@@ -36,13 +36,13 @@ thinAndBurn.evm.sim <- function(object, burn, thin){
   invisible(object)
 }
 
-test.thinAndBurn.bgpd <- function(){
+test.thinAndBurn.evmSim <- function(){
 
 # generate data to use for checking
   d <- sample(3:10,1)
   nrow <- 100
   x <- list(chains = apply(matrix(rep(1:d,each=nrow),ncol=d),2, function( o ) o*1:nrow))
-  oldClass( x ) <- "bgpd" 
+  oldClass( x ) <- "evmSim"
 
 # test appropriate errors for misspecification of thin and burn
 
@@ -51,8 +51,8 @@ test.thinAndBurn.bgpd <- function(){
   checkException(thinAndBurn(x,burn=2),msg="thinAndBurn.bgpd: errors for misspecification of thin and burn")
   checkException(thinAndBurn(x,thin=1),msg="thinAndBurn.bgpd: errors for misspecification of thin and burn")
   options(op)
-  
-#  test burn in  
+
+#  test burn in
   burn <- sample(nrow/2,1)
   burnOnly <- thinAndBurn(x,burn=burn,thin=1)
   checkEqualsNumeric(x$chains[burn+1,], burnOnly$param[1,],msg="thinAndBurn.bgpd: burn in  ")

@@ -3,7 +3,7 @@ texmexFamily <-
     # info, start and resid as NULL, but all other information must
     # be provided by the user.
 function(name, log.lik, param, info=NULL, start=NULL, resid=NULL,
-                         rl, delta, density, rng, prob, quant){
+                         rl, delta, endpoint, density, rng, prob, quant){
     res <- list(name=name, log.lik=log.lik, param=param, info=info, start=start,
                 resid=resid, rl=rl, delta=delta, density=density, rng=rng,
                 prob=prob, quant=quant)

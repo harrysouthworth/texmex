@@ -1,4 +1,4 @@
-plot.evm.sim <-
+plot.evmSim <-
 function(x, which.plots=1:3, density.adjust=2, print.seed = FALSE , ...){
 
     varnames <- names(coef(x))

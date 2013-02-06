@@ -1,4 +1,4 @@
-\name{predict.evm}
+\name{predict.evmOpt}
 \alias{predict.evmOpt}
 \alias{predict.evmSim}
 \alias{predict.evmBoot}
@@ -17,21 +17,25 @@
 \alias{summary.lp.evmBoot}
 \alias{predict.evmSim}
 
-\title{Predict return levels from Generalized Pareto Distribution models, 
+\title{Predict return levels from Generalized Pareto Distribution models,
        or obtain the linear predictors.}
 \description{Predict return levels from Generalized Pareto Distribution models, 
        or obtain the linear predictors.}
 
 \usage{
-\method{predict}{evmOpt}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, 
+\method{predict}{evmOpt}(object, M = 1000, newdata = NULL,
+type = "return level", se.fit = FALSE,
 ci.fit = FALSE, alpha = 0.05, unique. = TRUE,...)
 
-\method{predict}{evmSim}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, 
-ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
+\method{predict}{evmSim}(object, M = 1000, newdata = NULL,
+type = "return level", se.fit = FALSE,
+ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE,
+sumfun = NULL,...)
 
-\method{predict}{evmBoot}(object, M = 1000, newdata = NULL, type = "return level", se.fit = FALSE, 
-ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
-
+\method{predict}{evmBoot}(object, M = 1000, newdata = NULL,
+type = "return level", se.fit = FALSE,
+ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE,
+sumfun = NULL,...)
 
 linearPredictors(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, 
 unique. = TRUE, ...)
@@ -125,13 +129,11 @@ implied by \code{alpha}.
 By default, return levels predicted from the unique values of the
 linear predictors are returned. For the \code{bootgpd} method,
 estimates of confidence intervals are simply quantiles of the bootstrap sample. The \code{bootgpd}
-method is just a wrapper for the \code{bgpd} method.
+method is just a wrapper for the \code{evmSim} method.
 }
 \value{
 A list with one entry for each value of \code{M}.}
-\author{
-Harry Southworth and Janet E. Heffernan
-}
+\author{Harry Southworth and Janet E. Heffernan}
 \note{
 At present, the confidence intervals returned for an object of class
 \code{evmOpt} are simple confidence intervals based on assumptions

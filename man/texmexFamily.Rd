@@ -1,0 +1,56 @@
+\name{texmexFamily}
+\alias{texmexFamily}
+\alias{gpd}
+\alias{gev}
+
+\title{Create families of distributions}
+
+\description{Create families of distributions for use with extreme value modelling.}
+
+\usage{
+texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid = NULL, rl, delta, endpoint, density, rng, prob, quant)
+}
+
+\arguments{
+  \item{name}{The name of the distribution.}
+  \item{log.lik}{The distribution's log-likelihood function'}
+  \item{param}{The names of the parameters in the model.}
+  \item{info}{Function to compute the information matrix. If not
+    provided, the modelling functions will work with a numerical
+    approximation.}
+  \item{start}{Function to compute starting parameters for the
+    model. If not provided, the modelling functions will try to
+    guess.}
+  \item{resid}{Function to compute residuals for the model.}
+  \item{rl}{Function to compute return levels.}
+  \item{delta}{Function to compute adjustments for covariance for return
+    levels.}
+  \item{endpoint}{Function to compute the upper or lower endpoint of the
+    fitted distribution.}
+  \item{density}{Function to compute the density.}
+  \item{rng}{Function to return random numbers.}
+  \item{prob}{Function to compute cumulative probabilities.}
+  \item{quant}{Function to compute quantiles.}
+}
+\details{
+  The \code{density}, \code{rng}, \code{prob} and \code{quant}
+  functions can be simple wrappers for the usual d, r, p and q
+  functions. They should take a matrix with number of columns
+  equal to the number of parameters, and a fitted model object.
+
+  The functions are used by the modelling functions to create
+  diagnostic plots, predictions, etc..
+}
+\value{
+  A list containing the input and with class 'texmexFamily'. If
+  \code{info}, \code{start}, \code{resid} are not provided, they
+  to \code{NULL}.
+}
+\author{Harry Southworth}
+\note{
+The GPD and GEV families are provided.
+}
+
+\examples{}
+\keyword{ models }
+

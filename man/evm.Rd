@@ -28,7 +28,7 @@ evm(y, data, family, ...)
 
 \method{evm}{default}(y, data, family=gpd, th=-Inf, qu,
     ..., penalty = "gaussian",
-    prior = "gaussian", method = "optimize", cov="observed", start = NULL, 
+    prior = "gaussian", method = "optimize", cov="observed", start = NULL,
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
     proposal.dist = c("gaussian", "cauchy"),
@@ -44,6 +44,7 @@ evm(y, data, family, ...)
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
 texmexMetropolis(x, log.lik, proposals, verbose, trace)
+texmexJumpConst(j, map)
 }
 
 \arguments{
@@ -56,8 +57,8 @@ texmexMetropolis(x, log.lik, proposals, verbose, trace)
   = ~ x}. If none are specified, they all default to \code{~1}.}
 
   \item{penalty}{ How to penalize the likelhood. Currently, either
-     ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments. 
-     If \code{penalty} is "gaussian" or "lasso" then the parameters for 
+     ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments.
+     If \code{penalty} is "gaussian" or "lasso" then the parameters for
      the penalization are specified through the \code{prior} argument, see below.}
   \item{prior}{If \code{method = "optimize"}, just an alternative way of
      specifying the pentalty, and only one or neither of \code{penalty}
@@ -77,16 +78,16 @@ texmexMetropolis(x, log.lik, proposals, verbose, trace)
         option is \code{cov = "numeric"} in which case a numerical approximation
         of the Hessian is used (see the help for \code{optim}). In some cases,
         particularly with small samples, the numerical approximation can be
-        quite different from the closed form (\code{cov="observed"}) result, and the value derived from 
+        quite different from the closed form (\code{cov="observed"}) result, and the value derived from
         the observed information should be preferred. However, in either case, since the 
-        underlying log-likelihood may be far from quadratic for small samples, 
-        the resulting estimates of standard errors are liable to approximate 
+        underlying log-likelihood may be far from quadratic for small samples,
+        the resulting estimates of standard errors are liable to approximate
         poorly the true standard errors. Also see the comments in
         the Details section, below.}
   \item{start}{Starting values for the parameters, to be passed to \code{optim}.
            If not provided, an exponential distribution (shape = 0) is assumed as the starting
            point.}
-  \item{priorParameters}{  A list with two components. The first should be 
+  \item{priorParameters}{  A list with two components. The first should be
                 a vector of means, the second should be a covariance matrix if the 
                 penalty/prior is "gaussian" or "quadratic" and a diagonal precision matrix 
                 if the penalty/prior is "lasso", "L1" or "Laplace".
@@ -133,11 +134,11 @@ texmexMetropolis(x, log.lik, proposals, verbose, trace)
                      \code{density.adjust=2}.}
   \item{log.lik, proposals}{The log-likelihood for the model, and a matrix of random
         numbers drawn from the proposal distribution.}
-  \item{j}{The jumping constant used by the Metropolis algorithm.}
-  \item{map}{A model fit by maximum (penalized) likelihood.}
+  \item{map}{In \code{texmexJumpConst}, a model fit by maximum
+    (penalized) likelihood. The function is not intended to be called by
+     the end user.}
   \item{R}{The number of parametric bootstrap samples to run when
-     \code{method='bootstrap'} is requested. Defaults to 100.
-  \item{...}{Further arguments to be passed to methods.}
+     \code{method='bootstrap'} is requested. Defaults to 100.}
 }
 \details{
   In previous versions of \code{texmex}, the main modelling
@@ -146,11 +147,11 @@ texmexMetropolis(x, log.lik, proposals, verbose, trace)
   modelling function is now \code{evm} (extreme value model)
   and the distribution to be used is specified through the
   \code{family} argument.
-  
+
   Object \code{gpd} is now an object of class \code{texmexFamily}.
 
   We use the following parameterisation of evm:
-  
+
   \deqn{P(X \le x) = 1 - \left(1 + \frac{\xi x}{\sigma}\right)^{-1/\xi}}{%
         P(X \le x) = 1 - (1 + \xi x / \sigma)^(-1/\xi)}
   for \eqn{x \ge 0} and \eqn{1 + \xi x / \sigma \ge 0.}  The scale parameter 
