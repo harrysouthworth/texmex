@@ -1,4 +1,4 @@
-hist.evm.opt <-
+hist.evmOpt <-
 function(x, xlab, ylab, main, ...){
     a <- x$coefficients
 #    a[1] <- exp(a[1])
@@ -14,7 +14,7 @@ function(x, xlab, ylab, main, ...){
 #    else {
         UpperEndPoint <- Inf
 #    }
-    
+
     dat <- x$data$y
     dfun <- x$family$density
 
@@ -25,7 +25,7 @@ function(x, xlab, ylab, main, ...){
     if (missing(xlab) || is.null(xlab)) xlab <- "Data"
     if (missing(ylab) || is.null(ylab)) ylab <- ""
     if (missing(main) || is.null(main)) main <- "Histogram and density"
-	
+
     breaks <- seq(from=min(dat),to=max(dat),len=nclass.Sturges(dat)+1)
 
     hist(dat, prob = TRUE, ylim = c(0, max(y)),

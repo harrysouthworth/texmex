@@ -104,8 +104,8 @@ test.evmBoot <- function(){
     # page 85
     tol <- 0.1
     cse <- c(.958432, .101151)
-    raingpd <- gpd(rain, th=30, penalty="none")
-    rainboot <- bootgpd(raingpd, R=100, trace=100)
+    raingpd <- evm(rain, th=30, penalty="none")
+    rainboot <- evmBoot(raingpd, R=100, trace=100)
     rainrep <- rainboot$replicates
     rainrep[,1] <- exp(rainrep[, 1])
     bse <- apply(rainrep, 2, sd)
@@ -126,9 +126,9 @@ test.evmBoot <- function(){
     # Do some checks for models with covariates. Due to apparent instability
     # of the Hessian in some cases, allow some leeway
 
-    lmod <- gpd(log(ALT.M / ALT.B), data=liver, qu=.7,
+    lmod <- evm(log(ALT.M / ALT.B), data=liver, qu=.7,
                 xi= ~ as.numeric(dose), phi= ~ as.numeric(dose))
-    lboot <- bootgpd(lmod, R=200, trace=100)
+    lboot <- evmBoot(lmod, R=200, trace=100)
     bse <- apply(lboot$replicates, 2, sd)
     rse <- bse / lmod$se
     rse <- ifelse(rse < 1, 1/rse, rse)
@@ -143,8 +143,8 @@ test.evmBoot <- function(){
     ## checks to above
 
     pp <- list(c(0, .5), diag(c(.5, .05)))
-    raingpd <- gpd(rain, th=30, penalty="none", priorParameters=pp)
-    rainboot <- bootgpd(raingpd, R=1000, trace=100)
+    raingpd <- evm(rain, th=30, penalty="none", priorParameters=pp)
+    rainboot <- evmBoot(raingpd, R=1000, trace=100)
 
     bse <- apply(rainboot$replicates, 2, sd)
     rse <- bse / raingpd$se

@@ -21,10 +21,13 @@ print.texmexFamily <- function(x, verbose=TRUE, ...){
     else { start <- 'Data dependent' }
 
     cat('Family:      ', x$name, '\n')
-    if (verbose){
-        cat('Parameters:  ', x$param, '\n')
-        cat('Information: ', info, '\n')
-    }
 
     invisible()
+}
+
+summary.texmexFamily <- function(x, ...){
+  print.texmexFamily(x, verbose=FALSE, ...)
+  cat('Parameters:  ', x$param, '\n')
+  cat('Information: ', info, '\n')
+  invisible()
 }

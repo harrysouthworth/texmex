@@ -64,18 +64,18 @@ plot.lp.evmSim <- function(x, type="median", ...){
 
   colnames(x)[1:6] <-  c("phi", "xi", "phi.lo", "phi.hi", "xi.lo", "xi.hi")
 
-  plot.lp.gpd(x,...)
+  plot.lp.evmOpt(x,...)
 }
 
-plot.lp.bootgpd <- plot.lp.bgpd
+plot.lp.evmBoot <- plot.lp.evmSim
 
-test.plot.lp.evm <- function(){
+test.plot.lp.evmOpt <- function(){
 # first with no covariates
-n <- 100
+  n <- 100
   Y <- rgpd(n,sigma=1,xi=0.1)
-  fit <- gpd(Y,th=0)
-  fitb <- gpd(Y,th=0,method="sim",trace=20000)
-  fit.boot <- bootgpd(fit,R=20,trace=30)
+  fit <- evm(Y,th=0)
+  fitb <- evm(Y,th=0,method="sim",trace=20000)
+  fit.boot <- evmBoot(fit,R=20,trace=30)
   M <- seq(5,1000,len=20)
 
   p <- predict(fit,M=M,ci=TRUE)
@@ -105,10 +105,10 @@ n <- 100
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,exp(X[,1]),X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,phi=~a, xi=~b,th=0)
-  fitb <- gpd(Y,data=X,phi=~a, xi=~b,th=0,method="sim",trace=20000)
+  fit <- evm(Y,data=X,phi=~a, xi=~b,th=0)
+  fitb <- evm(Y,data=X,phi=~a, xi=~b,th=0,method="sim",trace=20000)
   o <- options(warn=-1)
-  fit.boot <- bootgpd(fit,R=20,trace=30)
+  fit.boot <- evmBoot(fit,R=20,trace=30)
   options(o)
 
   nx <- 3
@@ -142,10 +142,10 @@ n <- 100
 
   Y <- rgpd(n,exp(X[1,1]),X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,xi=~b,th=0)
-  fitb <- gpd(Y,data=X,xi=~b,th=0,method="sim",trace=20000)
+  fit <- evm(Y,data=X,xi=~b,th=0)
+  fitb <- evm(Y,data=X,xi=~b,th=0,method="sim",trace=20000)
   o <- options(warn=-1)
-  fit.boot <- bootgpd(fit,R=20,trace=30)
+  fit.boot <- evmBoot(fit,R=20,trace=30)
   options(o)
 
   p <- predict(fit,M=M,newdata=newX,ci=TRUE)

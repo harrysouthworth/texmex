@@ -85,7 +85,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     o
 }
 
-test.gpd <- function(){
+test.evmOpt <- function(){
   tol <- 0.01
 
 ###################################################################
@@ -100,7 +100,7 @@ test.gpd <- function(){
   ccov <- matrix(c(.9188, -.0655, -.0655, .0102), nrow=2)
   cloglik <- -485.1
 
-  mod <- gpd(rain, th=30, penalty="none")
+  mod <- evm(rain, th=30, penalty="none")
   mod.coef <- coef(mod)
 
   mod.coef[1] <- exp(mod.coef[1])
@@ -128,8 +128,8 @@ test.gpd <- function(){
   gp1 <- list(c(0, 0), diag(c(10^4, .25)))
   gp2 <- list(c(0, 0), diag(c(10^4, .05)))
 
-  mod1 <- gpd(rain, th=30, priorParameters=gp1)
-  mod2 <- gpd(rain, th=30, priorParameters=gp2)
+  mod1 <- evm(rain, th=30, priorParameters=gp1)
+  mod2 <- evm(rain, th=30, priorParameters=gp2)
 
   checkTrue(coef(mod)[2] > coef(mod1)[2],
             msg="gpd: Gaussian penalization xi being drawn to 0")
@@ -141,8 +141,8 @@ test.gpd <- function(){
   gp3 <- list(c(0, 0), diag(c(1, 10^4)))
   gp4 <- list(c(0, 0), diag(c(.1, 10^4)))
 
-  mod3 <- gpd(rain, th=30, priorParameters=gp3)
-  mod4 <- gpd(rain, th=30, priorParameters=gp4)
+  mod3 <- evm(rain, th=30, priorParameters=gp3)
+  mod4 <- evm(rain, th=30, priorParameters=gp4)
 
   checkTrue(coef(mod)[1] > coef(mod3)[1],
             msg="gpd: Gaussian penalization phi being drawn to 0")
@@ -153,8 +153,8 @@ test.gpd <- function(){
   gp5 <- list(c(0, 1), diag(c(10^4, .25)))
   gp6 <- list(c(0, 1), diag(c(10^4, .05)))
 
-  mod5 <- gpd(rain, th=30, priorParameters=gp5)
-  mod6 <- gpd(rain, th=30, priorParameters=gp6)
+  mod5 <- evm(rain, th=30, priorParameters=gp5)
+  mod6 <- evm(rain, th=30, priorParameters=gp6)
 
   checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],
             msg="gpd: Gaussian penalization xi being drawn to 1")
@@ -166,8 +166,8 @@ test.gpd <- function(){
   gp7 <- list(c(4, 0), diag(c(1, 10^4)))
   gp8 <- list(c(4, 0), diag(c(.1, 10^4)))
 
-  mod7 <- gpd(rain, th=30, priorParameters=gp7)
-  mod8 <- gpd(rain, th=30, priorParameters=gp8)
+  mod7 <- evm(rain, th=30, priorParameters=gp7)
+  mod8 <- evm(rain, th=30, priorParameters=gp8)
 
   checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],
             msg="gpd: Gaussian penalization phi being drawn to 4")
@@ -184,8 +184,8 @@ test.gpd <- function(){
   gp1 <- list(c(0, 0), solve(diag(c(10^4, .25))))
   gp2 <- list(c(0, 0), solve(diag(c(10^4, .05))))
 
-  mod1 <- gpd(rain, th=30, priorParameters=gp1, penalty="lasso")
-  mod2 <- gpd(rain, th=30, priorParameters=gp2, penalty="lasso")
+  mod1 <- evm(rain, th=30, priorParameters=gp1, penalty="lasso")
+  mod2 <- evm(rain, th=30, priorParameters=gp2, penalty="lasso")
 
   checkTrue(coef(mod)[2] > coef(mod1)[2],
             msg="gpd: lasso penalization xi being drawn to 0")
@@ -197,8 +197,8 @@ test.gpd <- function(){
   gp3 <- list(c(0, 0), solve(diag(c(1, 10^4))))
   gp4 <- list(c(0, 0), solve(diag(c(.1, 10^4))))
 
-  mod3 <- gpd(rain, th=30, priorParameters=gp3, penalty="lasso")
-  mod4 <- gpd(rain, th=30, priorParameters=gp4, penalty="lasso")
+  mod3 <- evm(rain, th=30, priorParameters=gp3, penalty="lasso")
+  mod4 <- evm(rain, th=30, priorParameters=gp4, penalty="lasso")
 
   checkTrue(coef(mod)[1] > coef(mod3)[1],
             msg="gpd: lasso penalization phi being drawn to 0")
@@ -209,8 +209,8 @@ test.gpd <- function(){
   gp5 <- list(c(0, 1), solve(diag(c(10^4, .25))))
   gp6 <- list(c(0, 1), solve(diag(c(10^4, .05))))
 
-  mod5 <- gpd(rain, th=30, priorParameters=gp5, penalty="lasso")
-  mod6 <- gpd(rain, th=30, priorParameters=gp6, penalty="lasso")
+  mod5 <- evm(rain, th=30, priorParameters=gp5, penalty="lasso")
+  mod6 <- evm(rain, th=30, priorParameters=gp6, penalty="lasso")
 
   checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],
             msg="gpd: lasso penalization xi being drawn to 1")
@@ -222,8 +222,8 @@ test.gpd <- function(){
   gp7 <- list(c(4, 0), solve(diag(c(1, 10^4))))
   gp8 <- list(c(4, 0), solve(diag(c(.1, 10^4))))
 
-  mod7 <- gpd(rain, th=30, priorParameters=gp7, penalty="lasso")
-  mod8 <- gpd(rain, th=30, priorParameters=gp8, penalty="lasso")
+  mod7 <- evm(rain, th=30, priorParameters=gp7, penalty="lasso")
+  mod8 <- evm(rain, th=30, priorParameters=gp8, penalty="lasso")
 
   checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],
             msg="gpd: lasso penalization phi being drawn to 4")
@@ -240,7 +240,7 @@ test.gpd <- function(){
   rtime <- (1:length(rain))/1000
   d <- data.frame(rainfall = rain, time=rtime)
 
-  mod <- gpd(rainfall, th=30, data=d, phi= ~ time, penalty="none")
+  mod <- evm(rainfall, th=30, data=d, phi= ~ time, penalty="none")
 
   checkEqualsNumeric(-484.6, mod$loglik, tolerance = tol,
                      msg="gpd: loglik Coles page 119")
@@ -250,13 +250,13 @@ test.gpd <- function(){
 #     These are not necessarily sensible models!
 #     Start with phi alone.
 
-  mod <- gpd(ALT.M, qu=.7, data=liver,
+  mod <- evm(ALT.M, qu=.7, data=liver,
            phi = ~ ALT.B + dose, xi = ~1,
            penalty="none", cov="observed")
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- texmex:::.ismev.gpd.fit(liver$ALT.M,
+  ismod <- texmex:::.ismev.evm.fit(liver$ALT.M,
                                    threshold=quantile(liver$ALT.M, .7),
                                    ydat = m, sigl=2:ncol(m),
                                    siglink=exp, show=FALSE)
@@ -274,7 +274,7 @@ test.gpd <- function(){
 
 ######################################################################
 # 3.2 Test xi alone.
-  mod <- gpd(log(ALT.M / ALT.B), qu=.7, data=liver,
+  mod <- evm(log(ALT.M / ALT.B), qu=.7, data=liver,
            phi = ~1, xi = ~ ALT.B + dose,
            penalty="none")
 
@@ -316,7 +316,7 @@ test.gpd <- function(){
   data <- makeData(mya,myb)
   m <- model.matrix(~ a+b, data)
 
-  mod <- gpd(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
+  mod <- evm(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
   ismod <- texmex:::.ismev.gpd.fit(data$y,
                                    threshold=quantile(data$y,0.7),
                                    ydat=m,shl=3,sigl=2,
@@ -343,9 +343,9 @@ test.gpd <- function(){
   gp1 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.25)))
   gp2 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.01)))
 
-  mod0 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
-  mod1 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
-  mod2 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
+  mod0 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
+  mod1 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
+  mod2 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
 
   checkTrue(all(abs(coef(mod0)[2:3]) > abs(coef(mod1)[2:3])),
             msg="gpd: with covariates, xi drawn to zero")
@@ -364,9 +364,9 @@ test.gpd <- function(){
   gp4 <- list(c(0, 0, 0), diag(c(1, 1, 10^4)))
   gp5 <- list(c(0, 0, 0), diag(c(0.1, 0.1, 10^4)))
 
-  mod3 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,penalty="none")
-  mod4 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
-  mod5 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
+  mod3 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,penalty="none")
+  mod4 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
+  mod5 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
 
   checkTrue(all(abs(coef(mod3)[1:2]) > abs(coef(mod4)[1:2])),
             msg="gpd: with covariates, phi being drawn to 0")
@@ -380,9 +380,9 @@ test.gpd <- function(){
   gp7 <- list(c(0, 2, 2), diag(c(10^4, 0.25, 0.25)))
   gp8 <- list(c(0, 2, 2), diag(c(10^4, 0.05, 0.05)))
 
-  mod6 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
-  mod7 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
-  mod8 <- gpd(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
+  mod6 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
+  mod7 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
+  mod8 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
 
   checkTrue(all(abs(2 - coef(mod6)[2:3]) > abs(2 - coef(mod7)[2:3])),
             msg="gpd: with covariates, xi drawn to 2")
@@ -398,9 +398,9 @@ test.gpd <- function(){
   gp10 <- list(c(0, 4, 0), diag(c(10^4, 1,   10^4)))
   gp11 <- list(c(0, 4, 0), diag(c(10^4, 0.1, 10^4)))
 
-  mod9 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,penalty="none")
-  mod10 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp10)
-  mod11 <- gpd(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp11)
+  mod9 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,penalty="none")
+  mod10 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp10)
+  mod11 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp11)
 
   checkTrue(abs(4 - coef(mod9)[2])  > abs(4 - coef(mod10)[2]),
             msg="gpd: with covariates, phi drawn to 4")
@@ -410,20 +410,20 @@ test.gpd <- function(){
 #*************************************************************
   postSum <- function(x){
     t(apply(x$param, 2, function(o){ c(mean=mean(o), se=sd(o)) }))
-  } 
+  }
 
-#************************************************************* 
+#*************************************************************
 # 4.1. Test reproducibility
   set.seed(20101110)
   save.seed <- .Random.seed
 
   set.seed(save.seed)
-  bmod <- gpd(ALT.M, data=liver,
+  bmod <- evm(ALT.M, data=liver,
               th=quantile(liver$ALT.M, .7),
               iter=1000, thin=1, verbose=FALSE, method="sim")
 
   set.seed(save.seed)
-  bmod2 <- gpd(ALT.M, data=liver,
+  bmod2 <- evm(ALT.M, data=liver,
                th=quantile(liver$ALT.M, .7),
                iter=1000, thin=1, verbose=FALSE, method="sim")
 
@@ -431,7 +431,7 @@ test.gpd <- function(){
                      msg="gpd: test simulation reproducibility 1")
 
   set.seed(bmod$seed)
-  bmod3 <- gpd(ALT.M, data=liver,
+  bmod3 <- evm(ALT.M, data=liver,
                th=quantile(liver$ALT.M, .7),
                iter=1000, thin=1, verbose=FALSE, method="sim")
   checkEqualsNumeric(bmod$param, bmod3$param,
@@ -445,7 +445,7 @@ test.gpd <- function(){
 
   iter <- sample(500:1000,1)
   burn <- sample(50,1)
-  bmod2 <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
+  bmod2 <- evm(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                 iter=iter, burn=burn, thin=1, verbose=FALSE, method="sim")
 
   checkEqualsNumeric(iter-burn, nrow(bmod2$param),
@@ -456,7 +456,7 @@ test.gpd <- function(){
 
   thin <- 0.5
   iter <- 1000
-  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
+  bmod <- evm(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                iter=iter, thin = thin,verbose=FALSE, method="sim")
 
   checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) * thin, nrow(bmod$param),
@@ -464,7 +464,7 @@ test.gpd <- function(){
 
   thin <- 2
   iter <- 1000
-  bmod <- gpd(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
+  bmod <- evm(ALT.M, data=liver, th=quantile(liver$ALT.M, .7),
                iter=iter, thin = thin, verbose=FALSE, method="sim")
 
   checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),

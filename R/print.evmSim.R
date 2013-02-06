@@ -1,4 +1,4 @@
-print.evm.sim <-
+print.evmSim <-
 function(x , print.seed=FALSE, ...){
 
 	print(x$call)

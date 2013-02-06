@@ -31,6 +31,7 @@
  \alias{show.predict.mex}
  \alias{show.summary.evmSim}
  \alias{show.summary.evmOpt}
+ \alias{show.summary.evmBoot}
  \alias{show.summary.predict.mex}
  \alias{summary.MCS}
  \alias{summary.evmSim}

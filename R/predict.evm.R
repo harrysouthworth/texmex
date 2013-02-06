@@ -414,14 +414,14 @@ print.lp.evmBoot <- print.lp.evmOpt
 test.predict.evm <- function(){
 # no covariates
   u <- 14
-  r.fit <- gpd(rain,th=u)
+  r.fit <- evm(rain,th=u)
   co <- coef(r.fit)
   qgpd(0.9,exp(co[1]),co[2],u=u)
 
-  checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg="predict.gpd: retrieve threshold")
+  checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg="predict.evm: retrieve threshold")
 
-  checkEquals(target=predict(r.fit), current=rl(r.fit),msg="predict.gpd: predict with type=rl gives same as direct call to rl with default arguments")
-  checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg="predict.gpd: predict with type=rl gives same as direct call to rl with default arguments")
+  checkEquals(target=predict(r.fit), current=rl(r.fit),msg="predict.evm: predict with type=rl gives same as direct call to rl with default arguments")
+  checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg="predict.evm: predict with type=rl gives same as direct call to rl with default arguments")
 
   t.fit <- r.fit
   t.fit$rate <- 1
@@ -442,7 +442,7 @@ test.predict.evm <- function(){
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,exp(X[,1]),xi)
   X$Y <- Y
-  fit <- gpd(Y,data=X,phi=~a,th=0)
+  fit <- evm(Y,data=X,phi=~a,th=0)
   co <- coef(fit)
   xi <- co[3]
   sig <- exp(cbind(rep(1,n),X[,1]) %*% co[1:2])
@@ -456,7 +456,7 @@ test.predict.evm <- function(){
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,sig,X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,xi=~b,th=0)
+  fit <- evm(Y,data=X,xi=~b,th=0)
   co <- coef(fit)
   sig <- exp(co[1])
   xi <- cbind(rep(1,n),X[,2]) %*% co[2:3]
@@ -473,7 +473,7 @@ test.predict.evm <- function(){
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,exp(X[,1]),X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,phi=~a,xi=~b,th=0)
+  fit <- evm(Y,data=X,phi=~a,xi=~b,th=0)
   co <- coef(fit)
   sig <- exp(cbind(rep(1,n),X[,1]) %*% co[1:2])
   xi <- cbind(rep(1,n),X[,2]) %*% co[3:4]
@@ -549,7 +549,7 @@ test.predict.evm <- function(){
   fit.seest <- unlist(lapply(fit.p,function(x) x[,2]))
 
   o <- options(warn=-1)
-  fit.b <- bootgpd(fit,R=1000, trace=1100)
+  fit.b <- evmBoot(fit,R=1000, trace=1100)
   options(o)
   fit.bp <- predict(fit.b,newdata=newX,all=TRUE,M=M)
   fit.seb <- lapply(fit.bp,function(X) apply(X,2,sd))
@@ -564,7 +564,7 @@ test.predict.evm <- function(){
 test.predict.evmSim <- function(){
 # no covariates
   u <- 14
-  r.fit <- gpd(rain,th=u,method="sim",trace=20000)
+  r.fit <- evm(rain,th=u,method="sim",trace=20000)
 
   checkEqualsNumeric(target=u,current=predict(r.fit,M=1/r.fit$map$rate)[[1]], msg="predict.bgpd: retrieve threshold")
 
@@ -583,7 +583,7 @@ test.predict.evmSim <- function(){
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,exp(X[,1]),X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,phi=~a,xi=~b,th=0,method="sim",trace=20000)
+  fit <- evm(Y,data=X,phi=~a,xi=~b,th=0,method="sim",trace=20000)
 
   sig <- apply(fit$param,1,function(v)exp(cbind(rep(1,n),X[,1]) %*% v[1:2]))
   xi <-  apply(fit$param,1,function(v)    cbind(rep(1,n),X[,2]) %*% v[3:4])
@@ -680,9 +680,9 @@ test.predict.evmSim <- function(){
 }
 
 ################################################################################
-## test.predict.bootgpd()
+## test.predict.evmBoot()
 
-test.predict.bootgpd <- function(){
+test.predict.evmBoot <- function(){
 # functionality all tested already in test.predict.bgpd, so just check output of correct format.
 
   n <- 1000
@@ -693,9 +693,9 @@ test.predict.bootgpd <- function(){
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,exp(X[,1]),X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,phi=~a,xi=~b,th=0)
+  fit <- evm(Y,data=X,phi=~a,xi=~b,th=0)
   o <- options(warn=-1)
-  boot <- bootgpd(fit,R=R,trace=100)
+  boot <- evmBoot(fit,R=R,trace=100)
   options(o)
 
   newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))

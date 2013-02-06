@@ -1,8 +1,8 @@
 \name{validate.texmex}
 \alias{validate.texmex}
-\alias{test.gpd}
+\alias{test.evm}
 \alias{test.mex}
-\alias{test.bootgpd}
+\alias{test.evmBoot}
 \alias{test.bootmex}
 \alias{test.endPoint}
 \alias{test.extremalIndex}
@@ -21,10 +21,18 @@
 \alias{test.plot.migpd}
 \alias{test.plot.lp.gpd}
 \alias{test.plot.predict.mex}
-\alias{test.plotrl.gpd}
-\alias{test.predict.bgpd}
-\alias{test.predict.bootgpd}
-\alias{test.predict.gpd}
+\alias{test.plotrl.evmOpt}
+
+\alias{test.evmOpt}
+\alias{test.plot.evmOpt}
+\alias{test.plot.lp.evmOpt}
+\alias{test.plotrl.evm}
+\alias{test.predict.evm}
+\alias{test.thinAndBurn.evmSim}
+
+\alias{test.predict.evmSim}
+\alias{test.predict.evmBoot}
+\alias{test.predict.evmOpt}
 \alias{test.predict.mex}
 \alias{test.qgpd}
 \alias{test.rgpd}
@@ -35,8 +43,8 @@
 \alias{test.info.gpd}
 \alias{test.plot.mex}
 \alias{test.revTransform}
-\alias{test.predict.gpd}
-\alias{test.predict.bgpd}
+\alias{test.predict.evmOpt}
+\alias{test.predict.evmSim}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Validate the texmex package
@@ -88,8 +96,6 @@ Janet E. Heffernan, Harry Southworth
 Around 400 checks are performed, some of which run MCMC or bootstrap algorithms.
 As a result, the function takes a while to run.
 }
-
-%% ~Make other sections like Warning with \section{Warning }{....} ~
 
 \seealso{
 \code{\link{texmex-package}}

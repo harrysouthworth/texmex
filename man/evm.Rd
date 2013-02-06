@@ -13,12 +13,13 @@
 \alias{plot.evmOpt}
 \alias{coef.evmOpt}
 \alias{AIC.evmOpt}
-\alias{AIC.evmSim}
 \alias{print.evmSim}
 \alias{summary.evmSim}
+\alias{show.evmSim}
 \alias{plot.evmSim}
 \alias{print.evmBoot}
 \alias{summary.evmBoot}
+\alias{show.evmBoot}
 \alias{plot.evmBoot}
 \title{Generalized Pareto distribution modelling}
 \description{Likelihood based modelling and inference for extreme value models,
@@ -37,12 +38,12 @@ evm(y, data, family, ...)
 \method{print}{evmOpt}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{evmOpt}(object, nsim=1000, alpha=0.05, ...)
 \method{show}{evmOpt}(x, digits=max(3, getOption("digits") - 3), ...)
-
 \method{plot}{evmOpt}(x, main=rep(NULL, 4), xlab=rep(NULL, 4), nsim=1000, alpha=0.05, ...)
 \method{AIC}{evmOpt}(object, ..., k=2)
-\method{AIC}{evmSim}(object, ..., k=2)
+
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
+\method{show}{evmSim}(x, digits=max(3, getOption("digits") -3), ...)
 texmexMetropolis(x, log.lik, proposals, verbose, trace)
 texmexJumpConst(j, map)
 }

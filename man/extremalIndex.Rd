@@ -16,11 +16,11 @@ Given a threshold which defines excesses above that threshold, estimate the extr
 \usage{
 extremalIndex(y, data = NULL, threshold)
 
-extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), 
-   umax = quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, 
-   xlab = "Threshold", addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE, 
+extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5),
+   umax = quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05,
+   xlab = "Threshold", addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE,
    trace = 10, ...)
-   
+
 bootExtremalIndex(x)
 
 declust(y, r=NULL, data = NULL, ...)
@@ -41,14 +41,14 @@ declust(y, r=NULL, data = NULL, ...)
   \item{umax}{ The maximum threshold above which to esimate the parameters. }
   \item{nint}{ The number of thresholds at which to perform the estimation. }
   \item{nboot}{ Number of bootstrap samples to simulate at each threshold for estimation.}
-  \item{alpha}{ (1 - alpha)\% confidence intervals will be plotted with the 
+  \item{alpha}{ (1 - alpha)\% confidence intervals will be plotted with the
                point estimates. Defaults to \code{alpha = 0.05}.}
   \item{xlab}{ Label for the x-axis. }
   \item{ylab}{ Label for the y-axis. }
   \item{addNexcesses}{ Whether to annotate the top axis of plots with the number of excesses above the corresponding threhsold. Defaults to \code{TRUE}. }
   \item{estGPD}{ Whether to estimate GPD parameters at each choice of thereshold -- defaults to \code{TRUE} in which case the GPD parameters are estimated.}
   \item{verbose}{Whether to report on progress in RangeFit calculations. Defaults to \code{TRUE}.}
-  \item{trace}{How frequently to report bootstrap progress in EangeFit calculations.  Defaults to 10.} 
+  \item{trace}{How frequently to report bootstrap progress in EangeFit calculations.  Defaults to 10.}
   \item{...}{Further arguments to methods.}
 }
 \details{
@@ -105,13 +105,13 @@ Janet E. Heffernan
 \code{\link{evm}}
 }
 \examples{
-par(mfrow=c(2,2)); 
+par(mfrow=c(2,2));
 extremalIndexRangeFit(summer$O3,nboot=10)
 ei <- extremalIndex(summer$O3,threshold=45)
 plot(ei)
 d <- declust(ei)
 plot(d)
-gpd(d)
+evm(d)
 
 ## fitting with covariates:
 

@@ -1,4 +1,4 @@
-print.evm.opt <-
+print.evmOpt <-
 function( x , digits=max(3, getOption("digits") - 3), ... ){
 	cat( "Call: " )
 	print( x$call, ... )
@@ -31,4 +31,4 @@ function( x , digits=max(3, getOption("digits") - 3), ... ){
     cat( "\n" )
     invisible()
 }
-show.evm.opt <- print.evm.opt
+show.evmOpt <- print.evmOpt

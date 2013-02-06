@@ -1,5 +1,7 @@
 \name{texmexFamily}
 \alias{texmexFamily}
+\alias{print.texmexFamily}
+\alias{summary.texmexFamily}
 \alias{gpd}
 \alias{gev}
 
@@ -8,7 +10,10 @@
 \description{Create families of distributions for use with extreme value modelling.}
 
 \usage{
-texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid = NULL, rl, delta, endpoint, density, rng, prob, quant)
+texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid =
+NULL, rl, delta, endpoint, density, rng, prob, quant)
+\method{print}{texmexFamily}(x, ...)
+\method{summary}{texmexFamily}(x, ...)
 }
 
 \arguments{
@@ -31,6 +36,7 @@ texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid = NULL, rl, 
   \item{rng}{Function to return random numbers.}
   \item{prob}{Function to compute cumulative probabilities.}
   \item{quant}{Function to compute quantiles.}
+  \item{...}{Additional arguments to the print and summary methods.}
 }
 \details{
   The \code{density}, \code{rng}, \code{prob} and \code{quant}

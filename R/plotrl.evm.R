@@ -1,4 +1,4 @@
-plotrl.evm.opt <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
+plotrl.evmOpt <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
 function(object, alpha = .050,
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
@@ -37,7 +37,7 @@ function(object, alpha = .050,
     invisible(list(m=m, xm=xm))
 }
 
-plot.rl.evm <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
+plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ...){
@@ -132,7 +132,7 @@ plot.rl.evm <- function(x, # method for rl.(boot or b)gpd object, which may have
     invisible(list(m=m,xm=Array))
 }
 
-plot.rl.bootgpd <- plot.rl.bgpd <- plot.rl.evm
+plot.rl.evmBoot <- plot.rl.evmSim <- plot.rl.evmOpt
 
 plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
 # worker function - called by plotrl.gpd, plot.rl.gpd, plot.rl.bgpd
@@ -175,13 +175,13 @@ plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,yl
     }
  }
 
-test.plotrl.gpd <- function()
+test.plotrl.evm <- function()
 {
 # no covariates
 
-  rain.fit <- gpd(rain,th=14)
+  rain.fit <- evm(rain,th=14)
   par(mfrow=c(1,1))
-  plotrl.gpd(rain.fit)
+  plotrl.evmOpt(rain.fit)
 
 # with covariates
 
@@ -189,11 +189,11 @@ test.plotrl.gpd <- function()
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
   Y <- rgpd(n,exp(X[,1]),X[,2])
   X$Y <- Y
-  fit <- gpd(Y,data=X,phi=~a,xi=~b,th=0)
+  fit <- evm(Y,data=X,phi=~a,xi=~b,th=0)
   rl <- predict(fit,ci=TRUE)
 
-  checkException(plotrl.gpd(fit),silent=TRUE,msg="plotrl.gpd : failure for model with covariates")
-  checkException(plot(rl),silent=TRUE,msg="plot.rl.gpd : failure when use only 1 value of M for RL calc")
+  checkException(plotrl.evmOpt(fit),silent=TRUE,msg="plotrl.evmOpt : failure for model with covariates")
+  checkException(plot(rl),silent=TRUE,msg="plot.rl.evmOpt : failure when use only 1 value of M for RL calc")
 
   nx <- 6
   M <- seq(5,500,length=30)
