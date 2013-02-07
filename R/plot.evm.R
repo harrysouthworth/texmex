@@ -42,16 +42,16 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
 
 test.plot.evmOpt <- function(){
   par(mfrow=c(2,2))
-  mod <- gpd(rain, th=30, penalty="none")
+  mod <- evm(rain, th=30, penalty="none")
   res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),
               c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot\n(SCALE IS DAYS NOT YEARS)","\nDensity Plot")), 
               RetPeriodRange=c(3.65,365*10000))
   checkEquals(res,NULL,msg="plot.gpd: successful execution")
-  
-# check for very short tailed data
+
+  # check for very short tailed data
   set.seed(6)
   temp <- rgpd(1000,sigma=1,xi=-0.45)
-  fit <- gpd(temp,th=0)
+  fit <- evm(temp,th=0)
   res <- plot(fit,main=c("PP","QQ","RL","Hist, Short tailed data"))
   checkEquals(res,NULL,msg="plot.gpd: successful execution, short tailed data")
-} 
+}

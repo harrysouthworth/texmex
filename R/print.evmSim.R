@@ -22,3 +22,4 @@ function(x , print.seed=FALSE, ...){
 	invisible()
 }
 
+show.evmSim <- print.evmSim

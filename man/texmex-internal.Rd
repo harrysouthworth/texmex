@@ -87,20 +87,26 @@ constructEVM(o, family, th, rate, prior, modelParameters, call,
 
 \arguments{
 \item{x, object, data}{Object to be used by plot functions, vector to be converted.}
-\item{xlab, ylab, ylim, main, pch, col, cex, linecol, intcol, polycol, ...}{Arguments to plot functions.}
-  \item{N}{ Number of observations corresponding to N-observation return level to be calculated.}
+\item{xlab, ylab, ylim, main, pch, col, cex, linecol, intcol, polycol,
+  RetPeriodRange, ...}{Arguments to plot functions.}
+\item{N}{ Number of observations corresponding to N-observation
+  return level to be calculated.}
   \item{la}{Rate at which threshold is exceeded.}
-\item{alpha}{Control nominal coverage of condfidence intervals. Defaults to \code{alpha = 0.05}.}
+  \item{alpha}{Control nominal coverage of condfidence intervals.
+    Defaults to \code{alpha = 0.05}.}
 \item{nsim}{Number of simulated datasets to use in computing confidence intervals.}
 \item{plot}{Whether or not to plot the result.}
 \item{u}{Uniform deviates to be converted to GPD deviates.}
 \item{p, th, qu, sigma, xi}{Paramters of GPD distribution.}
-\item{method}{Argument to \code{mexTransform}: how to convert. When \code{method = 'mixture'}, the upper tail of the
-    distribution is modelled using a generalized Pareto distribution and the remainder
-    is approximated using the empirical distribution.  Also argument to \code{gpd.info} which currently does nothing.}
+\item{method}{Argument to \code{mexTransform}: how to convert.
+  When \code{method = 'mixture'}, the upper tail of the
+  distribution is modelled using a generalized Pareto distribution and the remainder
+  is approximated using the empirical distribution.  Also argument
+  to \code{gpd.info} which currently does nothing.}
 \item{divisor}{Divisor used in estimation of empirical distribution.}
 \item{na.rm}{Whether or not to remove missing values.}
-\item{margins}{Form of margins to which to transform \code{x}. Can take values \code{margins="laplace"} or \code{margins="gumbel"}.}
+\item{margins}{Form of margins to which to transform \code{x}. Can
+  take values \code{margins="laplace"} or \code{margins="gumbel"}.}
 \item{start, priorParameters, maxit, trace}{Arguments
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}
@@ -109,16 +115,36 @@ constructEVM(o, family, th, rate, prior, modelParameters, call,
 an object.}
 \item{a,b}{Dependence parameters of the Heffernan and Tawn dependence model.}
 \item{m,s}{Nuisance parameters of the Heffernan and Tawn dependence model.}
-\item{z,zpos,zneg}{Quantiles of the residuals under the fitted Heffernan and Tawn model, asymptotic positive dependence and asymptotic negative dependence respectively.}
-\item{v}{Positive scalar, tuning parameter for constrained estimation of Heffernan and Tawn dependence model under estimation with Laplace marginal distributions.}
-\item{constrain}{Logical. Whether to carry out estimation of Heffernan and Tawn model parameters under correct stochastic ordering of fitted model and asymptotic positive/negative dependence models.}
-\item{aLow}{Lower bound for dependence parameter \code{a}. This depends on the marginal distribution under which the dependnece model is being fittted.  Under Gumbel margins, the lower bound is 0 and under Laplace margins, the lower bouind is -1.}
-\item{yex, ydep}{Data for model estimation: \code{yex} is the explanatory variable on which the model conditions, and \code{ydep} is the dependent variable.}
-\item{par, listr, silly, list, pars, params, c, d, zi, zk, lev, Zj, Zk, Zestfun,
-listdata, q1, q2, sill, D, k}{Arguments to independently coded test functions implementing constrained estimation of the H+T2004 conditional dependence model with Laplace margins.}
-\item{bootobject}{ Argument to \code{namesBoot2bgpd} which restructures an object of class evmBoot to resemble one of class evmSim, which can then use methods for the evmSim class.}
-\item{M,xm,cicol,ptcol,n,xdat,smooth,xrange,yrange}{Arguments to plotRLgpd which is a worker function, does the actual plotting for \code{\link{plotrl.evm}}, \code{\link{plot.rl.evmSim}}, \code{\link{plot.rl.evmBoot}}.}
-\item{theta}{Argument to \code{rFrechet} and \code{rMaxAR}, the dependence parameter \code{theta}. Takes values between 0 and 1, with 0 corresponding to perfect dependence and 1 to independence.}
+\item{z,zpos,zneg}{Quantiles of the residuals under the fitted Heffernan
+  and Tawn model, asymptotic positive dependence and asymptotic negative
+  dependence respectively.}
+\item{v}{Positive scalar, tuning parameter for constrained estimation
+  of Heffernan and Tawn dependence model under estimation with Laplace
+  marginal distributions.}
+\item{constrain}{Logical. Whether to carry out estimation of Heffernan
+  and Tawn model parameters under correct stochastic ordering of fitted
+  model and asymptotic positive/negative dependence models.}
+\item{aLow}{Lower bound for dependence parameter \code{a}. This depends
+  on the marginal distribution under which the dependnece model is
+  being fittted.  Under Gumbel margins, the lower bound is 0 and under
+  Laplace margins, the lower bouind is -1.}
+\item{yex, ydep}{Data for model estimation: \code{yex} is the
+  explanatory variable on which the model conditions, and \code{ydep}
+  is the dependent variable.}
+\item{par, listr, silly, list, pars, params, c, d, zi, zk, lev, Zj,
+  Zk, Zestfun, listdata, q1, q2, sill, D, k}{Arguments to independently
+  coded test functions implementing constrained estimation of the
+  H+T2004 conditional dependence model with Laplace margins.}
+\item{bootobject}{ Argument to \code{namesBoot2bgpd} which restructures
+  an object of class evmBoot to resemble one of class evmSim, which can
+  then use methods for the evmSim class.}
+\item{M,xm,cicol,ptcol,n,xdat,smooth,xrange,yrange}{Arguments to
+  plotRLgpd which is a worker function, does the actual plotting
+  for \code{\link{plotrl.evm}}, \code{\link{plot.rl.evmSim}},
+  \code{\link{plot.rl.evmBoot}}.}
+\item{theta}{Argument to \code{rFrechet} and \code{rMaxAR}, the
+  dependence parameter \code{theta}. Takes values between 0 and 1,
+  with 0 corresponding to perfect dependence and 1 to independence.}
 \item{Z,r,ei}{Arguments to extRemes package functions used for testing
   of declustering code. Numeric Z logical indicating threshold excess, r
   run length for runs declustering and ei extremal index estimate.}
@@ -133,9 +159,12 @@ None of these functions are intended to be used explicitly.
 The plotting functions are used internally by \code{\link{plot.evmOpt}}.
 
 Some of the code is based on code that appears in the \code{ismev} package,
-originally written by Stuart Coles, the evd package by Alec Stephenson and extRemes package by Eric Gilleland, Rick Katz and Greg Young.
+originally written by Stuart Coles, the evd package by Alec Stephenson
+and extRemes package by Eric Gilleland, Rick Katz and Greg Young.
 
-Code to carry out estimation of H+T2004 under Laplace margins and constrained estimation was written by Yiannis Papastathopoulos, and is used here for validation purposes.
+Code to carry out estimation of H+T2004 under Laplace margins and
+constrained estimation was written by Yiannis Papastathopoulos, and
+is used here for validation purposes.
 }
 \author{Harry Southworth, Janet E. Heffernan, Yiannis Papastathopoulos.}
 

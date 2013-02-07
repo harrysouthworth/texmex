@@ -4,44 +4,43 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
 
 	theCall <- match.call()
 
-  if(is.null(colnames(data))){
-    colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")
-  }
-  
-	if (missing(which)){
-		which <- colnames(data)[1]
-		cat("which not given. Conditioning on", which, "\n")
-	}
+    if(is.null(colnames(data))){
+        colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")
+    }
 
-	if (missing(mth)){
-    if(length(mqu) == 1){
-		  mqu <- rep(mqu, ncol(data))
-    } 
+    if (missing(which)){
+        which <- colnames(data)[1]
+        cat("which not given. Conditioning on", which, "\n")
+    }
+
+    if (missing(mth)){
+        if(length(mqu) == 1){
+            mqu <- rep(mqu, ncol(data))
+    }
     if( length(mqu) != ncol(data)){
       stop("mqu must be length 1 or length equal to the dimension of the data")
     }
-		mth <- unlist(lapply(1:length(mqu), function(i, data, p){
-												quantile(data[, i], prob=p[i])
-											}, p=mqu, data=data))
-	}
+    mth <- unlist(lapply(1:length(mqu), function(i, data, p){
+                                          quantile(data[, i], prob=p[i])
+                                        }, p=mqu, data=data))
+    }
 
-  res1 <- migpd(data=data, mth=mth, penalty=penalty,
-                maxit=maxit, trace=trace, verbose=verbose,
-                priorParameters=priorParameters)
+    res1 <- migpd(data=data, mth=mth, penalty=penalty,
+                  maxit=maxit, trace=trace, verbose=verbose,
+                  priorParameters=priorParameters)
 
-	if (missing(dqu)){
-		dqu <- res1$mqu[1]
-	}
+    if (missing(dqu)){
+        dqu <- res1$mqu[1]
+    }
 
-  res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins, constrain=constrain, v=v)
-  res2$call <- theCall
-  res2
+    res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins, constrain=constrain, v=v)
+    res2$call <- theCall
+    res2
 }
 
-
 print.mex <- function(x, ...){
-	print(x$call, ...)
-	cat("\n\nMarginal models:\n")
+    print(x$call, ...)
+    cat("\n\nMarginal models:\n")
     summary(x[[1]])
     cat("\nDependence model:\n\n")
     print(x[[2]])

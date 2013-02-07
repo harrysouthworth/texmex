@@ -36,9 +36,9 @@ d <- data.frame(alt = resid(rlm(log(ALT.M) ~ log(ALT.B) + ndose, data=liver)),
 Dgpds <- migpd(d[liver$dose == "D", 1:4], mqu=.7)
 
 d$ndose <- liver$ndose
-galt <- gpd(alt, data=d, qu=.7, xi = ~ ndose)
-gast <- gpd(ast, data=d, qu=.7, xi = ~ ndose)
-galp <- gpd(alp, data=d, qu=.7, xi = ~ ndose)
+galt <- evm(alt, data=d, qu=.7, xi = ~ ndose)
+gast <- evm(ast, data=d, qu=.7, xi = ~ ndose)
+galp <- evm(alp, data=d, qu=.7, xi = ~ ndose)
 
 altco <- predict(galt,type="lp",newdata=data.frame(ndose=4))[1:2]
 astco <- predict(gast,type="lp",newdata=data.frame(ndose=4))[1:2]
@@ -46,7 +46,7 @@ alpco <- predict(galp,type="lp",newdata=data.frame(ndose=4))[1:2]
 
 Dgpd <- migpdCoefs(Dgpds, which=c("alt", "ast", "alp"),
                    coefs=list(altco, astco, alpco))
-                   
+
 summary(Dgpd)
 summary(Dgpds)
 

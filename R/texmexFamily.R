@@ -5,29 +5,26 @@ texmexFamily <-
 function(name, log.lik, param, info=NULL, start=NULL, resid=NULL,
                          rl, delta, endpoint, density, rng, prob, quant){
     res <- list(name=name, log.lik=log.lik, param=param, info=info, start=start,
-                resid=resid, rl=rl, delta=delta, density=density, rng=rng,
-                prob=prob, quant=quant)
+                resid=resid, rl=rl, delta=delta, endpoint=endpoint, density=density,
+                rng=rng, prob=prob, quant=quant)
 
     oldClass(res) <- 'texmexFamily'
     res
 }
 
 
-print.texmexFamily <- function(x, verbose=TRUE, ...){
-    if (is.null(x$info)){ info <- 'Numerical approximation' }
-    else { info <- 'Closed form' }
-
-    if (is.null(x$start)){ start <- 'Random' }
-    else { start <- 'Data dependent' }
-
+print.texmexFamily <- function(x, ...){
     cat('Family:      ', x$name, '\n')
 
     invisible()
 }
 
-summary.texmexFamily <- function(x, ...){
-  print.texmexFamily(x, verbose=FALSE, ...)
-  cat('Parameters:  ', x$param, '\n')
+summary.texmexFamily <- function(object, ...){
+  if (is.null(object$info)){ info <- 'Numerical approximation' }
+  else { info <- 'Closed form' }
+
+  print.texmexFamily(object, verbose=FALSE, ...)
+  cat('Parameters:  ', object$param, '\n')
   cat('Information: ', info, '\n')
   invisible()
 }

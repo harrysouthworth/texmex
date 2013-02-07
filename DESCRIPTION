@@ -14,17 +14,19 @@ LazyLoad: yes
 LazyData: yes
 Packaged: 2010-10-14 11:47:02 UTC; kpzv097
 URL: http://code.google.com/p/texmex/
-Collate: AIC.evm.R                         plot.evm.R
+Collate:
+    globalVariables.R
+    texmexFamily.R   AIC.evm.R                         plot.evm.R
     evm.simSetSeed.R                     plot.mexPrediction.R
-    evm.boot.R                         plot.mex.R
+    evmBoot.R                         plot.mex.R
     bootmex.R                         plot.migpd.R
-    chi.R                             plot.predict.link.gpd.R
-    coef.evm.sim.R                       plotrl.evm.R
+    chi.R                             plot.predict.link.evm.R
+    coef.evmSim.R                       plotrl.evm.R
     coefficients.evm.R                ppevm.R
     coefficients.migpd.R              predict.evm.R
     constructObject.R                 predict.mex.R
     copulas.R                         predictWorkers.R
-    dgpd.R                            print.evm.sim.R
+    dgpd.R                            print.evmSim.R
     efficient.closures.R              print.bootmex.R
     endPoint.R                        print.evm.R
     evm.fit.R                         print.mexDependence.R
@@ -39,15 +41,15 @@ Collate: AIC.evm.R                         plot.evm.R
     hist.evm.R                        revTransform.R
     mexDependenceLowLevelFunctions.R
     mexDependence.R                   rMaxAR.R
-    mex.R                             summary.evm.sim.R
+    mex.R                             summary.evmSim.R
     mexRangeFit.R                     summary.evm.R
     mexTransform.R                    summary.migpd.R
     migpdCoefs.R                      summary.predict.mex.R
     migpd.R                           testingFunctions.R
-    mrlPlot.R                         texmexFamily.R
+    mrlPlot.R
     mspearman.R                       texmexWorkers.R
     multivariate.cauchy.R             thinAndBurn.evm.sim.R
     u2gpd.R
-    plot.evm.sim.R                       validate.texmex.R
+    plot.evmSim.R                       validate.texmex.R
     plot.bootmex.R
 

@@ -86,7 +86,7 @@ test.migpd <- function(){
 # check excecution for 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mqu=.7)
-  checkEqualsNumeric(wavesurge.fit$models$wave$loglik,gpd(wavesurge$wave,qu=0.7)$loglik,
+  checkEqualsNumeric(wavesurge.fit$models$wave$loglik, evm(wavesurge$wave,qu=0.7)$loglik,
                      tolerance=0.001,msg="migpd: 2-d data gpd fit wave")
 
 }

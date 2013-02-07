@@ -6,7 +6,7 @@
 \alias{declust.extremalIndex}
 \alias{plot.declustered}
 \alias{bootExtremalIndex}
-\alias{gpd.declustered}
+\alias{evm.declustered}
 \title{
 Extremal index estimation and automatic declustering
 }
@@ -29,11 +29,15 @@ declust(y, r=NULL, data = NULL, ...)
 
 \method{plot}{declustered}(x, ylab = "Data",...)
 
-\method{gpd}{declustered}(y, ...)
+\method{evm}{declustered}(y, data=NULL, family=gpd, ...)
 }
 \arguments{
   \item{y}{ Argument to function \code{extremalIndex}: either a numeric vector or the name of a variable in \code{data}.}
-  \item{data}{ A data frame containing \code{y} and any covariates. }
+  \item{data}{ A data frame containing \code{y} and any covariates. In
+    \code{evm.declustered}, it should be NULL and is included to match
+    the arguments of generic \code{evm}.}
+  \item{family}{The type of extreme value model. The user should not
+    change this from its default in \code{evm.declustered}.}
   \item{threshold}{ The threshold for \code{y}, exceedances above which will be used to   estimate the extremal index and carry out automatic declustering.}
   \item{x}{ Objects passed to methods. }
   \item{r}{ Positivie integer: run length to be used under "runs" declustering. If specified then so-called "runs" declustering will be carried out, otherwise defaults to NULL in which case the automatic "intervals" declustering method of Ferro and Segers is used.}

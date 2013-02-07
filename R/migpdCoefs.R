@@ -40,8 +40,8 @@ test.migpdCoefs <- function(){
 
   oldALTco <- coef(Dmod)[3:4, 1]
 
-  altgpd <- gpd(alt, qu=.7, xi = ~ ndose, data=rliver)
-  astgpd <- gpd(ast, qu=.7, xi = ~ ndose, data=rliver)
+  altgpd <- evm(alt, qu=.7, xi = ~ ndose, data=rliver)
+  astgpd <- evm(ast, qu=.7, xi = ~ ndose, data=rliver)
 
   altco <- c(coef(altgpd)[1], coef(altgpd)[2] + 4 * coef(altgpd)[3])
   astco <- c(coef(astgpd)[1], coef(astgpd)[2] + 4 * coef(astgpd)[3])

@@ -304,7 +304,7 @@ texmexJumpConst(j, map)
   }
 
   \seealso{ \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}},
-    \code{\link{gpd.declustered}}.}
+    \code{\link{evm.declustered}}.}
 
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
   the \code{evmFit} function
