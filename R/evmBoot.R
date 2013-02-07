@@ -5,27 +5,21 @@ evmBoot <- function(o, R=1000, trace=100, theCall){
 
     if (missing(theCall)){ theCall <- match.call() }
 
-    D <- o$data$D
-    param <- texmexGetParam(D, o$coefficients)
-
-    param <- lapply(1:length(D), function(i, co, d){
-                                           d[[i]] %*% co[[i]]
-                                       }, co=param, d=D)
-    param <- do.call("cbind", param)
-
+    d <- o$data
+    param <- texmexMakeParams(coef(o), d$D)
     rng <- o$family$rng
 
-    bfun <- function(i, param, o){
+    bfun <- function(i){
         if (i %% trace == 0){ cat("Replicate", i, "\n") }
-        d <- o$data
-        d$y <- rng(nrow(param), param, o)
 
-		evmFit(d, o$family, penalty=o$penalty,
-		        priorParameters=o$priorParameters,
-		        start=o$coefficients, hessian=FALSE)$par
+        d$y <- rng(length(d$y), param, o)
+
+        evmFit(d, o$family, th=o$threshold, prior=o$penalty,
+               priorParameters=o$priorParameters,
+               start=o$coefficients, hessian=FALSE)$par
     }
 
-    res <- t(sapply(1:R, bfun, param=param, o=o))
+    res <- t(sapply(1:R, bfun))
 
     se <- apply(res, 2, sd)
     b <- apply(res, 2, mean) - coef(o)
@@ -110,8 +104,10 @@ test.evmBoot <- function(){
     rainrep[,1] <- exp(rainrep[, 1])
     bse <- apply(rainrep, 2, sd)
 
-    checkEqualsNumeric(cse[1],bse[1],tolerance=tol,msg="bootgpd: rain se(sigma) matches Coles")
-    checkEqualsNumeric(cse[2],bse[2],tolerance=tol,msg="bootgpd: rain se(xi) matches Coles")
+    checkEqualsNumeric(cse[1],bse[1],tolerance=tol,
+                       msg="evmBoot: rain se(sigma) matches Coles")
+    checkEqualsNumeric(cse[2],bse[2],tolerance=tol,
+                       msg="evmBoot: rain se(xi) matches Coles")
 
     # Check bootstrap medians are close to point estimates (the MLEs are
     # biased and the distribution of sigma in particular is skewed, so use
@@ -119,8 +115,10 @@ test.evmBoot <- function(){
 
     best <- apply(rainrep, 2, median)
     cest <- coef(raingpd); cest[1] <- exp(cest[1])
-    checkEqualsNumeric(cest[1],best[1],tolerance=tol,msg="bootgpd: rain median of sigma matches point estimate")
-    checkEqualsNumeric(cest[2],best[2],tolerance=tol,msg="bootgpd: rain medians of xi matches point estimate")
+    checkEqualsNumeric(cest[1],best[1],tolerance=tol,
+                       msg="evmBoot: rain median of sigma matches point estimate")
+    checkEqualsNumeric(cest[2],best[2],tolerance=tol,
+                       msg="evmBoot: rain medians of xi matches point estimate")
 
     ##################################################################
     # Do some checks for models with covariates. Due to apparent instability
@@ -132,12 +130,12 @@ test.evmBoot <- function(){
     bse <- apply(lboot$replicates, 2, sd)
     rse <- bse / lmod$se
     rse <- ifelse(rse < 1, 1/rse, rse)
-    checkTrue(max(rse) < 1.5, msg="bootgpd: SEs with xi in model")
+    checkTrue(max(rse) < 1.5, msg="evmBoot: SEs with xi in model")
 
     best <- apply(lboot$replicates, 2, median)
     rest <- best / coef(lmod)
     rest <- ifelse(rest < 1, 1/rest, rest)
-    checkTrue(max(rest) < 1.5, msg="bootgpd: medians in line with point ests")
+    checkTrue(max(rest) < 1.5, msg="evmBoot: medians in line with point ests")
 
     ## Check penalization works - set harsh penalty and do similar
     ## checks to above
@@ -149,11 +147,11 @@ test.evmBoot <- function(){
     bse <- apply(rainboot$replicates, 2, sd)
     rse <- bse / raingpd$se
     rse <- ifelse(rse < 1, 1/rse, rse)
-    checkTrue(max(rse) < 1.1, msg="bootgpd: SEs with xi in model")
+    checkTrue(max(rse) < 1.1, msg="evmBoot: SEs with xi in model")
 
     best <- apply(rainboot$replicates, 2, median)
     rest <- best / coef(raingpd)
     rest <- ifelse(rest < 1, 1/rest, rest)
-    checkTrue(max(rest) < 1.1, msg="bootgpd: medians in line with point ests")
+    checkTrue(max(rest) < 1.1, msg="evmBoot: medians in line with point ests")
 }
 

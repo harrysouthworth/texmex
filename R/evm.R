@@ -485,6 +485,7 @@ test.evmOpt <- function(){
   co <- m$cov[c(1,3), c(1,3)]
   checkEqualsNumeric(coles, co, tolerance=.0001,
                      msg="gev: covariance page 59 coles")
+  max(abs(coles-co))
 
   # Check log-likelihood
   coles <- 4.34
