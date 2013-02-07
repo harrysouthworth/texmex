@@ -4,6 +4,7 @@
 \alias{ppevm}
 \alias{qgpd2}
 \alias{plotrl.evm}
+\alias{plotrl.evmOpt}
 \alias{u2gpd}
 \alias{revTransform}
 \alias{mexTransform}
@@ -40,7 +41,6 @@
 
 \usage{
 \method{hist}{evmOpt}(x, xlab, ylab, main, ...)
-
 qqevm(object, nsim = 1000, alpha = 0.05, xlab, ylab, main, plot = TRUE,
      ylim = "auto", pch=1, col = 2, cex = 0.75, linecol = 4, intcol = 0,
      polycol = 15)
@@ -52,7 +52,7 @@ u2gpd(u, p=1, th=0, sigma, xi)
 mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE,
      margins="laplace")
 revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
-evmFit(y, th, X.phi, X.xi, penalty="none", start=NULL,
+evmFit(data, family, ..., prior="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0, hessian = TRUE)
 gpd.info(o, method="observed")
 ConstraintsAreSatisfied(a,b,z,zpos,zneg,v)
@@ -71,6 +71,9 @@ inv_Laplace(p)
 namesBoot2bgpd(bootobject)
 plotRLevm(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,
   main,xrange,yrange)
+plotrl.evmOpt(object, alpha = 0.05, xlab, ylab, main, pch = 1, ptcol
+                 = 2, cex = 0.75, linecol = 4, cicol = 0, polycol = 15,
+                 smooth = TRUE, RetPeriodRange = NULL)
 rFrechet(n)
 rMaxAR(n,theta)
 .extRemes.decluster.intervals(Z, ei)
@@ -98,7 +101,7 @@ constructEVM(o, family, th, rate, prior, modelParameters, call,
 \item{divisor}{Divisor used in estimation of empirical distribution.}
 \item{na.rm}{Whether or not to remove missing values.}
 \item{margins}{Form of margins to which to transform \code{x}. Can take values \code{margins="laplace"} or \code{margins="gumbel"}.}
-\item{y, X.phi, X.xi, penalty, start, priorParameters, maxit, trace}{Arguments
+\item{start, priorParameters, maxit, trace}{Arguments
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}
 \item{hessian}{Argument passed to \code{optim}. Logical.}
@@ -114,7 +117,7 @@ an object.}
 \item{par, listr, silly, list, pars, params, c, d, zi, zk, lev, Zj, Zk, Zestfun,
 listdata, q1, q2, sill, D, k}{Arguments to independently coded test functions implementing constrained estimation of the H+T2004 conditional dependence model with Laplace margins.}
 \item{bootobject}{ Argument to \code{namesBoot2bgpd} which restructures an object of class evmBoot to resemble one of class evmSim, which can then use methods for the evmSim class.}
-\item{M,xm,cicol,ptcol,n,xdat,smooth,xrange,yrange}{Arguments to plotRLgpd which is a worker function, does the actual plotting for \code{\link{plotrl.evmOpt}}, \code{\link{plot.rl.evmSim}}, \code{\link{plot.rl.evmBoot}}.}
+\item{M,xm,cicol,ptcol,n,xdat,smooth,xrange,yrange}{Arguments to plotRLgpd which is a worker function, does the actual plotting for \code{\link{plotrl.evm}}, \code{\link{plot.rl.evmSim}}, \code{\link{plot.rl.evmBoot}}.}
 \item{theta}{Argument to \code{rFrechet} and \code{rMaxAR}, the dependence parameter \code{theta}. Takes values between 0 and 1, with 0 corresponding to perfect dependence and 1 to independence.}
 \item{Z,r,ei}{Arguments to extRemes package functions used for testing
   of declustering code. Numeric Z logical indicating threshold excess, r

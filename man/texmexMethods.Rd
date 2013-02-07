@@ -19,6 +19,7 @@
  \alias{print.predict.mex}
  \alias{print.summary.evmSim}
  \alias{print.summary.evmOpt}
+ \alias{print.summary.evmBoot}
  \alias{print.summary.predict.mex}
  \alias{show.MCS}
  \alias{show.bootMCS}
@@ -34,7 +35,6 @@
  \alias{show.summary.evmBoot}
  \alias{show.summary.predict.mex}
  \alias{summary.MCS}
- \alias{summary.evmSim}
  \alias{summary.copula}
  \alias{summary.mex}
  \alias{summary.migpd}
@@ -79,7 +79,6 @@
  \method{show}{summary.evmOpt}(x,digits=3,...)
  \method{show}{summary.predict.mex}(x,...)
  \method{summary}{MCS}(object,...)
- \method{summary}{evmSim}(object,...)
  \method{summary}{copula}(object,...)
  \method{summary}{mex}(object,...)
  \method{summary}{migpd}(object,verbose=TRUE,...)

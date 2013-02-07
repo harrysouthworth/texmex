@@ -40,7 +40,7 @@
 \alias{test.chi}
 \alias{test.copula}
 \alias{test.dgpd}
-\alias{test.info.gpd}
+\alias{test.gpd.info}
 \alias{test.plot.mex}
 \alias{test.revTransform}
 \alias{test.predict.evmOpt}

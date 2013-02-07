@@ -13,7 +13,7 @@
 texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid =
 NULL, rl, delta, endpoint, density, rng, prob, quant)
 \method{print}{texmexFamily}(x, ...)
-\method{summary}{texmexFamily}(x, ...)
+\method{summary}{texmexFamily}(object, ...)
 }
 
 \arguments{
@@ -37,6 +37,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   \item{prob}{Function to compute cumulative probabilities.}
   \item{quant}{Function to compute quantiles.}
   \item{...}{Additional arguments to the print and summary methods.}
+  \item{x, object}{An object of class 'texmexFamily'.}
 }
 \details{
   The \code{density}, \code{rng}, \code{prob} and \code{quant}

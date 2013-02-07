@@ -9,7 +9,8 @@ Rain, wavesurge and portpirie datasets.
 \description{
 Rainfall, wave-surge and Port Pirie data sets.
 }
-\usage{data(rain)
+\usage{
+data(rain)
 data(wavesurge)
 data(portpirie)
 }
