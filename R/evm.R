@@ -471,10 +471,25 @@ test.evmOpt <- function(){
                      msg="gpd: Logical test of thinning 1")
 
 #*************************************************************
-# 4.3. Test of gev family
-  coles <- c(3.87, -.050) # From page 59 of Coles
-  m <- evm(SeaLevel, data=portpirie, family=gev)
+# 4.4. Test of gev family
+  coles <- c(3.87, .198, -.050) # From page 59 of Coles
+  m <- evm(SeaLevel, data=portpirie, family=gev, penalty="none")
+  co <- coef(m)
+  co[2] <- exp(co[2])
+  checkEqualsNumeric(coles, co, tolerance = .01,
+                     msg="gev: parameter ests page 59 Coles")
 
+  # Check non-sigma elements of covariance
+  coles <- matrix(c(.000780, -.00107,
+                    -.00107, .00965), ncol=2)
+  co <- m$cov[c(1,3), c(1,3)]
+  checkEqualsNumeric(coles, co, tolerance=.0001,
+                     msg="gev: covariance page 59 coles")
 
+  # Check log-likelihood
+  coles <- 4.34
+  co <- m$loglik
+  checkEqualsNumeric(coles, co, tolerance=.01,
+                     msg="gev: loglik page 59 coles")
 }
 

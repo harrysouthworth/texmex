@@ -60,9 +60,10 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
 }
 \author{Harry Southworth}
 \note{
-The GPD and GEV families are provided.
+  The \code{gpd} and \code{gev} families are provided. The
+  \code{\link{evm}} function defaults to using the \code{gpd}
+  family.
 }
-
-\examples{}
+\seealso{\code{\link{evm}}}
 \keyword{ models }
 
