@@ -54,7 +54,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     ################################## Do the optimization....
 
     o <- evmFit(data = modelData, family=family, th=th,
-                 penalty=prior,
+                 prior=prior,
                  start=start, hessian = cov == "numeric",
                  priorParameters = priorParameters,
                  maxit = maxit, trace = otrace)
@@ -256,7 +256,7 @@ test.evmOpt <- function(){
 
   m <- model.matrix(~ ALT.B + dose, liver)
 
-  ismod <- texmex:::.ismev.evm.fit(liver$ALT.M,
+  ismod <- texmex:::.ismev.gpd.fit(liver$ALT.M,
                                    threshold=quantile(liver$ALT.M, .7),
                                    ydat = m, sigl=2:ncol(m),
                                    siglink=exp, show=FALSE)
