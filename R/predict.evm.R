@@ -60,11 +60,10 @@ linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     # Get the covariance matrices - one for every unique observation
     if(ci.fit | se.fit | full.cov){
       cov.se <- texmexMakeCovariance(object$cov, D)
+      # Get standard errors
+      ses <- t(sapply(cov.se, function(x){ sqrt(diag(x)) }))
+      colnames(ses) <- paste(colnames(res), '.se', sep = '')
     }
-
-    # Get standard errors
-    ses <- t(sapply(cov.se, function(x){ sqrt(diag(x)) }))
-    colnames(ses) <- paste(colnames(res), '.se', sep = '')
 
     if (ci.fit){
         ci <- texmexMakeCI(res, ses, alpha)

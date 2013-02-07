@@ -470,5 +470,11 @@ test.evmOpt <- function(){
   checkEqualsNumeric((nrow(bmod$chains) - bmod$burn) / thin, nrow(bmod$param),
                      msg="gpd: Logical test of thinning 1")
 
+#*************************************************************
+# 4.3. Test of gev family
+  coles <- c(3.87, -.050) # From page 59 of Coles
+  m <- evm(SeaLevel, data=portpirie, family=gev)
+
+
 }
 

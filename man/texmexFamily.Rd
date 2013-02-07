@@ -43,7 +43,12 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   The \code{density}, \code{rng}, \code{prob} and \code{quant}
   functions can be simple wrappers for the usual d, r, p and q
   functions. They should take a matrix with number of columns
-  equal to the number of parameters, and a fitted model object.
+  equal to the number of parameters, and a fitted model object
+  even if the model object is not used by the function.
+
+  Examples of 'texmexFamily' objects are \code{gpd} and \code{gev}.
+  Take a look at those objects to see how the functions should
+  be constructed.
 
   The functions are used by the modelling functions to create
   diagnostic plots, predictions, etc..
