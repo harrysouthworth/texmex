@@ -23,7 +23,7 @@ function(object, alpha = .050,
     }
 
     m <- unique(c(1/object$rate, 10^jj))
- m <- 1/seq(1/n, 1 - 1/n, len=n)
+    m <- 1/seq(1/n, 1 - 1/n, len=n)
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
@@ -72,9 +72,9 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
 
     Array <- array(unlist(x),c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
 
-    if( class(x) == "rl.evmOpt"){
-      if(any(dimnames(x[[1]])[[2]] == "se.fit")){
-        which <- dimnames(x[[1]])[[2]] != "se.fit"
+    if(class(x) == "rl.evmOpt"){
+      if(any(colnames(x[[1]]) == "se.fit")){
+        which <- colnames(x[[1]]) != "se.fit"
         nd <- nd-1
         ValNames <- ValNames[which]
         Unlist <- unlist(x)[rep(which,each=ncov)]
@@ -83,9 +83,9 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
       }
     } else if(class(x) == "rl.evmSim" | class(x) == "rl.evmBoot"){
         if(casefold(type) == "median"){
-          which <- dimnames(x[[1]])[[2]] != "Mean"
+          which <- substring(colnames(x[[1]]), nchar(colnames(x[[1]])) -3) != "Mean"
         } else if(casefold(type) == "mean") {
-          which <- dimnames(x[[1]])[[2]] != "50%"
+          which <- substring(colnames(x[[1]]), nchar(colnames(x[[1]])) -2) != "50%"
         } else {
           stop("type must be \"mean\" or \"median\" ")
         }

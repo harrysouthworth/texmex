@@ -151,7 +151,7 @@ texmexMakeCISim <- function(x, alpha, object, sumfun, M){
     }
 
 #    res <- t(sapply(x, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
-res <- t(apply(x, 2, sumfun))
+    res <- t(apply(x, 2, sumfun))
 
     if (neednames){
         nms <- c("Mean","50%", paste0(100*alpha/2, "%"),
@@ -162,8 +162,9 @@ res <- t(apply(x, 2, sumfun))
         }
         else {
 #browser()
-            colnames(res) <- apply(expand.grid(paste("M", M, sep=":"), nms), 1,
-                                   paste0, collapse="")
+            colnames(res) <- apply(expand.grid(paste0("M", M), nms), 1,
+                                   paste0, collapse="", sep=":")
+            colnames(res) <- substring(colnames(res), 1, nchar(colnames(res))-1)
         }
     }
     res
