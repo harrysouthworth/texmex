@@ -301,9 +301,9 @@ rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, 
         }
         res
     }
-#cat("meow\n")
+
     res <- lapply(M, getrl, co=co, ci.fit=ci.fit, alpha=alpha, all=all, object=object)
-#cat("purr\n")
+
     if(!all){
       cov.fun <- function(i,res){
         wh <- res[[i]]
@@ -398,8 +398,6 @@ print.lp.evmOpt <- function(x, digits=3, ...){
 summary.lp.evmOpt <- function(object, digits=3, ...){
     print.lp.evmOpt(object, digits=3, ...)
 }
-
-#summary.lp.gpd
 
 summary.lp.evmSim    <- summary.lp.evmOpt
 summary.lp.evmBoot <- summary.lp.evmOpt

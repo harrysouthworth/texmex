@@ -1,7 +1,8 @@
 hist.evmOpt <-
 function(x, xlab, ylab, main, ...){
-    a <- x$coefficients
-#    a[1] <- exp(a[1])
+    # Want parameters as a matrix with one row for passing
+    # through to family$rng etc.
+    a <- t(x$coefficients)
     u <- x$threshold
     if (!is.finite(u)){ u <- min(x$data$y) }
 

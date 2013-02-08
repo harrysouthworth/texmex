@@ -48,17 +48,17 @@ gpd <- texmexFamily(name = 'GPD',
                              out
                     }, # Close delta
                     density = function(n, param, model){
-                                dgpd(n, exp(param[, 1]), param[, 2], u=model$threshold)
+                                dgpd(n, exp(c(param[, 1])), c(param[, 2]), u=model$threshold)
                     },
 
                     rng = function(n, param, model){
-                            rgpd(n, exp(param[, 1]), param[, 2], u=model$threshold)
+                            rgpd(n, exp(c(param[, 1])), c(param[, 2]), u=model$threshold)
                     },
                     prob = function(n, param, model){
-                             pgpd(n, exp(param[, 1]), param[, 2], u=model$threshold)
+                             pgpd(n, exp(c(param[, 1])), c(param[, 2]), u=model$threshold)
                     },
                     quant = function(n, param, model){
-                              qgpd(n, exp(param[, 1]), param[, 2], u=model$threshold)
+                              qgpd(n, exp(c(param[, 1])), c(param[, 2]), u=model$threshold)
                     }
 )
 

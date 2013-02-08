@@ -72,7 +72,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
 
     Array <- array(unlist(x),c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
 
-    if( class(x) == "rl.evm"){
+    if( class(x) == "rl.evmOpt"){
       if(any(dimnames(x[[1]])[[2]] == "se.fit")){
         which <- dimnames(x[[1]])[[2]] != "se.fit"
         nd <- nd-1
@@ -81,7 +81,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
       } else {
         Unlist <- unlist(x)
       }
-    } else if(class(x) == "rl.bgpd" | class(x) == "rl.bootgpd"){
+    } else if(class(x) == "rl.evmSim" | class(x) == "rl.evmBoot"){
         if(casefold(type) == "median"){
           which <- dimnames(x[[1]])[[2]] != "Mean"
         } else if(casefold(type) == "mean") {
@@ -135,12 +135,12 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
 plot.rl.evmBoot <- plot.rl.evmSim <- plot.rl.evmOpt
 
 plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
-# worker function - called by plotrl.gpd, plot.rl.gpd, plot.rl.bgpd
+# worker function - called by plotrl.evmOpt, plot.rl.evmOpt, plot.rl.evmSim
 
     o <- order(M) # in case the return period are not in ascending order.
     M <- M[o]
     xm <- xm[o,]
-#browser()
+
     plot(M, xm[,1], log = "x", type = "n",
          xlim=xrange, ylim=yrange, xlab = xlab, ylab = ylab, main = main)
 

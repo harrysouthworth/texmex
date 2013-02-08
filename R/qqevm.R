@@ -3,9 +3,9 @@ qqevm <- function(object, nsim=1000, alpha=.050,
                   ylim = "auto", 
                   pch= 1, col =2 , cex=.75, linecol = 4 ,
                   intcol = 0, polycol = 15){
-
-    a <- object$coefficients
-#    a[1] <- exp(a[1])
+    # Want parameters as a matrix with one for for passing
+    # through to family$rng etc.
+    a <- t(object$coefficients)
     u <- object$threshold
     dat <- object$data$y
 

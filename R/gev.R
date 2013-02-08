@@ -41,16 +41,16 @@ gev <- texmexFamily(name = 'GEV',
                                  param[, 1] - exp(param[, 2]) / param[, 3]
                     },
                     rng = function(n, param, model){
-                            rgev(n, param[, 1], exp(param[, 2]), param[, 3])
+                            rgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
                     density = function(n, param, model){
-                                dgev(n, param[, 1], exp(param[, 2]), param[, 3])
+                                dgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
                     prob = function(n, param, model){
-                             pgev(n, param[, 1], exp(param[, 2]), param[, 3])
+                             pgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
                     quant = function(n, param, model){
-                              qgev(n, param[, 1], exp(param[, 2]), param[, 3])
+                              qgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
                     resid = function(o){
                               p <- texmexMakeParams(coef(o), o$data$D)

@@ -3,17 +3,18 @@ function(object , nsim = 1000, alpha = .050,
 		 xlab, ylab,  main, # labels and titles
 		 pch=1, col = 2, cex = .75, linecol = 4 ,
 		 intcol = 0, polycol=15){
-    a <- object$coefficients
-#    a[1] <- exp(a[1])
+    # Want parameters as a matrix with one row for passing
+    # into family$rng and so on
+    a <- t(object$coefficients)
     u <- object$threshold
     dat <- object$data$y
 
     pfun <- object$family$prob
     rfun <- object$family$rng
 
-    if ( missing( xlab ) || is.null( xlab ) ) { xlab <- "Model" }
-    if ( missing( ylab ) || is.null( ylab ) ) { ylab <- "Empirical" }
-    if ( missing( main ) || is.null( main ) ) { main <- "Probability Plot" }
+    if (missing(xlab) || is.null(xlab) ) { xlab <- "Model" }
+    if (missing(ylab) || is.null(ylab) ) { ylab <- "Empirical" }
+    if (missing(main) || is.null(main) ) { main <- "Probability Plot" }
 
     ModPoints <- ppoints(dat)
 
