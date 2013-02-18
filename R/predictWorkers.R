@@ -139,7 +139,7 @@ texmexMakeNewdataD <- function(x, newdata){
 }
 
 texmexMakeCISim <- function(x, alpha, object, sumfun, M){
-#    if (!is.list(x)){ x <- list(x) }
+#   if (!is.list(x)){ x <- list(x) }
 
     if (is.null(sumfun)){
         sumfun <- function(x){
@@ -149,10 +149,9 @@ texmexMakeCISim <- function(x, alpha, object, sumfun, M){
     } else {
         neednames <- FALSE
     }
-
-#    res <- t(sapply(x, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
+# res <- t(apply(x, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
     res <- t(apply(x, 2, sumfun))
-
+#browser()
     if (neednames){
         nms <- c("Mean","50%", paste0(100*alpha/2, "%"),
                  paste0(100*(1-alpha/2), "%"))
@@ -161,7 +160,6 @@ texmexMakeCISim <- function(x, alpha, object, sumfun, M){
                                    paste0, collapse="")
         }
         else {
-#browser()
             colnames(res) <- apply(expand.grid(paste0("M", M), nms), 1,
                                    paste0, collapse="", sep=":")
             colnames(res) <- substring(colnames(res), 1, nchar(colnames(res))-1)

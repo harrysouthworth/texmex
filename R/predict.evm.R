@@ -131,7 +131,7 @@ rl.evmOpt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
         se
     }
 
-    if (ci.fit){ 
+    if (ci.fit){
         ci.fun <- function(i, object, co, M, res, alpha, delta, covs){
             wh <- res[[i]];
             se <- getse(object, co, M[i], delta=delta, covs=covs)
@@ -239,7 +239,10 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     ############################################################################
     ## Hard part should be done now. Just need to summarize
 
-    if (ci.fit){ res <- texmexMakeCISim(res, alpha, object, sumfun) }
+    if (ci.fit){
+        res <- lapply(res, texmexMakeCISim, alpha=alpha, object=object, sumfun=sumfun)
+    }
+
     else if (all){ res <- res }
     else { # Just point estimates
         if (se.fit){ warning("se.fit not implemented - ignoring") }
