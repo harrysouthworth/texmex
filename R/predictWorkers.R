@@ -139,20 +139,18 @@ texmexMakeNewdataD <- function(x, newdata){
 }
 
 texmexMakeCISim <- function(x, alpha, object, sumfun, M){
-#   if (!is.list(x)){ x <- list(x) }
-
     if (is.null(sumfun)){
         sumfun <- function(x){
-            c(mean(x), quantile(x, prob=c(.50, alpha/2,  1 - alpha/2)) )
+            c(Mean=mean(x), quantile(x, prob=c(.50, alpha/2,  1 - alpha/2)) )
         }
         neednames <- TRUE
     } else {
         neednames <- FALSE
     }
-# res <- t(apply(x, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
+# res <- t(sapply(res, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
     res <- t(apply(x, 2, sumfun))
 #browser()
-    if (neednames){
+    if (FALSE){#    if (neednames){
         nms <- c("Mean","50%", paste0(100*alpha/2, "%"),
                  paste0(100*(1-alpha/2), "%"))
         if (missing(M)){

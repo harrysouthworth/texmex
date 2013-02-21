@@ -238,9 +238,9 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 
     ############################################################################
     ## Hard part should be done now. Just need to summarize
-
+#browser()
     if (ci.fit){
-        res <- lapply(res, texmexMakeCISim, alpha=alpha, object=object, sumfun=sumfun)
+        res <- t(sapply(res, texmexMakeCISim, alpha=alpha, object=object, sumfun=sumfun))
     }
 
     else if (all){ res <- res }
@@ -251,6 +251,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     if(!all){
       if(ModelHasCovs){
         for (i in 1:length(D)){
+#browser()
             res <- addCov(res,D[[i]])
         }
       }
@@ -275,6 +276,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 }
 
 rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
+    if (se.fit){ warning("se.fit not implemented") }
 
     co <- linearPredictors.evmSim(object, newdata=newdata, unique.=unique., all=TRUE, sumfun=NULL)
     # XXX Next line seems silly! Why not compute it from the line above?
@@ -300,7 +302,6 @@ rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, 
         } # Close if (ci.fit
         else if (!all){
             res <- apply(res, 2, mean)
-            if (se.fit){ warning("se.fit not implemented") }
         }
         res
     }

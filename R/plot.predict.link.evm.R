@@ -5,7 +5,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
   if(dim(x)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
-  if( !any(colnames(x) == "phi.lo") ){
+  if(!any(colnames(x) == "phi.lo") ){
     stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
   }
 
@@ -74,7 +74,7 @@ test.plot.lp.evmOpt <- function(){
   n <- 100
   Y <- rgpd(n,sigma=1,xi=0.1)
   fit <- evm(Y,th=0)
-  fitb <- evm(Y,th=0,method="sim",trace=20000)
+  fitb <- evm(Y,th=0,method="sim",trace=100000)
   fit.boot <- evmBoot(fit,R=20,trace=30)
   M <- seq(5,1000,len=20)
 
@@ -106,7 +106,7 @@ test.plot.lp.evmOpt <- function(){
   Y <- rgpd(n,exp(X[,1]),X[,2])
   X$Y <- Y
   fit <- evm(Y,data=X,phi=~a, xi=~b,th=0)
-  fitb <- evm(Y,data=X,phi=~a, xi=~b,th=0,method="sim",trace=20000)
+  fitb <- evm(Y,data=X,phi=~a, xi=~b,th=0,method="sim",trace=100000)
   o <- options(warn=-1)
   fit.boot <- evmBoot(fit,R=20,trace=30)
   options(o)
@@ -143,7 +143,7 @@ test.plot.lp.evmOpt <- function(){
   Y <- rgpd(n,exp(X[1,1]),X[,2])
   X$Y <- Y
   fit <- evm(Y,data=X,xi=~b,th=0)
-  fitb <- evm(Y,data=X,xi=~b,th=0,method="sim",trace=20000)
+  fitb <- evm(Y,data=X,xi=~b,th=0,method="sim",trace=100000)
   o <- options(warn=-1)
   fit.boot <- evmBoot(fit,R=20,trace=30)
   options(o)
@@ -161,7 +161,7 @@ test.plot.lp.evmOpt <- function(){
   plot(pb,sameAxes=FALSE,main="MCMC")
   plot(pboot,sameAxes=FALSE,main="Bootstrap")
 
-  par(mfrow=c(3,1))
+  par(mfrow=c(3,3))
   plot(p.lp,main="MLE",polycol="cyan")
   plot(pb.lp,main="MCMC",polycol="cyan")
   plot(pboot.lp,main="Bootstrap",polycol="cyan")
