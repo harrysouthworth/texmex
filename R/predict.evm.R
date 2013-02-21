@@ -195,6 +195,8 @@ predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
 
 linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                                      alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
+    if (se.fit){ warning("se.fit not implemented - ignoring") }
+
     D <- texmexMakeNewdataD(object$map, newdata)
 
     X.all <- do.call("cbind", D)
@@ -238,20 +240,18 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 
     ############################################################################
     ## Hard part should be done now. Just need to summarize
-#browser()
+
     if (ci.fit){
         res <- t(sapply(res, texmexMakeCISim, alpha=alpha, object=object, sumfun=sumfun))
     }
 
     else if (all){ res <- res }
     else { # Just point estimates
-        if (se.fit){ warning("se.fit not implemented - ignoring") }
         res <- t(sapply(res, function(x){ apply(x, 2, mean) }))
     }
     if(!all){
       if(ModelHasCovs){
         for (i in 1:length(D)){
-#browser()
             res <- addCov(res,D[[i]])
         }
       }
