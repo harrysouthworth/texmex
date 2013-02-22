@@ -242,7 +242,18 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     ## Hard part should be done now. Just need to summarize
 
     if (ci.fit){
-        res <- t(sapply(res, texmexMakeCISim, alpha=alpha, object=object, sumfun=sumfun))
+        # Need to get names by pasting together CI names and parameter names
+        wh <- texmexMakeCISim(res[[1]], alpha=alpha, object=object, sumfun=sumfun)
+        wh <- colnames(wh)
+        wh <- paste(rep(names(D), ea=length(wh)), wh, sep = ".")
+
+#        res <- t(sapply(res, texmexMakeCISim, alpha=alpha, object=object, sumfun=sumfun))
+
+        res <- sapply(res, function(x){
+                               t(texmexMakeCISim(x, alpha=alpha, object=object, sumfun=sumfun))
+                           })
+        res <- t(res)
+        colnames(res) <- wh
     }
 
     else if (all){ res <- res }

@@ -53,11 +53,11 @@ plot.lp.evmSim <- function(x, type="median", ...){
   if(dim(x)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
-# re-format to same column structure as lp.gpd x
-  if( casefold(type) == "median"){
-    x <- x[,c(2,6,3,4,7,8,9:dim(x)[2])]
+# re-format to same column structure as lp.evmOpt x
+  if(casefold(type) == "median"){
+    x <- x[, c(2,6,3,4,7,8,9:dim(x)[2])]
   } else if(casefold(type) == "mean") {
-    x <- x[,c(1,5,3,4,7,8,9:dim(x)[2])]
+    x <- x[, c(1,5,3,4,7,8,9:dim(x)[2])]
   } else {
     stop("type must be \"mean\" or \"median\" ")
   }
@@ -161,7 +161,7 @@ test.plot.lp.evmOpt <- function(){
   plot(pb,sameAxes=FALSE,main="MCMC")
   plot(pboot,sameAxes=FALSE,main="Bootstrap")
 
-  par(mfrow=c(3,3))
+  par(mfrow=c(3,1))
   plot(p.lp,main="MLE",polycol="cyan")
   plot(pb.lp,main="MCMC",polycol="cyan")
   plot(pboot.lp,main="Bootstrap",polycol="cyan")
