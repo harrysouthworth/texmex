@@ -485,8 +485,8 @@ test.evmOpt <- function(){
   co <- m$cov[c(1,3), c(1,3)]
   checkEqualsNumeric(coles, co, tolerance=.01,
                      msg="gev: covariance page 59 coles")
-  m <- max(abs(coles - co))
-  checkEqualsNumeric(0, m, tol=.0001, msg="gev: max abs covariance")
+  mc <- max(abs(coles - co))
+  checkEqualsNumeric(0, mc, tolerance=.0001, msg="gev: max abs covariance")
   # junk <- abs(coles - co)
   # mean(junk) / mean(abs(coles)) <--------------------
 

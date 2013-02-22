@@ -1,5 +1,7 @@
 \name{methods}
 \alias{coef.evmSim}
+\alias{coef.evmBoot}
+\alias{coefficients.evmBoot}
 \alias{coef.mex}
 \alias{coef.migpd}
 \alias{coefficients.evmSim}
