@@ -49,6 +49,11 @@ print.evmBoot <- function(x, ...){
     invisible(res)
 }
 
+
+coefficients.evmBoot <- coef.evmBoot <- function(object, ...){
+    apply(object$replicates, 2, mean)
+}
+
 summary.evmBoot <- function(object, ...){
     means <- apply(object$replicates, 2, mean)
     medians <- apply(object$replicates, 2, median)
@@ -85,6 +90,7 @@ plot.evmBoot <- function(x, col=4, border=FALSE, ...){
 	}
 	for (i in 1:ncol(x$replicates)){
 		pfun(x$replicates[,i], xlab=colnames(x$replicates)[i], col=col, border=border)
+		abline(v=coef(x$map)[i], col="cyan")
 	}
 	invisible()
 }
@@ -99,7 +105,7 @@ test.evmBoot <- function(){
     tol <- 0.1
     cse <- c(.958432, .101151)
     raingpd <- evm(rain, th=30, penalty="none")
-    rainboot <- evmBoot(raingpd, R=100, trace=100)
+    rainboot <- evmBoot(raingpd, R=100, trace=1000)
     rainrep <- rainboot$replicates
     rainrep[,1] <- exp(rainrep[, 1])
     bse <- apply(rainrep, 2, sd)
@@ -109,16 +115,14 @@ test.evmBoot <- function(){
     checkEqualsNumeric(cse[2],bse[2],tolerance=tol,
                        msg="evmBoot: rain se(xi) matches Coles")
 
-    # Check bootstrap medians are close to point estimates (the MLEs are
-    # biased and the distribution of sigma in particular is skewed, so use
-    # medians, not means, and allow a little leeway
+    # Can't compare point estimates since MLEs are known to be biased.
+    # Check that bootstrap estimate of bias decreases with sample size.
+    rain25 <- evm(rain, th=25, R=100, method="boot", trace=1000)
+    rain40 <- evm(rain, th=40, R=100, method="boot", trace=1000)
+    b <- list(rain25, rain40)
+    b <- sapply(b, function(x){ abs(coef(x$map) - coef(x)) })
+    checkTrue(all(b[, 2] > b[,1]), msg="evmBoot: check bias decreases with sample size")
 
-    best <- apply(rainrep, 2, median)
-    cest <- coef(raingpd); cest[1] <- exp(cest[1])
-    checkEqualsNumeric(cest[1],best[1],tolerance=tol,
-                       msg="evmBoot: rain median of sigma matches point estimate")
-    checkEqualsNumeric(cest[2],best[2],tolerance=tol,
-                       msg="evmBoot: rain medians of xi matches point estimate")
 
     ##################################################################
     # Do some checks for models with covariates. Due to apparent instability
