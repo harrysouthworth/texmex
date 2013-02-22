@@ -10,9 +10,9 @@ endPoint.evmOpt <- function(y, verbose=TRUE,...){
   endpoint <- y$family$endpoint
 
   negShape <- p[, ncol(p)] < 0
-#  negShape <- fittedShape < 0
+
   if(any(negShape)){
-    UpperEndPoint <- endpoint(p, y) #c(y$threshold - fittedScale/fittedShape)
+    UpperEndPoint <- endpoint(p, y)
     UpperEndPoint[!negShape] <- Inf
     if(verbose){
       o <- unique(cbind(y$data$D[['xi']], p))
@@ -29,26 +29,18 @@ endPoint.evmBoot <- endPoint.evmSim <- function(y,verbose=TRUE,...){
   endPoint(y$map,verbose=verbose,...)
 }
 
-#fittedGPDscale <- function(o){
-#  exp(o$coefficients[1:ncol(o$data$D$phi)] %*% t(o$data$D$phi))
-#}
-
-#fittedGPDshape <- function(o){
-#  o$coefficients[(ncol(o$data$D$phi) + 1):length(o$coefficients)] %*% t(o$data$D$xi)
-#}
-
 test.endPoint <- function(){
   set.seed(1)
   fit <- evm(rnorm(100),th=0.3)
   ep <- endPoint(fit,verbose=FALSE)
   co <- coef(fit)
   th <- fit$thresh
-  checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for gpd single covariate")
+  checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for evmOpt single covariate")
 
   set.seed(1)
-  fit <- evm(rnorm(100),th=0.3,method="simulate",verbose=FALSE,iter=1500)
+  fit <- evm(rnorm(100),th=0.3,method="simulate",verbose=FALSE,iter=1500, thin=0)
   ep <- endPoint(fit,verbose=FALSE)
   co <- coef(fit$map)
-  th <- fit$thresh
-  checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for bgpd single covariate")
+  th <- fit$map$thresh
+  checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for evmSim single covariate")
 }
