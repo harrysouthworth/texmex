@@ -483,9 +483,12 @@ test.evmOpt <- function(){
   coles <- matrix(c(.000780, -.00107,
                     -.00107, .00965), ncol=2)
   co <- m$cov[c(1,3), c(1,3)]
-  checkEqualsNumeric(coles, co, tolerance=.0001,
+  checkEqualsNumeric(coles, co, tolerance=.01,
                      msg="gev: covariance page 59 coles")
-  max(abs(coles-co))
+  m <- max(abs(coles - co))
+  checkEqualsNumeric(0, m, tol=.0001, msg="gev: max abs covariance")
+  # junk <- abs(coles - co)
+  # mean(junk) / mean(abs(coles)) <--------------------
 
   # Check log-likelihood
   coles <- 4.34

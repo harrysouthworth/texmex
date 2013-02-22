@@ -38,7 +38,7 @@ test.endPoint <- function(){
   checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for evmOpt single covariate")
 
   set.seed(1)
-  fit <- evm(rnorm(100),th=0.3,method="simulate",verbose=FALSE,iter=1500, thin=0)
+  fit <- evm(rnorm(100),th=0.3,method="simulate",verbose=FALSE,iter=1500)
   ep <- endPoint(fit,verbose=FALSE)
   co <- coef(fit$map)
   th <- fit$map$thresh
