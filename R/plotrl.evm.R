@@ -6,7 +6,7 @@ function(object, alpha = .050,
 
     wh <- sapply(object$data$D, ncol)
     if (any(wh > 1)){
-      stop("use plot method for object returned by predict.gpd to see rl plots if covariates in model")
+      stop("use plot method for object returned by predict.evmOpt to see rl plots if covariates in model")
     }
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
@@ -22,12 +22,13 @@ function(object, alpha = .050,
       jj <- seq(-1, max(3.75,log10(n)),by=0.1)
     }
 
-    m <- unique(c(1/object$rate, 10^jj))
+#    m <- unique(c(1/object$rate, 10^jj))
     m <- 1/seq(1/n, 1 - 1/n, len=n)
+
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
-
+browser()
     xrange <- range(m)
     yrange <- range(c(xdat, range(xm[plotX,])))
 
