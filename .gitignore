@@ -5,11 +5,6 @@
 *-Ex.R
 *~
 
-/src-i386/symbols.rds
-/src-i386/texmex.c
-/src-i386/texmex.dll
-/src-i386/texmex.o
-/src-x64/symbols.rds
-/src-x64/texmex.c
-/src-x64/texmex.dll
-/src-x64/texmex.o
+# Build output
+/src-x64
+/src-i386
