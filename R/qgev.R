@@ -1,5 +1,4 @@
 qgev <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
-    n <- max(length(p), length(sigma), length(xi), length(mu))
 
     if (log.p == FALSE && (any(p <= 0) || any(p >= 1))) {
         stop("p must lie between 0 and 1 if log.p=FALSE")
@@ -11,6 +10,8 @@ qgev <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
     xi <- rep(xi, length = n)
     mu <- rep(mu, length = n)
 
-    mu - sigma/xi * (1 - (-log(p))^(-xi))
-
+    tol <- 0.0001
+    res <- mu - sigma/xi * (1 - (-log(p))^(-xi))
+    res[abs(xi) < tol] <- mu - sigma*(log(-log(p)))
+    res
 }
