@@ -54,8 +54,7 @@ gev <- texmexFamily(name = 'GEV',
                     },
                     resid = function(o){
                               p <- texmexMakeParams(coef(o), o$data$D)
-                              scaledY <- (o$data$y - p[, 1]) * p[, 3] / exp(p[, 2])
-                              (1 - scaledY)^(-1/p[, 3])
+                              scaledY <- log(1+(o$data$y - p[, 1]) * p[, 3] / exp(p[, 2]))/p[,3] # standard Gumbel see Coles p.110 eq (6.6)
                     }, # Close resid
 
                     rl = function(m, param, model){ # model not used but required by a calling function
