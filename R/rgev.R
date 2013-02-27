@@ -4,7 +4,12 @@ rgev <- function(n, mu, sigma, xi){
     sigma <- rep(sigma, length=n)
     xi <- rep(xi, length=n)
 
-    ((-log(runif(n)))^(-xi) - 1)*sigma/xi + mu
+    if( xi[1] != 0 ) {
+      res <- ((-log(runif(n)))^(-xi) - 1)*sigma/xi + mu
+    } else {
+      res <- mu - sigma*(log(-log(runif(n))))
+    }
+    res
 }
 
 
