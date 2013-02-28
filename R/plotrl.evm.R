@@ -19,16 +19,16 @@ function(object, alpha = .050,
       ran <- log10(RetPeriodRange)
       jj <- seq(ran[1],ran[2],by=0.1)
     } else {
-      jj <- seq(-1, max(3.75,log10(n)),by=0.1)
+      jj <- seq(log10(1/(1-1/n)), 2*log10(n),by=0.1)
     }
 
-#    m <- unique(c(1/object$rate, 10^jj))
-    m <- 1/seq(1/n, 1 - 1/n, len=n)
+    tol <- 0.00001 # to avoid div by zero in gev rl calc
+    m <- unique(c(max(1/object$rate,1+tol), 10^jj))
 
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
-browser()
+
     xrange <- range(m)
     yrange <- range(c(xdat, range(xm[plotX,])))
 
@@ -146,8 +146,8 @@ plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,yl
          xlim=xrange, ylim=yrange, xlab = xlab, ylab = ylab, main = main)
 
       if (smooth) {
-        splo <- spline(log(M), xm[,2] , 200)
-        sphi <- spline(log(M), xm[,3] , 200)
+        splo <- spline(log(M), xm[,2], 200)
+        sphi <- spline(log(M), xm[,3], 200)
         if ( polycol != 0 ) {
             polygon( exp(c( splo$x, rev( sphi$x ) )),
 	                       c( splo$y, rev( sphi$y ) ),
@@ -204,7 +204,7 @@ test.plotrl.evm <- function()
   plot(rl,sameAxes=TRUE,main=paste("Validation suite plot",1:nx),polycol="cyan")
   plot(rl,sameAxes=FALSE,polycol="magenta")
 
-  checkException(plot(predict(fit,newdata=newX,ci=FALSE)),silent=TRUE,msg="plotrl.gpd: failure if no conf ints supplied")
+  checkException(plot(predict(fit,newdata=newX,ci=FALSE)),silent=TRUE,msg="plotrl.evmOpt: failure if no conf ints supplied")
 
 }
 
