@@ -10,7 +10,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     if (all(sapply(x$data$D,ncol) == 1)){
         ppevm(x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha)
         qqevm(x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha)
-        plotrl.evmOpt(x, main=main[3], xlab=xlab[3], ...)
+        plotrl.evmOpt(x, main=main[3], xlab=xlab[3], smooth=FALSE, ...)
         hist.evmOpt(x, main=main[4], xlab=xlab[4])
     } else { # Covariates in the model
     
@@ -58,11 +58,24 @@ test.plot.evmOpt <- function(){
   Y <- rgpd(n,sig,X[,2])
   X$Y <- Y
   fit <- evm(Y,data=X,xi=~b,th=0)
-  par(mfrow=c(2,2))
   res <- plot(fit)
   checkEquals(res,NULL,msg="plot.evmOpt: GPD with covariates successful execution")
  
   #GEV 
+  # no covariates
+  n <- 1000
+  Y <- rgev(n,1,1,-.1)
+  fit <- evm(Y,family=gev)
+  par(mfrow=c(2,2))
+  res <- plot(fit)
+  checkEquals(res,NULL,msg="plot.evmOpt: GEV no covariates, neg xi successful execution")
+    
+  Y <- rgev(n,1,1,.2)
+  fit <- evm(Y,family=gev)
+  res <- plot(fit)
+  checkEquals(res,NULL,msg="plot.evmOpt: GEV no covariates, pos xi successful execution")
+
+  #GEV with covariates
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3),C= runif(n))
   Y <- rgev(n,X[,3],sig,X[,2])
   X$Y <- Y
@@ -70,4 +83,9 @@ test.plot.evmOpt <- function(){
   par(mfrow=c(2,2))
   res <- plot(fit,main=rep("GEV with covariates",4))
   checkEquals(res,NULL,msg="plot.evmOpt: GEV with covariates successful execution")
+
+  fit <- evm(Y,data=X,xi=~b,family=gev)
+  par(mfrow=c(2,2))
+  res <- plot(fit,main=rep("GEV with one covariate",4))
+  checkEquals(res,NULL,msg="plot.evmOpt: GEV with one covariate successful execution")
 }
