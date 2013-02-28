@@ -23,8 +23,8 @@ gev <- texmexFamily(name = 'GEV',
                               y <- -log(1 - 1/m)
                               out <- rep(1, 3)
 
-                              out[2] <- -exp(param[2])/param[3] * (1 - y^(-param[3]))
-                              out[3] <- exp(param[2]) * param[3]^(-2) * (1 - y^(-param[3])) -
+                              out[2] <- -exp(param[2])/param[3] * (1 - y^(-param[3])) # Coles p.56
+                              out[3] <- exp(param[2]) * param[3]^(-2) * (1 - y^(-param[3])) - # change of variable from sigma to phi gives exp(param[2]) in out[2]
                               exp(param[2])/param[3] * y^(-param[3]) * log(y)
                               out
                     }, # Close delta
