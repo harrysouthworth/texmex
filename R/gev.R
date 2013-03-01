@@ -43,14 +43,14 @@ gev <- texmexFamily(name = 'GEV',
                     rng = function(n, param, model){
                             rgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
-                    density = function(n, param, model){
-                                dgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
+                    density = function(x, param, model){
+                                dgev(x, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
-                    prob = function(n, param, model){
-                             pgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
+                    prob = function(x, param, model){
+                             pgev(x, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
-                    quant = function(n, param, model){
-                              qgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
+                    quant = function(p, param, model){
+                              qgev(p, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
                     resid = function(o){
                               p <- texmexMakeParams(coef(o), o$data$D)
