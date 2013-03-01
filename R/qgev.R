@@ -12,6 +12,6 @@ qgev <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 
     tol <- 0.0001
     res <- mu - sigma/xi * (1 - (-log(p))^(-xi))
-    res[abs(xi) < tol] <- mu - sigma*(log(-log(p)))
+    res[abs(xi) < tol] <- mu - sigma*(log(-log(p[abs(xi) < tol])))
     res
 }
