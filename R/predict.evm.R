@@ -422,74 +422,88 @@ print.lp.evmBoot <- print.lp.evmOpt
 ## test.predict.evm()
 
 test.predict.evmOpt <- function(){
-# no covariates
-  u <- 14
-  r.fit <- evm(rain,th=u)
-  co <- coef(r.fit)
-  qgpd(0.9,exp(co[1]),co[2],u=u)
-
-  checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg="predict.evmOpt: retrieve threshold")
-
-  checkEquals(target=predict(r.fit), current=rl(r.fit),msg="predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments")
-  checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg="predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments")
-
-  t.fit <- r.fit
-  t.fit$rate <- 1
-  prob <- c(0.5,0.9,0.95,0.99,0.999)
-  for(p in prob){
-    checkEqualsNumeric(target = qgpd(p,exp(co[1]),co[2],u=u),
-                       current = unlist(predict(t.fit,M=1/(1-p))),msg="predict.evmOpt: est ret levels no covariates")
+  pst <- function(msg=""){
+    paste(msg,", Family = ",Family$name)
   }
+  for(Family in list(gpd,gev)){
 
+# no covariates
+
+    u    <- switch(Family$name,GPD=14,GEV=-Inf)
+    data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
+    
+    r.fit <- evm(data,th=u,family=Family)
+    co <- coef(r.fit)
+
+    if(Family$name == "GPD")checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg=pst("predict.evmOpt: GPD retrieve threshold"))
+
+    checkEquals(target=predict(r.fit), current=rl(r.fit),msg="predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments")
+    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg="predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments")
+
+    r.fit$rate <- 1
+    prob <- c(0.5,0.9,0.95,0.99,0.999)
+    for(p in prob){
+      checkEqualsNumeric(target = Family$quant(p,t(co),r.fit),
+                         current = unlist(predict(r.fit,M=1/(1-p))),msg=pst("predict.evmOpt: est ret levels no covariates"))
+    }
+  
 # with covariates
 
-  n <- 1000
-  M <- 1000
+    n <- 1000
+    M <- 1000
 
 # boundary cases with single covariates in only one parameter
+    mu <- 1
+    xi <- 0.05
+    
+    X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
+    param <- switch(Family$name,GPD=cbind(X[,1],xi),GEV=cbind(mu,X[,1],xi))
+    th <- switch(Family$name,GPD=0,GEV=-Inf)
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit <- evm(Y,data=X,phi=~a,th=th,family=Family)
+    co <- switch(Family$name,GPD=coef(fit),GEV=coef(fit)[2:4])
+    phi <- cbind(rep(1,n),X[,1]) %*% co[1:2]
+    AllCo <- switch(Family$name,GPD=cbind(phi,co[3]),GEV=cbind(coef(fit)[1],phi,co[3]))
+  
+    pred <- predict(fit,M=M)
 
-  xi <- 0.05
-  X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
-  Y <- rgpd(n,exp(X[,1]),xi)
-  X$Y <- Y
-  fit <- evm(Y,data=X,phi=~a,th=0)
-  co <- coef(fit)
-  xi <- co[3]
-  sig <- exp(cbind(rep(1,n),X[,1]) %*% co[1:2])
-  pred <- predict(fit,M=M)
+    checkEqualsNumeric(target=X$a,current=pred[[1]][,-1],msg=pst("predict.evmOpt: ret level correct reporting of covariates for single cov in phi only"))
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
+                       current = pred[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in phi only"))
 
-  checkEqualsNumeric(target=X$a,current=pred[[1]][,-1],msg="predict.evmOpt: ret level correct reporting of covariates for single cov in phi only")
-  checkEqualsNumeric(target=qgpd(1-1/M,sig,xi,u=0),
-                     current = pred[[1]][,1],msg="predict.evmOpt: ret level estimation with covariates in phi only")
+    mu <- 1
+    sig <- 2
 
-  sig <- 2
-  X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
-  Y <- rgpd(n,sig,X[,2])
-  X$Y <- Y
-  fit <- evm(Y,data=X,xi=~b,th=0)
-  co <- coef(fit)
-  sig <- exp(co[1])
-  xi <- cbind(rep(1,n),X[,2]) %*% co[2:3]
-  pred <- predict(fit,M=M)
+    param <- switch(Family$name,GPD=cbind(log(sig),X[,2]),GEV=cbind(mu,log(sig),X[,2]))
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit <- evm(Y,data=X,xi=~b,th=th,family=Family)
+    co <- switch(Family$name,GPD=coef(fit),GEV=coef(fit)[2:4])    
+    xi <- cbind(rep(1,n),X[,2]) %*% co[2:3]
+    AllCo <- switch(Family$name,GPD=cbind(co[1],xi),GEV=cbind(coef(fit)[1],co[1],xi))
+  
+    pred <- predict(fit,M=M)
 
-  checkEqualsNumeric(target=X$b,current=pred[[1]][,-1],msg="predict.evmOpt: ret level correct reporting of covariates for single cov in xi only")
-  checkEqualsNumeric(target=qgpd(1-1/M,sig,xi,u=0),
-                     current = pred[[1]][,1],msg="predict.evmOpt: ret level estimation with covariates in xi only")
+    checkEqualsNumeric(target=X$b,current=pred[[1]][,-1],msg=pst("predict.evmOpt: ret level correct reporting of covariates for single cov in xi only"))
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
+                       current = pred[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in xi only"))
 
-# covariates in both parameters
+# covariates in all parameters
 
-  n <- 1000
-  M <- 1000
-  X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
-  Y <- rgpd(n,exp(X[,1]),X[,2])
-  X$Y <- Y
-  fit <- evm(Y, data=X, phi=~a, xi=~b, th=0)
-  co <- coef(fit)
-  sig <- exp(cbind(rep(1,n), X[,1]) %*% co[1:2])
-  xi <- cbind(rep(1, n), X[,2]) %*% co[3:4]
+    param <- switch(Family$name,GPD=cbind(exp(X[,1]),X[,2]),GEV=cbind(X[,1],exp(X[,1]),X[,2]))
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit <- switch(Family$name,
+                  GPD = evm(Y, data=X,        phi=~a, xi=~b, th=th,family=Family),
+                  GEV = evm(Y, data=X, mu=~a, phi=~a, xi=~b, th=th,family=Family))  
 
-  checkEqualsNumeric(target=qgpd(1-1/M,sig,xi,u=0),
-                     current = predict(fit,M=M)[[1]][,1],msg="predict.evmOpt: ret level estimation with covariates in phi and xi")
+    co <- switch(Family$name,GPD=coef(fit),GEV=coef(fit)[3:6]) 
+    mu <- switch(Family$name,GPD=NULL,GEV=cbind(rep(1, n), X[,1]) %*% coef(fit)[1:2])
+    phi <- cbind(rep(1,n), X[,1]) %*% co[1:2]
+    xi <- cbind(rep(1, n), X[,2]) %*% co[3:4]
+    AllCo <- switch(Family$name,GPD=cbind(phi,xi),GEV=cbind(mu,phi,xi))
+
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
+                      current = predict(fit,M=M)[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in all parameters"))
+} # general to here
 
 # check multiple M
   M <- c(10,50,100,500,1000)
@@ -578,8 +592,7 @@ test.predict.evmSim <- function(){
 
   checkEqualsNumeric(target=u,current=predict(r.fit,M=1/r.fit$map$rate)[[1]], msg="predict.evmSim: retrieve threshold")
 
-  t.fit <- r.fit
-  t.fit$map$rate <- 1
+  r.fit$map$rate <- 1
   p <- c(0.5,0.9,0.95,0.99,0.999)
   checkEqualsNumeric(target = sapply(p,function(p)mean(qgpd(p,exp(t.fit$param[,1]),t.fit$param[,2],u))),
                      current = unlist(predict(t.fit,M=1/(1-p))),msg="predict.evmSim: ret level estimation")
