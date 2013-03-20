@@ -1,7 +1,7 @@
 pgpd <-
 function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
 
-    q <- (q - u) / sigma
+    q <- pmax((q - u) / sigma, 0)
     n <- length(q)
 
     xi <- rep(xi, length=n)
@@ -107,5 +107,12 @@ test.pgpd <- function(){
 
   sp <- pgpd(x,sig,xi,u=thresh,lower.tail=FALSE)
   checkEqualsNumeric(myp,1-sp,msg="pgpd: lower tail")
+
+  ## check pgpd when q < threshold
+  upperProb <- pgpd(0, 1, 1, u=0.5, lower.tail=TRUE)
+  checkEqualsNumeric(upperProb, 0, msg="pgpd: value below threshold (1)")
+
+  lowerProb <- pgpd(0, 1, 1, u=0.5, lower.tail=FALSE)
+  checkEqualsNumeric(upperProb, 0, msg="pgpd: value below threshold (2)")
 }
 
