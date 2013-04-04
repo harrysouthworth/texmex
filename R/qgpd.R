@@ -1,31 +1,25 @@
 qgpd <-
 function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
-  if(log.p == FALSE && (any(p<=0) || any(p>=1))){
+  ## this code is trickier than it looks.
+
+  ## we use G ~ (exp(xi E) - 1) / xi
+
+  ## there's no argument checking in qexp, so we do this to match the
+  ## (erroneous) existing behaviour
+
+  if ((!log.p) && (any(p <= 0) || any(p >= 1))) {
     stop("p must lie between 0 and 1 if log.p=FALSE")
   }
-    n <- max(length(p), length(sigma), length(xi), length(u))
-    p <- rep(p, length=n)
-    sigma <- rep(sigma, length=n)
-    xi <- rep(xi, length=n)
-    u <- rep(u, length=n)
 
-    if (log.p) { p <- exp(p) }
-    if (!lower.tail) { p <- 1 - p }
+  ## get the quantiles of the standard exponential
+  exp.quantiles <- qexp(p, lower.tail=lower.tail, log.p=log.p)
 
-    if (all(xi == 0)){
-        res <- qexp(p, 1/sigma)
-    }
-    else if (any(xi == 0)){
-        res <- numeric(length=n)
-        wh <- xi == 0
-        res[wh] <- qexp(p[wh], 1/sigma[wh])
-        res[!wh] <- u[!wh] + (sigma[!wh] / xi[!wh] * (1 - p[!wh]) ^ (-xi[!wh]) - 1)
+  ## transform to quantiles of standard gpd
+  ## this works for negative xi because we get two sign flips
+  standard.gpd  <- .exprel(exp.quantiles * xi) * exp.quantiles
 
-    }
-	else {
-        res <- (sigma / xi) * ((1 - p)^(-xi) - 1) + u
-	}
-    res
+  ## and transform to our gpd.
+  u + sigma * standard.gpd
 }
 
 test.qgpd <- function(){
