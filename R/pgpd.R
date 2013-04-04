@@ -1,39 +1,26 @@
 pgpd <-
 function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
+  ## first shift, rescale and cut at 0
+  ## to handle q < u
+  q <- pmax((q - u) / sigma, 0)
 
-    q <- (q - u) / sigma
-    n <- length(q)
+  ## now expand everything to the same length
+  n <- max(length(q), length(xi))
+  q <- rep(q, length.out=n)
+  xi <- rep(xi, length.out=n)
 
-    xi <- rep(xi, length=n)
-    sigma <- rep(sigma, length=n)
-    u <- rep(u, length=n)
+  ## this handles negative xi properly
+  xiq <- pmax(xi * q, -1)
 
-    if (all(xi == 0)){
-        res <- pexp(q, log.p=TRUE, lower.tail = FALSE)
-    }
-    else if (any(xi == 0)){
-        res <- numeric(n)
-        wh <- xi == 0
-        res[wh] <- pexp(q[wh], log.p=TRUE , lower.tail=FALSE)
-        res[!wh] <- log(1 + xi[!wh]*q[!wh]) * (-1/xi[!wh])
-    }
-    else {
-        res <- log(1 + xi * q) * (-1/xi)
-    }
+  ## because we lack exprel and its inverse
+  ## or, alternately, a lazy ifelse
+  flag <- xi != 0
+  expVal <- q
+  expVal[flag] <- log1p(xiq[flag]) / xi[flag]
+  expVal[is.na(xiq)] <- NA
 
-    if (!log.p){
-        res <- exp(res) # survivor function
-        if (lower.tail){
-            res <- 1 - res
-        }
-    } # Close if (!log.p
-    else { # if want log
-        if(lower.tail){
-            res <- log(1 - exp(res))
-        }
-    }
-
-	res
+  ## and now defer everything to pexp
+  pexp(expVal, lower.tail=lower.tail, log.p=log.p)
 }
 
 
@@ -97,5 +84,21 @@ test.pgpd <- function(){
 
   sp <- pgpd(x,sig,xi,u=thresh,lower.tail=FALSE)
   checkEqualsNumeric(myp,1-sp,msg="pgpd: lower tail")
+
+  ## check pgpd when q < threshold
+  upperProb <- pgpd(0, 1, 1, u=0.5, lower.tail=TRUE)
+  checkEqualsNumeric(upperProb, 0, msg="pgpd: value below threshold (1)")
+
+  lowerProb <- pgpd(0, 1, 1, u=0.5, lower.tail=FALSE)
+  checkEqualsNumeric(upperProb, 0, msg="pgpd: value below threshold (2)")
+
+  ## check pgpd when xi < 0 and value above upper limit
+
+  xi <- -2.3
+  upperProb <- pgpd(-2/xi, 1, xi, u=0, lower.tail=TRUE)
+  checkEqualsNumeric(upperProb, 1, msg="pgpd: negative xi (1)")
+
+  lowerProb <- pgpd(-2/xi, 1, xi, u=0, lower.tail=FALSE)
+  checkEqualsNumeric(lowerProb, 0, msg="pgpd: negative xi (2)")
 }
 
