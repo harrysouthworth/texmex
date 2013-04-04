@@ -51,5 +51,5 @@ Collate:
     multivariate.cauchy.R             thinAndBurn.evm.sim.R
     u2gpd.R
     plot.evmSim.R                       validate.texmex.R
-    plot.bootmex.R
+    plot.bootmex.R			special.functions.R
 
