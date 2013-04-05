@@ -21,7 +21,7 @@ test.rgev <- function() {
   ## so, how do we test an RNG...
   num.simple <- 1000
   num.quantile <- 1e6
-  num.ks <- 100
+
   xi.values  <- c(0, seq(-5, 5, length.out=10))
   test.quantiles <- c(0.25, 0.5, 0.75)
 
