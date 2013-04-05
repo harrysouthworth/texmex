@@ -1,14 +1,17 @@
 dgev <- function(x, mu, sigma, xi, log.d=FALSE){
-    n <- length(x)
+  ## shift and scale
+  x <- (x - mu) / sigma
 
-    mu <- rep(mu, length=n)
-    sigma <- rep(sigma, length=n)
-    xi <- rep(xi, length=n)
+  xix <- .specfun.safe.product(xi, x)
+  logrel <- .log1prel(xix) * x
 
-    tx <- (1 + xi/sigma * (x - mu))
+  log.density <- -log(sigma) - log1p(xix) - logrel - exp(-logrel)
+  ## make exp(Inf) > Inf
+  log.density[logrel==(-Inf)] <- -Inf
 
-    ld <- -log(sigma) - (1 + 1/xi)*log(tx) - tx^(-1/xi)
-
-    if (!log.d){ exp(ld) }
-    else { ld }
+  if (!log.d) {
+    exp(log.density)
+  } else {
+    log.density
+  }
 }
