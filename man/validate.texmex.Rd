@@ -45,6 +45,13 @@
 \alias{test.revTransform}
 \alias{test.predict.evmOpt}
 \alias{test.predict.evmSim}
+
+\alias{test.closures}
+\alias{test.log1prel}
+\alias{test.pgev}
+\alias{test.qgev}
+\alias{test.rgev}
+
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Validate the texmex package
