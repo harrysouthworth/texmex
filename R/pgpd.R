@@ -12,12 +12,7 @@ function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
   ## this handles negative xi properly
   xiq <- pmax(xi * q, -1)
 
-  ## because we lack exprel and its inverse
-  ## or, alternately, a lazy ifelse
-  flag <- xi != 0
-  expVal <- q
-  expVal[flag] <- log1p(xiq[flag]) / xi[flag]
-  expVal[is.na(xiq)] <- NA
+  expVal <- q * .log1prel(xiq)
 
   ## and now defer everything to pexp
   pexp(expVal, lower.tail=lower.tail, log.p=log.p)

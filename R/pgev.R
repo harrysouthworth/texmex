@@ -9,12 +9,8 @@ pgev <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 
   ## this handles the limits correctly... I hope...
   xiq <- pmax(xi * q, -1)
-  flag <- xi != 0
 
-  res <- -q
-  res[flag] <- -log1p(xiq[flag]) / xi[flag]
-  res[is.na(xi) || is.na(q)] <- NA
-
+  res <- - q * .log1prel(xiq)
   pexp(exp(res), lower.tail=!lower.tail, log.p=log.p)
 }
 
