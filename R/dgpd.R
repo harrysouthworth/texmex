@@ -1,16 +1,23 @@
-dgpd <- function(x, sigma, xi, u = 0, log.d=FALSE ){
+dgpd <- function(x, sigma, xi, u = 0, log.d=FALSE ) {
+  ## record the things below bounds for later
+  below.bounds <- x < u
+  ## shift and scale
+  x <- pmax((x - u) / sigma, 0)
 
-    n <- length(x)
+  xix <- .specfun.safe.product(xi, x)
+  logrel <- .log1prel(xix) * x
 
-    sigma <- rep(sigma, length=n)
-    xi <- rep(xi, length=n)
-    u <- rep(u, length=n)
+  log.density <- -log(sigma) - log1p(xix) - logrel
+  log.density[below.bounds] <- -Inf
+  log.density[xix==-1] <- -Inf
 
-    .C(.c.dgpd, result=double(n), as.integer(n),
-       as.double(x), as.double(sigma), as.double(xi),
-       as.double(u), as.integer(log.d),
-       NAOK=TRUE)$result
+  if (!log.d) {
+    exp(log.density)
+  } else {
+    log.density
+  }
 }
+
 
 test.dgpd <- function(){
   evd.dgpd <- texmex:::.evd.dgpd
