@@ -7,7 +7,7 @@
         for the generalized extreme value distribution }
 \description{
   Density, cumulative density, quantiles and random number generation
-        for the generalized Pareto distribution
+        for the generalized extreme value distribution
 }
 \usage{
 dgev(x, mu, sigma, xi, log.d = FALSE)
@@ -25,8 +25,11 @@ rgev(n, mu, sigma, xi)
   \item{log.d, log.p}{Whether or not to work on the log scale.}
   \item{lower.tail}{Whether to return the lower tail.}
 }
+
 \details{
-  Random number generation is done by inversion of the distribution function.
+  Random number generation is done as a transformation of the
+  Gumbel distribution; Gumbel random variates are generated as the
+  negative logarithm of standard exponentials.
 }
 
 
