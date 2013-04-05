@@ -31,7 +31,10 @@ gpd <- texmexFamily(name = 'GPD',
                                  model$threshold - exp(param[, 1]) / param[, 2]
                     },
                     rl = function(m, param, model){
-                           model$threshold + exp(param[, 1]) / param[, 2] * ((m * model$rate)^param[, 2] -1)
+                      ## write in terms of qgpd; let's not reinvent the wheel
+                      qgpd(1/(m * model$rate),
+                           exp(param[,1]), param[,2], u=model$threshold,
+                           lower.tail=FALSE)
                     },
                     delta = function(param, m, model){
                               # This is not exact if a prior (penalty) function is used, but
