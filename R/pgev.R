@@ -8,7 +8,7 @@ pgev <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
   xi <- rep(xi, length.out=n)
 
   ## this handles the limits correctly... I hope...
-  xiq <- pmax(xi * q, -1)
+  xiq <- .specfun.safe.product(xi, q)
 
   res <- - q * .log1prel(xiq)
   pexp(exp(res), lower.tail=!lower.tail, log.p=log.p)

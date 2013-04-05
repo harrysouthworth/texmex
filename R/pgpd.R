@@ -10,7 +10,7 @@ function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
   xi <- rep(xi, length.out=n)
 
   ## this handles negative xi properly
-  xiq <- pmax(xi * q, -1)
+  xiq <- .specfun.safe.product(xi, q)
 
   expVal <- q * .log1prel(xiq)
 
