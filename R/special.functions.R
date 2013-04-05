@@ -15,6 +15,23 @@ NULL
   .Call(.c.log1prel, x)
 }
 
+##' Compute pmax(x y, -1) in such a way that zeros in x beat
+##' infinities in y.
+##'
+##' This is a common pattern in much of the distribution code, so it's
+##' worth factoring out.
+##' @param x a numeric vector
+##' @param y a numeric vector
+##' @return an appropriate numeric vector
+.specfun.safe.product <- function(x, y) {
+  x <- as.numeric(x)
+  y <- as.numeric(y)
+
+  xy <- x * y
+  xy[(x==0) & is.infinite(y)] <- 0
+  pmax(xy, -1)
+}
+
 
 test.exprel <- function(x) {
   ## pull in from the namespace because RUnit doesn't give access to
@@ -71,4 +88,24 @@ test.log1prel <- function() {
   checkEqualsNumeric(log1prel(xi * x) * xi,
                      y, "log1prel: exprel inversion")
 
+}
+
+
+test.specfun.safe.product <- function() {
+  prod <- texmex:::.specfun.safe.product
+
+  ## simple values
+  x <- runif(10, -5, 5)
+  y <- runif(length(x), -5, 5)
+
+  checkEqualsNumeric(prod(x, y), pmax(x*y, -1),
+                     "safe product: simple values")
+
+  ## complicated values
+  x <- c(0, 0, 1, 1)
+  y <- c(Inf, -Inf, Inf, -Inf)
+
+  res <- c(0, 0, Inf, -1)
+  checkEqualsNumeric(prod(x, y), res,
+                     "safe product: complicated values")
 }

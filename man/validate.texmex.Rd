@@ -51,7 +51,7 @@
 \alias{test.pgev}
 \alias{test.qgev}
 \alias{test.rgev}
-
+\alias{test.specfun.safe.product}
 %- Also NEED an '\alias' for EACH other topic documented here.
 \title{
 Validate the texmex package
