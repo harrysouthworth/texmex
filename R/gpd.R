@@ -23,8 +23,8 @@ gpd <- texmexFamily(name = 'GPD',
 
                     resid = function(o){
                               p <- texmexMakeParams(coef(o), o$data$D)
-                              scaledY <- p[, 2] * (o$data$y - o$threshold) / exp(p[, 1])
-                              c(1/p[, 2] * log(1 + scaledY)) # Standard exponential
+                              delta <- (o$data$y - o$threshold) / exp(p[,1])
+                              .log1prel(delta * p[,2]) * delta # Standard exponential
                     }, # Close resid
 
                     endpoint = function(param, model){
