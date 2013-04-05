@@ -7,7 +7,7 @@ function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
   ## there's no argument checking in qexp, so we do this to match the
   ## (erroneous) existing behaviour
 
-  if ((!log.p) && (any(p <= 0) || any(p >= 1))) {
+  if ((!log.p) && any((p < 0) || (p > 1))) {
     stop("p must lie between 0 and 1 if log.p=FALSE")
   }
 
@@ -38,9 +38,7 @@ test.qgpd <- function(){
 # 6.4.0 Test exception for out of range probabilties
   op <- options()
   options(show.error.messages=FALSE)
-  checkException(qgpd(1,1,0,2),msg="qgpd: exception for out of range prob")
   checkException(qgpd(1.5,1,0,2),msg="qgpd: exception for out of range prob")
-  checkException(qgpd(0,1,0,2),msg="qgpd: exception for out of range prob")
   checkException(qgpd(-1,1,0,2),msg="qgpd: exception for out of range prob")
   options(op)
   
