@@ -57,8 +57,8 @@ gev <- texmexFamily(name = 'GEV',
                               scaledY <- log(1+(o$data$y - p[, 1]) * p[, 3] / exp(p[, 2]))/p[,3] # standard Gumbel see Coles p.110 eq (6.6)
                     }, # Close resid
 
-                    rl = function(m, param, model){ # model not used but required by a calling function
-                           param[, 1] - exp(param[, 2])/param[, 3] * (1 - (-log(1 - 1/m))^(-param[, 3]))
+                    rl = function(m, param, model){
+                      qgev(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
                     }
 )
 
