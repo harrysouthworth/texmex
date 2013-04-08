@@ -1,59 +1,52 @@
 rgpd <- function(n, sigma, xi, u = 0) {
-    # Check parameter vectors have correct length
-    sigma <- as.double(rep(sigma, length=n))
-    xi <- as.double(rep(xi, length=n))
-    u <- as.double(rep(u, length=n))
-    result <- double(n)
-    # and pass to the underlying C
-    .C(.c.rgpd, result=result, as.integer(n), sigma, xi, u)$result
-  }
+  ## a standard GPD is (exp(xi * Exp(1)) - 1) / xi
+  ## and the rest follows
+  exponentials <- rexp(n)
+  u + sigma * .exprel(exponentials * xi) * exponentials
+}
+
 
 test.rgpd <- function(){
-  evd.rgpd <- texmex:::.evd.rgpd
-  myTest <- function(seed,p, thresh,msg=""){
-      set.seed(seed)
-      x <- sapply(1:nreps, function(i)rgpd(nsim, p[i,1], p[i,2], u=thresh[i]))
-      set.seed(seed)  
-      ex <- sapply(1:nreps, function(i)evd.rgpd(nsim, loc=thresh[i], scale=p[i,1],shape=p[i,2]))
-      checkEqualsNumeric(ex,x,msg=msg)
-      }
-  seed <- 20101111
-#*************************************************************
-# 6.1. Test rgpd. Note that .evd.rgpd is NOT vectorized.
+  ## testing an RNG...
+  num.simple <- 1000
+  num.quantile <- 1e6
 
-  nreps <- 100
-  nsim <- 1000
-  p <- matrix(runif(2*nreps, -1, 1),ncol=2) 
-  p[, 1] <- p[, 1] + 1
-  thresh <- rep(0,nreps) 
-  
-  myTest(seed,p,thresh=thresh,msg="rgpd: random parameters, zero threshold")
-  
-#*************************************************************
-# 6.1a Test rgpd with non-zero threshold. Note that .evd.rgpd is NOT vectorized.
+  xi.values <- c(0, seq(-2, 2), length.out=10)
+  test.quantiles <- c(0.25, 0.5, 0.75)
 
-  nonZeroThresh <- rnorm(nreps)
-  myTest(seed,p,thresh=nonZeroThresh,msg="rgpd: Non-zero threshold")
-  
-#*************************************************************
-# 6.2. Test rgpd when some or all xi == 0. Note that .evd.rgpd is NOT vectorized.
+  core.sanity.test <- function(xi) {
+    seed <- as.integer(runif(1, -1, 1)*(2**30))
+    set.seed(seed)
+    samples <- rgpd(num.simple, 1, xi)
+    checkEquals(length(samples), num.simple,
+                "rgpd: output of correct length")
+    if (xi < 0) {
+      checkTrue(all(samples <= -1/xi), "rgpd: upper bound check")
+    }
+    checkTrue(all(samples > 0), "rgpd: lower bound check")
 
-  p[sample(1:nreps,nreps/2),2] <- 0
-  myTest(seed,p,thresh=thresh,msg="rgpd: some zero xi")
-  p[,2] <- 0
-  myTest(seed,p,thresh=thresh,msg="rgpd: all zero xi")
+    sigma <- rexp(1)
+    mu    <- runif(1, -5, 5)
+    shifted <- mu + sigma * samples
+    set.seed(seed)
+    checkEqualsNumeric(shifted,
+                       rgpd(num.simple, sigma, xi, u=mu),
+                       "rgpd: scale and shift")
+  }
 
-#*************************************************************
-# 6.3. Test vectorization of rgpd. .evd.rgpd is NOT vectorized
+  quantile.test <- function(xi) {
+    ## here are the sampled quantiles
+    quantiles <- quantile(pgpd(rgpd(num.quantile, 1, xi),
+                               1, xi),
+                          probs=test.quantiles,
+                          names=FALSE)
+    ## this is a bit crude, but hey...
+    checkEqualsNumeric(test.quantiles, quantiles,
+                       tolerance=0.02,
+                       "rgpd: quantile test")
+  }
 
-  sig <- runif(nreps, 0, 2)
-  xi <- runif(nreps)
-
-  set.seed(seed)
-  x <- rgpd(nreps, sig, xi)
-  set.seed(seed)
-  ex <- sapply(1:nreps, function(i)evd.rgpd(1, loc=0, scale=sig[i], shape=xi[i]))
-  
-  checkEqualsNumeric(ex, x, msg="rgpd: vectorisation")
+  lapply(xi.values, core.sanity.test)
+  lapply(xi.values, quantile.test)
 }
 

@@ -26,16 +26,11 @@ rgpd(n, sigma, xi, u = 0)
   \item{lower.tail}{Whether to return the lower tail.}
 }
 \details{
-  The functions were originally based on code due to Stuart Coles and which
-  appears in the \code{ismev} package. The functions have been vectorized and
-  tested.
-
-  Random number generation is done by inversion of the distribution function.
-  Code written by Harry Southworth.
+  Random number generation is done by transformation of a standard exponential.
 }
 
 
-\author{ Janet E Heffernan, Harry Southworth }
+\author{ Janet E Heffernan, Paul Metcalfe, Harry Southworth }
 \examples{
   x <- rgpd(1000, sigma=1, xi=.5)
   hist(x)

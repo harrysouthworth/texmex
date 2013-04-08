@@ -5,30 +5,6 @@
 #include <Rinternals.h>
 #include <R_ext/Rdynload.h>
 
-/* herewith sampling from the GPD distribution */
-
-static
-void rgpd(double* res,
-	  const int* num,
-	  const double* sigma,
-	  const double* xi,
-	  const double* u) {
-  int it;
-  GetRNGstate();
-  for (it=*num; it!=0; --it) {
-    if (*xi != 0) {
-      *res = *u + (*sigma / *xi) * (R_pow(unif_rand(), -*xi) - 1);
-    } else {
-      *res = *u + exp_rand() * (*sigma);
-    }
-    ++res;
-    ++sigma;
-    ++xi;
-    ++u;
-  }
-  PutRNGstate();
-}
-
 /* accurately compute (exp(x) - 1) / x */
 
 static inline
@@ -128,17 +104,13 @@ SEXP log1prel(SEXP x) {
 }
 
 
-static R_CMethodDef cMethods[] = {
-  {".c.rgpd", (DL_FUNC) &rgpd, 5},
-  NULL
-};
-
 static R_CallMethodDef callMethods[] = {
   {".c.exprel", (DL_FUNC) &dexprl, 1},
   {".c.log1prel", (DL_FUNC) &log1prel, 1},
   NULL
 };
 
+
 void R_init_texmex(DllInfo *info) {
-  R_registerRoutines(info, cMethods, callMethods, NULL, NULL);
+  R_registerRoutines(info, NULL, callMethods, NULL, NULL);
 }
