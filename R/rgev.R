@@ -5,12 +5,6 @@ rgev <- function(n, mu, sigma, xi){
 
   neg.log.exp <- -log(rexp(n))
 
-  ## now get everything else to the right length
-  n     <- length(neg.log.exp)
-  xi    <- rep(xi, length.out=n)
-  mu    <- rep(mu, length.out=n)
-  sigma <- rep(sigma, length.out=n)
-
   standard.gev <- .exprel(neg.log.exp * xi) * neg.log.exp
 
   mu + sigma * standard.gev
@@ -48,13 +42,12 @@ test.rgev <- function() {
 
   quantile.test <- function(xi) {
     ## here are the sampled quantiles
-    quantiles <- quantile(rgev(num.quantile, 0, 1, xi),
+    quantiles <- quantile(pgev(rgev(num.quantile, 0, 1, xi),
+                               0, 1, xi),
                           probs=test.quantiles,
                           names=FALSE)
-    ## and here are the qgev quantiles
-    values <- qgev(test.quantiles, 0, 1, xi)
     ## this is a bit crude, but hey...
-    checkEqualsNumeric(quantiles, values,
+    checkEqualsNumeric(test.quantiles, quantiles,
                        tolerance=0.02,
                        "rgev: quantile test")
   }
