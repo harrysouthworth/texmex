@@ -80,7 +80,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   directly, however, take care to be sure what scale the results
   are on.
   
-  Threshold selection can be carried out with the help of functions \code{\link{mrlPlot}} and \code{\link{gpdRangeFit}}.
+  Threshold selection can be carried out with the help of functions \code{\link{mrl}} and \code{\link{gpdRangeFit}}.
 }
 \value{
   An object of class 'migpd'. There are \code{coefficients}, \code{print}, \code{plot}
@@ -95,7 +95,7 @@ J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the gen
 }
 \author{ Harry Southworth }
 \seealso{ \code{\link{mex}}, \code{\link{mexDependence}}, \code{\link{bootmex}},
-	\code{\link{predict.mex}}, \code{\link{gpdRangeFit}}, \code{\link{mrlPlot}}
+	\code{\link{predict.mex}}, \code{\link{gpdRangeFit}}, \code{\link{mrl}}
 		  }
 \examples{
 mygpd <- migpd(winter, mqu=.7, penalty = "none")

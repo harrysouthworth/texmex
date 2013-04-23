@@ -11,11 +11,11 @@
   generalized Pareto distribution
 }
 \usage{
-mrl(data, umin = min(data), umax = max(data) - 0.1, alpha=.050, nint = 100, ...)
-print(x)
-summary(x)
-plot(x)
-
+mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100, alpha=.050)
+\method{print}{mrl}(x, ...)
+\method{show}{mrl}(x, ...)
+\method{summary}{mrl}(object, ...)
+\method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
 }
 
 \arguments{
@@ -25,6 +25,9 @@ plot(x)
   \item{alpha}{ Used to determine coverage of confidence interval to plot. Defaults to
          plotting a 95\% interval. }
   \item{nint}{ The number of points at which to compute the plot. }
+  \item{x, object}{Arguments to print, summary and plot functions.}
+  \item{xlab}{Label for the x-axis. Defaults to \code{xlab="Threshold"}.}
+  \item{ylab}{Label for the y-axis. Defaults to \code{ylab="Mean excess"}.}
   \item{\dots}{ Optional arguments to \code{plot} }
 }
 \details{

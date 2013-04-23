@@ -21,16 +21,15 @@ function (data, umin = min(data), umax = max(data) - 0.1,
 }
 
 print.mrl <- show.mrl <- function(x, ...){
-    x <- x$mrl
-    print(x)
+    print(x$mrl)
     invisible()
 }
 
-summary.mrl <- function(x, ...){
-    summary(x$mrl)
+summary.mrl <- function(object, ...){
+    summary(object$mrl)
 }
 
-plot.mrl <- function(x, ylab="Mean excess", xlab="Threshold", ...){
+plot.mrl <- function(x, xlab="Threshold", ylab="Mean excess", ...){
 
     data <- x$data
     x <- x$mrl
@@ -48,7 +47,9 @@ plot.mrl <- function(x, ylab="Mean excess", xlab="Threshold", ...){
     invisible()
 }
 
-test.mrlPlot <- function(){
+test.mrl <- function(){
    par(mfrow=c(1,1))
-   checkEquals(res,NULL,msg="mrlPlot: check execution")
+   res <- mrl(rain)
+   res <- plot(res, , main="Figure 4.1 of Coles (2001)")
+   checkEquals(res, NULL, msg="mrlPlot: check execution")
 }

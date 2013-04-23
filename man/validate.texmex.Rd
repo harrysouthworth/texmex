@@ -12,7 +12,7 @@
 \alias{test.mexRangeFit}
 \alias{test.migpd}
 \alias{test.migpdCoefs}
-\alias{test.mrlPlot}
+\alias{test.mrl}
 \alias{test.pgpd}
 \alias{test.plot.bootmex}
 \alias{test.plot.chi}
@@ -52,10 +52,12 @@
 \alias{test.qgev}
 \alias{test.rgev}
 \alias{test.specfun.safe.product}
-%- Also NEED an '\alias' for EACH other topic documented here.
-\title{
-Validate the texmex package
-}
+
+\alias{test.exprel}
+\alias{test.log1prel}
+\alias{test.specfun.safe.product}
+
+\title{Validate the texmex package}
 \description{
 Using package \code{RUnit}, run tests to compare behaviour of \code{texmex} with
 expected behaviour

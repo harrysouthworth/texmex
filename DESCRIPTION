@@ -46,7 +46,7 @@ Collate:
     mexTransform.R                    summary.migpd.R
     migpdCoefs.R                      summary.predict.mex.R
     migpd.R                           testingFunctions.R
-    mrlPlot.R
+    mrl.R
     mspearman.R                       texmexWorkers.R
     multivariate.cauchy.R             thinAndBurn.evm.sim.R
     u2gpd.R
