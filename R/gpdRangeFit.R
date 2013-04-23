@@ -23,7 +23,8 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     res
 }
 
-print.gpdRangeFit <- show.gpdRangeFit <- function(x, ...){
+show.gpdRangeFit <-
+print.gpdRangeFit <- function(x, ...){
     sc <- cbind(threshold=x$th, phi=x$par[, 1], lo=x$lo[, 1], hi=x$hi[, 1])
     sh <- cbind(threshold=x$th, xi=x$par[, 2], lo=x$lo[, 2], hi=x$hi[, 2])
 
