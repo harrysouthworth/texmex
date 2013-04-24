@@ -15,7 +15,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     } else { # Covariates in the model
     
         np <- length(x$data$D)
-        lp <- predict(x,type="lp")
+        lp <- predict(x,type="lp", unique.=FALSE)
         Which <- as.logical(apply(lp[,1:np],2,var)) # identifies which cols have covariates
 
         x$data$y <- resid(x)
