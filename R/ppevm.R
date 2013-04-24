@@ -40,7 +40,7 @@ plot.ppevm <- function(x, xlab, ylab,  main,
          xlab = xlab, ylab = ylab, main = main, type = "n")
 
 	# If doing the envelope, plot it before putting the data on 
-    if (nsim > 0){
+    if (!is.null(x$sim)){
         if (polycol != 0)
             polygon(c(x$ModPoints, rev(x$ModPoints)), c(x$sim[1, ], rev(x$sim[2, ])),
                     col=polycol, border=FALSE)
@@ -53,7 +53,7 @@ plot.ppevm <- function(x, xlab, ylab,  main,
            x$pfun(sort(x$dat), x$a, x$model),
            pch = pch , col = col, cex = cex)
     box()
-    invisible(sim)
+    invisible()
 }
 
 print.ppevm <- plot.ppevm

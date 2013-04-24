@@ -8,8 +8,8 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     }
 
     if (all(sapply(x$data$D,ncol) == 1)){
-        ppevm(x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha)
-        qqevm(x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha)
+        plot(ppevm(x, nsim=nsim, alpha=alpha), main=main[1], xlab=xlab[1])
+        plot(qqevm(x, nsim=nsim, alpha=alpha), main=main[2], xlab=xlab[2])
         plotrl.evmOpt(x, main=main[3], xlab=xlab[3], smooth=FALSE, ...)
         hist.evmOpt(x, main=main[4], xlab=xlab[4])
     } else { # Covariates in the model
@@ -21,8 +21,8 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
         x$data$y <- resid(x)
         x$threshold <- 0
         x$coefficients <- rep(0, length(x$data$D)) # phi not sigma, so 0 not 1
-        ppevm(x, main=main[1], xlab=xlab[1], nsim=nsim, alpha=alpha)
-        qqevm(x, main=main[2], xlab=xlab[2], nsim=nsim, alpha=alpha)
+        plot(ppevm(x, nsim=nsim, alpha=alpha), main=main[1], xlab=xlab[1])
+        plot(qqevm(x, nsim=nsim, alpha=alpha), main=main[2], xlab=xlab[2])
 
         
         for(i in (1:length(x$data$D))[Which]){

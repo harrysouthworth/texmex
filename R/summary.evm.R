@@ -1,7 +1,8 @@
 summary.evmOpt <-
 function(object, nsim = 1000, alpha = .050, ...){
     if (ncol(object$data$D$phi) == 1 && ncol(object$data$D$xi) == 1){
-    	env <- qqevm(object, plot = FALSE, nsim = nsim, alpha = alpha)
+    	env <- unclass(qqevm(object, nsim = nsim, alpha = alpha))
+    	env <- list(data=sort(env$dat), envelope=env$sim, Q=env$p)
     }
     else {
         x <- object
@@ -9,7 +10,8 @@ function(object, nsim = 1000, alpha = .050, ...){
         x$threshold <- 0
         x$coefficients <- c(0, 0) # phi not sigma, so 0 not 1
 
-        env <- qqevm(x, plot = FALSE, nsim=nsim, alpha=alpha)
+        env <- unclass(qqevm(x, nsim=nsim, alpha=alpha))
+        env <- list(data=sort(env$dat), envelope=env$sim, Q=env$p)
     }
 
     co <- cbind(object$coefficients, object$se, object$coefficients / object$se)
@@ -18,7 +20,7 @@ function(object, nsim = 1000, alpha = .050, ...){
     res <- list(model = object, coefficients=co, envelope = env,
                 nsim = nsim, alpha = alpha)
 
-    oldClass(res) <- "summary.evm.opt"
+    oldClass(res) <- "summary.evmOpt"
     res
 }
 
