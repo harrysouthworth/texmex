@@ -23,15 +23,22 @@ function(x, xlab, ylab, main, ...){
     xx <- seq(u, min(UpperEndPoint, max(h$breaks)), length = 100)
     y <- dfun(xx, a, x)
 
+    breaks <- seq(from=min(dat),to=max(dat),len=nclass.Sturges(dat)+1)
+
+    res <- list(dat=dat, dens=cbind(x=xx, y=y), breaks=breaks)
+    oldClass(res) <- "hist.evmOpt"
+    res
+}
+
+plot.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
+
     if (missing(xlab) || is.null(xlab)) xlab <- "Data"
     if (missing(ylab) || is.null(ylab)) ylab <- ""
     if (missing(main) || is.null(main)) main <- "Histogram and density"
 
-    breaks <- seq(from=min(dat),to=max(dat),len=nclass.Sturges(dat)+1)
-
-    hist(dat, prob = TRUE, ylim = c(0, max(y)),
-         xlab=xlab, ylab=ylab, main=main, breaks = breaks, ...)
-    lines(xx, y, col = 4)
+    hist(x$dat, prob = TRUE, ylim = c(0, max(x$y)),
+         xlab=xlab, ylab=ylab, main=main, breaks = x$breaks, ...)
+    lines(x$dens[, 1], y$dens[, 2], col = 4)
     rug(dat)
     invisible()
 }
