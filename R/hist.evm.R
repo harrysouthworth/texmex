@@ -43,3 +43,5 @@ plot.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
     invisible()
 }
 
+print.hist.evmOpt <- plot.hist.evmOpt
+
