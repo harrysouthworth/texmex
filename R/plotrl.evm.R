@@ -12,6 +12,17 @@ function(object, alpha = .050,
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
     if (missing(main) || is.null(main)) { main <- "Return Level Plot" }
 
+    wh <- getPlotRLdata(object, alpha, RetPeriodRange)
+
+    plotRLevm(wh$m[wh$plotX], wh$xm[wh$plotX,],
+              polycol, cicol, linecol, ptcol,
+              wh$n, wh$xdat, pch, smooth, xlab, ylab, main,
+              xrange=wh$xrange, yrange=wh$yrange)
+
+    invisible(list(m=wh$m, xm=wh$xm))
+}
+
+getPlotRLdata <- function(object, alpha, RetPeriodRange){
     xdat <- object$data$y
     n <- length(xdat) / object$rate # Number of obs prior to thresholding
 
@@ -23,20 +34,20 @@ function(object, alpha = .050,
     }
 
     tol <- 0.00001 # to avoid div by zero in gev rl calc
-    m <- unique(c(max(1/object$rate,1+tol), 10^jj))
-
+#    m <- unique(c(max(1/object$rate,1+tol), 10^jj))
+    m <- unique(c(1+tol, 10^jj))
+browser()
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U
 
     xrange <- range(m)
     yrange <- range(c(xdat, range(xm[plotX,])))
-
-    plotRLevm(m[plotX],xm[plotX,],polycol,cicol,linecol,ptcol,n,xdat,pch,
-              smooth,xlab,ylab,main,xrange=xrange,yrange=yrange)
-
-    invisible(list(m=m, xm=xm))
+    
+    list(n=n, xdat=xdat, m=m, xm=xm, plotX=plotX, xrange=xrange, yrange=yrange)
 }
+
+
 
 plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
@@ -174,7 +185,7 @@ plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,yl
       points(1 / (1 - ((n - ly + 1):n) / (n + 1)), sort(xdat), pch=pch, col=ptcol)
       box()
     }
- }
+}
 
 test.plotrl.evm <- function()
 {
