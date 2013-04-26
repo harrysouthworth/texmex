@@ -34,9 +34,7 @@ getPlotRLdata <- function(object, alpha, RetPeriodRange){
     }
 
     tol <- 0.00001 # to avoid div by zero in gev rl calc
-#    m <- unique(c(max(1/object$rate,1+tol), 10^jj))
-    m <- unique(c(1+tol, 10^jj))
-browser()
+    m <- unique(c(max(1/object$rate,1+tol), 10^jj)) / object$rate
     xm <- matrix(unlist(rl(object, M=m, ci.fit=TRUE, alpha=alpha)), ncol=3, byrow=TRUE)
     U <- object$threshold - abs(object$threshold/100)
     plotX <- xm[,1] > U

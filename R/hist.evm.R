@@ -36,10 +36,10 @@ plot.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
     if (missing(ylab) || is.null(ylab)) ylab <- ""
     if (missing(main) || is.null(main)) main <- "Histogram and density"
 
-    hist(x$dat, prob = TRUE, ylim = c(0, max(x$y)),
+    hist(x$dat, prob = TRUE, ylim = c(0, max(x$dens[, 2])),
          xlab=xlab, ylab=ylab, main=main, breaks = x$breaks, ...)
-    lines(x$dens[, 1], y$dens[, 2], col = 4)
-    rug(dat)
+    lines(x$dens[, 1], x$dens[, 2], col = 4)
+    rug(x$dat)
     invisible()
 }
 

@@ -11,7 +11,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
         plot(ppevm(x, nsim=nsim, alpha=alpha), main=main[1], xlab=xlab[1])
         plot(qqevm(x, nsim=nsim, alpha=alpha), main=main[2], xlab=xlab[2])
         plotrl.evmOpt(x, main=main[3], xlab=xlab[3], smooth=FALSE, ...)
-        hist.evmOpt(x, main=main[4], xlab=xlab[4])
+        plot(hist.evmOpt(x, main=main[4], xlab=xlab[4]))
     } else { # Covariates in the model
     
         np <- length(x$data$D)
