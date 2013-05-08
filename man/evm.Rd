@@ -307,7 +307,7 @@ texmexJumpConst(j, map)
     \code{\link{evm.declustered}}.}
 
 \author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
-  the \code{evmFit} function
+  the \code{gpd.fit} function
   in the \code{ismev} package and is due to Stuart Coles.}
 
 \references{A. C. Davison and R. L. Smith, Models for exceedances over

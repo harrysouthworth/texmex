@@ -472,29 +472,129 @@ test.evmOpt <- function(){
                      msg="gpd: Logical test of thinning 1")
 
 #*************************************************************
-# 4.4. Test of gev family
+# 5.1. Test of gev family: point estimates and cov matrices
   coles <- c(3.87, .198, -.050) # From page 59 of Coles
-  m <- evm(SeaLevel, data=portpirie, family=gev, penalty="none")
-  co <- coef(m)
-  co[2] <- exp(co[2])
-  checkEqualsNumeric(coles, co, tolerance = .01,
-                     msg="gev: parameter ests page 59 Coles")
-
+  mOpt <- evm(SeaLevel, data=portpirie, family=gev, penalty="none")
+  mSim <- evm(SeaLevel, data=portpirie, family=gev, method="sim")
+  coOpt <- coef(mOpt)
+  coSim <- coef(mSim)
+  coOpt[2] <- exp(coOpt[2])
+  coSim[2] <- exp(coSim[2])
+  # check point estimates
+  checkEqualsNumeric(coles, coOpt, tolerance = .01,
+                     msg="gev: optimisation, parameter ests page 59 Coles")
+  checkEqualsNumeric(coles, coSim, tolerance = .01,
+                     msg="gev: simulation, parameter ests page 59 Coles")
+  
   # Check non-sigma elements of covariance
   coles <- matrix(c(.000780, -.00107,
                     -.00107, .00965), ncol=2)
-  co <- m$cov[c(1,3), c(1,3)]
-  checkEqualsNumeric(coles, co, tolerance=.01,
-                     msg="gev: covariance page 59 coles")
-  mc <- max(abs(coles - co))
-  checkEqualsNumeric(0, mc, tolerance=.0001, msg="gev: max abs covariance")
-  # junk <- abs(coles - co)
-  # mean(junk) / mean(abs(coles)) <--------------------
-
+  coOpt <- mOpt$cov[c(1,3), c(1,3)]
+  coSim <- cov(mSim$param)[c(1,3), c(1,3)]
+  checkEqualsNumeric(coles, coOpt, tolerance=.01,
+                     msg="gev: optimisation, covariance page 59 coles")
+  checkEqualsNumeric(coles, coSim, tolerance=.01,
+                     msg="gev: simulation, covariance page 59 coles")
+  mcOpt <- max(abs(coles - coOpt))
+  mcSim <- max(abs(coles - coSim))
+  checkEqualsNumeric(0, mcOpt, tolerance=.0001, msg="gev: optimisation, max abs covariance")
+  checkEqualsNumeric(0, mcSim, tolerance=.001, msg="gev: simulation, max abs covariance")
+  
   # Check log-likelihood
   coles <- 4.34
-  co <- m$loglik
+  co <- mOpt$loglik
   checkEqualsNumeric(coles, co, tolerance=.01,
-                     msg="gev: loglik page 59 coles")
+                     msg="gev: optimisation, loglik page 59 coles")
+
+  ###################################################################
+  # 5.2   GEV - Logical checks on the effect of Gaussian penalization. The smaller the
+  #    variance, the more the parameter should be drawn towards the
+  #    mean.
+  
+  # Tests for xi being drawn to 0
+  
+  gp1 <- list(c(0, 0, 0), diag(c(10^4, 10^4, .25)))
+  gp2 <- list(c(0, 0, 0), diag(c(10^4, 10^4, .05)))
+  
+  mod1 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp1)
+  mod2 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp2)
+  
+  checkTrue(abs(coef(mOpt)[3]) > abs(coef(mod1)[3]),
+            msg="gev: Gaussian penalization xi being drawn to 0")
+  checkTrue(abs(coef(mOpt)[3]) > abs(coef(mod2)[3]),
+            msg="gev: Gaussian penalization xi being drawn to 0")
+  checkTrue(abs(coef(mod1)[3]) > abs(coef(mod2)[3]),
+            msg="gev: Gaussian penalization xi being drawn to 0")
+  
+  # Tests for phi being drawn to 0
+  
+  gp3 <- list(c(0, 0, 0), diag(c(10^4, 1, 10^4)))
+  gp4 <- list(c(0, 0, 0), diag(c(10^4, .1, 10^4)))
+  
+  mod3 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp3)
+  mod4 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp4)
+  
+  checkTrue(abs(coef(mOpt)[2]) > abs(coef(mod3)[2]),
+            msg="gev: Gaussian penalization phi being drawn to 0")
+  checkTrue(abs(coef(mOpt)[2]) > abs(coef(mod4)[2]),
+            msg="gev: Gaussian penalization phi being drawn to 0")
+  checkTrue(abs(coef(mod3)[2]) > abs(coef(mod4)[2]),
+            msg="gev: Gaussian penalization phi being drawn to 0")
+  
+  # Tests for xi being drawn to 1
+  gp5 <- list(c(0, 0, 1), diag(c(10^4, 10^4, .25)))
+  gp6 <- list(c(0, 0, 1), diag(c(10^4, 10^4, .05)))
+  
+  mod5 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp5)
+  mod6 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp6)
+  
+  checkTrue(abs(1 - coef(mOpt)[3]) > abs(1 - coef(mod5)[3]),
+            msg="gev: Gaussian penalization xi being drawn to 1")
+  checkTrue(abs(1 - coef(mOpt)[3]) > abs(1 - coef(mod6)[3]),
+            msg="gev: Gaussian penalization xi being drawn to 1")
+  checkTrue(abs(1 - coef(mod5)[3]) > abs(1 - coef(mod6)[3]),
+            msg="gev: Gaussian penalization xi being drawn to 1")
+  
+  # Tests for phi being drawn to 0.5 (greater than mle for phi)
+  
+  gp7 <- list(c(0, 0.5, 0), diag(c(10^4, 1, 10^4)))
+  gp8 <- list(c(0, 0.5, 0), diag(c(10^4, .1, 10^4)))
+  
+  mod7 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp7)
+  mod8 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp8)
+  
+  checkTrue(abs(.5 - coef(mOpt)[2]) > abs(.5 - coef(mod7)[2]),
+            msg="gpd: Gaussian penalization phi being drawn to .5")
+  checkTrue(abs(.5 - coef(mOpt)[2]) > abs(.5 - coef(mod8)[2]),
+            msg="gpd: Gaussian penalization phi being drawn to .5")
+  
+  # test above but with lasso penalty
+  
+  mod9 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp7,penalty="lasso")
+  mod10 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp8,penalty="lasso")
+  
+  checkTrue(abs(.5 - coef(mOpt)[2]) > abs(.5 - coef(mod9)[2]),
+            msg="gpd: Gaussian lasso penalization phi being drawn to .5")
+  checkTrue(abs(.5 - coef(mOpt)[2]) > abs(.5 - coef(mod10)[2]),
+            msg="gpd: Gaussian lasso penalization phi being drawn to .5")
+
+  ###################################################################
+  # 5.3  GEV - covariates, use gev.fit from ismev package
+  
+  x <- runif(1000,-0.2,0.2)
+  dat <- data.frame(x=x, y=rgev(length(x),mu=3+5*x,sig=exp(1+2*x),xi=x))
+  g.fit <- .ismev.gev.fit(xdat=dat$y,ydat=dat,mul=1,sigl=1,shl=1,muinit=c(2,6),siglink=exp,show=FALSE)
+  t.fit <- evm(y,mu=~x,phi=~x,xi=~x,family=gev,data=dat,start=c(2,6,1,1,0.001,1))
+
+  checkEqualsNumeric(g.fit$mle,coef(t.fit),tol=0.001,
+                     msg="gev: covariates in mu phi and xi, point est")
+  
+  checkEqualsNumeric(g.fit$nllh,-t.fit$loglik,tol=0.00001,
+                     msg="gev: covariates in mu phi and xi, log-lik")
+  
+  checkEqualsNumeric(g.fit$cov,t.fit$cov,tol=0.001,
+                     msg="gev: covariates in mu phi and xi, cov")
+  
+  
 }
 
