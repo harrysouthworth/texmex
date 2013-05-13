@@ -111,7 +111,7 @@ texmexJumpConst(j, map)
        the argument is passed into \code{optim} -- see the help for that
        function. If \code{method = "simulate"}, the argument determines at
        how many steps of the Markov chain the function should tell the user, and
-       in this case it defaults to \code{trace = 1000}. }
+       in this case it defaults to \code{trace = 10000}. }
   \item{iter}{Number of simulations to generate under \code{method = "simulate"}.
               Defaults to 40000.}
   \item{burn}{ The number of initial steps to be discarded. }

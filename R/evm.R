@@ -302,7 +302,7 @@ test.evmOpt <- function(){
 
   set.seed(25111970)
 
-  makeData <- function(a,b,n=500,u=10)
+  makeDataGpd <- function(a,b,n=500,u=10)
   # lengths of a and b should divide n exactly
   # returns data set size 2n made up of uniform variates (size n) below threshold u and
   # gpd (size n) with scale parameter exp(a) and shape b above threshold u
@@ -314,7 +314,7 @@ test.evmOpt <- function(){
 
   mya <- seq(0.1,1,len=10)
   myb <- rep(c(-0.2,0.2),each=5)
-  data <- makeData(mya,myb)
+  data <- makeDataGpd(mya,myb)
   m <- model.matrix(~ a+b, data)
 
   mod <- evm(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
@@ -339,7 +339,7 @@ test.evmOpt <- function(){
 # 2.1 Tests for xi being drawn to 0
 
   myb <- rep(c(0.5,1.5),each=5)
-  data <- makeData(a=1,b=myb,n=3000)
+  data <- makeDataGpd(a=1,b=myb,n=3000)
 
   gp1 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.25)))
   gp2 <- list(c(0, 0, 0), diag(c(10^4, 0.25, 0.01)))
@@ -359,7 +359,7 @@ test.evmOpt <- function(){
   # and affects (for example) lm(~a, data, method="model.frame"), so it's kind of
   # by design.
   mya <- seq(0.1,1,len=10)
-  data <- makeData(-3 + mya,b=-0.1,n=3000)
+  data <- makeDataGpd(-3 + mya,b=-0.1,n=3000)
   data$a <- rep(mya, len=nrow(data))
 
   gp4 <- list(c(0, 0, 0), diag(c(1, 1, 10^4)))
@@ -376,7 +376,7 @@ test.evmOpt <- function(){
 
 # 2.3 Tests for xi being drawn to 2
   myb <- rep(c(-0.5,0.5),each=5)
-  data <- makeData(a=1,b=myb,n=3000)
+  data <- makeDataGpd(a=1,b=myb,n=3000)
 
   gp7 <- list(c(0, 2, 2), diag(c(10^4, 0.25, 0.25)))
   gp8 <- list(c(0, 2, 2), diag(c(10^4, 0.05, 0.05)))
@@ -393,7 +393,7 @@ test.evmOpt <- function(){
 # 2.4 Tests for phi being drawn to 4
 
   mya <- seq(0.1,1,len=10)
-  data <- makeData(2 + mya,b=-0.1,n=3000)
+  data <- makeDataGpd(2 + mya,b=-0.1,n=3000)
   data$a <- rep(mya, len=nrow(data))
 
   gp10 <- list(c(0, 4, 0), diag(c(10^4, 1,   10^4)))
@@ -407,11 +407,6 @@ test.evmOpt <- function(){
             msg="gpd: with covariates, phi drawn to 4")
   checkTrue(abs(4 - coef(mod10)[2]) > abs(4 - coef(mod11)[2]),
             msg="gpd: with covariates, phi drawn to 4")
-
-#*************************************************************
-  postSum <- function(x){
-    t(apply(x$param, 2, function(o){ c(mean=mean(o), se=sd(o)) }))
-  }
 
 #*************************************************************
 # 4.1. Test reproducibility
@@ -475,15 +470,15 @@ test.evmOpt <- function(){
 # 5.1. Test of gev family: point estimates and cov matrices
   coles <- c(3.87, .198, -.050) # From page 59 of Coles
   mOpt <- evm(SeaLevel, data=portpirie, family=gev, penalty="none")
-  mSim <- evm(SeaLevel, data=portpirie, family=gev, method="sim")
+  mSim <- evm(SeaLevel, data=portpirie, family=gev, method="sim",trace=100000)
   coOpt <- coef(mOpt)
   coSim <- coef(mSim)
   coOpt[2] <- exp(coOpt[2])
   coSim[2] <- exp(coSim[2])
   # check point estimates
-  checkEqualsNumeric(coles, coOpt, tolerance = .01,
+  checkEqualsNumeric(coles, coOpt, tolerance = tol,
                      msg="gev: optimisation, parameter ests page 59 Coles")
-  checkEqualsNumeric(coles, coSim, tolerance = .01,
+  checkEqualsNumeric(coles, coSim, tolerance = tol,
                      msg="gev: simulation, parameter ests page 59 Coles")
   
   # Check non-sigma elements of covariance
@@ -491,19 +486,19 @@ test.evmOpt <- function(){
                     -.00107, .00965), ncol=2)
   coOpt <- mOpt$cov[c(1,3), c(1,3)]
   coSim <- cov(mSim$param)[c(1,3), c(1,3)]
-  checkEqualsNumeric(coles, coOpt, tolerance=.01,
+  checkEqualsNumeric(coles, coOpt, tolerance=tol,
                      msg="gev: optimisation, covariance page 59 coles")
-  checkEqualsNumeric(coles, coSim, tolerance=.01,
+  checkEqualsNumeric(coles, coSim, tolerance=tol,
                      msg="gev: simulation, covariance page 59 coles")
   mcOpt <- max(abs(coles - coOpt))
   mcSim <- max(abs(coles - coSim))
-  checkEqualsNumeric(0, mcOpt, tolerance=.0001, msg="gev: optimisation, max abs covariance")
-  checkEqualsNumeric(0, mcSim, tolerance=.001, msg="gev: simulation, max abs covariance")
+  checkEqualsNumeric(0, mcOpt, tolerance=tol, msg="gev: optimisation, max abs covariance")
+  checkEqualsNumeric(0, mcSim, tolerance=tol, msg="gev: simulation, max abs covariance")
   
   # Check log-likelihood
   coles <- 4.34
   co <- mOpt$loglik
-  checkEqualsNumeric(coles, co, tolerance=.01,
+  checkEqualsNumeric(coles, co, tolerance=tol,
                      msg="gev: optimisation, loglik page 59 coles")
 
   ###################################################################
@@ -579,21 +574,135 @@ test.evmOpt <- function(){
             msg="gpd: Gaussian lasso penalization phi being drawn to .5")
 
   ###################################################################
-  # 5.3  GEV - covariates, use gev.fit from ismev package
+  # 5.3  GEV - covariates in mu, phi and xi separately, use gev.fit from ismev package
   
-  x <- runif(1000,-0.2,0.2)
-  dat <- data.frame(x=x, y=rgev(length(x),mu=3+5*x,sig=exp(1+2*x),xi=x))
-  g.fit <- .ismev.gev.fit(xdat=dat$y,ydat=dat,mul=1,sigl=1,shl=1,muinit=c(2,6),siglink=exp,show=FALSE)
-  t.fit <- evm(y,mu=~x,phi=~x,xi=~x,family=gev,data=dat,start=c(2,6,1,1,0.001,1))
+  makeDataGev <- function(u=0,a,b,n=500)
+    # lengths of a and b should divide n exactly
+    # returns data set size n distributed as GEV variates location parameter u,
+    # scale parameter exp(a) and shape b
+  {
+    gev <- rgev(n,mu=u,exp(a),b)
+    as.data.frame(cbind(u=u,a=a,b=b,y=gev))
+  }
+  
+  myu <- rnorm(10)
+  mya <- seq(0.1,1,len=10)
+  myb <- rep(c(-0.2,0.2),each=5)
+  
+  data <- list(makeDataGev(myu,2,-0.1),
+               makeDataGev(3,mya,-0.1),
+               makeDataGev(3,2,myb))
 
-  checkEqualsNumeric(g.fit$mle,coef(t.fit),tol=0.001,
-                     msg="gev: covariates in mu phi and xi, point est")
+  g1.fit <- texmex:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE)
+  g2.fit <- texmex:::.ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
+  g3.fit <- texmex:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3, siglink=exp,show=FALSE)
+  t1.fit <- evm(y,mu=~u, family=gev,data=data[[1]])
+  t2.fit <- evm(y,phi=~a,family=gev,data=data[[2]])
+  t3.fit <- evm(y,xi=~b, family=gev,data=data[[3]])
+
+  checkEqualsNumeric(g1.fit$mle,coef(t1.fit),tol=tol,msg="gev: covariates in mu point est")
+  checkEqualsNumeric(g2.fit$mle,coef(t2.fit),tol=tol,msg="gev: covariates in phi point est")
+  checkEqualsNumeric(g3.fit$mle,coef(t3.fit),tol=tol,msg="gev: covariates in xi point est")
   
-  checkEqualsNumeric(g.fit$nllh,-t.fit$loglik,tol=0.00001,
-                     msg="gev: covariates in mu phi and xi, log-lik")
+  checkEqualsNumeric(g1.fit$nllh,-t1.fit$loglik,tol=tol,msg="gev: covariates in mu, log-lik")
+  checkEqualsNumeric(g2.fit$nllh,-t2.fit$loglik,tol=tol,msg="gev: covariates in phi, log-lik")
+  checkEqualsNumeric(g3.fit$nllh,-t3.fit$loglik,tol=tol,msg="gev: covariates in xi, log-lik")
   
-  checkEqualsNumeric(g.fit$cov,t.fit$cov,tol=0.001,
-                     msg="gev: covariates in mu phi and xi, cov")
+  checkEqualsNumeric(g1.fit$cov,t1.fit$cov,tol=tol, msg="gev: covariates in mu, cov")
+  checkEqualsNumeric(g2.fit$cov,t2.fit$cov,tol=tol, msg="gev: covariates in phi, cov")
+  checkEqualsNumeric(g3.fit$cov,t3.fit$cov,tol=tol, msg="gev: covariates in xi, cov")
+  
+  ######################################################################
+  # 5.4 GEV - Test mu phi & xi simultaneously. Use simulated data.
+  
+  set.seed(25111970)
+  
+  data <- makeDataGev(5+2*myu,2-0.5*mya,0.1+2*myb)
+  data$u <- myu
+  data$a <- mya
+  data$b <- myb
+  
+  mod <- evm(y,data=data,mu=~u,phi=~a,xi=~b,penalty="none",family=gev,start=c(5,2,2,-0.1,0,2))
+  ismod <- texmex:::.ismev.gev.fit(data$y,
+                                   ydat=data,mul=1,shl=3,sigl=2,
+                                   siglink=exp,
+                                   show=FALSE,muinit=c(5,2),siginit=c(2,-0.1),shinit=c(0,2))
+
+  checkEqualsNumeric(ismod$mle,coef(mod),tolerance = tol,msg="gev: covariates in mu phi and xi: point ests")
+  checkEqualsNumeric(ismod$se,sqrt(diag(mod$cov)),tolerance = tol,msg="gpd: covariates in mu phi and xi: std errs")
+  
+  ####################################################################
+  # 5.5 GEV:  Check that using priors gives expected behaviour when covariates are included.
+  
+  # Tests for xi being drawn to 0
+  
+  myb <- rep(c(-0.1,0.1),each=5)
+  data <- makeDataGev(u=0,a=1,b=-0.5+myb,n=3000)
+  data$b <- myb
+  
+  gp1 <- list(c(0, 0, 0, 0), diag(c(10^4, 10^4, 0.25, 0.25)))
+  gp2 <- list(c(0, 0, 0, 0), diag(c(10^4, 10^4, 0.25, 0.01)))
+  
+  mod0 <- evm(y,family=gev,data=data,xi=~b,penalty="none")
+  mod1 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp1)
+  mod2 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp2)
+
+  checkTrue(all(abs(coef(mod0)[3:4]) > abs(coef(mod1)[3:4])),
+            msg="gev: with covariates, xi drawn to zero")
+  checkTrue(abs(coef(mod1)[4]) > abs(coef(mod2)[4]),
+            msg="gev: with covariates, xi drawn to zero")
+  
+  # Tests for phi being drawn to 0
+
+  mya <- seq(0.1,1,len=10)
+  data <- makeDataGev(u=0,a=-3 + mya,b=-0.1,n=3000)
+  data$a <- rep(mya, len=nrow(data))
+  
+  gp4 <- list(c(0, 0, 0, 0), diag(c(10^4, 1, 1, 10^4)))
+  gp5 <- list(c(0, 0, 0, 0), diag(c(10^4, 0.1, 0.1, 10^4)))
+  
+  mod3 <- evm(y,family=gev,data=data,phi=~a,penalty="none")
+  mod4 <- evm(y,family=gev,data=data,phi=~a,priorParameters=gp4)
+  mod5 <- evm(y,family=gev,data=data,phi=~a,priorParameters=gp5)
+  
+  checkTrue(all(abs(coef(mod3)[2:3]) > abs(coef(mod4)[2:3])),
+            msg="gev: with covariates, phi being drawn to 0")
+  checkTrue(all(abs(coef(mod4)[2:3]) > abs(coef(mod5)[2:3])),
+            msg="gev: with covariates, phi being drawn to 0")
+  
+  # Tests for xi being drawn to 2
+  myb <- rep(c(-0.5,0.5),each=5)
+  data <- makeDataGev(u=0,a=1,b=myb,n=3000)
+  
+  gp7 <- list(c(0, 0, 2, 2), diag(c(10^4, 10^4, 0.25, 0.25)))
+  gp8 <- list(c(0, 0, 2, 2), diag(c(10^4, 10^4, 0.05, 0.05)))
+  
+  mod6 <- evm(y,family=gev,data=data,xi=~b,penalty="none")
+  mod7 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp7)
+  mod8 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp8)
+  
+  checkTrue(all(abs(2 - coef(mod6)[3:4]) > abs(2 - coef(mod7)[3:4])),
+            msg="gev: with covariates, xi drawn to 2")
+  checkTrue(all(abs(2 - coef(mod7)[3:4]) > abs(2 - coef(mod8)[3:4])),
+            msg="gev: with covariates, xi drawn to 2")
+  
+  # Tests for mu being drawn to 4
+  
+  myu <- seq(0.1,1,len=10)
+  data <- makeDataGev(2 + myu,a=1,b=-0.1,n=3000)
+  data$u <- rep(myu, len=nrow(data))
+  
+  gp10 <- list(c(4, 0, 0, 0), diag(c(1,   10^4, 10^4, 10^4)))
+  gp11 <- list(c(4, 0, 0, 0), diag(c(0.1, 10^4, 10^4, 10^4)))
+  
+  mod9 <-  evm(y,family=gev,data=data,mu=~u,penalty="none")
+  mod10 <- evm(y,family=gev,data=data,mu=~u,priorParameters=gp10)
+  mod11 <- evm(y,family=gev,data=data,mu=~u,priorParameters=gp11)
+  
+  checkTrue(abs(4 - coef(mod9)[1])  > abs(4 - coef(mod10)[1]),
+            msg="gev: with covariates, mu drawn to 4")
+  checkTrue(abs(4 - coef(mod10)[1]) > abs(4 - coef(mod11)[1]),
+            msg="gev: with covariates, mu drawn to 4")
   
   
 }

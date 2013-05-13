@@ -189,3 +189,7 @@ texmexGetParam <- function(data, co){
     param
 }
 
+pst <- function(msg=""){
+  paste(msg,", Family = ",Family$name)
+}
+
