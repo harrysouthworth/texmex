@@ -425,6 +425,8 @@ test.predict.evmOpt <- function(){
 
   for(Family in list(gpd,gev)){
     set.seed(20130513)
+    pst <- function(msg) texmexPst(msg,Family=Family)
+    
 # no covariates
 
     u    <- switch(Family$name,GPD=14,GEV=-Inf)
@@ -435,8 +437,8 @@ test.predict.evmOpt <- function(){
 
     if(Family$name == "GPD")checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg=pst("predict.evmOpt: GPD retrieve threshold"))
 
-    checkEquals(target=predict(r.fit), current=rl(r.fit),msg="predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments")
-    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg="predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments")
+    checkEquals(target=predict(r.fit), current=rl(r.fit),msg=pst("predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments"))
+    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg=pst("predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments"))
 
     r.fit$rate <- 1
     prob <- c(0.5,0.9,0.95,0.99,0.999)
@@ -459,10 +461,7 @@ test.predict.evmOpt <- function(){
     th <- switch(Family$name,GPD=0,GEV=-Inf)
     X$Y <- Family$rng(n,param,list(threshold=th))
     fit <- evm(Y,data=X,phi=~a,th=th,family=Family)
-    co <- switch(Family$name,GPD=coef(fit),GEV=coef(fit)[2:4])
-    phi <- cbind(rep(1,n),X[,1]) %*% co[1:2]
-    AllCo <- switch(Family$name,GPD=cbind(phi,co[3]),GEV=cbind(coef(fit)[1],phi,co[3]))
-  
+    AllCo <- predict(fit,type="lp")[,1:length(Family$param)]
     pred <- predict(fit,M=M)
 
     checkEqualsNumeric(target=X$a,current=pred[[1]][,-1],msg=pst("predict.evmOpt: ret level correct reporting of covariates for single cov in phi only"))
@@ -475,10 +474,7 @@ test.predict.evmOpt <- function(){
     param <- switch(Family$name,GPD=cbind(log(sig),X[,2]),GEV=cbind(mu,log(sig),X[,2]))
     X$Y <- Family$rng(n,param,list(threshold=th))
     fit <- evm(Y,data=X,xi=~b,th=th,family=Family)
-    co <- switch(Family$name,GPD=coef(fit),GEV=coef(fit)[2:4])    
-    xi <- cbind(rep(1,n),X[,2]) %*% co[2:3]
-    AllCo <- switch(Family$name,GPD=cbind(co[1],xi),GEV=cbind(coef(fit)[1],co[1],xi))
-  
+    AllCo <- predict(fit,type="lp")[,1:length(Family$param)]
     pred <- predict(fit,M=M)
 
     checkEqualsNumeric(target=X$b,current=pred[[1]][,-1],msg=pst("predict.evmOpt: ret level correct reporting of covariates for single cov in xi only"))
@@ -493,17 +489,7 @@ test.predict.evmOpt <- function(){
                   GPD = evm(Y, data=X,        phi=~a, xi=~b, th=th,family=Family),
                   GEV = evm(Y, data=X, mu=~a, phi=~a, xi=~b, th=th,family=Family))  
 
-    co <- switch(Family$name,GPD=coef(fit),GEV=coef(fit)[3:6])
-    
-    .mu <- function(x)switch(Family$name,GPD=NULL,GEV=cbind(rep(1, length(x)), x) %*% coef(fit)[1:2])
-    .phi <- function(x)cbind(rep(1,length(x)), x) %*% co[1:2]
-    .xi <- function(x)cbind(rep(1, length(x)), x) %*% co[3:4]
-    .AllCo <- function(mu,phi,xi)switch(Family$name,GPD=cbind(phi,xi),GEV=cbind(mu,phi,xi))
-    
-    mu <- .mu(X[,1])
-    phi <- .phi(X[,1])
-    xi <- .xi(X[,2])
-    AllCo <- .AllCo(mu,phi,xi)
+    AllCo <- predict(fit,type="lp")[,1:length(Family$param)]
 
     checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
                       current = predict(fit,M=M)[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in all parameters"))
@@ -522,17 +508,13 @@ test.predict.evmOpt <- function(){
     nx <- 20
     M <- 1000
     newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
+    AllCoNew <- predict(fit,type="lp",newdata=newX)[,1:length(Family$param)]
 
-    mu <- .mu(newX[[1]])
-    phi <- .phi(newX[[1]])
-    xi <- .xi(newX[[2]])
-    AllCoNew <- .AllCo(mu,phi,xi)
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCoNew,fit),current=predict(fit,M=M,newdata=newX)[[1]][,1],msg=pst("predict.evmOpt: ret level ests with new data"))
 
-    checkEqualsNumeric(target=Family$quant(1-1/M,AllCoNew,fit),current=predict(fit,M=M,newdata=newX)[[1]][,1],msg=pst("predict.gpd: ret level ests with new data"))
-
-    checkEqualsNumeric(dim(AllCoNew) + c(0,3),dim(predict(fit,ci=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension or return object for ci calc"))
-    checkEqualsNumeric(dim(AllCoNew) + c(0,2),dim(predict(fit,se=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension or return object for se calc"))
-    checkEqualsNumeric(dim(AllCoNew) + c(0,4),dim(predict(fit,se=TRUE,ci=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension or return object for se and ci calc"))
+    checkEqualsNumeric(dim(AllCoNew) + c(0,3),dim(predict(fit,ci=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension of return object for ci calc"))
+    checkEqualsNumeric(dim(AllCoNew) + c(0,2),dim(predict(fit,se=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension of return object for se calc"))
+    checkEqualsNumeric(dim(AllCoNew) + c(0,4),dim(predict(fit,se=TRUE,ci=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension of return object for se and ci calc"))
 
     Labels <- switch(Family$name,GPD=c("a","b"),GEV=c("a","a","b"))
     
@@ -553,9 +535,6 @@ test.predict.evmOpt <- function(){
 
 
 # linear predictors
-
-    checkEqualsNumeric(target = AllCoNew,
-                       current = predict(fit,newdata=newX,type="lp")[,switch(Family$name,GPD=1:2,GEV=1:3)], msg=pst("predict.evmOpt: linear predictors"))
 
     checkEqualsNumeric(target = c(nx,switch(Family$name,GPD=6,GEV=9)), dim(predict(fit,newdata=newX,se=TRUE,type="lp")), msg=pst("predict.evmOpt: dimension of return object, linear predictor, se calc"))
     checkEqualsNumeric(target = c(nx,switch(Family$name,GPD=8,GEV=12)),dim(predict(fit,newdata=newX,ci=TRUE,type="lp")), msg=pst("predict.evmOpt: dimension of return object, linear predictor, ci calc"))
@@ -596,120 +575,131 @@ test.predict.evmOpt <- function(){
 ## test.predict.evmSim()
 
 test.predict.evmSim <- function(){
-# no covariates
-  u <- 14
-  r.fit <- evm(rain,th=u,method="sim",trace=20000)
 
-  checkEqualsNumeric(target=u,current=predict(r.fit,M=1/r.fit$map$rate)[[1]], msg="predict.evmSim: retrieve threshold")
+  for(Family in list(gpd,gev)){
+    
+    pst <- function(msg) texmexPst(msg,Family=Family)
+    set.seed(20130513)
+    # no covariates
+    
+    u    <- switch(Family$name,GPD=14,GEV=-Inf)
+    data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
 
-  r.fit$map$rate <- 1
-  p <- c(0.5,0.9,0.95,0.99,0.999)
-  checkEqualsNumeric(target = sapply(p,function(p)mean(qgpd(p,exp(t.fit$param[,1]),t.fit$param[,2],u))),
-                     current = unlist(predict(t.fit,M=1/(1-p))),msg="predict.evmSim: ret level estimation")
+    r.fit <- evm(data,th=u,family=Family,method="sim",trace=50000)
+    co <- coef(r.fit)
+   
+    if(Family$name == "GPD"){
+      checkEqualsNumeric(target=u,current=predict(r.fit,M=1/r.fit$map$rate)[[1]], msg=pst("predict.evmSim: retrieve threshold"))
+    }
 
-  checkEquals(target=predict(t.fit,M=1/(1-p)), current=rl(t.fit,M=1/(1-p)),msg="predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments")
-  checkEquals(target=predict(t.fit,type="lp"), current=linearPredictors(t.fit),msg="predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments")
+    r.fit$map$rate <- 1
+    p <- c(0.5,0.9,0.95,0.99,0.999)
+    checkEqualsNumeric(target = Family$quant(p,t(co),r.fit$map), tol=0.01,
+                       current = unlist(predict(r.fit,M=1/(1-p))),msg=pst("predict.evmSim: ret level estimation"))
+
+    checkEquals(target=predict(r.fit,M=1/(1-p)), current=rl(r.fit,M=1/(1-p)),msg=pst("predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments"))
+    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg=pst("predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments"))
+
 # with covariates
 
-  n <- 100
-  M <- 1000
-  X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
-  Y <- rgpd(n,exp(X[,1]),X[,2])
-  X$Y <- Y
-  fit <- evm(Y,data=X,phi=~a,xi=~b,th=0,method="sim",trace=20000)
+    n <- 1000
+    M <- 1000
+    mu <- 1
+  
+    X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
+    param <- switch(Family$name,GPD=X,GEV=cbind(mu,X))
+    th <- switch(Family$name,GPD=0,GEV=-Inf)
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,method="sim",trace=50000,family=Family)
 
-  sig <- apply(fit$param,1,function(v)exp(cbind(rep(1,n),X[,1]) %*% v[1:2]))
-  xi <-  apply(fit$param,1,function(v)    cbind(rep(1,n),X[,2]) %*% v[3:4])
-
-  qbgpd <- function(p,sig,xi,u)sapply(1:dim(sig)[1],function(i) mean(qgpd(p,sig[i,],xi[i,],u)))
-
-  checkEqualsNumeric(target = qbgpd(1-1/M,sig,xi,0),
-                     current = predict(fit,M=M)[[1]][,1],msg="predict.evmSim: ret level estimation with covariates")
-
-# check multiple M
-  M <- c(10,50,100,500,1000)
-
-  temp1 <- sapply(M,function(m)qbgpd(1-1/m,sig,xi,u=0))
-  temp2 <- predict(fit,M=M)
-
-  for(i in 1:length(M)){
-    checkEqualsNumeric(target = temp1[,i],current = temp2[[i]][,1],msg="predict.evmSim multiple M")
-  }
+    AllCo <- predict(fit,type="lp",all=TRUE)
+    PostMeanRL <- function(AllCo,M){
+      AllQuant <- lapply(AllCo,function(X)Family$quant(1-1/M,X[,1:length(Family$param)],fit$map))
+      sapply(AllQuant,mean)
+    }
+ 
+    checkEqualsNumeric(target=PostMeanRL(AllCo,M),current = predict(fit,M=M)[[1]][,1],msg=pst("predict.evmSim: ret level estimation with covariates in all parameters"))
+# multiple M
+  
+    M <- c(10,50,100,500,1000)
+  
+    target <- lapply(M,function(m) PostMeanRL(AllCo,m))
+    current <- predict(fit,M=M)
+  
+    for(i in 1:length(M)){
+      checkEqualsNumeric(target[[i]],current[[i]][,1],tol=0.02,msg=pst("predict.evmSim: ret level estimation multiple M"))
+    }
 
 # new data
-  nx <- 20
-  M <- 1000
-  newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
+    nx <- 20
+    M <- 1000
+    newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
 
-  sig <- exp(cbind(rep(1,nx),newX[,1]) %*% t(fit$param[,1:2]))
-  xi <-      cbind(rep(1,nx),newX[,2]) %*% t(fit$param[,3:4])
+    AllCoNew <- predict(fit,type="lp",newdata=newX,all=TRUE)
+    
+    checkEqualsNumeric(target=PostMeanRL(AllCoNew,M),current=predict(fit,M=M,newdata=newX)[[1]][,1],msg=pst("predict.evmSim: ret level ests with new data"))
+    checkEqualsNumeric(target = as.matrix(newX), current = predict(fit,M=M,newdata=newX)[[1]][,2:3],msg=pst("predict.evmSim: ret level estimation with new data, covariates added correctly to output"))
 
-  checkEqualsNumeric(target = as.matrix(newX), current = predict(fit,M=M,newdata=newX)[[1]][,2:3],msg="predict.bgpd : ret level estimation with new data, covariates aded correctly to output")
-  checkEqualsNumeric(target = qbgpd(1-1/M,sig=sig,xi=xi,u=0),
-                     current = predict(fit,M=M,newdata=newX)[[1]][,1],msg="predict.evmSim : ret level estimation with new data")
 
-  p <- predict(fit,all=TRUE,newdata=newX)
-  l <- lapply(p,function(l) apply(l,2,mean))
-  m <- unlist(l)
-  r <- predict(fit,newdata=newX)
-  checkEqualsNumeric(target = m,current = r[[1]][,1],msg="predict.evmSim : ret level ests with new data")
-
-  alpha <- c(0.05,0.1)
-  for(a in alpha){
-    l.L <- lapply(p,function(l) apply(l,2,quantile,prob=a/2))
-    l.U <- lapply(p,function(l) apply(l,2,quantile,prob=1-a/2))
-    m.L <- unlist(l.L)
-    m.U <- unlist(l.U)
-    r <- predict(fit,newdata=newX,ci=TRUE,alpha=a)
-    checkEqualsNumeric(target = m.L,current = r[[1]][,3],msg="predict.evmSim : lower conf ints for ret levels with new data")
-    checkEqualsNumeric(target = m.U,current = r[[1]][,4],msg="predict.evmSim : upper conf ints for ret levels with new data")
-  }
+    p <- predict(fit,all=TRUE,newdata=newX)
+    alpha <- c(0.05,0.1)
+    for(a in alpha){
+      l.L <- lapply(p,function(l) apply(l,2,quantile,prob=a/2))
+      l.U <- lapply(p,function(l) apply(l,2,quantile,prob=1-a/2))
+      m.L <- unlist(l.L)
+      m.U <- unlist(l.U)
+      r <- predict(fit,newdata=newX,ci=TRUE,alpha=a)
+      checkEqualsNumeric(target = m.L,current = r[[1]][,3],msg=pst("predict.evmSim : lower conf ints for ret levels with new data"))
+      checkEqualsNumeric(target = m.U,current = r[[1]][,4],msg=pst("predict.evmSim : upper conf ints for ret levels with new data"))
+    }
 
 # check linear predictors
-
-  p <- predict(fit,type="lp",all=TRUE,newdata=newX)
-  l <- lapply(p,function(l) apply(l,2,mean))
-  m <- matrix(unlist(l),ncol=4,byrow=TRUE)
-  r <- predict(fit,type="lp",newdata=newX)
-  checkEqualsNumeric(target = m[,1:2],current = r[,1:2],msg="predict.evmSim : linear predictors of parameters with new data")
-
-  alpha <- c(0.05,0.1)
-  for(a in alpha){
-    l.L <- lapply(p,function(l) apply(l,2,quantile,prob=a/2))
-    l.U <- lapply(p,function(l) apply(l,2,quantile,prob=1-a/2))
-    m.L <- matrix(unlist(l.L),ncol=4,byrow=TRUE)
-    m.U <- matrix(unlist(l.U),ncol=4,byrow=TRUE)
-    r <- predict(fit,type="lp",newdata=newX,ci=TRUE,alpha=a)
-    checkEqualsNumeric(target = m.L[,1:2],current = r[,c(3,7)],msg="predict.evmSim : lower conf ints for linear predictors of parameters with new data")
-    checkEqualsNumeric(target = m.U[,1:2],current = r[,c(4,8)],msg="predict.evmSim : upper conf ints for linear predictors of parameters with new data")
-  }
-
-  checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")[,1:2],
-                     target = cbind(apply(cbind(rep(1,nx),newX[,1]) %*% t(fit$param[,1:2]),1,mean),
-                                    apply(cbind(rep(1,nx),newX[,2]) %*% t(fit$param[,3:4]),1,mean)),
-                     msg = "predict.bgpd: linear predictor estimates")
+    p <- predict(fit,type="lp",all=TRUE,newdata=newX)
+    l <- lapply(p,function(l) apply(l,2,mean))
+    m <- matrix(unlist(l),ncol=length(l[[1]]),byrow=TRUE)
+    r <- predict(fit,type="lp",newdata=newX)
+    checkEqualsNumeric(target = m,current = r,msg=pst("predict.evmSim : linear predictors of parameters with new data"))
+    Offset <- switch(Family$name,GEV=1,GPD=0)
+    checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")[,Offset +1:2],
+                       target = cbind(apply(cbind(rep(1,nx),newX[,1]) %*% t(fit$param[,Offset + 1:2]),1,mean),
+                                      apply(cbind(rep(1,nx),newX[,2]) %*% t(fit$param[,Offset + 3:4]),1,mean)),
+                       msg = pst("predict.evmSim: linear predictor estimates"))
+    
+    alpha <- c(0.05,0.1)
+    for(a in alpha){
+      l.L <- lapply(p,function(l) apply(l,2,quantile,prob=a/2))
+      l.U <- lapply(p,function(l) apply(l,2,quantile,prob=1-a/2))
+      m.L <- matrix(unlist(l.L),ncol=length(l[[1]]),byrow=TRUE)
+      m.U <- matrix(unlist(l.U),ncol=length(l[[1]]),byrow=TRUE)
+      r <- predict(fit,type="lp",newdata=newX,ci=TRUE,alpha=a)
+      npar <- length(Family$param)
+      checkEqualsNumeric(target = m.L[,1:npar],current = r[,(1:(4*npar))[rep(c(F,F,T,F),npar)]],msg=pst("predict.evmSim : lower conf ints for linear predictors of parameters with new data"))
+      checkEqualsNumeric(target = m.U[,1:npar],current = r[,(1:(4*npar))[rep(c(F,F,F,T),npar)]],msg=pst("predict.evmSim : upper conf ints for linear predictors of parameters with new data"))
+    }
 
 # structure of output
 
-  checkEqualsNumeric(target = c(n,6), current = dim(predict(fit,ci=TRUE)[[1]]), msg="predict.evmSim: dimension of output with ci calculation")
-  checkEqualsNumeric(target = c(n,6), current = dim(predict(fit,se=TRUE,ci=TRUE)[[1]]), msg="predict.evmSim: dimension of output with ci calculation")
+    checkEqualsNumeric(target = c(n,6), current = dim(predict(fit,ci=TRUE)[[1]]), msg=pst("predict.evmSim: dimension of output with ci calculation"))
+    checkEqualsNumeric(target = c(n,6), current = dim(predict(fit,se=TRUE,ci=TRUE)[[1]]), msg=pst("predict.evmSim: dimension of output with ci and se calculation"))
 
-  checkEquals(target = c("Mean", "50%","2.5%","97.5%","a","b"), colnames(predict(fit,ci=TRUE)[[1]]), msg="predict.evmSim: colnames of ret level ests with CI estimation")
-  checkEquals(target = c("Mean", "50%","5%","95%","a","b"), colnames(predict(fit,alpha=0.1,ci=TRUE)[[1]]), msg="predict.evmSim: colnames of ret level ests with CI estimation, alpha=0.1")
+    checkEquals(target = c("Mean", "50%","2.5%","97.5%","a","b"), colnames(predict(fit,ci=TRUE)[[1]]), msg=pst("predict.evmSim: colnames of ret level ests with CI estimation"))
+    checkEquals(target = c("Mean", "50%","5%","95%","a","b"), colnames(predict(fit,alpha=0.1,ci=TRUE)[[1]]), msg=pst("predict.evmSim: colnames of ret level ests with CI estimation, alpha=0.1"))
 
-  checkEqualsNumeric(target = c(nx,10), dim(predict(fit,newdata=newX,ci=TRUE,type="lp")), msg="predict.evmSim: dimension of linear predictor return object")
+    checkEqualsNumeric(target = c(nx,4*npar+2), dim(predict(fit,newdata=newX,ci=TRUE,type="lp")), msg="predict.evmSim: dimension of linear predictor return object")
 
-  cnames <- c("phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")# this specific format assumed by plot.rl.bgpd and plot.lp.bgpd
-
-  checkEquals(current = cnames, target = colnames(predict(fit,newdata=newX,ci=TRUE,type="lp"))[1:8], msg="predict.evmSim: col names of lin predictors with CI calcs")
-  checkEquals(current = cnames, target = colnames(predict(fit,newdata=newX,ci=TRUE,se=TRUE,type="lp"))[1:8], msg="predict.evmSim: col names of lin predictors with CI+SE calcs")
+    cnamesGPD <- c("phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")# this specific format assumed by plot.rl.bgpd and plot.lp.bgpd
+    cnamesGEV <- c("mu: Mean",  "mu: 50%",  "mu: 2.5%",  "mu: 97.5%",  "phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")
+    cnames<- switch(Family$name,GPD=cnamesGPD,GEV=cnamesGEV)
+  
+    checkEquals(current = cnames, target = colnames(predict(fit,newdata=newX,ci=TRUE,type="lp"))[1:(4*npar)], msg=pst("predict.evmSim: col names of lin predictors with CI calcs"))
+    checkEquals(current = cnames, target = colnames(predict(fit,newdata=newX,ci=TRUE,se=TRUE,type="lp"))[1:(4*npar)], msg=pst("predict.evmSim: col names of lin predictors with CI+SE calcs"))
 
 # unique
-  newX <- data.frame(a=c(0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),b=c(-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1))
+    newX <- data.frame(a=c(0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),b=c(-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1))
 
-  checkEqualsNumeric(current = predict(fit,newdata=newX)[[1]], target = unique(predict(fit,newdata=newX,unique.=FALSE)[[1]]),msg="predict.evmSim: unique functioning for ret level ests")
-  checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")[,], target = unique(predict(fit,newdata=newX,unique.=FALSE,type="lp")[,]),msg="predict.evmSim: unique functioning for lin pred ests")
-
+    checkEqualsNumeric(current = predict(fit,newdata=newX)[[1]], target = unique(predict(fit,newdata=newX,unique.=FALSE)[[1]]),msg="predict.evmSim: unique functioning for ret level ests")
+    checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")[,], target = unique(predict(fit,newdata=newX,unique.=FALSE,type="lp")[,]),msg="predict.evmSim: unique functioning for lin pred ests")
+  }
 }
 
 ################################################################################
