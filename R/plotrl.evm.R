@@ -1,8 +1,8 @@
-plotrl.evmOpt <- # intended as a diagnostic for a gpd fitted with no covariates. Called by plot.gpd
+plotrl.evmOpt <- # intended as a diagnostic for an evm fitted with no covariates. Called by plot.evm
 function(object, alpha = .050,
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
-         cicol = 0, polycol = 15, smooth = TRUE, RetPeriodRange=NULL ){
+         cicol = 0, polycol = 15, smooth = FALSE, RetPeriodRange=NULL ){
 
     wh <- sapply(object$data$D, ncol)
     if (any(wh > 1)){
@@ -50,7 +50,7 @@ getPlotRLdata <- function(object, alpha, RetPeriodRange){
 plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
-         cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ...){
+         cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ...){
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
     if (missing(main) || is.null(main)) {
@@ -189,11 +189,14 @@ test.plotrl.evm <- function()
 {
 # no covariates
 
-  rain.fit <- evm(rain,th=14)
+  rain.fit <- evm(rain,th=30)
   par(mfrow=c(1,1))
-  plotrl.evmOpt(rain.fit)
+  plotrl.evmOpt(rain.fit,RetPeriodRange=c(1,2000),main="Coles (2001) figure 4.5\nReturn Level Plot")
 
-# with covariates
+  sealevel.fit <- evm(portpirie$SeaLevel,family=gev)
+  plotrl.evmOpt(sealevel.fit,main="Coles (2001), Figure 3.5\nReturn Level Plot")
+  
+# GPD with covariates
 
   n <- 100
   X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))

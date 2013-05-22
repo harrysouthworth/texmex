@@ -41,14 +41,14 @@ test.plot.evmOpt <- function(){
   res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),
               c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot\n(SCALE IS DAYS NOT YEARS)","\nDensity Plot")), 
               RetPeriodRange=c(3.65,365*10000))
-  checkEquals(res,NULL,msg="plot.evmOpt: successful execution")
+  checkEquals(res,NULL,msg="plot.evmOpt: GPD successful execution")
 
   # check for very short tailed data
   set.seed(6)
   temp <- rgpd(1000,sigma=1,xi=-0.45)
   fit <- evm(temp,th=0)
-  res <- plot(fit,main=c("PP","QQ","RL","Hist, Short tailed data"))
-  checkEquals(res,NULL,msg="plot.evmOpt: successful execution, short tailed data")
+  res <- plot(fit,main=c("GPD: PP","GPD: QQ","GPD: RL","GPD: Hist, Short tailed data"))
+  checkEquals(res,NULL,msg="plot.evmOpt: GPD successful execution, short tailed data")
   
   # check for covariates in the model
   # GPD
@@ -67,12 +67,12 @@ test.plot.evmOpt <- function(){
   Y <- rgev(n,1,1,-.1)
   fit <- evm(Y,family=gev)
   par(mfrow=c(2,2))
-  res <- plot(fit)
+  res <- plot(fit,main="GEV no covariates, neg xi")
   checkEquals(res,NULL,msg="plot.evmOpt: GEV no covariates, neg xi successful execution")
     
   Y <- rgev(n,1,1,.2)
   fit <- evm(Y,family=gev)
-  res <- plot(fit)
+  res <- plot(fit,main="GEV no covariates, pos xi")
   checkEquals(res,NULL,msg="plot.evmOpt: GEV no covariates, pos xi successful execution")
 
   #GEV with covariates
