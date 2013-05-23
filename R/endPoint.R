@@ -1,10 +1,10 @@
-endPoint <- function(y,verbose=TRUE,...){
+endPoint <- function(y,verbose=TRUE,.unique=TRUE,...){
   UseMethod("endPoint", y)
 }
 
-endPoint.evmOpt <- function(y, verbose=TRUE,...){
-#  fittedScale <- c(fittedGPDscale(y))
-#  fittedShape <- c(fittedGPDshape(y))
+endPoint.evmOpt <- function(y, verbose=TRUE,.unique=TRUE,...){
+
+  if(.unique) Unique <- unique else Unique <- identity
 
   p <- texmexMakeParams(coef(y), y$data$D)
   endpoint <- y$family$endpoint
@@ -15,32 +15,59 @@ endPoint.evmOpt <- function(y, verbose=TRUE,...){
     UpperEndPoint <- endpoint(p, y)
     UpperEndPoint[!negShape] <- Inf
     if(verbose){
-      o <- unique(cbind(y$data$D[['xi']], p))
+      o <- Unique(cbind(y$data$D[['xi']], p))
       print(signif(o,...))
     } else {
-      invisible(unique(UpperEndPoint))
+      invisible(Unique(UpperEndPoint))
     }
   } else {
-    Inf
+      Unique(rep(Inf,length(negShape)))
   }
 }
 
-endPoint.evmBoot <- endPoint.evmSim <- function(y,verbose=TRUE,...){
-  endPoint(y$map,verbose=verbose,...)
+endPoint.evmBoot <- endPoint.evmSim <- function(y,verbose=TRUE,.unique=TRUE,...){
+  endPoint(y$map,verbose=verbose,.unique=.unique,...)
 }
 
 test.endPoint <- function(){
-  set.seed(1)
-  fit <- evm(rnorm(100),th=0.3)
-  ep <- endPoint(fit,verbose=FALSE)
-  co <- coef(fit)
-  th <- fit$thresh
-  checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for evmOpt single covariate")
-
-  set.seed(1)
-  fit <- evm(rnorm(100),th=0.3,method="simulate",verbose=FALSE,iter=1500)
-  ep <- endPoint(fit,verbose=FALSE)
-  co <- coef(fit$map)
-  th <- fit$map$thresh
-  checkEqualsNumeric(ep, th-exp(co[1])/co[2], msg="endPoint: check calc for evmSim single covariate")
+  
+  for(Family in list(gpd,gev)){
+    
+    pst <- function(msg) texmexPst(msg,Family=Family)
+    set.seed(20130513)
+    
+    for(i in 1:5){
+      th <- switch(Family$name,GPD=0.3,GEV=-Inf)
+      fit <- evm(rnorm(100),th=th,family=Family)
+      co <- coef(fit)
+      ep.current <- endPoint(fit,verbose=FALSE,.unique=TRUE)
+      ep.target <- switch(Family$name,GPD=ifelse(co[2] < 0, th-exp(co[1])/co[2],Inf),
+                                      GEV=ifelse(co[3] < 0, co[1]-exp(co[2])/co[3],Inf))
+      checkEqualsNumeric(ep.current, ep.target, msg=pst("endPoint: check calc for evmOpt no covariates"))
+    
+      fit <- evm(rnorm(100),th=th,family=Family,method="simulate",trace=50000)
+      co <- coef(fit$map)
+      ep.current <- endPoint(fit,verbose=FALSE,.unique=TRUE)
+      ep.target <- switch(Family$name,GPD=ifelse(co[2] < 0, th-exp(co[1])/co[2],Inf), 
+                                      GEV=ifelse(co[3] < 0, co[1]-exp(co[2])/co[3],Inf))
+      checkEqualsNumeric(ep.current, ep.target, msg=pst("endPoint: check calc for evmSim no covariates"))
+    }  
+    
+    # test with covariates
+    
+    n <- 50
+    mu <- 1
+    for(i in 1:5){
+      X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
+      param <- switch(Family$name,GPD=X,GEV=cbind(mu,X))
+      th <- switch(Family$name,GPD=0,GEV=-Inf)
+      X$Y <- Family$rng(n,param,list(threshold=th))
+      fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,family=Family)
+      lp <- linearPredictors(fit)
+      ep.current <- endPoint(fit,verbose=FALSE,.unique=FALSE)
+      ep.target <- switch(Family$name,GPD=ifelse(lp[,2] < 0, th-exp(lp[,1])/lp[,2],Inf),
+                                      GEV=ifelse(lp[,3] < 0, lp[,1]-exp(lp[,2])/lp[,3],Inf))
+      checkEqualsNumeric(ep.current, ep.target, msg=pst("endPoint: check calc for evmSim with covariates"))
+    }
+  }
 }
