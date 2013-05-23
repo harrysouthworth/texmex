@@ -99,63 +99,88 @@ show.evmBoot <- print.evmBoot
 show.summary.evmBoot <- print.summary.evmBoot
 
 test.evmBoot <- function(){
+  tol <- 0.1
+  
+  for(Family in list(gpd,gev)){
     set.seed(20111007)
+
+    pst <- function(msg) texmexPst(msg,Family=Family)
+
+    u    <- switch(Family$name,GPD=30,GEV=-Inf)
+    data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
+    
+    fit <- evm(data,th=u,family=Family, penalty="none")
+    boot <- evmBoot(fit, R=200, trace=1000)
+    co <- coef(fit)
+    rep <- boot$replicates
+    scaleColumn <- switch(Family$name,GPD=1,GEV=2)
+    rep[,scaleColumn] <- exp(rep[, scaleColumn])
+    
     # Compare bootstrap standard errors with those given by Coles
-    # page 85
-    tol <- 0.1
-    cse <- c(.958432, .101151)
-    raingpd <- evm(rain, th=30, penalty="none")
-    rainboot <- evmBoot(raingpd, R=100, trace=1000)
-    rainrep <- rainboot$replicates
-    rainrep[,1] <- exp(rainrep[, 1])
-    bse <- apply(rainrep, 2, sd)
-
-    checkEqualsNumeric(cse[1],bse[1],tolerance=tol,
-                       msg="evmBoot: rain se(sigma) matches Coles")
-    checkEqualsNumeric(cse[2],bse[2],tolerance=tol,
-                       msg="evmBoot: rain se(xi) matches Coles")
-
-    # Can't compare point estimates since MLEs are known to be biased.
-    # Check that bootstrap estimate of bias decreases with sample size.
-    rain25 <- evm(rain, th=25, R=100, method="boot", trace=1000)
-    rain40 <- evm(rain, th=40, R=100, method="boot", trace=1000)
-    b <- list(rain25, rain40)
-    b <- sapply(b, function(x){ abs(coef(x$map) - coef(x)) })
-    checkTrue(all(b[, 2] > b[,1]), msg="evmBoot: check bias decreases with sample size")
-
-
-    ##################################################################
-    # Do some checks for models with covariates. Due to apparent instability
-    # of the Hessian in some cases, allow some leeway
-
-    lmod <- evm(log(ALT.M / ALT.B), data=liver, qu=.7,
-                xi= ~ as.numeric(dose), phi= ~ as.numeric(dose))
-    lboot <- evmBoot(lmod, R=200, trace=100)
-    bse <- apply(lboot$replicates, 2, sd)
-    rse <- bse / lmod$se
-    rse <- ifelse(rse < 1, 1/rse, rse)
-    checkTrue(max(rse) < 1.5, msg="evmBoot: SEs with xi in model")
-
-    best <- apply(lboot$replicates, 2, median)
-    rest <- best / coef(lmod)
-    rest <- ifelse(rest < 1, 1/rest, rest)
-    checkTrue(max(rest) < 1.5, msg="evmBoot: medians in line with point ests")
+    # pages 59 and 85 for GEV and GPD resp
+    
+    bse <- apply(rep, 2, sd)
+    cse <- switch(Family$name,GPD=c(.958432, .101151),GEV=c(0.02792848, 0.02024846, 0.09823441))
+    
+    checkEqualsNumeric(cse,bse,tolerance=tol,
+                       msg=pst("evmBoot: bootstrap se of parameter estimates matches Coles"))
 
     ## Check penalization works - set harsh penalty and do similar
     ## checks to above
 
-    pp <- list(c(0, .5), diag(c(.5, .05)))
-    raingpd <- evm(rain, th=30, penalty="none", priorParameters=pp)
-    rainboot <- evmBoot(raingpd, R=1000, trace=100)
-
-    bse <- apply(rainboot$replicates, 2, sd)
-    rse <- bse / raingpd$se
+    pp <- switch(Family$name,GPD=list(c(0, .5), diag(c(.5, .05))), GEV=list(c(5, 0, .5), diag(c(.5, .5, .05))))
+    fit <- evm(data, th=u, penalty="none", priorParameters=pp,family=Family)
+    boot <- evmBoot(fit, R=1000, trace=1100)
+    
+    bse <- apply(boot$replicates, 2, sd)
+    rse <- bse / fit$se
     rse <- ifelse(rse < 1, 1/rse, rse)
-    checkTrue(max(rse) < 1.1, msg="evmBoot: SEs with xi in model")
-
-    best <- apply(rainboot$replicates, 2, median)
-    rest <- best / coef(raingpd)
+    checkTrue(max(rse) < 1.1, msg=pst("evmBoot: SEs with xi in model, with penalty applied"))
+    
+    best <- apply(boot$replicates, 2, median)
+    rest <- best / coef(fit)
     rest <- ifelse(rest < 1, 1/rest, rest)
-    checkTrue(max(rest) < 1.1, msg="evmBoot: medians in line with point ests")
+    checkTrue(all(rest < switch(Family$name,GPD=c(1.1,1.1),GEV=c(1.1,1.1,1.3))), msg=pst("evmBoot: medians in line with point ests, with penalty applied"))
+    
+    ##################################################################
+    # models with covariates. Due to apparent instability
+    # of the Hessian in some cases, allow some leeway
+
+    n <- 1000
+    mu <- 1
+    phi <- 5
+    xi <- 0.05
+    X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
+    th <- switch(Family$name,GPD=0,GEV=-Inf)
+    
+    test <- function(boot,fit,txt){
+      bse <- apply(boot$replicates, 2, sd)
+      rse <- bse / fit$se
+      rse <- ifelse(rse < 1, 1/rse, rse)
+      checkTrue(max(rse) < 1.5, msg=pst(paste("evmBoot: SEs with covariates in",txt)))
+    
+      best <- apply(boot$replicates, 2, median)
+      rest <- best / coef(fit)
+      rest <- ifelse(rest < 1, 1/rest, rest)
+      checkTrue(all(rest < switch(Family$name,GPD=1.5,GEV=c(1.5,1.5,4,1.5))), msg=pst(paste("evmBoot: medians in line with point ests, covariates in",txt)))
+    }
+    
+    param <- switch(Family$name,GPD=cbind(X[,1],xi),GEV=cbind(mu,X[,1],xi))
+    start <- switch(Family$name,GPD=c(0,1,0.05),GEV=c(1,0,1,0.05))
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    
+    fit <- evm(Y,data=X,phi=~a,th=th,family=Family,start=start)
+    boot <- evmBoot(fit, R=200, trace=201)
+  
+    test(boot,fit,"phi")
+    
+    param <- switch(Family$name,GPD=cbind(phi,X[,2]),GEV=cbind(mu,phi,X[,2]))
+
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit <- evm(Y,data=X,xi=~b,th=th,family=Family)
+    boot <- evmBoot(fit, R=200, trace=201)
+    test(boot,fit,"xi")
+  }
 }
+
 

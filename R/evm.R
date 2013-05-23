@@ -86,7 +86,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     o
 }
 
-test.evmOpt <- function(){
+test.evm <- function(){
   tol <- 0.01
 
 ###################################################################

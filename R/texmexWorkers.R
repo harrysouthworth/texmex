@@ -142,10 +142,10 @@ function(prior, priorParameters, data){
     #### If priorParameters given but of wrong dimension, kill
     if (!is.null(priorParameters)) {
         if (length(priorParameters[[1]]) != nc) {
-            stop("wrong number of parameters in prior (doesn't match phi and xi formulas)")
+            stop("wrong number of parameters in prior (doesn't match parameter formulae)")
         }
         else if (length(diag(priorParameters[[2]])) != nc) {
-            stop("wrong dimension of prior covariance (doesn't match phi and xi formulas)")
+            stop("wrong dimension of prior covariance (doesn't match parameter formulae)")
         }
     }
     priorParameters
