@@ -610,7 +610,8 @@ test.predict.evmSim <- function(){
     param <- switch(Family$name,GPD=X,GEV=cbind(mu,X))
     th <- switch(Family$name,GPD=0,GEV=-Inf)
     X$Y <- Family$rng(n,param,list(threshold=th))
-    fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,method="sim",trace=50000,family=Family)
+    start <- switch(Family$name,GPD=c(0,1,0,1),GEV=c(1,0,1,0,1))
+    fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,method="sim",trace=50000,family=Family,start=start)
 
     AllCo <- predict(fit,type="lp",all=TRUE)
     PostMeanRL <- function(AllCo,M){
@@ -680,8 +681,10 @@ test.predict.evmSim <- function(){
 # structure of output
 
     checkEqualsNumeric(target = c(n,6), current = dim(predict(fit,ci=TRUE)[[1]]), msg=pst("predict.evmSim: dimension of output with ci calculation"))
+    o <- options(warn=-1) # since se=TRUE gives a warning
     checkEqualsNumeric(target = c(n,6), current = dim(predict(fit,se=TRUE,ci=TRUE)[[1]]), msg=pst("predict.evmSim: dimension of output with ci and se calculation"))
-
+    options(o)
+    
     checkEquals(target = c("Mean", "50%","2.5%","97.5%","a","b"), colnames(predict(fit,ci=TRUE)[[1]]), msg=pst("predict.evmSim: colnames of ret level ests with CI estimation"))
     checkEquals(target = c("Mean", "50%","5%","95%","a","b"), colnames(predict(fit,alpha=0.1,ci=TRUE)[[1]]), msg=pst("predict.evmSim: colnames of ret level ests with CI estimation, alpha=0.1"))
 
@@ -692,8 +695,10 @@ test.predict.evmSim <- function(){
     cnames<- switch(Family$name,GPD=cnamesGPD,GEV=cnamesGEV)
   
     checkEquals(current = cnames, target = colnames(predict(fit,newdata=newX,ci=TRUE,type="lp"))[1:(4*npar)], msg=pst("predict.evmSim: col names of lin predictors with CI calcs"))
+    o <- options(warn=-1) # since se=TRUE gives a warning
     checkEquals(current = cnames, target = colnames(predict(fit,newdata=newX,ci=TRUE,se=TRUE,type="lp"))[1:(4*npar)], msg=pst("predict.evmSim: col names of lin predictors with CI+SE calcs"))
-
+    options(o)
+    
 # unique
     newX <- data.frame(a=c(0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),b=c(-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1))
 
