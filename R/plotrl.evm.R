@@ -191,32 +191,37 @@ test.plotrl.evm <- function()
 
   rain.fit <- evm(rain,th=30)
   par(mfrow=c(1,1))
-  plotrl.evmOpt(rain.fit,RetPeriodRange=c(1,2000),main="Coles (2001) figure 4.5\nReturn Level Plot")
+  plotrl.evmOpt(rain.fit,RetPeriodRange=c(1,2000),main="Coles (2001) figure 4.5\nGPD Return Level Plot")
 
   sealevel.fit <- evm(portpirie$SeaLevel,family=gev)
-  plotrl.evmOpt(sealevel.fit,main="Coles (2001), Figure 3.5\nReturn Level Plot")
+  plotrl.evmOpt(sealevel.fit,main="Coles (2001), Figure 3.5\nGEV Return Level Plot")
   
-# GPD with covariates
+# with covariates
 
-  n <- 100
-  X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
-  Y <- rgpd(n,exp(X[,1]),X[,2])
-  X$Y <- Y
-  fit <- evm(Y,data=X,phi=~a,xi=~b,th=0)
-  rl <- predict(fit,ci=TRUE)
-
-  checkException(plotrl.evmOpt(fit),silent=TRUE,msg="plotrl.evmOpt : failure for model with covariates")
-  checkException(plot(rl),silent=TRUE,msg="plot.rl.evmOpt : failure when use only 1 value of M for RL calc")
-
-  nx <- 6
-  M <- seq(5,500,length=30)
-  newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
-  rl <- predict(fit,newdata=newX,ci.fit=TRUE,se=TRUE,M=M)
-  par(mfrow=n2mfrow(nx))
-  plot(rl,sameAxes=TRUE,main=paste("Validation suite plot",1:nx),polycol="cyan")
-  plot(rl,sameAxes=FALSE,polycol="magenta")
-
-  checkException(plot(predict(fit,newdata=newX,ci=FALSE)),silent=TRUE,msg="plotrl.evmOpt: failure if no conf ints supplied")
-
+  for(Family in list(gpd,gev)){
+    pst <- function(msg) texmexPst(msg,Family=Family)
+    set.seed(20130513)
+    n <- 100    
+    X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
+    param <- switch(Family$name,GPD=X,GEV=cbind(5,X))
+    th <- switch(Family$name,GPD=0,GEV=-Inf)
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,family=Family)
+    rl <- predict(fit,ci=TRUE)
+    
+    checkException(plotrl.evmOpt(fit),silent=TRUE,msg=pst("plotrl.evmOpt : failure for model with covariates"))
+    checkException(plot(rl),silent=TRUE,msg=pst("plot.rl.evmOpt : failure when use only 1 value of M for RL calc"))
+    
+    nx <- 6
+    M <- seq(5,500,length=30)
+    newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
+    rl <- predict(fit,newdata=newX,ci.fit=TRUE,se=TRUE,M=M)
+    par(mfrow=n2mfrow(nx))
+    Main <- paste("Validation suite plot",Family$name,1:nx)
+    plot(rl,sameAxes=TRUE,main=Main,polycol="cyan")
+    plot(rl,sameAxes=FALSE,main=Main,polycol="magenta")
+    
+    checkException(plot(predict(fit,newdata=newX,ci=FALSE)),silent=TRUE,msg=pst("plotrl.evmOpt: failure if no conf ints supplied"))  
+  }
 }
 
