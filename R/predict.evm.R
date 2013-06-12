@@ -294,7 +294,7 @@ rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, 
     X <- Covs[,-(1:length(object$map$data$D))]
     if(is.null(dim(X))){
       X <- matrix(X)
-      dimnames(X) <- list(dimnames(Covs)[[1]],dimnames(Covs)[[2]][-(1:2)])
+      dimnames(X) <- list(dimnames(Covs)[[1]],dimnames(Covs)[[2]][-(1:length(object$map$data$D))])
     }
 
     sim.rl <- function(m, param, model){
