@@ -207,21 +207,8 @@ test.plotrl.evm <- function()
     th <- switch(Family$name,GPD=0,GEV=-Inf)
     X$Y <- Family$rng(n,param,list(threshold=th))
     fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,family=Family)
-    rl <- predict(fit,ci=TRUE)
     
     checkException(plotrl.evmOpt(fit),silent=TRUE,msg=pst("plotrl.evmOpt : failure for model with covariates"))
-    checkException(plot(rl),silent=TRUE,msg=pst("plot.rl.evmOpt : failure when use only 1 value of M for RL calc"))
-    
-    nx <- 6
-    M <- seq(5,500,length=30)
-    newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
-    rl <- predict(fit,newdata=newX,ci.fit=TRUE,se=TRUE,M=M)
-    par(mfrow=n2mfrow(nx))
-    Main <- paste("Validation suite plot",Family$name,1:nx)
-    plot(rl,sameAxes=TRUE,main=Main,polycol="cyan")
-    plot(rl,sameAxes=FALSE,main=Main,polycol="magenta")
-    
-    checkException(plot(predict(fit,newdata=newX,ci=FALSE)),silent=TRUE,msg=pst("plotrl.evmOpt: failure if no conf ints supplied"))  
   }
 }
 

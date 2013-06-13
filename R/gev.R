@@ -60,6 +60,12 @@ gev <- texmexFamily(name = 'GEV',
 
                     rl = function(m, param, model){
                       qgev(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
-                    }
+                    }, # Close rl
+                    
+                    lp = function(x){
+                      list(mu=cbind(x$mu,x$mu.lo,x$mu.hi),
+                           phi=cbind(x$phi,x$phi.lo,x$phi.hi),
+                           xi=cbind(x$xi,x$xi.lo,x$xi.hi))
+                    } # Close lp
 )
 

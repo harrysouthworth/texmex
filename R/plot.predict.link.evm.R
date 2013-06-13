@@ -1,7 +1,9 @@
 plot.lp.evmOpt <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 1, polycol = 15, ...){
-
+  family <- x$family
+  x <- x$link
+  
   if(dim(x)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
@@ -9,13 +11,14 @@ plot.lp.evmOpt <- function(x, main=NULL,
     stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
   }
 
-  Ests <- list(phi=x[,c(1,3,4)],xi=x[,c(2,5,6)])
-  Names <- c("phi","xi")
+  Ests <- family$lp(data.frame(x))
+  Names <- family$param
   cn <- colnames(x)
-  which <- cn != "phi"    & cn != "xi" &
+  which <- cn != "mu" & cn != "phi"    & cn != "xi" &
+           cn != "mu.lo" & cn != "mu.hi" &
            cn != "phi.lo" & cn != "phi.hi" &
            cn != "xi.lo"  & cn != "xi.hi" &
-           cn != "phi.se" & cn != "xi.se"
+           cn != "mu.se" & cn != "phi.se" & cn != "xi.se"
 
   X <- x[,which]
   if(is.null(dim(X))){
@@ -23,7 +26,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
      dimnames(X) <- list(dimnames(x)[[1]],dimnames(x)[[2]][which])
   }
 
-  for(i in 1:2){
+  for(i in 1:length(Names)){
     for(j in 1:dim(X)[2]){
       if(length(unique(Ests[[i]][,1])) > 1){
         if(length(unique(X[,j])) > 1){
@@ -50,119 +53,136 @@ plot.lp.evmOpt <- function(x, main=NULL,
 }
 
 plot.lp.evmSim <- function(x, type="median", ...){
-  if(dim(x)[1] == 1){
+  if(dim(x$link)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
+  p <- x$family$param
+  np <- length(p)
 # re-format to same column structure as lp.evmOpt x
+  ColIndexMeans <- 1+4*(0:(np-1))
   if(casefold(type) == "median"){
-    x <- x[, c(2,6,3,4,7,8,9:dim(x)[2])]
+    offset <- 1
   } else if(casefold(type) == "mean") {
-    x <- x[, c(1,5,3,4,7,8,9:dim(x)[2])]
+    offset <- 0
   } else {
     stop("type must be \"mean\" or \"median\" ")
   }
-
-  colnames(x)[1:6] <-  c("phi", "xi", "phi.lo", "phi.hi", "xi.lo", "xi.hi")
+  which <- c(ColIndexMeans + offset,rep(1:2,np) + rep(ColIndexMeans+1,each=2), (4*np+1): dim(x$link)[2])
+  x$link <- x$link[,which]
+  colnames(x$link)[1:(3*np)] <-  c(p,paste(rep(p,each=2),rep(c(".lo",".hi"),np),sep=""))
 
   plot.lp.evmOpt(x,...)
 }
 
 plot.lp.evmBoot <- plot.lp.evmSim
 
-test.plot.lp.evmOpt <- function(){
+test.plot.predict.evm <- function(){
+# testing all of: plot.lp.evm* and plot.rl.evm* where * is opt, sim and boot
+
 # first with no covariates
   n <- 100
-  Y <- rgpd(n,sigma=1,xi=0.1)
-  fit <- evm(Y,th=0)
-  fitb <- evm(Y,th=0,method="sim",trace=100000)
-  fit.boot <- evmBoot(fit,R=20,trace=30)
-  M <- seq(5,1000,len=20)
+  for(Family in list(gpd,gev)){
+    set.seed(20130513)
+    pst <- function(msg) texmexPst(msg,Family=Family)
 
-  p <- predict(fit,M=M,ci=TRUE)
-  pb <- predict(fitb,M=M,ci=TRUE)
-  pboot <- predict(fit.boot,M=M,ci=TRUE)
+    u    <- switch(Family$name,GPD=14,GEV=-Inf)
+    data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
+    
+    fit.opt <- evm(data,th=u,family=Family)
+    fit.sim <- evm(data,th=u,method="sim",trace=100000,family=Family)
+    fit.boot <- evmBoot(fit.opt,R=20,trace=30)
+    
+    M <- seq(20,1000,len=20)
 
-  par(mfrow=c(3,3))
-  plot(p,sameAxes=FALSE)
-  plot(pb,sameAxes=FALSE)
-  plot(pboot,sameAxes=FALSE)
+    p.opt <- predict(fit.opt,M=M,ci=TRUE)
+    p.sim <- predict(fit.sim,M=M,ci=TRUE)
+    p.boot <- predict(fit.boot,M=M,ci=TRUE)
 
-  plot(p,sameAxes=TRUE)
-  plot(pb,sameAxes=TRUE)
-  plot(pboot,sameAxes=TRUE)
+    par(mfrow=c(3,3))
+    plot(p.opt,main=paste(Family$name,"\nMLE"))
+    plot(p.sim,main=paste(Family$name,"\nMCMC"))
+    plot(p.boot,main=paste(Family$name,"\nBootstrap"))
 
-  p.lp <- predict(fit,type="lp",ci=TRUE)
-  pb.lp <- predict(fitb,type="lp",ci=TRUE)
-  pboot.lp <- predict(fit.boot,type="lp",ci=TRUE)
+    p.lp.opt <- predict(fit.opt,type="lp",ci=TRUE)
+    p.lp.sim <- predict(fit.sim,type="lp",ci=TRUE)
+    p.lp.boot <- predict(fit.boot,type="lp",ci=TRUE)
 
-  checkException(plot(p.lp),msg="plot.gpd.lp.gpd: fail if no covariates")
-  checkException(plot(pb.lp),msg="plot.bgpd.lp.gpd: fail if no covariates")
-  checkException(plot(pboot.lp),msg="plot.bootgpd.lp.gpd: fail if no covariates")
+    checkException(plot(p.lp.opt),silent=TRUE,msg=pst("plot.lp.evmOpt: fail if no covariates"))
+    checkException(plot(p.lp.sim),silent=TRUE,msg=pst("plot.lp.evmSim: fail if no covariates"))
+    checkException(plot(p.lp.boot),silent=TRUE,msg=pst("plot.lp.evmBoot: fail if no covariates"))
 
 # now with covariates
-  n <- 100
-  M <- 1000
-  X <- data.frame(a = rnorm(n),b = runif(n,-0.3,0.3))
-  Y <- rgpd(n,exp(X[,1]),X[,2])
-  X$Y <- Y
-  fit <- evm(Y,data=X,phi=~a, xi=~b,th=0)
-  fitb <- evm(Y,data=X,phi=~a, xi=~b,th=0,method="sim",trace=100000)
-  o <- options(warn=-1)
-  fit.boot <- evmBoot(fit,R=20,trace=30)
-  options(o)
+    
+    n <- 1000
+    M <- 1000
+    
+    mu <- 1
+    
+    X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
+    param <- switch(Family$name,GPD=cbind(X[,1],X[,2]),GEV=cbind(mu,X[,1],X[,2]))
+    th <- switch(Family$name,GPD=0,GEV=-Inf)
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    start <- switch(Family$name,GPD=c(0,1,0,1),GEV=c(mu,0,1,0,1))
+    
+    fit.opt <- evm(Y,data=X,phi=~a,xi=~b, th=th,family=Family,start=start)
+    fit.sim <- evm(Y,data=X,phi=~a,xi=~b, th=th,family=Family,method="sim",trace=100000,start=start)
+    o <- options(warn=-1)
+    fit.boot <- evmBoot(fit.opt,R=20,trace=30)
+    options(o)
+    
+    nx <- 3
+    M <- seq(5,1000,len=20)
+    newX <- data.frame(a=rnorm(nx),b=runif(nx,-0.1,0.1))
 
-  nx <- 3
-  M <- seq(5,1000,len=20)
-  newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
+    p.opt <- predict(fit.opt,M=M,newdata=newX,ci=TRUE)
+    p.sim <- predict(fit.sim,M=M,newdata=newX,ci=TRUE)
+    p.boot <- predict(fit.boot,M=M,newdata=newX,ci=TRUE)
 
-  p <- predict(fit,M=M,newdata=newX,ci=TRUE)
-  pb <- predict(fitb,M=M,newdata=newX,ci=TRUE)
-  pboot <- predict(fit.boot,M=M,newdata=newX,ci=TRUE)
+    p.lp.opt <- predict(fit.opt,type="lp",newdata=newX,ci=TRUE)
+    p.lp.sim <- predict(fit.sim,type="lp",newdata=newX,ci=TRUE)
+    p.lp.boot <- predict(fit.boot,type="lp",newdata=newX,ci=TRUE)
 
-  p.lp <- predict(fit,type="lp",newdata=newX,ci=TRUE)
-  pb.lp <- predict(fitb,type="lp",newdata=newX,ci=TRUE)
-  pboot.lp <- predict(fit.boot,type="lp",newdata=newX,ci=TRUE)
+    par(mfrow=c(3,3))
+    plot(p.opt,sameAxes=FALSE,main=paste(Family$name,"MLE\ndifferent axes"))
+    plot(p.sim,sameAxes=FALSE,main=paste(Family$name,"MCMC\ndifferent axes"))
+    plot(p.boot,sameAxes=FALSE,main=paste(Family$name,"Bootstrap\ndifferent axes"))
 
-  par(mfrow=c(3,3))
-  plot(p,sameAxes=FALSE,main="MLE")
-  plot(pb,sameAxes=FALSE,main="MCMC")
-  plot(pboot,sameAxes=FALSE,main="Bootstrap")
+    plot(p.opt,sameAxes=TRUE,main=paste(Family$name,"MLE\nsame axes"))
+    plot(p.sim,sameAxes=TRUE,main=paste(Family$name,"MCMC\nsame axes"))
+    plot(p.boot,sameAxes=TRUE,main=paste(Family$name,"Bootstrap\nsame axes"))
 
-  par(mfrow=c(3,3))
-  plot(p,sameAxes=TRUE,main="MLE")
-  plot(pb,sameAxes=TRUE,main="MCMC")
-  plot(pboot,sameAxes=TRUE,main="Bootstrap")
-
-  par(mfrow=c(3,4))
-  plot(p.lp,main="MLE")
-  plot(pb.lp,main="MCMC")
-  plot(pboot.lp,main="Bootstrap")
+    par(mfrow=c(4,4))
+    plot(p.lp.opt,main=paste(Family$name,"MLE"))
+    plot(p.lp.sim,main=paste(Family$name,"MCMC\nmean"),type="mean")
+    plot(p.lp.sim,main=paste(Family$name,"MCMC\nmedian"),type="median")
+    plot(p.lp.boot,main=paste(Family$name,"Bootstrap"))
 
 # single covariate only:
 
-  Y <- rgpd(n,exp(X[1,1]),X[,2])
-  X$Y <- Y
-  fit <- evm(Y,data=X,xi=~b,th=0)
-  fitb <- evm(Y,data=X,xi=~b,th=0,method="sim",trace=100000)
-  o <- options(warn=-1)
-  fit.boot <- evmBoot(fit,R=20,trace=30)
-  options(o)
+    param <- switch(Family$name,GPD=cbind(X[1,1],X[,2]),GEV=cbind(mu,X[1,1],X[,2]))
+    X$Y <- Family$rng(n,param,list(threshold=th))
+    fit.opt <- evm(Y,data=X,xi=~b,th=th,family=Family)
+    fit.sim <- evm(Y,data=X,xi=~b,th=th,family=Family,method="sim",trace=100000)
+    o <- options(warn=-1)
+    fit.boot <- evmBoot(fit.opt,R=20,trace=30)
+    options(o)
 
-  p <- predict(fit,M=M,newdata=newX,ci=TRUE)
-  pb <- predict(fitb,M=M,newdata=newX,ci=TRUE)
-  pboot <- predict(fit.boot,M=M,newdata=newX,ci=TRUE)
+    p.opt <- predict(fit.opt,M=M,newdata=newX,ci=TRUE)
+    p.sim <- predict(fit.sim,M=M,newdata=newX,ci=TRUE)
+    p.boot <- predict(fit.boot,M=M,newdata=newX,ci=TRUE)
 
-  p.lp <- predict(fit,type="lp",newdata=newX,ci=TRUE)
-  pb.lp <- predict(fitb,type="lp",newdata=newX,ci=TRUE)
-  pboot.lp <- predict(fit.boot,type="lp",newdata=newX,ci=TRUE)
+    p.lp.opt <- predict(fit.opt,type="lp",newdata=newX,ci=TRUE)
+    p.lp.sim <- predict(fit.sim,type="lp",newdata=newX,ci=TRUE)
+    p.lp.boot <- predict(fit.boot,type="lp",newdata=newX,ci=TRUE)
 
-  par(mfrow=c(3,3))
-  plot(p,sameAxes=FALSE,main="MLE")
-  plot(pb,sameAxes=FALSE,main="MCMC")
-  plot(pboot,sameAxes=FALSE,main="Bootstrap")
+    par(mfrow=c(3,3))
+    plot(p.opt,sameAxes=FALSE,main=paste(Family$name,"MLE"))
+    plot(p.sim,sameAxes=FALSE,main=paste(Family$name,"MCMC"))
+    plot(p.boot,sameAxes=FALSE,main=paste(Family$name,"Bootstrap"))
 
-  par(mfrow=c(3,1))
-  plot(p.lp,main="MLE",polycol="cyan")
-  plot(pb.lp,main="MCMC",polycol="cyan")
-  plot(pboot.lp,main="Bootstrap",polycol="cyan")
+    par(mfrow=c(3,1))
+    plot(p.lp.opt,main=paste(Family$name,"MLE"),polycol="cyan")
+    plot(p.lp.sim,main=paste(Family$name,"MCMC"),polycol="cyan")
+    plot(p.lp.boot,main=paste(Family$name,"Bootstrap"),polycol="cyan")
+  }
 }
