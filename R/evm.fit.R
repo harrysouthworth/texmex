@@ -30,7 +30,7 @@ evmFit <- function(data, family, ...,
 
    o <- optim(par = start, fn = evm.lik,
               control = list(maxit = maxit,
-              trace = trace, parscale=s),
+              trace = trace),#, parscale=s),
               hessian = hessian)
 
     invisible(o)
