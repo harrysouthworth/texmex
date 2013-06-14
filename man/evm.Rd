@@ -52,132 +52,152 @@ texmexJumpConst(j, map)
 \arguments{
   \item{y}{ Either a numeric vector or the name of a variable in \code{data}. }
   \item{data}{ A data frame containing \code{y} and any covariates. }
-  \item{family}{An object of class 'texmexFamily'.}
-  \item{th}{ The threshold for \code{y}, exceedances above which will be
-    used to fit the evmSim upper tail model. }
-  \item{qu}{An alternative to \code{th}, a probability defined such that
-    \code{quantile(y,qu)} equals \code{th}.}
-  \item{...}{ In \code{evm}, formulae for the parameters in the family,
-    e.g. \code{phi = ~ x}. If none are specified, they all default to \code{~1}.}
-
+  \item{family}{An object of class 'texmexFamily'. Defaults to
+           \code{family=gpd} and a generalized Pareto distribution is
+           fit to the data.}
+  \item{th}{ For threshold excess models (such as when
+           \code{family=gpd}), The threshold for \code{y},
+           exceedances above which will be
+           used to fit the upper tail model. }
+  \item{qu}{An alternative to \code{th}, a probability defined
+         such that \code{quantile(y,qu)} equals \code{th}.}
+  \item{...}{ In \code{evm}, formulae for the parameters in the
+           family, e.g. \code{phi = ~ x}. If none are specified,
+           they all default to \code{~1}.}
   \item{penalty}{ How to penalize the likelhood. Currently, either
-     ``none'', ``gaussian'' or ``lasso'' are the only allowed arguments.
-     If \code{penalty} is "gaussian" or "lasso" then the parameters for
-     the penalization are specified through the \code{prior} argument, see below.}
+           ``none'', ``gaussian'' or ``lasso'' are the only allowed
+           values. If \code{penalty} is "gaussian" or "lasso" then
+           the parameters for the penalization are specified through
+           the \code{priorParameters} argument, see below.}
   \item{prior}{If \code{method = "optimize"}, just an alternative way of
-     specifying the pentalty, and only one or neither of \code{penalty}
-     and \code{prior} should be given. If \code{method = "simulate"},
-     prior must be ``gaussian'' because no other prior distributions
-     have been implemented.}
+           specifying the pentalty, and only one or neither of \code{penalty}
+           and \code{prior} should be given. If \code{method = "simulate"},
+           prior must be ``gaussian'' because no other prior distributions
+           have been implemented.}
   \item{method}{Should be either ``optimize'' (the default), ``simulate''
-     or ``bootstrap''.
-     The first letter or various abbreviations will do. If ``optimize'' is
-     used, the (penalized) likelihood is directly optimized using \code{optim}
-     and point estimates (either ML or MAP estimates) are returned with other
-     information. If ``simulate'', a Metropolis algorithm is used to simulate
-     from the joint posterior distribution of the parameters.}
+           or ``bootstrap''.
+           The first letter or various abbreviations will do. If ``optimize'' is
+           used, the (penalized) likelihood is directly optimized using \code{optim}
+           and point estimates (either ML or MAP estimates) are returned with other
+           information. If ``simulate'', a Metropolis algorithm is used to simulate
+           from the joint posterior distribution of the parameters. If ''bootstrap'',
+           a parametric boostrap is performed.}
   \item{cov}{How to compute the covariance matrix of the parameters. Defaults to
-        \code{cov = "observed"} in which case the observed information matrix
-        is used, as given in Appendix A of Davison and Smith. The only other
-        option is \code{cov = "numeric"} in which case a numerical approximation
-        of the Hessian is used (see the help for \code{optim}). In some cases,
-        particularly with small samples, the numerical approximation can be
-        quite different from the closed form (\code{cov="observed"})
-        result, and the value derived from the observed information
-        should be preferred. However, in either case, since the
-        underlying log-likelihood may be far from quadratic for small samples,
-        the resulting estimates of standard errors are liable to approximate
-        poorly the true standard errors. Also see the comments in
-        the Details section, below.}
+           \code{cov = "observed"} in which case the observed information matrix
+           is used, if the \code{info} element of the \code{texmexFamily} object
+           is present. The only other
+           option is \code{cov = "numeric"} in which case a numerical approximation
+           of the Hessian is used (see the help for \code{optim}). In some cases,
+           particularly with small samples, the numerical approximation can be
+           quite different from the closed form (\code{cov="observed"})
+           result, and the value derived from the observed information
+           should be preferred. However, in either case, since the
+           underlying log-likelihood may be far from quadratic for small samples,
+           the resulting estimates of standard errors are liable to approximate
+           poorly the true standard errors. Also see the comments in
+           the Details section, below.}
   \item{start}{Starting values for the parameters, to be passed to \code{optim}.
-    If not provided, an exponential distribution (shape = 0) is
-    assumed as the starting
-           point.}
+           If not provided, the function will use the \code{start} element
+           of the \code{texmexFamily} object if it exists.}
   \item{priorParameters}{  A list with two components. The first should be
-                a vector of means, the second should be a covariance matrix if the
-                penalty/prior is "gaussian" or "quadratic" and a diagonal
-                precision matrix
-                if the penalty/prior is "lasso", "L1" or "Laplace".
-                If \code{method = "simulate"} then these represent the
-                parameters in the Gaussian prior distribution.  If
-                \code{method = "optimize"} then these represent the
-                parameters in the penalty function.
-                If not supplied: all default prior means are zero;
-                all default prior variances are \eqn{10^4}; all covariances
-                are zero.  }
+           a vector of means, the second should be a covariance matrix if the
+           penalty/prior is "gaussian" or "quadratic" and a diagonal
+           precision matrix
+           if the penalty/prior is "lasso", "L1" or "Laplace".
+           If \code{method = "simulate"} then these represent the
+           parameters in the Gaussian prior distribution.  If
+           \code{method = "optimize"} then these represent the
+           parameters in the penalty function.
+           If not supplied: all default prior means are zero;
+           all default prior variances are \eqn{10^4}; all covariances
+           are zero.  }
   \item{maxit}{ The number of iterations allowed in \code{optim}. }
   \item{trace}{ Whether or not to print progress to screen. If
-    \code{method = "optimize"},
-       the argument is passed into \code{optim} -- see the help for that
-       function. If \code{method = "simulate"}, the argument determines at
-       how many steps of the Markov chain the function should tell the user, and
-       in this case it defaults to \code{trace = 10000}. }
+           \code{method = "optimize"},
+           the argument is passed into \code{optim} -- see the help for that
+           function. If \code{method = "simulate"}, the argument determines at
+           how many steps of the Markov chain the function should tell the user, and
+           in this case it defaults to \code{trace = 10000}. }
   \item{iter}{Number of simulations to generate under \code{method = "simulate"}.
-              Defaults to 40000.}
+           Defaults to 40000.}
   \item{burn}{ The number of initial steps to be discarded. }
   \item{thin}{ The degree of thinning of the resulting Markov chains. Defaults
-               to 4 (one in every 4 steps is retained).}
+           to 4 (one in every 4 steps is retained).}
   \item{proposal.dist}{The proposal distribution to use, either
-    multivariate gaussian or a multivariate Cauchy.}
+           multivariate gaussian or a multivariate Cauchy.}
   \item{jump.cov}{Covariance matrix for proposal distribution of
-    Metropolis algorithm.  This is scaled by \code{jump.const}.}
-  \item{jump.const, j}{ Control parameter for the Metropolis algorithm. }
+           Metropolis algorithm.  This is scaled by \code{jump.const}.}
+  \item{jump.const}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
-                \code{verbose=TRUE}.}
+           \code{verbose=TRUE}.}
  \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}
-   or \code{summary.evmSim} returned by \code{evmSim} or
-   \code{summary.evmSim}.
-    In \code{texmexMetropolis}, \code{x} is a matrix, the first row of which
-                   is used as the starting point of the simulation.}
+           or \code{summary.evmSim} returned by \code{evmSim} or
+           \code{summary.evmSim}. In \code{texmexMetropolis}, \code{x}
+           is a matrix, the first row of which is used as the starting
+           point of the simulation.}
   \item{digits}{Number of digits for printing.}
   \item{main}{In \code{plot} method for class \code{evmSim}, titles for
-    diagnostic plots. Should be a vector of length 4, with values
-    corresponding to the character strings to appear on the titles of
-    the pp- qq- return level and density estimate plots respectively.}
+           diagnostic plots. Should be a vector of length 4, with values
+           corresponding to the character strings to appear on the titles of
+           the pp- qq- return level and density estimate plots respectively.}
   \item{xlab}{As for \code{main} but labels for x-axes rather than titles.}
   \item{nsim}{In \code{plot} and \code{summary} methods for class
-    \code{evmSim}. The number of replicates to be simulated to produce
-    the simulated tolerance intervals. Defaults to \code{nsim = 1000}}.
-  \item{alpha}{In \code{plot} and \code{summary} methods for class
-    \code{evmSim}.
-    A (1 - alpha)\% simulation envelope is produced. Defaults to \code{alpha = 0.05}}
+           \code{evmSim}. The number of replicates to be simulated to produce
+           the simulated tolerance intervals. Defaults to \code{nsim = 1000}.}
+  \item{alpha}{In \code{plot} and \code{summary} methods for class \code{evmSim}.
+           A (1 - alpha)\% simulation envelope is produced. Defaults to
+           \code{alpha = 0.05}}
   \item{k}{Constant used in calculation of AIC=-2*loglik + k*p,
-    defaults to \code{k=2}.}
+           defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
-                    or to annotate the plots with it. Defaults to
-                    \code{print.seed=FALSE}.}
+           or to annotate the plots with it. Defaults to
+           \code{print.seed=FALSE}.}
   \item{which.plots}{In \code{plot} method for class \code{bevmSim}. Which plots to produce. Option 1 gives kernel density estimates,
-                     2 gives traces of the Markov chains with superimposed
-                     cumulative means, 3 gives autocorrelation functions.
-                     Defaults to \code{which.plots=1:3}.}
-  \item{density.adjust}{In \code{plot} method for class \code{bevmSim}.
-                     Passed into \code{density}. Controls the amount of
-                     smoothing of the kernel density estimate. Defaults to
-                     \code{density.adjust=2}.}
+           2 gives traces of the Markov chains with superimposed
+           cumulative means, 3 gives autocorrelation functions.
+           Defaults to \code{which.plots=1:3}.}
+  \item{density.adjust}{In \code{plot} method for class \code{evmSim}.
+           Passed into \code{density}. Controls the amount of
+           smoothing of the kernel density estimate. Defaults to
+           \code{density.adjust=2}.}
   \item{log.lik, proposals}{The log-likelihood for the model, and a matrix of random
-        numbers drawn from the proposal distribution.}
+           numbers drawn from the proposal distribution.}
   \item{map}{In \code{texmexJumpConst}, a model fit by maximum
-    (penalized) likelihood. The function is not intended to be called by
-     the end user.}
+           (penalized) likelihood. The function is not intended to be called by
+           the end user.}
   \item{R}{The number of parametric bootstrap samples to run when
-     \code{method='bootstrap'} is requested. Defaults to 100.}
+           \code{method='bootstrap'} is requested. Defaults to 100.}
 }
 \details{
   In previous versions of \code{texmex}, the main modelling
   function was \code{gpd} and models using the generalized
-  Pareto distribution were used. In this version, the main
+  Pareto distribution (GPD) were used. In this version, the main
   modelling function is now \code{evm} (extreme value model)
   and the distribution to be used is specified through the
   \code{family} argument.
 
   Object \code{gpd} is now an object of class \code{texmexFamily}.
+  Currently, the only other \code{texmexFamily} object available
+  is \code{gev} which results in fitting a generalized extreme
+  value (GEV) distribution to the data.
 
-  We use the following parameterisation of evm:
+  See Coles (2001) for an introduction to extreme value modelling and
+  the GPD and GEV models.
 
-  \deqn{P(X \le x) = 1 - \left(1 + \frac{\xi x}{\sigma}\right)^{-1/\xi}}{%
-        P(X \le x) = 1 - (1 + \xi x / \sigma)^(-1/\xi)}
-  for \eqn{x \ge 0} and \eqn{1 + \xi x / \sigma \ge 0.}  The scale parameter
-  is sigma (\eqn{\sigma}) and the shape parameter is xi (\eqn{\xi}).
+  For the GPD model, we use the following parameterisation of evm:
+
+  \deqn{P(Y \le y) = 1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi}}{%
+        P(Y \le y) = 1 - (1 + \xi y / \sigma)^(-1/\xi)}
+  for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
+
+  For the GEV model, we use:
+  
+  \deqn{P(Y \le y) = \exp \left\{ -\left[ 1 + \xi \left( \frac{y - \mu}{\sigma}\right) \right] ^{-1/\xi} \right\} }{%
+        P(Y \le y) = exp{-[1 + \xi(y - \mu)/\sigma]^{1/\xi}}}
+
+  In each case, the scale parameter is sigma (\eqn{\sigma}) and the
+  shape parameter is xi (\eqn{\xi}). The GEV distribution also has
+  location parameter mu (\eqn{\mu}).
 
   Working with the log of the scale parameter improves the
   stability of computations, making  a quadratic penalty more
@@ -200,24 +220,17 @@ texmexJumpConst(j, map)
   This runs a parametric bootstrap, simulating from the model fit
   by optimization.
 
-  When a summary or plot is performed for the model fit by optimization,
-  a pointwise (1 - alpha)\% tolerance envelope is simulated, based on quantiles of the fitted
-  model.  Since the ordered observations will be correlated, if any observation is outside
-  the envelope, it is likely that a chain of observations will be outside the
-  envelope. Therefore, if the number outside the envelope is a little more than
-  alpha\%, that does not immediately imply a serious shortcoming of the fitted model.
-
   When \code{method = "optimize"}, the \code{plot} function produces
-  diagnostic plots for the fitted generalized Pareto model. These differ
+  diagnostic plots for the fitted model. These differ
   depending on whether or not there are covariates in the model.  If there
   are no covariates then the diagnostic plots are PP- and QQ-plots, a
   return level plot (produced by \code{plotrl.evmSim}) and a histogram
-  of the data with superimposed generalized
-  Pareto density estimate.  These are all calculated using the data on
-  the original scale. If there are covariates in the model then the
-  diagnostics consist of PP- and QQ- plots calculated by using the model
-  residuals (which will be standard exponential devaiates under the evmSim model),
-  and plots of residuals versus fitted model parameters.
+  of the data with superimposed density estimate.  These are all calculated
+  using the data on the original scale. If there are covariates in the
+  model then the diagnostics consist of PP- and QQ- plots calculated
+  by using the model residuals (which will be standard exponential
+  devaiates under the GPD model and standard Gumbel deviates under
+  the GEV model), and plots of residuals versus fitted model parameters.
 
   The PP- and QQ-plots show simulated pointwise tolerance intervals.
   The region is a (1 - alpha)\% region based on \code{nsim} simulated
@@ -260,7 +273,9 @@ texmexJumpConst(j, map)
     \item{penalty}{The type of penalty function used, if any.}
     \item{coefficients}{The parameter estimates as computed under maximum
                         likelihood or maximum penalized likelihood.}
-    \item{rate}{The proportion of observations above the threshold.}
+    \item{rate}{The proportion of observations above the threshold. If the
+            model is not a threshold exceedance model (e.g. the GEV
+            model), the rate will be 1.}
 
     \item{priorParameters}{See above.}
 
@@ -293,7 +308,8 @@ texmexJumpConst(j, map)
     There are summary, plot, print and coefficients methods available for these classes.
 
 }
-\note{   When there are estimated values of \code{xi <= -0.5}, the regularity
+\note{   For both GPD and GEV models, when there are estimated values
+  of \code{xi <= -0.5}, the regularity
   conditions of the likelihood break down and inference based on approximate
   standard errors cannot be performed. In this case, the most fruitful
   approach to inference appears to be by the bootstrap. It might be possible
@@ -306,30 +322,28 @@ texmexJumpConst(j, map)
   \seealso{ \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}},
     \code{\link{evm.declustered}}.}
 
-\author{Janet E. Heffernan, Harry Southworth.   Some of the internal code is based on
-  the \code{gpd.fit} function
-  in the \code{ismev} package and is due to Stuart Coles.}
+\author{Janet E. Heffernan, Harry Southworth. Some of the internal code is based on
+  the \code{gpd.fit} function in the \code{ismev} package and is due to Stuart Coles.}
 
-\references{A. C. Davison and R. L. Smith, Models for exceedances over
-            high thresholds, Journal of the Royal Statistical Society B,
-            53, 393 -- 442, 1990}
+\references{S. Coles. An Introduction to Statistical Modelling of Extreme
+            Values. Springer, 2001.}
 
 \examples{
-  x <- rnorm(1000)
-  mod <- evm(x, qu = 0.7)
+  mod <- evm(rain, th=30. penalty="none")
   mod
   par(mfrow=c(2, 2))
   plot(mod)
 
-  x <- runif(100,-0.2,0.2)
-  data <- data.frame(x=x,y=rgpd(100,sigma=exp(3 + 2*x),xi=x))
-  mod <- evm(y, data, phi = ~x, xi = ~x, th = 0)
-  plot(mod)
-
-# Following lines commented out to keep CRAN happy
-#  mod <- evmSim(x, qu=.7, method="sim")
-#  mod
+#  mod <- evm(rain, th=30, method="sim")
 #  par(mfrow=c(3, 2))
+#  plot(mod)
+
+#  mod <- evm(SeaLevel, data=portpirie, family=gev, penalty="none")
+#  mod
+#  plot(mod)
+
+#  mod <- evm(SeaLevel, data=portpirie, family=gev, method="sim")
+#  par(mfrow=c(3, 3))
 #  plot(mod)
 }
 \keyword{ models }
