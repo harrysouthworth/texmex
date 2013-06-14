@@ -15,7 +15,8 @@ gev <- texmexFamily(name = 'GEV',
                                   mu <- X.mu %*% param[1:n.mu]
                                   phi <- X.phi %*% param[(1 + n.mu):n.phi]
                                   xi <- X.xi %*% param[(1 + n.phi):n.end]
-                                  sum(dgev(y, mu, exp(phi), xi, log.d=TRUE))
+                                  if (any(1 + xi/exp(phi)*(y-mu) <= 0)) -Inf
+                                  else sum(dgev(y, mu, exp(phi), xi, log.d=TRUE))
                                 }
                     }, # Close log.lik
                     info = NULL, # will mean that numerical approx gets used
@@ -34,8 +35,8 @@ gev <- texmexFamily(name = 'GEV',
                               X.phi <- data$D[[2]]
                               X.xi <- data$D[[3]]
 
-                              c(mean(y), rep(.1, ncol(X.mu)-1), log(IQR(y)/2),
-                              rep(.01, -1 + ncol(X.phi) + ncol(X.xi)))
+                              c(mean(y), rep(0, ncol(X.mu)-1), log(IQR(y)/2),
+                              rep(.001, -1 + ncol(X.phi) + ncol(X.xi)))
                     }, # Close start
                     endpoint = function(param, model){
                                  param[, 1] - exp(param[, 2]) / param[, 3]
