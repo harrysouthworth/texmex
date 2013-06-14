@@ -13,9 +13,7 @@
 \alias{summary.rl.evmSim}
 \alias{summary.rl.evmBoot}
 
-\title{
-Return levels
-}
+\title{Return levels}
 \description{
 Computation of return levels and confidence intervals for generalized Pareto distributions.
 }
@@ -31,11 +29,11 @@ rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
    alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL, ...)
 
 \method{plot}{rl.evmOpt}(x, xlab, ylab, main, pch= 1, ptcol =2 , cex=.75, linecol = 4 , 
-     cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ... )
+     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ... )
 \method{plot}{rl.evmSim}(x, xlab, ylab, main, pch= 1, ptcol =2 , cex=.75, linecol = 4 , 
-     cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ... )
+     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ... )
 \method{plot}{rl.evmBoot}(x, xlab, ylab, main, pch= 1, ptcol =2 , cex=.75, linecol = 4 , 
-     cicol = 0, polycol = 15, smooth = TRUE, sameAxes=TRUE, type="median", ... )
+     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ... )
 
 \method{print}{rl.evmOpt}(x, digits=3, ...)
 \method{print}{rl.evmSim}(x, digits=3, ...)
