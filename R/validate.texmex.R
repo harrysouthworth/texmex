@@ -15,8 +15,6 @@ validate.texmex <- function () {
    else { sep <- "/" }
 
    dir <- file.path(tempdir(), "texmex.tests", fsep = sep)
-#   cmd <- paste("mkdir", dir)
-#   try(system(cmd), silent=TRUE)
    dir.create(dir)
 
    for (i in 1:length(tests)) {

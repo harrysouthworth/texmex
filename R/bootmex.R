@@ -156,8 +156,8 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="bootmex: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="bootmex: size of bootstrap data set")
 
-  smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel",constrain=FALSE)
-  wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel",constrain=FALSE)
+  smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel",constrain=FALSE, which=1)
+  wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel",constrain=FALSE, which=1)
 
   mySboot <- bootmex(smexmod, R=R,trace=R+1)
   myWboot <- bootmex(wmexmod, R=R,trace=R+1)
@@ -174,8 +174,8 @@ test.bootmex <- function(){ # this is a weak test - it tests the structure
   checkEqualsNumeric(dim(summer),dim(mySboot$boot[[1]]$Y),msg="bootmex: size of bootstrap data set")
   checkEqualsNumeric(dim(winter),dim(myWboot$boot[[5]]$Y),msg="bootmex: size of bootstrap data set")
 
-  smexmod.1 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=FALSE)
-  smexmod.2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=TRUE,v=2)
+  smexmod.1 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=FALSE, which=1)
+  smexmod.2 <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="laplace",constrain=TRUE,v=2, which=1)
   mySboot.1 <- bootmex(smexmod.1,R=R,trace=R+1)
   mySboot.2 <- bootmex(smexmod.2,R=R,trace=R+1)
 

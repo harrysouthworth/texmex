@@ -441,7 +441,7 @@ test.predict.evmOpt <- function(){
     if(Family$name == "GPD")checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg=pst("predict.evmOpt: GPD retrieve threshold"))
 
     checkEquals(target=predict(r.fit), current=rl(r.fit),msg=pst("predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments"))
-    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg=pst("predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments"))
+    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg=pst("predict.evmOpt: predict with type=lp gives same as direct call to linearpredictors with default arguments"))
 
     r.fit$rate <- 1
     prob <- c(0.5,0.9,0.95,0.99,0.999)
@@ -570,7 +570,7 @@ test.predict.evmOpt <- function(){
     fit.seb <- lapply(fit.bp,function(X) apply(X,2,sd))
     fit.seboot <- unlist(fit.seb)
 
-    checkEqualsNumeric(rep(0,length(fit.seboot)), (fit.seboot -  fit.seest) / fit.seest, tolerance=0.1,msg=pst("predict.evmOpt: return level standard error estimate compared with bootstrap standard errors"))
+    checkTrue(all(abs((fit.seboot -  fit.seest) / fit.seest) < 0.3),msg=pst("predict.evmOpt: return level standard error estimate compared with bootstrap standard errors"))
   }  
 }
 
@@ -597,7 +597,7 @@ test.predict.evmSim <- function(){
 
     r.fit$map$rate <- 1
     p <- c(0.5,0.9,0.95,0.99,0.999)
-    checkEqualsNumeric(target = Family$quant(p,t(co),r.fit$map), tol=0.01,
+    checkEqualsNumeric(target = Family$quant(p,t(co),r.fit$map), tolerance=0.01,
                        current = unlist(predict(r.fit,M=1/(1-p))),msg=pst("predict.evmSim: ret level estimation"))
 
     checkEquals(target=predict(r.fit,M=1/(1-p)), current=rl(r.fit,M=1/(1-p)),msg=pst("predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments"))
@@ -631,7 +631,7 @@ test.predict.evmSim <- function(){
     current <- predict(fit,M=M)
   
     for(i in 1:length(M)){
-      checkEqualsNumeric(target[[i]],current[[i]][,1],tol=0.02,msg=pst("predict.evmSim: ret level estimation multiple M"))
+      checkEqualsNumeric(target[[i]],current[[i]][,1],tolerance=0.02,msg=pst("predict.evmSim: ret level estimation multiple M"))
     }
 
 # new data
@@ -706,7 +706,7 @@ test.predict.evmSim <- function(){
     newX <- data.frame(a=c(0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),b=c(-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1))
 
     checkEqualsNumeric(current = predict(fit,newdata=newX)[[1]], target = unique(predict(fit,newdata=newX,unique.=FALSE)[[1]]),pst("predict.evmSim: unique functioning for ret level ests"))
-    checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")$link[,], target = unique(predict(fit,newdata=newX,unique.=FALSE,type="lp")[,]),msg=pst("predict.evmSim: unique functioning for lin pred ests"))
+    checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")$link[,], target = unique(predict(fit,newdata=newX,unique.=FALSE,type="lp")$link[,]),msg=pst("predict.evmSim: unique functioning for lin pred ests"))
   }
 }
 

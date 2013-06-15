@@ -576,6 +576,7 @@ test.evm <- function(){
   ###################################################################
   # 5.3  GEV - covariates in mu, phi and xi separately, use gev.fit from ismev package
   
+  set.seed(20130614)
   makeDataGev <- function(u=0,a,b,n=500)
     # lengths of a and b should divide n exactly
     # returns data set size n distributed as GEV variates location parameter u,
@@ -593,24 +594,25 @@ test.evm <- function(){
                makeDataGev(3,mya,-0.1),
                makeDataGev(3,2,myb))
 
-  g1.fit <- texmex:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE)
+  start1 <- c(0,1,2,-0.1)
+  g1.fit <- texmex:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE,muinit=start1[1:2])
   g2.fit <- texmex:::.ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
   g3.fit <- texmex:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3, siglink=exp,show=FALSE)
-  t1.fit <- evm(y,mu=~u, family=gev,data=data[[1]])
+  t1.fit <- evm(y,mu=~u, family=gev,data=data[[1]],start=start1)
   t2.fit <- evm(y,phi=~a,family=gev,data=data[[2]])
   t3.fit <- evm(y,xi=~b, family=gev,data=data[[3]])
 
-  checkEqualsNumeric(g1.fit$mle,coef(t1.fit),tol=tol,msg="gev: covariates in mu point est")
-  checkEqualsNumeric(g2.fit$mle,coef(t2.fit),tol=tol,msg="gev: covariates in phi point est")
-  checkEqualsNumeric(g3.fit$mle,coef(t3.fit),tol=tol,msg="gev: covariates in xi point est")
+  checkEqualsNumeric(g1.fit$mle,coef(t1.fit),tolerance=tol,msg="gev: covariates in mu point est")
+  checkEqualsNumeric(g2.fit$mle,coef(t2.fit),tolerance=tol,msg="gev: covariates in phi point est")
+  checkEqualsNumeric(g3.fit$mle,coef(t3.fit),tolerance=tol,msg="gev: covariates in xi point est")
   
-  checkEqualsNumeric(g1.fit$nllh,-t1.fit$loglik,tol=tol,msg="gev: covariates in mu, log-lik")
-  checkEqualsNumeric(g2.fit$nllh,-t2.fit$loglik,tol=tol,msg="gev: covariates in phi, log-lik")
-  checkEqualsNumeric(g3.fit$nllh,-t3.fit$loglik,tol=tol,msg="gev: covariates in xi, log-lik")
+  checkEqualsNumeric(g1.fit$nllh,-t1.fit$loglik,tolerance=tol,msg="gev: covariates in mu, log-lik")
+  checkEqualsNumeric(g2.fit$nllh,-t2.fit$loglik,tolerance=tol,msg="gev: covariates in phi, log-lik")
+  checkEqualsNumeric(g3.fit$nllh,-t3.fit$loglik,tolerance=tol,msg="gev: covariates in xi, log-lik")
   
-  checkEqualsNumeric(g1.fit$cov,t1.fit$cov,tol=tol, msg="gev: covariates in mu, cov")
-  checkEqualsNumeric(g2.fit$cov,t2.fit$cov,tol=tol, msg="gev: covariates in phi, cov")
-  checkEqualsNumeric(g3.fit$cov,t3.fit$cov,tol=tol, msg="gev: covariates in xi, cov")
+  checkEqualsNumeric(g1.fit$cov,t1.fit$cov,tolerance=tol, msg="gev: covariates in mu, cov")
+  checkEqualsNumeric(g2.fit$cov,t2.fit$cov,tolerance=tol, msg="gev: covariates in phi, cov")
+  checkEqualsNumeric(g3.fit$cov,t3.fit$cov,tolerance=tol, msg="gev: covariates in xi, cov")
   
   ######################################################################
   # 5.4 GEV - Test mu phi & xi simultaneously. Use simulated data.
@@ -671,20 +673,20 @@ test.evm <- function(){
             msg="gev: with covariates, phi being drawn to 0")
   
   # Tests for xi being drawn to 2
-  myb <- rep(c(-0.5,0.5),each=5)
+  myb <- rep(c(-0.1,0.1),each=5)
   data <- makeDataGev(u=0,a=1,b=myb,n=3000)
   
-  gp7 <- list(c(0, 0, 2, 2), diag(c(10^4, 10^4, 0.25, 0.25)))
-  gp8 <- list(c(0, 0, 2, 2), diag(c(10^4, 10^4, 0.05, 0.05)))
+  gp7 <- list(c(0, 0, 1, 1), diag(c(10^4, 10^4, 0.25, 0.25)))
+  gp8 <- list(c(0, 0, 1, 1), diag(c(10^4, 10^4, 0.05, 0.05)))
   
   mod6 <- evm(y,family=gev,data=data,xi=~b,penalty="none")
   mod7 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp7)
   mod8 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp8)
   
-  checkTrue(all(abs(2 - coef(mod6)[3:4]) > abs(2 - coef(mod7)[3:4])),
-            msg="gev: with covariates, xi drawn to 2")
-  checkTrue(all(abs(2 - coef(mod7)[3:4]) > abs(2 - coef(mod8)[3:4])),
-            msg="gev: with covariates, xi drawn to 2")
+  checkTrue(all(abs(1 - coef(mod6)[3:4]) > abs(1 - coef(mod7)[3:4])),
+            msg="gev: with covariates, xi drawn to 1")
+  checkTrue(all(abs(1 - coef(mod7)[3:4]) > abs(1 - coef(mod8)[3:4])),
+            msg="gev: with covariates, xi drawn to 1")
   
   # Tests for mu being drawn to 4
   

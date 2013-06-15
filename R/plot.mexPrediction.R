@@ -39,8 +39,8 @@ function( x, pch=c( 1, 3 ), col=c( 2, 8 ), cex=c( 1, 1 ), ask = TRUE, ... ){
 test.plot.predict.mex <- function(){
 # check reproduce Figure 6 in Heffernan and Tawn
   w <- mex(winter,mqu=0.7,penalty="none", which="NO", dqu=.7, margins="gumbel", constrain=FALSE)
-  noMod <- bootmex(w)
-  noPred <- predict(noMod)
+  noMod <- bootmex(w,trace=101)
+  noPred <- predict(noMod,trace=101)
   par(mfcol=c(2,2))
   res <- plot(noPred,main="Fig. 6 Heffernan and Tawn (2004)")
   checkEquals(res, NULL, msg="plot.predict.mex: correct execution")
@@ -49,8 +49,8 @@ test.plot.predict.mex <- function(){
   R <- 20
   nsim <- 100
   wavesurge.mex <- mex(wavesurge,mqu=.7,which=1, margins="laplace")
-  wavesurge.boot <- bootmex(wavesurge.mex,R=R)
-  wavesurge.pred <- predict(wavesurge.boot,nsim=nsim)
+  wavesurge.boot <- bootmex(wavesurge.mex,R=R,trace=R+1)
+  wavesurge.pred <- predict(wavesurge.boot,nsim=nsim,trace=R+1)
   par(mfrow=c(1,1))
   res <- plot(wavesurge.pred)
   checkEquals(res, NULL, msg="plot.predict.mex: correct execution")

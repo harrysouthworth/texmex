@@ -63,7 +63,7 @@ test.endPoint <- function(){
       th <- switch(Family$name,GPD=0,GEV=-Inf)
       X$Y <- Family$rng(n,param,list(threshold=th))
       fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,family=Family)
-      lp <- linearPredictors(fit)
+      lp <- linearPredictors(fit)$link
       ep.current <- endPoint(fit,verbose=FALSE,.unique=FALSE)
       ep.target <- switch(Family$name,GPD=ifelse(lp[,2] < 0, th-exp(lp[,1])/lp[,2],Inf),
                                       GEV=ifelse(lp[,3] < 0, lp[,1]-exp(lp[,2])/lp[,3],Inf))

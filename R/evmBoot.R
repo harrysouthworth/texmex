@@ -102,7 +102,7 @@ test.evmBoot <- function(){
   tol <- 0.1
   
   for(Family in list(gpd,gev)){
-    set.seed(20111007)
+    set.seed(20130615)
 
     pst <- function(msg) texmexPst(msg,Family=Family)
 
@@ -138,9 +138,9 @@ test.evmBoot <- function(){
     checkTrue(max(rse) < 1.1, msg=pst("evmBoot: SEs with xi in model, with penalty applied"))
     
     best <- apply(boot$replicates, 2, median)
-    rest <- best / coef(fit)
-    rest <- ifelse(rest < 1, 1/rest, rest)
-    checkTrue(all(rest < switch(Family$name,GPD=c(1.1,1.1),GEV=c(1.1,1.1,1.3))), msg=pst("evmBoot: medians in line with point ests, with penalty applied"))
+    fest <- coef(fit)
+    rdiff <- abs((best - fest)/fest)
+    checkTrue(all(rdiff < 0.06), msg=pst("evmBoot: medians in line with point ests, with penalty applied"))
     
     ##################################################################
     # models with covariates. Due to apparent instability
@@ -160,24 +160,25 @@ test.evmBoot <- function(){
       checkTrue(max(rse) < 1.5, msg=pst(paste("evmBoot: SEs with covariates in",txt)))
     
       best <- apply(boot$replicates, 2, median)
-      rest <- best / coef(fit)
-      rest <- ifelse(rest < 1, 1/rest, rest)
-      checkTrue(all(rest < switch(Family$name,GPD=1.5,GEV=c(1.5,1.5,4,1.5))), msg=pst(paste("evmBoot: medians in line with point ests, covariates in",txt)))
+      fest <- coef(fit)
+      rdiff <- abs((best - fest)/fest)
+
+      checkTrue(all(rdiff < 0.2), msg=pst(paste("evmBoot: medians in line with point ests, covariates in",txt)))
     }
     
-    param <- switch(Family$name,GPD=cbind(X[,1],xi),GEV=cbind(mu,X[,1],xi))
-    start <- switch(Family$name,GPD=c(0,1,0.05),GEV=c(1,0,1,0.05))
+    param <- switch(Family$name,GPD=cbind(2+X[,1],xi),GEV=cbind(mu,2+X[,1],xi))
+    start <- switch(Family$name,GPD=c(2,1,xi),GEV=c(mu,2,1,xi))
     X$Y <- Family$rng(n,param,list(threshold=th))
     
     fit <- evm(Y,data=X,phi=~a,th=th,family=Family,start=start)
     boot <- evmBoot(fit, R=200, trace=201)
-  
     test(boot,fit,"phi")
     
-    param <- switch(Family$name,GPD=cbind(phi,X[,2]),GEV=cbind(mu,phi,X[,2]))
-
+    param <- switch(Family$name,GPD=cbind(phi,0.1+X[,2]),GEV=cbind(mu,phi,0.1+X[,2]))
+    start <- switch(Family$name,GPD=c(phi,0.1,1),GEV=c(mu,phi,0.1,1))
     X$Y <- Family$rng(n,param,list(threshold=th))
-    fit <- evm(Y,data=X,xi=~b,th=th,family=Family)
+    
+    fit <- evm(Y,data=X,xi=~b,th=th,family=Family,start=start)
     boot <- evmBoot(fit, R=200, trace=201)
     test(boot,fit,"xi")
   }
