@@ -631,7 +631,7 @@ test.evm <- function(){
                                    show=FALSE,muinit=c(5,2),siginit=c(2,-0.1),shinit=c(0,2))
 
   checkEqualsNumeric(ismod$mle,coef(mod),tolerance = tol,msg="gev: covariates in mu phi and xi: point ests")
-  checkEqualsNumeric(ismod$se,sqrt(diag(mod$cov)),tolerance = tol,msg="gpd: covariates in mu phi and xi: std errs")
+  checkEqualsNumeric(ismod$se,sqrt(diag(mod$cov)),tolerance = tol,msg="gev: covariates in mu phi and xi: std errs")
   
   ####################################################################
   # 5.5 GEV:  Check that using priors gives expected behaviour when covariates are included.
