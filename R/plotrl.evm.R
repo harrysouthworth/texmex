@@ -51,6 +51,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ...){
+
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
     if (missing(main) || is.null(main)) {
@@ -68,17 +69,19 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
     if(nm < 2) {
       stop("Need to have more than one value of M at which to plot return level curve")
     }
+  
     nd <- dim(x[[1]])[2]
     ncov <- length(unlist(x)) / (nm * nd)
     ValNames <- colnames(x[[1]])
+  
+    if(length(ValNames) == 1 |  length(grep("%",ValNames)) < 2){
+      stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
+    }
 
     if(!SetMain & length(main) != ncov){
       stop("main must be length 1 or number of unique covariates for prediction")
     }
 
-    if(length(ValNames) == 1 |  length(grep("%",ValNames)) < 2){
-      stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
-    }
 
     Array <- array(unlist(x),c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
 
@@ -145,7 +148,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may h
 plot.rl.evmBoot <- plot.rl.evmSim <- plot.rl.evmOpt
 
 plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
-# worker function - called by plotrl.evmOpt, plot.rl.evmOpt, plot.rl.evmSim
+# worker function - called by plotrl.evmOpt, plot.rl.evmOpt, plot.rl.evmSim, plot.rl.evmBoot
 
     o <- order(M) # in case the return period are not in ascending order.
     M <- M[o]
