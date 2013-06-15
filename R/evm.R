@@ -60,7 +60,7 @@ function (y, data, family=gpd, th= -Inf, qu,
                  priorParameters = priorParameters,
                  maxit = maxit, trace = otrace)
 
-    if (o$convergence != 0) {
+    if (o$convergence != 0 | o$value == 10^6) {
         warning("Non-convergence in evm.default")
     }
 

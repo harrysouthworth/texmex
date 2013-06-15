@@ -24,6 +24,7 @@
 \alias{Dcond}
 \alias{estimate_HT}
 \alias{namesBoot2bgpd}
+\alias{getPlotRLdata}
 \alias{plotRLevm}
 \alias{rFrechet}
 \alias{rMaxAR}
@@ -35,17 +36,15 @@
 \alias{addCovariance}
 \alias{constructEVM}
 
+\alias{texmexPst}
+
 \title{Internal functions for texmex}
 \description{Internal functions used by the \code{texmex} package.}
 
 \usage{
 \method{hist}{evmOpt}(x, xlab, ylab, main, ...)
-qqevm(object, nsim = 1000, alpha = 0.05, xlab, ylab, main, plot = TRUE,
-     ylim = "auto", pch=1, col = 2, cex = 0.75, linecol = 4, intcol = 0,
-     polycol = 15)
-ppevm(object, nsim = 1000, alpha = 0.05, xlab, ylab, main,
-     pch=1, col = 2, cex = 0.75, linecol = 4, intcol = 0,
-     polycol = 15)
+qqevm(object, nsim = 1000, alpha = 0.05)
+ppevm(object, nsim = 1000, alpha = 0.05)
 qgpd2(N, sigma = 1, xi = 1, u = 0, la = 1)
 u2gpd(u, p=1, th=0, sigma, xi)
 mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE,
@@ -68,11 +67,12 @@ initial_posneg(D,...)
 estimate_HT_KPT_joint_posneg_nm(pars,x,listr,params=TRUE,...,k=3)
 inv_Laplace(p)
 namesBoot2bgpd(bootobject)
+getPlotRLdata(object, alpha, RetPeriodRange)
 plotRLevm(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,
   main,xrange,yrange)
 plotrl.evmOpt(object, alpha = 0.05, xlab, ylab, main, pch = 1, ptcol
                  = 2, cex = 0.75, linecol = 4, cicol = 0, polycol = 15,
-                 smooth = TRUE, RetPeriodRange = NULL)
+                 smooth = FALSE, RetPeriodRange = NULL)
 rFrechet(n)
 rMaxAR(n,theta)
 .extRemes.decluster.intervals(Z, ei)
@@ -82,11 +82,12 @@ addCoefficients(o)
 addCovariance(o, family, cov)
 constructEVM(o, family, th, rate, prior, modelParameters, call,
             data, priorParameters, cov)
+texmexPst(msg, Family)
 }
 
 \arguments{
 \item{x, object, data}{Object to be used by plot functions, vector to be converted.}
-\item{xlab, ylab, ylim, main, pch, col, cex, linecol, intcol, polycol,
+\item{xlab, ylab, main, pch, cex, linecol, polycol,
   RetPeriodRange, ...}{Arguments to plot functions.}
 \item{N}{ Number of observations corresponding to N-observation
   return level to be calculated.}
@@ -94,7 +95,6 @@ constructEVM(o, family, th, rate, prior, modelParameters, call,
   \item{alpha}{Control nominal coverage of condfidence intervals.
     Defaults to \code{alpha = 0.05}.}
 \item{nsim}{Number of simulated datasets to use in computing confidence intervals.}
-\item{plot}{Whether or not to plot the result.}
 \item{u}{Uniform deviates to be converted to GPD deviates.}
 \item{p, th, qu, sigma, xi}{Paramters of GPD distribution.}
 \item{method}{Argument to \code{mexTransform}: how to convert.
@@ -150,6 +150,7 @@ an object.}
 \item{family, rate, prior, modelParameters, call,
   cov}{Information used to obtain various components
   of an object of class 'evmOpt'.}
+\item{msg, Family}{A message to print and a Family}
 }
 
 \details{
