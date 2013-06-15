@@ -12,19 +12,22 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
     if( (!missing(v))){
       warning("v given, but already specified in 'mex' object.  Using 'mex' value")
     }
+    if( (!missing(which))){
+      warning("which given, but already specified in 'mex' object.  Using 'mex' value")
+    }
     constrain <- x$dependence$constrain
     v <- x$dependence$v
+    which <- x$dependence$which
     x <- x[[1]]
     margins <- x$margins
   } else {
     if (class(x) != "migpd"){
       stop("object should have class mex or migpd")
     }
-  }
-
-  if (missing(which)) {
-     cat("Missing 'which'. Conditioning on", names(x$models)[1], ".\n")
-     which <- 1
+    if (missing(which)) {
+      which <- 1
+      cat("Missing 'which'. Conditioning on", names(x$models)[which], ".\n")
+    }
   }
 
   ests <- lapply(quantiles, function(qu, which, x, margins, start, constrain=constrain, v=v)
@@ -61,36 +64,34 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
 test.mexRangeFit <- function(){
 
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
-  wmexmod.gum <- mex(winter, mqu=.7,  penalty="none", margins="gumbel", constrain=FALSE)
-  wmexmod.lap <- mex(winter, mqu=.7,  penalty="none", margins="laplace",v=5)
+  wmexmod.gum <- mex(winter, mqu=.7,  penalty="none", margins="gumbel", constrain=FALSE, which=1)
+  wmexmod.lap <- mex(winter, mqu=.7,  penalty="none", margins="laplace",v=5, which=1)
 
   par(mfrow=c(2,2))
-  mexRangeFit(wmarmod,which=1,margins="gumbel",constrain=FALSE,
+  R <- 10
+  mexRangeFit(wmarmod,which=1,margins="gumbel",constrain=FALSE,R=R,trace=R+1,
               main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004",cex=0.5,addNexcesses=FALSE)
-  mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5,addNexcesses=FALSE)
-  mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5,addNexcesses=FALSE)
+  mexRangeFit(wmexmod.gum,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nGumbel margins",cex=0.5,addNexcesses=FALSE,R=R,trace=R+1)
+  mexRangeFit(wmexmod.lap,main="Dependence threshold selection\nWinter data, Heffernan and Tawn 2004,\nLaplace margins",cex=0.5,addNexcesses=FALSE,R=R,trace=R+1)
 
-  op <- options()
-  options(show.error.messages=FALSE)
-  checkException(mexRangeFit(TRUE,which=2),msg="mexRangeFit: exception handle")
-  checkException(mexRangeFit(5,which=1),msg="mexRangeFit: exception handle")
-  options(op)
+  checkException(mexRangeFit(TRUE,which=2),silent=TRUE,msg="mexRangeFit: exception handle")
+  checkException(mexRangeFit(5,which=1),silent=TRUE,msg="mexRangeFit: exception handle")
 
 # now 2-d data
 
   wavesurge.fit <- migpd(wavesurge,mqu=.7)
   m <- mex(wavesurge,which=1,mqu=0.7)
-  mexRangeFit(wavesurge.fit,which=1,margins="laplace",
+  mexRangeFit(wavesurge.fit,which=1,margins="laplace",R=R,trace=R+1,
               main="Dependence threshold selection,\nwave and surge data, Coles 2001",addNexcesses=FALSE)
-  mexRangeFit(wavesurge.fit,which=1,margins="gumbel",constrain=FALSE,
+  mexRangeFit(wavesurge.fit,which=1,margins="gumbel",constrain=FALSE,R=R,trace=R+1,
               main="Dependence threshold selection,\nwave and surge data, Coles 2001",addNexcesses=FALSE)
 
 # test specification of starting values
   R <- 5
   qu <- c(0.5,0.7,0.9)
-  mexRangeFit(wavesurge.fit,which=1,margins="laplace",constrain=TRUE, start=c(0.01,0.01),R=R,quantiles = qu,
+  mexRangeFit(wavesurge.fit,which=1,margins="laplace",constrain=TRUE, start=c(0.01,0.01),R=R,trace=R+1,quantiles = qu,
               main="start=c(0.01,0.01)",addNexcesses=FALSE)
-  mexRangeFit(wavesurge.fit,which=2,margins="laplace",constrain=TRUE, start=m,R=R,quantiles = qu,
+  mexRangeFit(wavesurge.fit,which=2,margins="laplace",constrain=TRUE, start=m,R=R,trace=R+1,quantiles = qu,
               main="start=fitted model",addNexcesses=FALSE)
 
 }
