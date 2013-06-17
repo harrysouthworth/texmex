@@ -19,7 +19,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL, R=100, verbose=TRUE) {
 
-    modelParameters <- texmexParameters(theCall, family)
+    modelParameters <- texmexParameters(theCall, family,...)
 
     ##################### Sort out method, penalty/prior, trace...
 

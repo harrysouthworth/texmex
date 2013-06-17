@@ -250,7 +250,8 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
 }
 
 evm.declustered <- function(y, data=NULL, family=gpd, ...){
-  theCall <- match.call()
+  myCall <- match.call()
+
   if(is.null(y$data)){
     res <- evm(y$clusterMaxima, th = y$threshold, ...)
   } else {
@@ -260,12 +261,12 @@ evm.declustered <- function(y, data=NULL, family=gpd, ...){
   }
 
   clusterRate <- max(y$clusters) / length(y$y)
-  if(class(res) == "evm"){
+  if(class(res) == "evmOpt"){
     res$rate <- clusterRate
   } else if(class(res) == "evmSim") {
     res$map$rate <- clusterRate
   }
-  res$call <- theCall
+  res$call <- myCall
   res
 }
 
@@ -305,5 +306,20 @@ test.extremalIndex <- function(){
 
   checkEqualsNumeric(data.ei$EIintervals,resp.ei$EIintervals,tolerance=tol,msg="extremalIndex: using data frame to pass response")
   checkEqualsNumeric(data.de$clusters,resp.de$clusters,tolerance=tol,msg="extremalIndex: using data frame to pass numeric response to declustering")
+  
+# test covariate fitting
+  
+  ei <- extremalIndex(SO2,data=winter,threshold=20)
+  d <- declust(ei)
+  evm(d,phi=~NO)
+   
+  checkEqualsNumeric(662.9508, AIC(evm(d,phi=~NO)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(662.8874, AIC(evm(d,phi=~NO2)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(651.8747, AIC(evm(d,phi=~O3)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(663.0015, AIC(evm(d,phi=~PM10)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(651.7874, AIC(evm(d,phi=~O3,xi=~NO)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(653.2512, AIC(evm(d,phi=~O3,xi=~NO2)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(653.6385, AIC(evm(d,phi=~O3,xi=~O3)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
+  checkEqualsNumeric(652.9238, AIC(evm(d,phi=~O3,xi=~PM10)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
 
 }

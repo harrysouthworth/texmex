@@ -153,24 +153,24 @@ function(prior, priorParameters, data){
 
 findFormulae <-
     # Find formulae in a call
-function(call){
+function(call,...){
     wh <- sapply(call, function(x){ try(class(eval(x)), silent=TRUE) })
     wh <- names(wh)[wh == 'formula']
     if (length(wh) > 0){
         res <- as.list(call[wh])
-        res <- lapply(res, eval)
+        for(i in 1:length(res)) res[[i]] <- eval(res[[i]]) # don't use sapply - can't handle "..." arguments
     }
     else { res <- NULL }
     res
 }
 
-texmexParameters <- function(call, fam){
+texmexParameters <- function(call, fam, ...){
     # Create intercept formula for every parameter
     mp <- lapply(fam$param, function(x) ~1)
     names(mp) <- fam$param
 
     # Splice in parameters from function call
-    p <- findFormulae(call)
+    p <- findFormulae(call, ...)
     mp[names(p)] <- p
 
     mp
