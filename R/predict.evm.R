@@ -693,7 +693,7 @@ test.predict.evmSim <- function(){
 
     checkEqualsNumeric(target = c(nx,4*npar+2), dim(predict(fit,newdata=newX,ci=TRUE,type="lp")$link), msg=pst("predict.evmSim: dimension of linear predictor return object"))
 
-    cnamesGPD <- c("phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")# this specific format assumed by plot.rl.bgpd and plot.lp.bgpd
+    cnamesGPD <- c("phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")# this specific format assumed by plot.rl.evmSim and plot.lp.evmSim
     cnamesGEV <- c("mu: Mean",  "mu: 50%",  "mu: 2.5%",  "mu: 97.5%",  "phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")
     cnames<- switch(Family$name,GPD=cnamesGPD,GEV=cnamesGEV)
   
@@ -746,7 +746,7 @@ test.predict.evmBoot <- function(){
 
     checkEqualsNumeric(target=nm,current=length(pred),msg=pst("predict.evmBoot: output length"))
     checkEquals(target=paste("M.",from,sep=""),current=names(pred)[1],msg=pst("predict.evmBoot: names of output"))
-    checkEquals(target=paste("M.",to,sep=""),current=names(pred)[nm],msg=pst("predict.bootgpd: names of output"))
+    checkEquals(target=paste("M.",to,sep=""),current=names(pred)[nm],msg=pst("predict.evmBoot: names of output"))
 
     cnames <- c( "Mean","50%","2.5%","97.5%",names(X)[1:2])
     checkEquals(target=cnames,current=colnames(pred[[1]]),msg=pst("predict.evmBoot: colnames"))

@@ -47,7 +47,7 @@ getPlotRLdata <- function(object, alpha, RetPeriodRange){
 
 
 
-plot.rl.evmOpt <- function(x, # method for rl.(boot or b)gpd object, which may have covariates.  Plots return level for each unique row in design matrix
+plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ...){

@@ -22,7 +22,7 @@ validate.texmex <- function () {
        dump(tests[i], file = str)
    }
    res <- defineTestSuite("texmex", dirs = dir, testFuncRegexp = "^test.+", testFileRegexp = "*.R")
-   cat("Running around 400 checks, including MCMC and bootstrap implementations.\nThis will take some time...\n\n")
+   cat("Running over 1000 checks, including MCMC and bootstrap implementations.\nThis will take some time...\n\n")
    res <- runTestSuite(res)
    res
 }
