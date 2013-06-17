@@ -32,9 +32,8 @@ endPoint.evmBoot <- endPoint.evmSim <- function(y,verbose=TRUE,.unique=TRUE,...)
 test.endPoint <- function(){
   
   for(Family in list(gpd,gev)){
-    
     pst <- function(msg) texmexPst(msg,Family=Family)
-    set.seed(20130513)
+    set.seed(20130617)
     
     for(i in 1:5){
       th <- switch(Family$name,GPD=0.3,GEV=-Inf)
