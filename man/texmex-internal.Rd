@@ -23,7 +23,6 @@
 \alias{profile_minmax_joint_posneg_KT}
 \alias{Dcond}
 \alias{estimate_HT}
-\alias{namesBoot2bgpd}
 \alias{getPlotRLdata}
 \alias{plotRLevm}
 \alias{rFrechet}
@@ -37,6 +36,7 @@
 \alias{constructEVM}
 
 \alias{texmexPst}
+\alias{namesBoot2sim}
 
 \title{Internal functions for texmex}
 \description{Internal functions used by the \code{texmex} package.}
@@ -66,7 +66,7 @@ profile_minmax_joint_posneg_KT (pars,listdata,u,q1=0,q2=1,...,sill=-10^(40))
 initial_posneg(D,...)
 estimate_HT_KPT_joint_posneg_nm(pars,x,listr,params=TRUE,...,k=3)
 inv_Laplace(p)
-namesBoot2bgpd(bootobject)
+namesBoot2sim(bootobject)
 getPlotRLdata(object, alpha, RetPeriodRange)
 plotRLevm(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,
   main,xrange,yrange)

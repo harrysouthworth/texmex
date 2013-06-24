@@ -58,6 +58,7 @@ An object of class \code{mex} which is a list containing the following three obj
   given that one of its components is large: Additional constraints for
   the Heffernan and Tawn model,
   Journal of Multivariate Analysis, 115, 396 -- 404, 2013
+}
 \author{ Harry Southworth, Janet E. Heffernan }
 
 \seealso{ \code{\link{migpd}}, \code{\link{bootmex}}, \code{\link{predict.mex}}, \code{\link{plot.mex}}

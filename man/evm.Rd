@@ -132,7 +132,7 @@ texmexJumpConst(j, map)
            multivariate gaussian or a multivariate Cauchy.}
   \item{jump.cov}{Covariance matrix for proposal distribution of
            Metropolis algorithm.  This is scaled by \code{jump.const}.}
-  \item{jump.const}{ Control parameter for the Metropolis algorithm. }
+  \item{jump.const, j}{ Control parameter for the Metropolis algorithm. }
   \item{verbose}{Whether or not to print progress to screen. Defaults to
            \code{verbose=TRUE}.}
  \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}

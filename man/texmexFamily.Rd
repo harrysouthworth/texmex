@@ -11,7 +11,7 @@
 
 \usage{
 texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid =
-NULL, rl, delta, endpoint, density, rng, prob, quant)
+NULL, rl, delta, endpoint, density, rng, prob, quant, lp)
 \method{print}{texmexFamily}(x, ...)
 \method{summary}{texmexFamily}(object, ...)
 }

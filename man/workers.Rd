@@ -17,8 +17,8 @@ texmexTrace(trace, method)
 texmexPrepareData(y, data, params)
 texmexThresholdData(threshold, data)
 texmexPriorParameters(prior, priorParameters, data)
-findFormulae(call)
-texmexParameters(call, fam)
+findFormulae(call, ...)
+texmexParameters(call, fam, ...)
 texmexGetParam(data, co)
 }
 
@@ -40,6 +40,7 @@ texmexGetParam(data, co)
 \item{call}{An object of class 'call'.}
 \item{fam}{An object of class 'texmexFamily'.}
 \item{co}{Model coefficients.}
+\item{...}{Other arguments being passed between functions.}
 }
 \details{These are functions used for processing user input and data
   prior to calling \code{evm.fit} and are not intended for end-user usage.

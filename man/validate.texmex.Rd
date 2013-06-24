@@ -57,6 +57,8 @@
 \alias{test.log1prel}
 \alias{test.specfun.safe.product}
 
+\alias{test.plot.predict.evm}
+
 \title{Validate the texmex package}
 \description{
 Using package \code{RUnit}, run tests to compare behaviour of \code{texmex} with
