@@ -6,9 +6,12 @@
   values model using the approach of Heffernan and Tawn, 2004.
 }
 \usage{
-mexDependence(x, which, dqu, margins="laplace", constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1, PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
+mexDependence(x, which, dqu, margins="laplace", constrain=TRUE, v = 10,
+              maxit=1000000, start=c(.01, .01), marTransform="mixture",
+              nOptim = 1, PlotLikDo=FALSE,
+              PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
 }
-%- maybe also 'usage' for other objects documented here.
+
 \arguments{
   \item{x}{ An object of class 'migpd' as returned by \code{migpd}.}
   \item{which}{ The name of the variable on which to condition. This is
@@ -19,10 +22,15 @@ mexDependence(x, which, dqu, margins="laplace", constrain=TRUE, v = 10, maxit=10
   \item{constrain}{Logical value.  Defaults to \code{constrain=TRUE} although this will subsequently be changed to FALSE if \code{margins="gumbel"} for which constrained estimation is not implemented.  If \code{margins="laplace"} and \code{constrain=TRUE} then the dependence parameter space is constrained to allow only combinations of parameters which give the correct stochastic ordering between (positively and negatively) asymptotically dependent variables and variables which are asymptotically independent.}
   \item{v}{Scalar. Tuning parameter used to carry out constrained estimation of dependence structure under \code{constrain=TRUE}. Takes positive values greater than 1; values between 2 and 10 are recommended.}
   \item{maxit}{The maximum number of iterations to be used by the optimizer.
-            defaults to \code{maxit = 1000000}.}
+               Defaults to \code{maxit = 1000000}.}
   \item{start}{Optional starting value for dependence estimation.  This can be: a vector of length two, with values corresponding to dependence parameters a and b respectively, and in which case \code{start} is used as a starting value for numerical estimation of each of the dependence models to be estimated; a matrix with two rows corresponding to dependence parameters a and b respectively and number of columns equal to the number of dependence models to be estimated (the ordering of the columns will be as in the original data matrix); or a previously estimated object of class \code{'mex'} whose dependence parameter estimates are used as a starting point for estimation.  Note that under \code{constrain=TRUE}, if supplied, \code{start} must lie within the permitted area of the parameter space.} 
   \item{marTransform}{Optional form of transformation to be used for probability integral transform of data from original to Gumbel or Laplace margins.  Takes values \code{marTransform="mixture"} (the default) or \code{marTransform="empirical"}. When \code{marTransform="mixture"}, the rank transform is used below the corresponding GPD fitting threshold used in \code{x}, and the fitted gpd tail model is used above this threshold.  When \code{marTransform="empirical"} the rank transform is used for the entire range of each marginal distribution.}
-  \item{nOptim}{Number of times to run optimiser when estimating dependence model parameters. Defaults to 1.  In the case of \code{nOptim > 1} the first call to the optimiser uses the value \code{start} as a starging point, while subsequent calls to the optimiser are started at the parameter value to which the previous call converged.}
+  \item{nOptim}{Number of times to run optimiser when estimating
+        dependence model parameters. Defaults to 1.  In the case of
+        \code{nOptim > 1} the first call to the optimiser uses the
+        value \code{start} as a starting point, while subsequent calls
+        to the optimiser are started at the parameter value to which
+        the previous call converged.}
 \item{PlotLikDo}{Logical value: whether or not to plot the profile likelihood surface for dependence model parameters under constrained estimation.}
 \item{PlotLikRange}{This is used to specify a region of the parameter space over which to plot the profile log-likelihood surface.  List of length 2; each item being a vector of length two corresponding to the plotting ranges for dependence parameters a and b respectively. If this argument is not missing, then \code{PlotLikDo} is set equal to TRUE.}
 \item{PlotLikTitle}{Used only if \code{PlotLikDo=TRUE}.  Character string.  Optional title added to the profile log-likelihood surface plot.}
@@ -45,7 +53,11 @@ An object of class \code{mex} which is a list containing the following three obj
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004.
   
-  Keef, C., Papastathopoulos, I. and Tawn, J.A., (2011) Additional Constraints for the Conditional Multivariate Extremes Model of Heffernan and Tawn, to appear.}
+  C. Keef, I. Papastathopoulos and J. A. Tawn.
+  Estimation of the conditional distribution of a multivariate variable
+  given that one of its components is large: Additional constraints for
+  the Heffernan and Tawn model,
+  Journal of Multivariate Analysis, 115, 396 -- 404, 2013
 \author{ Harry Southworth, Janet E. Heffernan }
 
 \seealso{ \code{\link{migpd}}, \code{\link{bootmex}}, \code{\link{predict.mex}}, \code{\link{plot.mex}}

@@ -7,8 +7,9 @@
 \title{Conditional multivariate extreme values modelling}
 \description{Fit the conditional multivariate extreme value model of Heffernan and Tawn}
 \usage{
-mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE, v = 10, 
-    penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE, priorParameters = NULL)
+mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE,
+    v = 10, penalty = "gaussian", maxit = 10000, trace = 0, 
+    verbose = FALSE, priorParameters = NULL)
 
 \method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
 \method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, ...)
@@ -28,24 +29,34 @@ mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE, v = 10,
             data from the fitted multivariate model. If not supplied, it is
             taken to be the thresholds that were used to fit the dependence model on the
             scale of the original data.}
-  \item{mqu}{As an alternative to specifying the marginal GPD fitting thresholds via mth, you can
+  \item{mqu}{As an alternative to specifying the marginal GPD fitting
+            thresholds via \code{mth}, you can
             specify the quantile (a probability) above which to fit generalized Pareto
             distributions. If this is a vector of length 1, the same quantile
             will be used for each variable. Otherwise, it should be a vector
-            whose length is equal to the number of columns in data.}
+            whose length is equal to the number of columns in \code{data}.}
   \item{dqu}{Used to specify the quantile at which to
             threshold the conditioning variable data when estimating the dependence
-            parameters.  For example \code{dqu=0.7} will result in the data with the highest 30% of values of the conditioning variable being used to estimated the dependence parameters. The same
-            threshold will be used for each dependent variable.  If not supplied then the default is to set \code{dqu=mqu[which]} the quantile corersponding to the threshold used to fit the marginal model to the tail of the conditioning variable.  Note that there is no requirement for the quantiles used for marginal fitting (\code{mqu}) and dependence fitting (\code{dqu}) to be the same, or for them to be ordered in any way.}
+            parameters.  For example \code{dqu=0.7} will result in the
+            data with the highest 30% of values of the conditioning
+            variable being used to estimate the dependence parameters.
+            The same threshold will be used for each dependent variable.
+            If not supplied then the default is to set \code{dqu=mqu[which]}
+            the quantile corersponding to the threshold used to fit the
+            marginal model to the tail of the conditioning variable.
+            Note that there is no requirement for the quantiles used
+            for marginal fitting (\code{mqu}) and dependence fitting
+            (\code{dqu}) to be the same, or for them to be ordered in
+            any way.}
   \item{margins}{See documentation for \code{\link{mexDependence}}.}
   \item{constrain}{See documentation for \code{\link{mexDependence}}.}
   \item{v}{See documentation for \code{\link{mexDependence}}.}
   \item{penalty}{How to penalize the likelihood when estimating the marginal
             generalized Pareto distributions. Defaults to ``gaussian''. See the
-            help file for \code{\link{gpd}} for more information.}
+            help file for \code{\link{evm}} for more information.}
   \item{maxit}{The maximum number of iterations to be used by the optimizer.
             defaults to \code{maxit = 10000}.}
-  \item{trace}{Passed internall to \code{\link{optim}}. Whether or not to inform the user of the progress of the
+  \item{trace}{Passed internally to \code{\link{optim}}. Whether or not to inform the user of the progress of the
             optimizer. Defaults to 0, indicating no trace.}
   \item{verbose}{Whether or not to keep the user informed of progress. Defaults
             to \code{verbose = FALSE}.}
@@ -107,7 +118,7 @@ mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE, v = 10,
          and point estimates appear in component \code{object$data$simulated}. The
          simulated data from the bootstrap estimates appear in \code{object$replicates}.
          
-         The \code{plot} method for class \code{"oredict.mex"} displays both the original 
+         The \code{plot} method for class \code{"predict.mex"} displays both the original 
          data and the simulated data generated above the threshold for prediction; it 
          shows the threshold for prediction (vertical line) and also the curve joining equal quantiles 
          of the marginal distributions -- this is for reference: variables that 

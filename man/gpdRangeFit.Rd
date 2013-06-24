@@ -21,15 +21,15 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
 
 \arguments{
   \item{data}{ The data vector to be modelled. }
-  \item{umin}{ The minimum threshold above which to esimate the parameters. }
-  \item{umax}{ The maximum threshold above which to esimate the parameters. }
+  \item{umin}{ The minimum threshold above which to estimate the parameters. }
+  \item{umax}{ The maximum threshold above which to estimate the parameters. }
   \item{nint}{ The number of thresholds at which to perform the estimation. }
   \item{penalty}{The type of penalty to be used in the maximum penalized
                likelihood estimation. Should be either ``gaussian'' or 
                ``none''. Defaults to ``gaussian''.}
   \item{priorParameters}{Parameters to be used for the penalty function.
                  See the help for \code{\link{gpd}} for more informaiton.}
-  \item{alpha}{(1 - alpha)\% confidence intervals will be plotted with the 
+  \item{alpha}{100(1 - alpha)\% confidence intervals will be plotted with the 
                point estimates. Defaults to \code{alpha = 0.05}.}
   \item{x, object}{Arguments to \code{print} and \code{summary} functions.}
   \item{xlab}{ Label for the x-axis. }
@@ -47,7 +47,7 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
   \code{evm} internally and uses the default options for that function.
   
   Note this function does not extend to assessing model fit when there are
-  covariates included in the mdoel.
+  covariates included in the model.
 }
 
 \author{ Stuart Coles, Janet E Heffernan, Harry Southworth }

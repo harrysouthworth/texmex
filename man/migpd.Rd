@@ -15,15 +15,19 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
   \item{mth}{ Thresholds above which to fit the models. Only one of
-				\code{mth} and \code{mqu} should be supplied. Length one (in which case a common threshold is used) or length equal to the number of coluumns of \code{data} (in which case values correspond to thresholds for each of the columns respectively).}
+				\code{mth} and \code{mqu} should be supplied. Length one
+				(in which case a common threshold is used) or length equal
+				to the number of columns of \code{data} (in which case
+				values correspond to thresholds for each of the columns
+				respectively).}
   \item{mqu}{ Quantiles above which to fit the models. Only one of
 				\code{mth} and \code{mqu} should be supplied. Length as for \code{mth} above. }
   \item{penalty}{ How the likelihood should be penalized. Defaults to
-		'gaussian'. See documentation for \code{\link{gpd}}.}
+		'gaussian'. See documentation for \code{\link{evm}}.}
   \item{maxit}{ The maximum number of iterations to be used by the
 		optimizer.}
   \item{trace}{Whether or not to tell the user how the optimizer is getting on. The argument is passed into \code{\link{optim}} -- see the help for that function.}
-  \item{verbose}{ Controls whether or not the function print to screen
+  \item{verbose}{ Controls whether or not the function prints to screen
 		every time it fits a model. Defaults to FALSE.}
   \item{priorParameters}{ Only used if
 			\code{penalty = 'gaussian'}. A named list, each element of which contains

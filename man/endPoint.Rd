@@ -21,7 +21,8 @@ endPoint(y, verbose=TRUE, .unique=TRUE, ...)
   \item{...}{further arguments to be passed to the \code{\link{signif}} function.}
 }
 \value{
-  In cases where the fitted shape parameter is negative, the fitted finite upper endpoint of the GPD.
+  In cases where the fitted shape parameter is negative, the fitted
+  finite upper endpoint of the extreme value model.
 }
 
 \author{ Janet E. Heffernan}

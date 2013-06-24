@@ -18,7 +18,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
 
 \arguments{
   \item{name}{The name of the distribution.}
-  \item{log.lik}{The distribution's log-likelihood function'}
+  \item{log.lik}{The distribution's log-likelihood function.}
   \item{param}{The names of the parameters in the model.}
   \item{info}{Function to compute the information matrix. If not
     provided, the modelling functions will work with a numerical
@@ -33,7 +33,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   \item{endpoint}{Function to compute the upper or lower endpoint of the
     fitted distribution.}
   \item{density}{Function to compute the density.}
-  \item{rng}{Function to return random numbers.}
+  \item{rng}{Function for random number generation.}
   \item{prob}{Function to compute cumulative probabilities.}
   \item{quant}{Function to compute quantiles.}
   \item{...}{Additional arguments to the print and summary methods.}
@@ -54,9 +54,10 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   diagnostic plots, predictions, etc..
 }
 \value{
-  A list containing the input and with class 'texmexFamily'. If
+  A object of class 'texmexFamily', which is essentially a list
+  containing the input arguments. If
   \code{info}, \code{start}, \code{resid} are not provided, they
-  to \code{NULL}.
+  default to \code{NULL}.
 }
 \author{Harry Southworth}
 \note{

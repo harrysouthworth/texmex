@@ -17,9 +17,9 @@
 \alias{summary.lp.evmBoot}
 \alias{predict.evmSim}
 
-\title{Predict return levels from Generalized Pareto Distribution models,
+\title{Predict return levels from extreme value models,
        or obtain the linear predictors.}
-\description{Predict return levels from Generalized Pareto Distribution models, 
+\description{Predict return levels from extreme value models, 
        or obtain the linear predictors.}
 
 \usage{
@@ -65,24 +65,32 @@ An object of class \code{evmOpt}, \code{evmSim} or \code{evmBoot}.
   \item{newdata}{
 The new data that you want to make the prediction for. Defaults in
 \code{newdata = NULL} in which case the data used in fitting the model
-will be used. Column names must match those of original data matrix used for model fitting.}
+will be used. Column names must match those of the original data
+matrix used for model fitting.}
 
-  \item{type}{
-For the predict methods, the type of prediction, either ``return level'' (or ``rl'') or
-``link'' (or ``lp''). Defaults to \code{type = "return level"}. When
-a return level is wanted, the user can specify the associated return perdiod via the \code{M} argument. If \code{type = ``link''} the linear
-predictor(s) for \code{phi} and \code{xi} are returned. 
+  \item{type}{For the predict methods, the type of prediction, either
+      "return level" (or "rl") or "link" (or "lp"). Defaults to
+      \code{type = "return level"}. When a return level is wanted, the
+      user can specify the associated return period via the \code{M} 
+      argument. If \code{type = "link"} the linear predictor(s) for
+      \code{phi} and \code{xi} (or whatever other parameters are
+      in your \code{texmexFamil} are returned. 
 
-For the plot methods for simulation based estimation of underlying distributions i.e. objects derived from bgpd and bootgpd classes, whether to use the sample median \code{type="median"} or mean \code{type="mean"} estimate of the parameter.
+      For the plot methods for simulation based estimation of 
+      underlying distributions i.e. objects derived from "evmSim" and 
+      "evmBoot" classes, whether to use the sample median
+      \code{type="median"} or mean \code{type="mean"} estimate of the 
+      parameter.
 }
   \item{se.fit}{
 Whether or not to return the standard error of the predicted value.
 Defaults to \code{se.fit = FALSE} and is not implemented for
-\code{predict.bgpd} or \code{predict.bootgpd}.
+\code{predict.evmSim} or \code{predict.evmBoot}.
 }
   \item{ci.fit}{
 Whether or not to return a confidence interval for the predicted
-value. Defaults to \code{ci.fit = FALSE}. For objects of class \code{gpd}, if set to \code{TRUE}
+value. Defaults to \code{ci.fit = FALSE}. For objects of class
+\code{evmOpt}, if set to \code{TRUE}
 then the confidence interval is a simple symmetric confidence interval
 based on the estimated approximate standard error. For the \code{evmSim}
 and \code{evmBoot} methods, the confidence
@@ -90,11 +98,12 @@ interval represents quantiles of the simulated distribution of the
 parameters.
 }
   \item{M}{
-The return level: units are number of observations. Defaults to \code{M = 1000}. If a vector is passed,
-a list is returned, with items corresponding to the different values of the vector \code{M}.
+The return level: units are number of observations. Defaults to
+\code{M = 1000}. If a vector is passed, a list is returned, with items
+corresponding to the different values of the vector \code{M}.
 }
   \item{alpha}{
-If \code{ci.fit = TRUE}, a (1 - alpha)\% confidence interval is returned.
+If \code{ci.fit = TRUE}, a 100(1 - alpha)\% confidence interval is returned.
 Defaults to \code{alpha = 0.050}.
 }
   \item{unique.}{
@@ -127,8 +136,9 @@ implied by \code{alpha}.
 }
 \details{
 By default, return levels predicted from the unique values of the
-linear predictors are returned. For the \code{bootgpd} method,
-estimates of confidence intervals are simply quantiles of the bootstrap sample. The \code{bootgpd}
+linear predictors are returned. For the \code{evmBoot} method,
+estimates of confidence intervals are simply quantiles of the bootstrap
+sample. The \code{evmBoot}
 method is just a wrapper for the \code{evmSim} method.
 }
 \value{

@@ -52,7 +52,7 @@ declust(y, r=NULL, data = NULL, ...)
   \item{addNexcesses}{ Whether to annotate the top axis of plots with the number of excesses above the corresponding threhsold. Defaults to \code{TRUE}. }
   \item{estGPD}{ Whether to estimate GPD parameters at each choice of thereshold -- defaults to \code{TRUE} in which case the GPD parameters are estimated.}
   \item{verbose}{Whether to report on progress in RangeFit calculations. Defaults to \code{TRUE}.}
-  \item{trace}{How frequently to report bootstrap progress in EangeFit calculations.  Defaults to 10.}
+  \item{trace}{How frequently to report bootstrap progress in RangeFit calculations.  Defaults to 10.}
   \item{...}{Further arguments to methods.}
 }
 \details{
@@ -97,7 +97,7 @@ The function \code{declust} returns a list of type "declustered":
 
 The function \code{bootExtremalIndex} return a single vector corersponding to a bootstrap sample from the original series: observations are censored at \code{threshold} so that values below this threshold are indicated by the value -1.
 
-The method \code{gpd} for class "declustered" returns an object of type "gpd" or "bgpd" depending on the precise function call - see documentation for \code{\link{gpd}}.
+The method \code{evm} for class "declustered" returns an object of type "evmOpt" or "evmSim" depending on the precise function call - see documentation for \code{\link{evm}}.
 }
 \references{
 Ferro, C.A.T. and Segers, J., (2003) "Inference for clusters of Extreme Values", JRSS B 65, Part 2, pp 545--556.
