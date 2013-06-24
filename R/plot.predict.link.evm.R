@@ -11,7 +11,16 @@ plot.lp.evmOpt <- function(x, main=NULL,
     stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
   }
 
-  Ests <- family$lp(data.frame(x))
+  makelp <- function(x, family){
+      p <- family$param
+      res <- vector("list", len=length(p))
+      names(res) <- p
+      for (i in 1:length(p)){
+          res[[i]] <- as.matrix(x[, paste0(p[i], c("", ".lo", ".hi"))])
+      }
+      res
+  }
+  Ests <- makelp(data.frame(x), family)
   Names <- family$param
   cn <- colnames(x)
   which <- cn != "mu" & cn != "phi"    & cn != "xi" &
