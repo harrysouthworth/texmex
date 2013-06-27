@@ -1,7 +1,6 @@
 \name{gpdRangeFit}
 \alias{gpdRangeFit}
 \alias{print.gpdRangeFit}
-\alias{show.gpdRangeFit}
 \alias{summary.gpdRangeFit}
 \alias{plot.gpdRangeFit}
 
@@ -14,7 +13,6 @@
 gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
             penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 \method{print}{gpdRangeFit}(x, ...)
-\method{show}{gpdRangeFit}(x, ...)
 \method{summary}{gpdRangeFit}(object, ...)
 \method{plot}{gpdRangeFit}(x, xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
 }

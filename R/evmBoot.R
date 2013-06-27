@@ -41,14 +41,12 @@ print.evmBoot <- function(x, ...){
     bias <- means - x$map$coefficients
     res <- rbind(x$map$coefficients, means, bias, sds, medians)
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
-    #colnames(res) <- names(summary(rnorm(3)))
     print(res, ...)
     if (any(abs(res[3,] / res[4,]) > .25)){
         warning("Ratio of bias to standard error is high")
     }
     invisible(res)
 }
-
 
 coefficients.evmBoot <- coef.evmBoot <- function(object, ...){
     apply(object$replicates, 2, mean)
@@ -66,37 +64,34 @@ summary.evmBoot <- function(object, ...){
         warning("Ratio of bias to standard error is high")
     }
 
-	covs <- var(object$replicates)
-	res <- list(call = object$call, margins=res, covariance=covs)
-	oldClass(res) <- "summary.evm.boot"
+covs <- var(object$replicates)
+    res <- list(call = object$call, margins=res, covariance=covs)
+    oldClass(res) <- "summary.evm.boot"
     res
 }
 
 print.summary.evmBoot <- function(x, ...){
-	print(x$call)
-	print(x$margins)
-	cat("\nCorrelation:\n")
+    print(x$call)
+    print(x$margins)
+    cat("\nCorrelation:\n")
     print(cov2cor(x$covariance))
     invisible()
 }
 
 plot.evmBoot <- function(x, col=4, border=FALSE, ...){
-	pfun <- function(x, col, border, xlab,...){
-		d <- density(x, n=100)
-		hist(x, prob=TRUE, col=col, border=border, main="", xlab=xlab, ...)
-		lines(d, lwd=2, col="grey")
-		rug(x)
-		invisible()
-	}
-	for (i in 1:ncol(x$replicates)){
-		pfun(x$replicates[,i], xlab=colnames(x$replicates)[i], col=col, border=border)
-		abline(v=coef(x$map)[i], col="cyan")
-	}
-	invisible()
+    pfun <- function(x, col, border, xlab,...){
+        d <- density(x, n=100)
+        hist(x, prob=TRUE, col=col, border=border, main="", xlab=xlab, ...)
+        lines(d, lwd=2, col="grey")
+        rug(x)
+        invisible()
+    }
+    for (i in 1:ncol(x$replicates)){
+        pfun(x$replicates[,i], xlab=colnames(x$replicates)[i], col=col, border=border)
+        abline(v=coef(x$map)[i], col="cyan")
+    }
+    invisible()
 }
-
-show.evmBoot <- print.evmBoot
-show.summary.evmBoot <- print.summary.evmBoot
 
 test.evmBoot <- function(){
   tol <- 0.1
@@ -183,5 +178,3 @@ test.evmBoot <- function(){
     test(boot,fit,"xi")
   }
 }
-
-

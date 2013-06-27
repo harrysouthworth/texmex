@@ -14,5 +14,3 @@ print.summary.evmSim <- function(x, ...){
    print(unclass(x[[2]]))
    invisible()
 }
-
-show.summary.evmSim <- print.summary.evmSim

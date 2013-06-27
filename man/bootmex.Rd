@@ -1,7 +1,6 @@
 \name{bootmex}
 \alias{bootmex}
 \alias{print.bootmex}
-\alias{show.bootmex}
 \alias{plot.bootmex}
 \title{ Bootstrap a conditional multivariate extreme values model }
 \description{
@@ -13,7 +12,6 @@ bootmex(x, R = 100, nPass=3, trace=10)
 
 \method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
 \method{print}{bootmex}(x, ...)
-\method{show}{bootmex}(x, ...)
 }
 \arguments{
   \item{x}{ An object of class "mex" as returned by function \code{\link{mex}}. }

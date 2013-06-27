@@ -1,8 +1,7 @@
-summary.evmOpt <-
-function(object, nsim = 1000, alpha = .050, ...){
+summary.evmOpt <- function(object, nsim = 1000, alpha = .050, ...){
     if (ncol(object$data$D$phi) == 1 && ncol(object$data$D$xi) == 1){
-    	env <- unclass(qqevm(object, nsim = nsim, alpha = alpha))
-    	env <- list(data=sort(env$dat), envelope=env$sim, Q=env$p)
+        env <- unclass(qqevm(object, nsim = nsim, alpha = alpha))
+        env <- list(data=sort(env$dat), envelope=env$sim, Q=env$p)
     }
     else {
         x <- object
@@ -71,5 +70,3 @@ print.summary.evmOpt <- function(x, digits = 3 , ...){
     cat( paste( out, " observations (", perc, ") outside the ", level, " simulated envelope.\n" , sep=""))
     invisible()
 }
-
-show.summary.evmOpt <- print.summary.evmOpt

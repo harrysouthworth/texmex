@@ -48,8 +48,6 @@ print.extremalIndex <- function(x,...)
   cat("Intervals estimator of Extremal Index", x$EIintervals,"\n")
 }
 
-show.extremalIndex <- print.extremalIndex
-
 plot.extremalIndex <- function(x,...)
 {
   NormInterExceedTimes <- x$interExceedTimes * x$thExceedanceProb
@@ -141,8 +139,6 @@ print.declustered <- function(x,...){
   cat("Declustering using the",x$method,"method, run length",x$r,"\n")
   cat("Identified",length(x$sizes),"clusters.\n")
 }
-
-show.declustered <- print.declustered
 
 plot.declustered <- function(x,ylab="Data",...){
   plot(x$y,xlab="",ylab=ylab)
