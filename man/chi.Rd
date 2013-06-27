@@ -33,7 +33,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{x, object}{An object of class \code{chi}.}
   \item{digits}{ Number of digits for printing. }
   \item{show}{Logical, of length 2, names "Chi" and "ChiBar". 
-              Defaults to\\ \code{c("Chi" = TRUE, "ChiBar" = TRUE)}.}
+              Defaults to\cr \code{c("Chi" = TRUE, "ChiBar" = TRUE)}.}
   \item{lty, cilty, col, cicol}{Line types and colours for the the
                estimated quantities and their confidence intervals.}
   \item{xlim, ylimChi, ylimChiBar}{Limits for the axes.}

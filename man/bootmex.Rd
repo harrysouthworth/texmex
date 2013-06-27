@@ -16,7 +16,7 @@ bootmex(x, R = 100, nPass=3, trace=10)
 \method{show}{bootmex}(x, ...)
 }
 \arguments{
-  \item{x}{ An object of class 'mex' as returned by function \code{\link{mex}}. }
+  \item{x}{ An object of class "mex" as returned by function \code{\link{mex}}. }
   \item{R}{ The number of bootstrap runs to perform. Defaults to \code{R}=100. }
   \item{nPass}{An integer. Sometimes, particularly with small samples,
           the estimation process fails with

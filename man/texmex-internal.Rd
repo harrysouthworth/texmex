@@ -96,7 +96,7 @@ texmexPst(msg, Family)
     Defaults to \code{alpha = 0.05}.}
 \item{nsim}{Number of simulated datasets to use in computing confidence intervals.}
 \item{u}{Uniform deviates to be converted to GPD deviates.}
-\item{p, th, qu, sigma, xi}{Paramters of GPD distribution.}
+\item{p, th, qu, sigma, xi}{Parameters of GPD distribution.}
 \item{method}{Argument to \code{mexTransform}: how to convert.
   When \code{method = "mixture"}, the upper tail of the
   distribution is modelled using a generalized Pareto distribution and the remainder
@@ -130,8 +130,10 @@ an object.}
 \item{yex, ydep}{Data for model estimation: \code{yex} is the
   explanatory variable on which the model conditions, and \code{ydep}
   is the dependent variable.}
-\item{par, listr, silly, list, pars, params, c, d, zi, zk, lev, Zj,
-  Zk, Zestfun, listdata, q1, q2, sill, D, k}{Arguments to independently
+\item{par, listr, silly, list, pars, params, c, d, zi, zk, lev}{Arguments to independently
+  coded test functions implementing constrained estimation of the
+  H+T2004 conditional dependence model with Laplace margins.}
+\item{Zj, Zk, Zestfun, listdata, q1, q2, sill, D, k}{Arguments to independently
   coded test functions implementing constrained estimation of the
   H+T2004 conditional dependence model with Laplace margins.}
 \item{bootobject}{ Argument to \code{namesBoot2bgpd} which restructures
