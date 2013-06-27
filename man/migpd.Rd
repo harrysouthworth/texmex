@@ -14,30 +14,28 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
 }
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
-  \item{mth}{ Thresholds above which to fit the models. Only one of
-				\code{mth} and \code{mqu} should be supplied. Length one
-				(in which case a common threshold is used) or length equal
-				to the number of columns of \code{data} (in which case
-				values correspond to thresholds for each of the columns
-				respectively).}
-  \item{mqu}{ Quantiles above which to fit the models. Only one of
-				\code{mth} and \code{mqu} should be supplied. Length as for \code{mth} above. }
+  \item{mth}{Marginal thresholds. Thresholds above which to fit the models. Only one of
+             \code{mth} and \code{mqu} should be supplied. Length one
+             (in which case a common threshold is used) or length equal
+             to the number of columns of \code{data} (in which case
+             values correspond to thresholds for each of the columns respectively).}
+  \item{mqu}{Marginal quantiles. Quantiles above which to fit the models. Only one of
+             \code{mth} and \code{mqu} should be supplied. Length as for \code{mth} above. }
   \item{penalty}{ How the likelihood should be penalized. Defaults to
-		'gaussian'. See documentation for \code{\link{evm}}.}
-  \item{maxit}{ The maximum number of iterations to be used by the
-		optimizer.}
+             "gaussian". See documentation for \code{\link{evm}}.}
+  \item{maxit}{ The maximum number of iterations to be used by the optimizer.}
   \item{trace}{Whether or not to tell the user how the optimizer is getting on. The argument is passed into \code{\link{optim}} -- see the help for that function.}
   \item{verbose}{ Controls whether or not the function prints to screen
-		every time it fits a model. Defaults to FALSE.}
+             every time it fits a model. Defaults to FALSE.}
   \item{priorParameters}{ Only used if
-			\code{penalty = 'gaussian'}. A named list, each element of which contains
-			two components: the first should be a vector of length 2
-			corresponding to the location of the Gaussian distribution;
-			the second should be 2x2 matrix corresponding to the 
-			covariance matrix of the distribution. The names should match the
-			names of the columns of \code{data}. If not provided, 
-			it defaults to independent priors being centred at zero, with variance
-			10000 for log(sigma) and 0.25 for xi. See the details section.}
+             \code{penalty = 'gaussian'}. A named list, each element of which contains
+             two components: the first should be a vector of length 2
+             corresponding to the location of the Gaussian distribution;
+             the second should be 2x2 matrix corresponding to the 
+             covariance matrix of the distribution. The names should match the
+             names of the columns of \code{data}. If not provided, 
+             it defaults to independent priors being centred at zero, with variance
+             10000 for log(sigma) and 0.25 for xi. See the details section.}
   \item{x}{ Object of class \code{migpd} as returned by function \code{migpd}.}
   \item{main}{Character vector of length four: titles for plots produced by \code{plot} method.}
   \item{xlab}{As \code{main} but for x-axes labels.}
@@ -74,7 +72,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   
   Note that internally the function works with log(sigma), not
   sigma. The reasons are that quadratic penalization makes more
-  sense for log(sigma) than for sigma (because the distribution
+  sense for phi=log(sigma) than for sigma (because the distribution
   of log(sigma) will be more nearly symmetric), and because
   it was found to stabilize computations.
   
@@ -87,7 +85,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   Threshold selection can be carried out with the help of functions \code{\link{mrl}} and \code{\link{gpdRangeFit}}.
 }
 \value{
-  An object of class 'migpd'. There are \code{coefficients}, \code{print}, \code{plot}
+  An object of class "migpd". There are \code{coefficients}, \code{print}, \code{plot}
   and \code{summary} functions available.
 }
 \references{

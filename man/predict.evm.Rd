@@ -74,7 +74,7 @@ matrix used for model fitting.}
       user can specify the associated return period via the \code{M} 
       argument. If \code{type = "link"} the linear predictor(s) for
       \code{phi} and \code{xi} (or whatever other parameters are
-      in your \code{texmexFamil} are returned. 
+      in your \code{texmexFamily} are returned. 
 
       For the plot methods for simulation based estimation of 
       underlying distributions i.e. objects derived from "evmSim" and 

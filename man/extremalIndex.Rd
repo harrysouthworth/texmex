@@ -45,7 +45,7 @@ declust(y, r=NULL, data = NULL, ...)
   \item{umax}{ The maximum threshold above which to esimate the parameters. }
   \item{nint}{ The number of thresholds at which to perform the estimation. }
   \item{nboot}{ Number of bootstrap samples to simulate at each threshold for estimation.}
-  \item{alpha}{ (1 - alpha)\% confidence intervals will be plotted with the
+  \item{alpha}{ 100(1 - alpha)\% confidence intervals will be plotted with the
                point estimates. Defaults to \code{alpha = 0.05}.}
   \item{xlab}{ Label for the x-axis. }
   \item{ylab}{ Label for the y-axis. }
@@ -60,7 +60,7 @@ The function \code{extremalIndex} estimates the extremal index of a dependent se
 
 In addition to good model fit, an appropriate choice of threshold is one above which the estimated extremal index is stable over further, higher thresholds (up to estimation uncertainty).  This can be assessed by using the function \code{extremalIndexRangeFit}, which examines a range of threshold values.  At each threshold, the extremal index is estimated; that estimate is used to decluster the series and the parameters of the GPD are optionally estimated for the resulting declustered series.  Uncertainty in the estimation of the extremal index and GPD parameters is assessed by using a bootstrap scheme which accounts for uncertainty in the extremal index estimation, and the corresponding uncertainty in the declustering of the series.
 
-The function \code{declust} returns an object of class "declustered", identifying independent clusters in the original series. Print, plot and show methodsa are available for this class. The GPD model can be fitted to objects of this class, including the use of covariates in the linear predictors for the parameters of the GPD.  See examples below.
+The function \code{declust} returns an object of class "declustered", identifying independent clusters in the original series. Print, plot and show methods are available for this class. The GPD model can be fitted to objects of this class, including the use of covariates in the linear predictors for the parameters of the GPD.  See examples below.
 }
 \value{
 The function \code{extremalIndex} returns a list of class "extremalIndex":

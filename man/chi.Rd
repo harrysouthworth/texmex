@@ -33,7 +33,7 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
   \item{x, object}{An object of class \code{chi}.}
   \item{digits}{ Number of digits for printing. }
   \item{show}{Logical, of length 2, names "Chi" and "ChiBar". 
-              Defaults to \code{c("Chi" = TRUE, "ChiBar" = TRUE)}.}
+              Defaults to\\ \code{c("Chi" = TRUE, "ChiBar" = TRUE)}.}
   \item{lty, cilty, col, cicol}{Line types and colours for the the
                estimated quantities and their confidence intervals.}
   \item{xlim, ylimChi, ylimChiBar}{Limits for the axes.}
@@ -45,33 +45,36 @@ chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
 }
 \details{
   Computes the functions chi and chi-bar described by Coles,
-  Heffernan and Tawn. The limiting values of these functions as the 
-  \code{Quantile} approaches 1 give an empirical measure of the type 
+  Heffernan and Tawn (1999). The limiting values of these functions as the 
+  quantile approaches 1 give an empirical measure of the type 
   and strength of tail dependendce exhibited by the data. 
   
   A limiting value of ChiBar equal to 1 indicates Asymptotic Dependence, 
   in which case the limiting value of Chi gives a measure of the strength 
   of dependence in this class.  A limiting value of ChiBar of less than 1 
-  indicates Asymptotic Independence in which case the limiting value of 
-  ChiBar gives a measure of the strength of dependence. 
+  indicates Asymptotic Independence in which case Chi is irrelevant and
+  the limiting value of ChiBar gives a measure of the strength of dependence. 
   
   The plot method shows the ChiBar and Chi functions.  In the case of the 
   confidence interval for ChiBar excluding the value 1 for all of the largest 
-  values of \code{Quantile}, the plot of the Chi function is shown in grey.
+  quantiles, the plot of the Chi function is shown in grey.
 }
 \value{
   An object of class \code{chi} containing the following.
 
-  \item{chi }{Values of chi and their esitmated upper and lower
+  \item{chi }{Values of chi and their estimated upper and lower
               confidence limits.}
-  \item{chibar }{Values of chibar and their esitmated upper and lower
+  \item{chibar }{Values of chibar and their estimated upper and lower
               confidence limits.}
   \item{quantile}{The quantiles at which chi and chi-bar were
                   evaluated.}
   \item{chiulb, chibarulb}{Upper and lower bounds for chi and chi-bar.}
 }
 \references{ S. Coles, J. E. Heffernan and J. A. Tawn, Dependence
-measures for extreme values analyses, Extremes, 2, 339 -- 365, 1999. }
+measures for extreme values analyses, Extremes, 2, 339 -- 365, 1999.
+
+A. G. Stephenson. evd: Extreme Value Distributions, R News, 2, 2002.
+}
 \author{ Janet E. Heffernan, Alec Stephenson, Harry Southworth }
 
 \note{When the data contain ties, the values of chi and chibar are calculated by 
@@ -82,8 +85,7 @@ in the data.
 
 The code is a fairly simple reorganization
   of code written by Janet E. Heffernan and Alec Stephenson and
-  which appears in
-  the \code{chiplot} function in the \code{evd} package.
+  which appears in the \code{chiplot} function in the \code{evd} package.
   }
 
 \seealso{ \code{\link{MCS}}, \code{\link{rank}} }

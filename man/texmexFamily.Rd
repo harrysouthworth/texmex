@@ -11,7 +11,7 @@
 
 \usage{
 texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid =
-NULL, rl, delta, endpoint, density, rng, prob, quant, lp)
+NULL, rl, delta, endpoint, density, rng, prob, quant)
 \method{print}{texmexFamily}(x, ...)
 \method{summary}{texmexFamily}(object, ...)
 }
@@ -46,7 +46,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant, lp)
   equal to the number of parameters, and a fitted model object
   even if the model object is not used by the function.
 
-  Examples of 'texmexFamily' objects are \code{gpd} and \code{gev}.
+  Examples of "texmexFamily" objects are \code{gpd} and \code{gev}.
   Take a look at those objects to see how the functions should
   be constructed.
 
@@ -54,7 +54,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant, lp)
   diagnostic plots, predictions, etc..
 }
 \value{
-  A object of class 'texmexFamily', which is essentially a list
+  A object of class "texmexFamily", which is essentially a list
   containing the input arguments. If
   \code{info}, \code{start}, \code{resid} are not provided, they
   default to \code{NULL}.

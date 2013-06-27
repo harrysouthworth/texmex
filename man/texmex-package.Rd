@@ -13,7 +13,7 @@ Version: \tab 1.4\cr
 Date: \tab 2012-02-01\cr
 License: \tab GPL (>=2) | BSD\cr
 }
-The packages was originally called `texmex' for Threshold EXceedences and
+The packages was originally called `texmex' for Threshold EXceedances and
 Multivariate EXtremes. However, it is no longer the case that only threshold
 excess models are implemented, so the `tex' bit doesn't make sense. So, the
 package is called `texmex' because it used to be called `texmex'.

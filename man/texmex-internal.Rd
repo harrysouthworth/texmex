@@ -98,7 +98,7 @@ texmexPst(msg, Family)
 \item{u}{Uniform deviates to be converted to GPD deviates.}
 \item{p, th, qu, sigma, xi}{Paramters of GPD distribution.}
 \item{method}{Argument to \code{mexTransform}: how to convert.
-  When \code{method = 'mixture'}, the upper tail of the
+  When \code{method = "mixture"}, the upper tail of the
   distribution is modelled using a generalized Pareto distribution and the remainder
   is approximated using the empirical distribution.  Also argument
   to \code{gpd.info} which currently does nothing.}

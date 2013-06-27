@@ -24,12 +24,12 @@ texmexMakeCISim(x, alpha, object, sumfun, M)
   \item{co}{Model coefficients.}
   \item{data}{A list of design matrices.}
   \item{cov}{Full covariance matrix for all parameters.}
-  \item{x}{A covariance matrix. Otherwise an 'evm' object.}
+  \item{x}{A covariance matrix. Otherwise an "evm" object.}
   \item{params}{Matrix of parameter values.}
   \item{ses}{Standard errors.}
-  \item{alpha}{1-\code{alpha} confidence intervals will be produced.}
+  \item{alpha}{100(1-\code{alpha})\% confidence intervals will be produced.}
   \item{newdata}{Data for which predictions are required.}
-  \item{object}{An 'evm' object.}
+  \item{object}{An "evm" object.}
   \item{sumfun}{A function for summarizing data.}
   \item{M}{The return level required.}
 }

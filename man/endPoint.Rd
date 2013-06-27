@@ -3,7 +3,7 @@
 \alias{endPoint.evmOpt}
 \alias{endPoint.evmSim}
 \alias{endPoint.evmBoot}
-\title{ Calculate upper end point for fitted extreme value model}
+\title{ Calculate upper end point for a fitted extreme value model}
 \description{
   Calculate upper end point for fitted extreme value model
 }
@@ -15,7 +15,7 @@ endPoint(y, verbose=TRUE, .unique=TRUE, ...)
 
 }
 \arguments{
-  \item{y}{ Object of class \code{evmOpt} or \code{evmSim}.}
+  \item{y}{ Object of class \code{evmOpt} or \code{evmSim}, as returned by \code{\link{evm}}.}
   \item{verbose}{Whether to print output.}
   \item{.unique}{Whether or not to use only unique values of \code{y}.}
   \item{...}{further arguments to be passed to the \code{\link{signif}} function.}

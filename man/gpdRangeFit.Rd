@@ -25,10 +25,10 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
   \item{umax}{ The maximum threshold above which to estimate the parameters. }
   \item{nint}{ The number of thresholds at which to perform the estimation. }
   \item{penalty}{The type of penalty to be used in the maximum penalized
-               likelihood estimation. Should be either ``gaussian'' or 
-               ``none''. Defaults to ``gaussian''.}
+               likelihood estimation. Should be either "gaussian" or 
+               "none". Defaults to "gaussian".}
   \item{priorParameters}{Parameters to be used for the penalty function.
-                 See the help for \code{\link{gpd}} for more informaiton.}
+                 See the help for \code{\link{evm}} for more informaiton.}
   \item{alpha}{100(1 - alpha)\% confidence intervals will be plotted with the 
                point estimates. Defaults to \code{alpha = 0.05}.}
   \item{x, object}{Arguments to \code{print} and \code{summary} functions.}

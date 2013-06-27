@@ -13,7 +13,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
 
   makelp <- function(x, family){
       p <- family$param
-      res <- vector("list", len=length(p))
+      res <- vector("list", length=length(p))
       names(res) <- p
       for (i in 1:length(p)){
           res[[i]] <- as.matrix(x[, paste0(p[i], c("", ".lo", ".hi"))])

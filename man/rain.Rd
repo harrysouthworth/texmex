@@ -15,10 +15,10 @@ data(wavesurge)
 data(portpirie)
 }
 \format{
-  The format of the rain data is:
+ The format of the rain data is:
  num [1:17531] 0 2.3 1.3 6.9 4.6 0 1 1.5 1.8 1.8 ...
 
-  The wave-surge data is biviate and is used for testing
+  The wave-surge data is bivariate and is used for testing
   functions in \code{texmex}.
 
   The Port Pirie data has two columns: 'Year' and 'SeaLevel'.
