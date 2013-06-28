@@ -8,3 +8,4 @@
 # Build output
 /src-x64
 /src-i386
+*.pdf
