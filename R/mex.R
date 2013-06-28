@@ -29,10 +29,6 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
                   maxit=maxit, trace=trace, verbose=verbose,
                   priorParameters=priorParameters)
 
-    if (missing(dqu)){
-        dqu <- res1$mqu[1]
-    }
-
     res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins, constrain=constrain, v=v)
     res2$call <- theCall
     res2

@@ -15,7 +15,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
    }
 
    if (missing(which)) {
-       cat("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
+       warning("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
        which <- 1
    }
    else if (length(which) > 1)
@@ -24,7 +24,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
        which <- match(which, dimnames(x$transformed)[[2]])
 
    if (missing(dqu)) {
-       cat("Assuming same quantile for thesholding as was used to fit corresponding marginal model...\n")
+       warning("Assuming same quantile for dependence thesholding as was used\n     to fit corresponding marginal model...\n")
        dqu <- x$mqu[which]
    }
    dth <- quantile(x$transformed[, which], dqu)
@@ -315,11 +315,15 @@ jhWdepPM10 <- matrix(c(
 
 # test functionality with 2-d data
 
-  wavesurge.fit <- migpd(wavesurge,mqu=.7)
+  wavesurge.fit <- migpd(wavesurge,mqu=.8)
   dqu <- 0.8
   which <- 1
   wavesurge.mex <- mexDependence(wavesurge.fit,which=which,dqu=dqu)
-
+  op <- options(warn=-1)
+  wavesurge.dep <- mexDependence(wavesurge.fit,which=which)
+  options(op)
+  
+  checkEquals(wavesurge.mex[1:2],wavesurge.dep[1:2],msg="mexDependence: missing dqu argument")
   checkEqualsNumeric(dim(wavesurge.mex$dependence$Z),c(578,1),msg="mexDependence: execution for 2-d data")
   checkEqualsNumeric(wavesurge.mex$dependence$dqu, dqu, msg="mexDependence: execution for 2-d data")
   checkEqualsNumeric(wavesurge.mex$dependence$which,which,msg="mexDependence: execution for 2-d data")
