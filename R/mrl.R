@@ -20,7 +20,7 @@ function (data, umin = min(data), umax = max(data) - 0.1,
     res
 }
 
-print.mrl <- show.mrl <- function(x, ...){
+print.mrl <- function(x, ...){
     print(x$mrl)
     invisible()
 }

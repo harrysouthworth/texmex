@@ -45,8 +45,6 @@ print.copula <- function(x, ...){
     invisible()
 }
 
-show.copula <- print.copula
-
 summary.copula <- function(object, ...){
     print(object$call)
     cat("A copula of", ncol(object$copula), "variables.\n")

@@ -62,11 +62,7 @@ gpd <- texmexFamily(name = 'GPD',
                     },
                     quant = function(n, param, model){
                               qgpd(n, exp(c(param[, 1])), c(param[, 2]), u=model$threshold)
-                    },
-                    lp = function(x){
-                      list(phi=cbind(x$phi,x$phi.lo,x$phi.hi),
-                           xi=cbind(x$xi,x$xi.lo,x$xi.hi))
-                    } # Close lp
+                    }
 )
 
 

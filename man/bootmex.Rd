@@ -1,7 +1,6 @@
 \name{bootmex}
 \alias{bootmex}
 \alias{print.bootmex}
-\alias{show.bootmex}
 \alias{plot.bootmex}
 \title{ Bootstrap a conditional multivariate extreme values model }
 \description{
@@ -13,10 +12,9 @@ bootmex(x, R = 100, nPass=3, trace=10)
 
 \method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
 \method{print}{bootmex}(x, ...)
-\method{show}{bootmex}(x, ...)
 }
 \arguments{
-  \item{x}{ An object of class 'mex' as returned by function \code{\link{mex}}. }
+  \item{x}{ An object of class "mex" as returned by function \code{\link{mex}}. }
   \item{R}{ The number of bootstrap runs to perform. Defaults to \code{R}=100. }
   \item{nPass}{An integer. Sometimes, particularly with small samples,
           the estimation process fails with
@@ -32,9 +30,9 @@ bootmex(x, R = 100, nPass=3, trace=10)
 \details{
  Details of the bootstrap method are given by Heffernan and Tawn (2004). The procedure is semi-parametric.
  
- Firstly, values of all variables are simulated independently from the parametric Gumbel or Laplace distributions (depending on the choice of \code{margins} in the original call to \code{\link{mex}}). The sample size and data dimension match that of the original data set.  Then an empirical bootstrap sample is generated from the original data after its transformation to the Gumbel/Laplace scale. Again, sample size and structure match the original data set. The empirical bootstrap samples from each margin are then sorted, and then replaced by their corresponding values from the sorted Gumbel/Laplace samples. This procedure preserves the dependence structure of the empirical bootstrap sample while ensuring the marginal properties of the resulting semi-parametric bootstrap sample are those of the parametric Gumbel/Laplace distribution.
+Firstly, values of all variables are simulated independently from the parametric Gumbel or Laplace distributions (depending on the choice of \code{margins} in the original call to \code{\link{mex}}). The sample size and data dimension match that of the original data set.  Then an empirical bootstrap sample is generated from the original data after its transformation to the Gumbel/Laplace scale. Again, sample size and structure match the original data set. The empirical bootstrap samples from each margin are then sorted, and then replaced by their corresponding values from the sorted Gumbel/Laplace samples. This procedure preserves the dependence structure of the empirical bootstrap sample while ensuring the marginal properties of the resulting semi-parametric bootstrap sample are those of the parametric Gumbel/Laplace distribution.
 
-The simulated, ordered Laplace/Gumbel sample is then transformed to the scale of the original data by using the Probability Integral Transform. Values beneath the original thresholds for fitting of the GPD tail models are transformed by using the empirical distribution functions and for values above these thresholds, fitted Generalized Pareto Distribution is used.   This completes the sem-parametric bootstrap from the data.  
+The simulated, ordered Laplace/Gumbel sample is then transformed to the scale of the original data by using the Probability Integral Transform. Values beneath the original thresholds for fitting of the GPD tail models are transformed by using the empirical distribution functions and for values above these thresholds, the fitted GPDs are used.   This completes the semi-parametric bootstrap from the data.  
 
 Parameter estimation is then carried out as follows: The parameters in the generalized Pareto
 distributions are estimated by using the bootrap data, these data are then transformed to the Laplace/Gumbel scale using the
@@ -66,11 +64,11 @@ mean bias is the correct thing to do.
 	for multivariate extreme values, Journal of the Royal Statistical
 	society B, 66, 497 -- 546, 2004}
 \author{ Harry Southworth }
-\seealso{ \code{\link{migpd}} , \code{\link{mexDependence} },
+\seealso{ \code{\link{migpd}}, \code{\link{mexDependence} },
 	\code{\link{bootmex}}, \code{\link{predict.mex}}.
 		    }
 \examples{
-# Uncomment the following lines to run example - commented out to keep CRAN robots happy
+# Uncomment the following lines to run example - commented out to keep CRAN happy
 #mymex <- mex(winter , mqu = .7, dqu = .7, which = "NO")
 #myboot <- bootmex(mymex)
 #myboot

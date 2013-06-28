@@ -40,9 +40,9 @@ galt <- evm(alt, data=d, qu=.7, xi = ~ ndose)
 gast <- evm(ast, data=d, qu=.7, xi = ~ ndose)
 galp <- evm(alp, data=d, qu=.7, xi = ~ ndose)
 
-altco <- predict(galt,type="lp",newdata=data.frame(ndose=4))[1:2]
-astco <- predict(gast,type="lp",newdata=data.frame(ndose=4))[1:2]
-alpco <- predict(galp,type="lp",newdata=data.frame(ndose=4))[1:2]
+altco <- predict(galt,type="lp",newdata=data.frame(ndose=4))$link[1:2]
+astco <- predict(gast,type="lp",newdata=data.frame(ndose=4))$link[1:2]
+alpco <- predict(galp,type="lp",newdata=data.frame(ndose=4))$link[1:2]
 
 Dgpd <- migpdCoefs(Dgpds, which=c("alt", "ast", "alp"),
                    coefs=list(altco, astco, alpco))

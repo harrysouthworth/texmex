@@ -26,7 +26,7 @@ copula(x, na.last = NA)
 }
 \value{
   A matrix with the same dimensions as \code{x}, each column
-  of which contains the quantiles of each column of \code{x}. This object uis of class \code{copula}.
+  of which contains the quantiles of each column of \code{x}. This object is of class \code{copula}.
 }
 \author{ Harry Southworth }
 \seealso{ \code{\link{edf}} }

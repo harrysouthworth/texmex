@@ -17,14 +17,14 @@ texmexTrace(trace, method)
 texmexPrepareData(y, data, params)
 texmexThresholdData(threshold, data)
 texmexPriorParameters(prior, priorParameters, data)
-findFormulae(call)
-texmexParameters(call, fam)
+findFormulae(call, ...)
+texmexParameters(call, fam, ...)
 texmexGetParam(data, co)
 }
 
 \arguments{
 \item{method}{Character string describing the method to use. The
-  function attempts to interpret it and returns 'o', 's' or 'b'}
+  function attempts to interpret it and returns "o", "s" or "b".}
 \item{prior}{Character string describing the type of prior distribution
   to use. The function attempts to interpret it and returns a
   standardized version.}
@@ -37,9 +37,10 @@ texmexGetParam(data, co)
 \item{threshold}{The threshold above which to model the data.}
 \item{priorParameters}{A \code{list} containing information on the prior
   distribution.}
-\item{call}{An object of class 'call'.}
-\item{fam}{An object of class 'texmexFamily'.}
+\item{call}{An object of class "call".}
+\item{fam}{An object of class "texmexFamily".}
 \item{co}{Model coefficients.}
+\item{...}{Other arguments being passed between functions.}
 }
 \details{These are functions used for processing user input and data
   prior to calling \code{evm.fit} and are not intended for end-user usage.

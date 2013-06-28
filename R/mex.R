@@ -2,7 +2,7 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
-	theCall <- match.call()
+    theCall <- match.call()
 
     if(is.null(colnames(data))){
         colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")
@@ -43,8 +43,6 @@ print.mex <- function(x, ...){
     invisible()
 }
 
-show.mex <- print.mex
-
 summary.mex <- function(object, ...){
     print(object, ...)
     invisible(coef(object))
@@ -57,5 +55,3 @@ coefficients.mex <- function(object, ...){
 }
 
 coef.mex <- coefficients.mex
-
-

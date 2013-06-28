@@ -25,7 +25,7 @@ MCS <- function(X,p=seq(.1, .9, by=.1)) {
     X <- t(X) # Yiannis's original code had variables as rows
     U <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
     n    <- length(p)
-	res <- sapply(p, .MCSlower, U=U)
+    res <- sapply(p, .MCSlower, U=U)
 
     res <- list(mcs=res, p=p, call=theCall)
     oldClass(res) <- "MCS"
@@ -45,7 +45,6 @@ print.MCS <- function(x, ...){
     print(res)
     invisible(res)
 }
-show.MCS <- print.MCS
 
 summary.MCS <-  function(object, ...){
     print(object$call)
@@ -96,7 +95,6 @@ print.bootMCS <- function(x, ...){
     print(m)
     invisible(m)
 }
-show.bootMCS <- print.bootMCS
 
 summary.bootMCS <- function(object, alpha=.05, ...){
     cat("Multivariate conditional Spearman's rho.\n", object$R, " bootstrap samples were performed.\n\n",

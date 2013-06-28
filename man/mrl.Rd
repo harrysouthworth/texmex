@@ -1,7 +1,6 @@
 \name{mrl}
 \alias{mrl}
 \alias{print.mrl}
-\alias{show.mrl}
 \alias{summary.mrl}
 \alias{plot.mrl}
 \title{ Mean residual life plot }
@@ -13,7 +12,6 @@
 \usage{
 mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100, alpha=.050)
 \method{print}{mrl}(x, ...)
-\method{show}{mrl}(x, ...)
 \method{summary}{mrl}(object, ...)
 \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
 }

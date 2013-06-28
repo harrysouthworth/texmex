@@ -1,5 +1,4 @@
-`print.bootmex` <-
-function(x , ... ){
+print.bootmex <- function(x , ... ){
   print(x$call )
   cat(paste( "\n", x$R, " bootstrap samples created.\n\n" , sep = "" ) )
 
@@ -15,5 +14,3 @@ function(x , ... ){
   cat("\n")
   invisible()
 }
-
-`show.bootmex` <- print.bootmex

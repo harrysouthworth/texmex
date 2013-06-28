@@ -57,6 +57,8 @@
 \alias{test.log1prel}
 \alias{test.specfun.safe.product}
 
+\alias{test.plot.predict.evm}
+
 \title{Validate the texmex package}
 \description{
 Using package \code{RUnit}, run tests to compare behaviour of \code{texmex} with
@@ -78,7 +80,7 @@ MAP estimates, and tests to ensure that the code gives the same results as
 independently coded calculations (sometimes using code that appears in the
 \code{ismev} and \code{evd} packages, sometimes using code written by a third party, without reference to the \code{texmex} version).  A further side 
 effect is the production of plots, many of which can be compared with their 
-original published versions to further check that the \code{texmex} reproduces 
+original published versions to further check that \code{texmex} reproduces 
 expected output.
 
 If all is well, the result should indicate that no errors or fails have
@@ -102,7 +104,7 @@ values (with discussion). Journal of the Royal Statistical Society, Series B, vo
 Janet E. Heffernan, Harry Southworth
 }
 \note{
-Around 400 checks are performed, some of which run MCMC or bootstrap algorithms.
+Around 1000 checks are performed, some of which run MCMC or bootstrap algorithms.
 As a result, the function takes a while to run.
 }
 

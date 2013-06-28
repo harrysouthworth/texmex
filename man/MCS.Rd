@@ -28,7 +28,7 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
           \code{trace = 10}.}
   \item{x, object}{An object of class \code{MCS} or \code{bootMCS}.}
   \item{xlab, ylab}{Axis labels.}
-  \item{alpha}{A (1 - alpha)\% pointwise confidence interval will be produced.
+  \item{alpha}{A 100(1 - alpha)\% pointwise confidence interval will be produced.
                Defaults to \code{alpha = 0.05}.}
   \item{ylim}{Plotting limits for bootstrap plot.}
   \item{...}{Optional arguments to be passed into methods.}

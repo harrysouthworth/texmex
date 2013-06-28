@@ -13,17 +13,18 @@ Version: \tab 1.4\cr
 Date: \tab 2012-02-01\cr
 License: \tab GPL (>=2) | BSD\cr
 }
-The packages was originally called `texmex' for Threshold EXceedences and
-Multivariate EXtremes. However, it is no longer the case the only threshold
+The packages was originally called `texmex' for Threshold EXceedances and
+Multivariate EXtremes. However, it is no longer the case that only threshold
 excess models are implemented, so the `tex' bit doesn't make sense. So, the
 package is called `texmex' because it used to be called `texmex'.
 
 \code{\link{evm}}: Fit extreme value distributions to data, possibly with
             covariates. Use maximum likelihood estimation, maximum
-            penalized likelihood estimation or simulate from the posterior
-            distribution. Extreme value families include the generalized
-            Pareto distribution (\code{gpd}) and generalized extreme
-            value (\code{gev}) distribution.
+            penalized likelihood estimation, simulate from the posterior
+            distribution or run a parametric bootstrap. Extreme value
+            families include the generalized Pareto distribution
+            (\code{gpd}) and generalized extreme value (\code{gev})
+            distribution.
 
 \code{\link{mex}}: Fit multiple, independent generalized Pareto models
             to the the upper tails of the columns of a data set, and estimate the conditional

@@ -28,19 +28,6 @@
 \alias{print.hist.evmOpt}
 \alias{plot.hist.evmOpt}
 \alias{print.ppevm}
-\alias{show.MCS}
-\alias{show.bootMCS}
-\alias{show.copula}
-\alias{show.declustered}
-\alias{show.extremalIndex}
-\alias{show.mex}
-\alias{show.mexDependence}
-\alias{show.migpd}
-\alias{show.predict.mex}
-\alias{show.summary.evmSim}
-\alias{show.summary.evmOpt}
-\alias{show.summary.evmBoot}
-\alias{show.summary.predict.mex}
 \alias{summary.MCS}
 \alias{summary.copula}
 \alias{summary.mex}
@@ -73,18 +60,6 @@
 \method{print}{summary.evmSim}(x,...)
 \method{print}{summary.evmOpt}(x,digits=3,...)
 \method{print}{summary.predict.mex}(x,...)
-\method{show}{MCS}(x,...)
-\method{show}{bootMCS}(x,...)
-\method{show}{copula}(x,...)
-\method{show}{declustered}(x,...)
-\method{show}{extremalIndex}(x,...)
-\method{show}{mex}(x,...)
-\method{show}{mexDependence}(x,...)
-\method{show}{migpd}(x,...)
-\method{show}{predict.mex}(x,...)
-\method{show}{summary.evmSim}(x,...)
-\method{show}{summary.evmOpt}(x,digits=3,...)
-\method{show}{summary.predict.mex}(x,...)
 \method{summary}{MCS}(object,...)
 \method{summary}{copula}(object,...)
 \method{summary}{mex}(object,...)
@@ -100,4 +75,3 @@
   }
 
 \author{ Harry Southworth, Janet E. Heffernan }
-

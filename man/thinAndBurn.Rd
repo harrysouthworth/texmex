@@ -2,17 +2,21 @@
 \alias{thinAndBurn}
 \alias{thinAndBurn.evmSim}
 \title{
-  Process Metropolis output from GPD fitting to discard unwanted observations.
+  Process Metropolis output from extreme value model fitting to
+  discard unwanted observations.
 }
 \description{
-  Process observations from Metropolis fitting of GPD models, to thin the output and discard observations from burn-in period.
+  Process observations from Metropolis fitting of extreme value
+  models, to thin the output and discard observations from burn-in
+  period.
 }
 \usage{
 \method{thinAndBurn}{evmSim}(object, burn, thin)
 }
 \arguments{
   \item{object}{
-Object of class 'evmSim' as returned by \code{evm} called with \code{method="simulate"}.
+Object of class 'evmSim' as returned by \code{evm} called with
+\code{method="simulate"}.
 }
   \item{thin}{
 \code{thin} or its reciprocal must be a positive integer.  If integer
@@ -35,7 +39,7 @@ thinning use \code{thin=1}.
   Note that the original chain is not discarded when this function is
   called: \code{thinAndBurn} can be called recursively on the original
   object with different values of \code{burn} and \code{thin} without
-  the this object getting progressively smaller!
+  the object getting progressively smaller!
 }
 \author{
 Harry Southworth, Janet E. Heffernan

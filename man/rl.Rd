@@ -15,7 +15,8 @@
 
 \title{Return levels}
 \description{
-Computation of return levels and confidence intervals for generalized Pareto distributions.
+Computation of return levels and confidence intervals for extreme
+value models.
 }
 \usage{
 rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
@@ -52,14 +53,15 @@ rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
 \item{se.fit}{Whether or not to return the standard error of the predicted value.
               Defaults to \code{se.fit = FALSE}.}
 \item{ci.fit}{Whether or not to return a confidence interval for the predicted
-value. Defaults to \code{ci.fit = FALSE}. For objects of class \code{gpd}, if set to \code{TRUE}
-then the confidence interval is a simple symmetric confidence interval
-based on the estimated approximate standard error. For the \code{bgpd} and \code{bootgpd} methods, the confidence
-interval represents quantiles of the simulated distribution of the
-parameters.
-}
+      value. Defaults to \code{ci.fit = FALSE}. For objects of class
+      \code{evmOpt}, if set to \code{TRUE}
+      then the confidence interval is a simple symmetric confidence interval
+      based on the estimated approximate standard error. For the
+      \code{evmSim} and \code{evmBoot} methods, the confidence
+      interval represents quantiles of the simulated distribution of the
+      parameters.}
   \item{alpha}{
-If \code{ci.fit = TRUE}, a (1 - alpha)\% confidence interval is returned.
+If \code{ci.fit = TRUE}, a 100(1 - alpha)\% confidence interval is returned.
 Defaults to \code{alpha = 0.050}.
 }
   \item{unique.}{
@@ -68,7 +70,7 @@ the linear predictors are returned, rather than for every row of the original da
 \code{newdata} if this latter is specified. Defaults to \code{unique. = TRUE}.
 }
 \item{all}{
-For the \code{bgpd} and \code{bootgpd} methods, if \code{all = TRUE}, the
+For the \code{evmSim} and \code{evmBoot} methods, if \code{all = TRUE}, the
 predictions are returned for every simulated parameter vector. Otherwise,
 only a summary of the posterior/bootstrap distribution is returned.
 Defaults to \code{all = FALSE}.
@@ -91,10 +93,17 @@ implied by \code{alpha}.
 }
 
 \details{
-The M-observation return level is defined as the value that is expected to be exceeded only
-once every M observations. Thus, it is an estimate of a high quantile of the fitted distribution.
-In models fit by the \code{evm} family of functions, only a fraction of the data is actually
-included in the model; the fitted GPD is a conditional model, conditioning on the threshold having been exceeded. This consideration is taken into account by \code{rl} which calculates unconditional return levels from the entire distribution of observations above and below the GPD fitting threshold.
+The M-observation return level is defined as the value that is
+expected to be exceeded only once every M observations. Thus, it is an
+estimate of a high quantile of the fitted distribution.
+
+In models fit by the \code{evm} family of functions with
+\code{family=gpd}, only a fraction of the data is
+actually included in the model; the fitted GPD is a conditional model,
+conditioning on the threshold having been exceeded. This consideration
+is taken into account by \code{rl} which calculates unconditional
+return levels from the entire distribution of observations above and
+below the GPD fitting threshold.
 }
 \examples{
 mod <- evm(rain, qu=.8) # daily rainfall observations

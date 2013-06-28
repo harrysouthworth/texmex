@@ -1,6 +1,6 @@
 Package: texmex
 Type: Package
-Title: Threshold exceedences and multivariate extremes
+Title: Threshold exceedances and multivariate extremes
 Version: 1.4
 Date: 2012-02-24
 Author: Harry Southworth, Janet E. Heffernan
@@ -15,41 +15,41 @@ LazyData: yes
 Packaged: 2010-10-14 11:47:02 UTC; kpzv097
 URL: http://code.google.com/p/texmex/
 Collate:
-    globalVariables.R
-    texmexFamily.R   AIC.evm.R                         plot.evm.R
-    evm.simSetSeed.R                     plot.mexPrediction.R
-    evmBoot.R                         plot.mex.R
-    bootmex.R                         plot.migpd.R
-    chi.R                             plot.predict.link.evm.R
-    coef.evmSim.R                       plotrl.evm.R
-    coefficients.evm.R                ppevm.R
-    coefficients.migpd.R              predict.evm.R
-    constructObject.R                 predict.mex.R
-    copulas.R                         predictWorkers.R
-    dgpd.R                            print.evmSim.R
-    efficient.closures.R              print.bootmex.R
-    endPoint.R                        print.evm.R
-    evm.fit.R                         print.mexDependence.R
-    evmSim.R
-    evm.R                             print.mexPrediction.R
-    extremalIndex.R                   print.migpd.R
-    gpd.info.R                        qgpd2.R
-    rgpd.R   pgpd.R   qgpd.R
-    rgev.R   pgev.R   qgev.R   dgev.R   gev.R
-    gpd.R
-    gpdRangeFit.R                     qqevm.R
-    hist.evm.R                        revTransform.R
-    mexDependenceLowLevelFunctions.R
-    mexDependence.R                   rMaxAR.R
-    mex.R                             summary.evmSim.R
-    mexRangeFit.R                     summary.evm.R
-    mexTransform.R                    summary.migpd.R
-    migpdCoefs.R                      summary.predict.mex.R
-    migpd.R                           testingFunctions.R
-    mrl.R
-    mspearman.R                       texmexWorkers.R
-    multivariate.cauchy.R             thinAndBurn.evm.sim.R
-    u2gpd.R
-    plot.evmSim.R                       validate.texmex.R
-    plot.bootmex.R			special.functions.R
+  globalVariables.R
+  texmexFamily.R AIC.evm.R plot.evm.R
+  evm.simSetSeed.R plot.mexPrediction.R
+  evmBoot.R plot.mex.R
+  bootmex.R plot.migpd.R
+  chi.R plot.predict.link.evm.R
+  coef.evmSim.R plotrl.evm.R
+  coefficients.evm.R ppevm.R
+  coefficients.migpd.R predict.evm.R
+  constructObject.R predict.mex.R
+  copulas.R predictWorkers.R
+  dgpd.R print.evmSim.R
+  efficient.closures.R print.bootmex.R
+  endPoint.R print.evm.R
+  evm.fit.R print.mexDependence.R
+  evmSim.R
+  evm.R print.mexPrediction.R
+  extremalIndex.R print.migpd.R
+  gpd.info.R qgpd2.R
+  rgpd.R pgpd.R qgpd.R
+  rgev.R pgev.R qgev.R dgev.R gev.R
+  gpd.R
+  gpdRangeFit.R qqevm.R
+  hist.evm.R revTransform.R
+  mexDependenceLowLevelFunctions.R
+  mexDependence.R rMaxAR.R
+  mex.R summary.evmSim.R
+  mexRangeFit.R summary.evm.R
+  mexTransform.R summary.migpd.R
+  migpdCoefs.R summary.predict.mex.R
+  migpd.R testingFunctions.R
+  mrl.R
+  mspearman.R texmexWorkers.R
+  multivariate.cauchy.R thinAndBurn.evm.sim.R
+  u2gpd.R
+  plot.evmSim.R validate.texmex.R
+  plot.bootmex.R special.functions.R
 
