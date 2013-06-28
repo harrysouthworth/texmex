@@ -82,9 +82,6 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
       stop("main must be length 1 or number of unique covariates for prediction")
     }
 
-
-    Array <- array(unlist(x),c(ncov,nd,nm),dimnames=list(NULL,ValNames,names(x)))
-
     if(class(x) == "rl.evmOpt"){
       if(any(colnames(x[[1]]) == "se.fit")){
         which <- colnames(x[[1]]) != "se.fit"
@@ -131,7 +128,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
 
       if(SetMain){
         if(length(covnames) == 1 && covnames != ""){
-          Main <- paste(main,"\n", paste(covnames,"=",signif(cov,2),collapse=", "))
+          Main <- paste(main,"\n", paste(covnames,"=",signif(cov,4),collapse=", "))
         } else {
           Main <- main
         }
