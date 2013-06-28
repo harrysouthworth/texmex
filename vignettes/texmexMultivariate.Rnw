@@ -33,8 +33,8 @@
 This document illustrates the use of the {\tt texmex} package,~\cite{texmex}
 for performing extreme value analysis of multivariate data in {\tt R},~\cite{R}. Broadly speaking, the analysis proceeds in
 two steps: generalized Pareto distribution (GPD) modelling of
-the marginal variables; conditional multvatiate extreme value
-modelling.  The first stage is covered in more detail in the {\tt texmex} vignette {\tt texmex1d}; here we describe briefly the stages of the univariate modelling that are necessary as part of the multivariate approach.
+the marginal variables followed by conditional multvatiate extreme value
+modelling.  The first step is covered in more detail in the {\tt texmex} vignette {\tt texmex1d}; here we describe briefly the stages of the univariate modelling and focus in more detail on the multivariate modelling.
 
 To cite this vignette, refer to Vignette name: {\tt texmexMultivariate} and use the package citation:
 <<cite,echo=FALSE,fig=FALSE>>=
@@ -95,10 +95,10 @@ Next, we plot each of the other variables against NO; a full analysis would cons
 <<mvdataplots1, fig=TRUE>>=
 par(mfrow=c(2,2))
 attach(winter)
-plot(NO,O3,main="Original margins")
-plot(NO,NO2,main="Original margins")
-plot(NO,SO2,main="Original margins")
-plot(NO,PM10,main="Original margins")
+plot(NO,O3)
+plot(NO,NO2)
+plot(NO,SO2)
+plot(NO,PM10)
 detach(winter)
 @
 \label{fig:NO.Data}
@@ -156,7 +156,7 @@ plot(mcsNO2, main="MCS: NO2 and NO")
 The plots of the multivariate conditional Spearman's $\rho$
 do not have the same vertical axes, and tell a similar story
 to the plots of $\chi$ and $\bar\chi$. Confidence intervals can be added to the MCS plots by using
-{\tt bootMCS} and its associated plot function, see documentation for more details.
+{\tt bootMCS} and its associated plot method, see documentation for more details.
 
 The exploratory summaries of this section suggest that when we come
 to the conditional multivariate extreme value modelling, we should
@@ -196,7 +196,7 @@ $-1 \leq \alpha_{j|i} < 0$ correspond respectively to positive and negative asso
   \bY_{-i} = \balpha_{|i} Y_i + I_{\balpha_{|i}=0,\bbeta_{|i}<0}(\bc_{|i}
 - \bd_{|i} \log Y_i)+ (Y_i)^{\bbeta_{|i}}\bZ_{|i}
 \end{eqnarray}
-where $\bZ_{|i}$ is a vector residual and $(d-1)$ dimensional parameter vectors $\balpha_{|i}$, $\bbeta_{|i}$, $\bc_{|i}$ and $\bd_{|i}$ this time satisfy $(\balpha_{|i},\bbeta_{|i}, \bc_{|i}, \bd_{|i}) \in [0, 1]^{d-1}\times(-\infty, 1)^{d-1} \times (\infty,\infty)^{(d-1)}\times(0,1)^{(d-1)}$.  Here positive association between $Y_j$ and large $Y_i$ is described by $\alpha_{j|i}$, when both $\alpha_{j|i}>0$ and $\beta_{j|i}<0$.  The  model structure changes in the case of negative dependence in which case $\alpha_{j|i}=0$ and further parameters $c_{j|i}$ and $d_{j|i}$ are required.
+where $\bZ_{|i}$ is a vector residual and $(d-1)$ dimensional parameter vectors $\balpha_{|i}$, $\bbeta_{|i}$, $\bc_{|i}$ and $\bd_{|i}$ this time satisfy $(\balpha_{|i},\bbeta_{|i}, \bc_{|i}, \bd_{|i}) \in [0, 1]^{d-1}\times(-\infty, 1)^{d-1} \times (\infty,\infty)^{d-1}\times(0,1)^{d-1}$.  Here positive association between $Y_j$ and large $Y_i$ is described by $\alpha_{j|i}$, when both $\alpha_{j|i}>0$ and $\beta_{j|i}<0$.  The  model structure changes in the case of negative dependence in which case $\alpha_{j|i}=0$ and further parameters $c_{j|i}$ and $d_{j|i}$ are required.
 \end{description}
 The structure of the dependence model is greatly simplified under the use of Laplace margins, in which case a single model structure suffices to describe both positive and negative dependence.  This makes inference considerably more straightforward, particularly in the case of weak dependence.
 
@@ -213,8 +213,7 @@ In {\tt texmex}, this constrained estimation is implemented for Laplace margins 
 \section{Conditional multivariate extreme value modelling using {\tt texmex}}
 %
 The whole conditional multivariate extreme value modelling
-algorithm is rather complicated. Fitted models are arguably most easily interpreted by using them to predict quantities of interest. The implementation
-in {\tt texmex} makes the whole thing quite easy.
+algorithm is rather complicated. Fitted models are arguably most easily interpreted by using them to predict quantities of interest.
 %
 \subsection{Model fitting}
 %
@@ -228,13 +227,13 @@ mex.SO2 <- mex(winter, mqu=.7, penalty="none", which="SO2")
 mex.PM10 <- mex(winter, mqu=.7, penalty="none", which="PM10")
 @
 
-The function {\tt mex} is a wrapper for the functions {\tt migpd} and {\tt mexDependence} which carry out the marginal and dependence modelling stages respectively.  An equivalent way of carrying out the above for O3 would be to use:
+The function {\tt mex} is a wrapper for the functions {\tt migpd} and {\tt mexDependence} which carry out the marginal and dependence modelling stages respectively.  An equivalent way of carrying out the above, conditioning on O3 would be to use:
 
 <<migpd.mexDependence>>=
 marg <- migpd(winter, mqu=0.7, penalty="none")
 mex.O3 <- mexDependence(marg, which = "O3")
 @
-This would be a more efficient way to fit the above models, as it does the GPD estimation only once, whereas this was repeated for each of the different conditioning variables in the preceding code chunk.    By default, if no dependence threshold is supplied, the threshold for fitting the dependence component of the model is taken to be equal to that used to fit the GPD model to the tail of the conditioning variable, and a warning message is given. There is no reason however why the thresholds employed for marginal and dependence modelling should be the same, and there is no required ordering on the two types of threshold.  Different threholds can be used for marginal and dependence modelling, by specifying the quantile {\tt dqu} to be used for the dependence threshold:
+This would be a more efficient way to fit the above models, as it does the GPD estimation only once, whereas this was repeated for each of the different conditioning variables in the preceding code chunk.    By default, if no dependence threshold is supplied, the threshold for fitting the dependence component of the model is taken to be equal to that used to fit the GPD model to the tail of the conditioning variable, and a warning message is given. There is, however, no reason why the thresholds employed for marginal and dependence modelling should be the same, and there is no required ordering on the two types of threshold.  Different threholds can be used for marginal and dependence modelling, by specifying the quantile {\tt dqu} to be used for the dependence threshold:
 
 <<migpd.mexDependenceDifferentThresh,eval=FALSE>>=
 mexDependence(marg, which = "O3", dqu=0.8)
@@ -242,29 +241,16 @@ mexDependence(marg, which = "O3", dqu=0.8)
 %
 \subsection{Marginal model diagnostics}
 %
-We can check the diagnostics for the fitted marginal models in the usual way (here output is suppressed since it is lengthy!).
-<<plot.migpd>>=
-par(mfrow=c(5,4))
+We can check the diagnostics for the fitted marginal models in the usual way.  Use of {\tt mrlPlot} and {\tt gpdRangeFit} can also be informative at this stage (see {\tt texmex1d} vignette for more details of these univariate methods - here output is suppressed since it is lengthy!).
+<<plot.migpd,eval=FALSE>>=
 plot(marg)
-@
-Use of {\tt mrlPlot} and {\tt gpdRangeFit} can also be informative at this stage (see {\tt texmex1d} vignette for more details of these univariate methods).
-<<plot.gpdFitRange, eval=FALSE>>=
-plot(gpdRangeFit(winter$O3))
-plot(gpdRangeFit(winter$NO2))
-plot(gpdRangeFit(winter$NO))
-plot(gpdRangeFit(winter$SO2))
-plot(gpdRangeFit(winter$PM10))
-
-plot(mrl(winter$O3))
-plot(mrl(winter$NO2))
-plot(mrl(winter$NO))
-plot(mrl(winter$SO2))
-plot(mrl(winter$PM10))
+plot(gpdRangeFit(winter$O3))  # ... etc
+plot(mrl(winter$O3))          # ... etc
 @
 %
 \subsection{Dependence model diagnostics}
 %
-Plotting model diagnostics for the dependence component of the model is carried out as follows by using the {\tt plot} method on objects returned by the call to {\tt mex}.  First, for the model fitted by conditioning on the O3 variable:
+Plotting model diagnostics for the dependence component of the model is carried out as follows - first, for the model fitted by conditioning on the O3 variable:
 
 <<mexO3, fig=TRUE>>=
 par(mfcol=c(3, 4))
@@ -285,7 +271,7 @@ note that the one dimensional conditional distribution of $(X_j \,|\, X_i)$
 joint distribution of the $(X_i,X_j)$, estimated by the scatterplot 
 of the data points.
 
-For the models fitted by conditioning on the NO variable, the plots are as follows:
+For the models fitted by conditioning on the NO variable, we do:
 <<mexNO, fig=TRUE>>=
 par(mfcol=c(3, 4))
 plot(mex.NO)
@@ -309,7 +295,7 @@ mrf <- mexRangeFit(marg, "NO", trace=11)
 plot(mrf,addNexcesses=FALSE)
 @
 
-The resulting plot provides some reassurance that the $70^{th}$
+The stability of the parameter estimates in the resulting plot provides some reassurance that the $70^{th}$
 percentile is a suitable threshold.
 %
 \subsection{Constrained parameter space}
@@ -320,10 +306,9 @@ Before carrying on to examine our fitted models or to use them for prediction, w
 To reduce the amount of output produced, here we show the procedure only for O3 given NO.  We use {\tt mexDependence} to plot the profile-likelihood surface which is maximised for estimation of the dependence model parameters.  
 
 <<checkMax1,fig=TRUE>>=
-par(mfrow=c(1,1))
 marg.NO2.NO <- migpd(winter[,c("NO2","NO")],mqu=0.7)
 mex.NO2.NO <- mexDependence(marg.NO2.NO, which = "NO",
-                              dqu=0.7, PlotLikDo=TRUE)
+                            dqu=0.7, PlotLikDo=TRUE)
 @
 
 This plot shows the point estimate to lie on the edge of the permissible parameter space, and we can home in on the region containing this estimate to check that the surface has been successfully maximised:
@@ -331,11 +316,11 @@ This plot shows the point estimate to lie on the edge of the permissible paramet
 <<checkMax2,fig=TRUE>>=
 par(mfrow=c(1,1))
 mex.NO2.NO <- mexDependence(marg.NO2.NO, which = "NO", 
-                              dqu=0.7, PlotLikDo=TRUE,
-                              PlotLikRange=list(a=c(0.6,0.8),b=c(0.1,0.3) ))
+                            dqu=0.7, PlotLikDo=TRUE,
+                            PlotLikRange=list(a=c(0.6,0.8),b=c(0.1,0.3) ))
 @
 
-This plot reassures us that the point estimate does correspond to the MLE.  If this had not been the case, we should have tried a range of different starting values for the optimisation.  More details are given in the documentation for {\tt mexDependence}.
+This plot reassures us that the point estimate does correspond to the maximum of the objective function.  If this had not been the case, we should have tried a range of different starting values for the optimisation.  More details are given in the documentation for {\tt mexDependence}.
 
 It is left as an exercise to produce plots for all of the conditional models fitted in this section here, for example:
 <<checkDependence,eval=FALSE>>=
@@ -357,7 +342,7 @@ It is clear from the values of the dependence paramters, that SO2 is the most st
 mex.NO
 @
 
-The values of the estimated dependence parameters show that NO2, SO2 and PM10 all have positive extrmal dependence on NO, the strongest being that of PM10 on NO.  Ozone has fairly weak negative dependence on NO.
+The values of the estimated dependence parameters show that NO2, SO2 and PM10 all have positive extremal dependence on NO, the strongest being that of PM10 on NO.  Ozone has fairly weak negative dependence on NO.
 
 %
 \subsection{Prediction under the fitted model}
