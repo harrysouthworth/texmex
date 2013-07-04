@@ -20,8 +20,9 @@
 \def\bbeta{\boldsymbol \beta}
 %*********************************************************************
 \begin{document}
+\SweaveOpts{concordance=TRUE}
 
-\title{Univariate Threshold Excess Modelling of Clinical Laboratory Safety Data using R}
+\title{Univariate Extreme Value Modelling  using R}
 \author{Harry Southworth and Janet E.\ Heffernan}
 \maketitle
 
@@ -29,229 +30,75 @@
 %
 \section{Introduction}
 %
-This document illustrates the use of the {\tt texmex} package,~\cite{texmex}
-for performing extreme value analysis of some clinical safety
-laboratory data in {\tt R},~\cite{R}.   The full analysis is described in~\cite{southHeff}.  This package vignette focusses on the fitting of  the generalized Pareto distribution (GPD) modelling of
-the marginal variables.  A separate vignette will examine the conditional multvariate extreme value
-modelling, which appears in~\cite{southHeffMultivariate}.
+This document illustrates the use of the {\tt texmex} package
+for performing extreme value analysis of some environmental data in {\tt R},~\cite{R}.  This package vignette focusses on univariate extreme value modelling of threshold excesses using the generalized Pareto distribution (GPD), and of data arising as maxima, using the generalized extreme value (GEV) distribuion.  The separate vignette {\tt texmexMultivariate} examines multvariate extreme value
+modelling using a conditional threshold based approach.  For extreme value modelling of temporally dependent Peaks over Threshold data by using declustering, see the package vignette {\tt declustering}.
 
 To cite this vignette, refer to Vignette name: {\tt texmex1d} and use the package citation:
 <<cite,echo=FALSE,fig=FALSE>>=
 citation("texmex")
 @
-
-Please note that this is not intended to be an R tutorial. For
-that, you will have to look elsewhere.
-%
-\subsection{Preliminaries}
-%
-Before doing anything else, you will need to install the
-{\tt texmex} package. Depending on your installation of
-R, this can be done using the {\tt install.packages}
-command in R, or by downloading the package from CRAN and
-installing it from a local archive.
-
-Once you've got {\tt texmex} installed, use the {\tt library} command to make the package available to the current session.  This vignette also makes use of the {\tt rlm} function from the {\tt MASS} package (see~\cite{MASS}) and trellis plots from the {\tt lattice} package.
-
-<<setstuff>>=
-library(texmex)
-library(MASS)
-library(lattice)
-palette(c("black","purple","cyan","orange"))
-set.seed(20111011)
-@
-The final command sets the random seed so that the results in this vignette may be reproduced exactly.
-%
-\subsection{\tt texmex}
-%
-The {\tt texmex} package for R was written by Harry Southworth
-and Janet E. Heffernan. The work was funded by AstraZeneca.
-
-Some considerable effort has been made to ensure that the package
-does what it ought to, and to this end over 400 tests (at the current count) are
-built into the package. The tests compare the output of
-functions in {\tt texmex} with published results and, where
-no published results were available, with output from independently
-written code. There are also logical tests (e.g.\ of use of informative prior distributions) and tests of the structures of
-objects.
-
-To test the package functionality at any time,
-use the {\tt RUnit} package~\cite{RUnit}. With {\tt RUnit} and {\tt texmex}
-attached, you can perform all the tests, and view a report
-describing the results, as follows.
-
-<<validate, eval = FALSE>>=
-library(RUnit)
-pdf("texmexValidation.pdf")
-res <- validate.texmex()
-dev.off()
-printHTMLProtocol(res, "texmexValidation.html")
-@
-Many of the plots produced in the {\tt texmexValidation.pdf} file reproduce figures appearing in published material, and are intended for comparison against these figures.  The validation versions of such plots produced by {\tt texmex} are labelled with the target figure references.
-
-Due to the large number of tests performed, including tests
-of bootstrap and MCMC procedures, {\tt validate.texmex} takes
-quite a while to run.
-%
-\subsection{Data}
-%
-The dataset used in this example analysis is contained in the {\tt texmex}
-package. The dataset is called {\tt liver} and we can look at
-the first few lines and a summary as follows:
-<<data>>=
-head(liver)
-summary(liver)
-@
-
-The response variables are
-\begin{description}
-\item[ALT] alanine aminotransferase
-\item[AST] aspartate aminotransferase
-\item[ALP] alkaline phosphatase
-\item[TBL] total bilirubin
-\end{description}
-The variables suffixed by {\tt .B} are data measured
-at baseline (prior to treatment); an {\tt .M} indicates
-post-baseline measurement (on treatment).
-In this study, there was only one post-baseline visit. In
-general, in trials which have more than one post-baseline visit it is natural to use the maximum post-baseline value for each individual.
-
-The doses were equally spaced on a logarithmic scale (i.e.\
-dose D is twice dose C, dose C is twice dose B, and dose B
-is twice dose A). Later in the analysis, we will 
-do some modelling with $\log(\mbox{dose})$ appearing in the linear predictor, so we
-take a copy of the dataset and create a new variable now:
-<<logdose>>=
-liver <- liver
-liver$ndose <- as.numeric(liver$dose)
-table(liver$ndose)
-@
-
-Before proceeding, first note that there are two small outliers
-in {\tt $ALP.M$}: two cases with {\tt $ALP.M = 1$}. Discussion with the study
-physician led to the conclusion that the lowest value of ALP 
-in the dataset was impossible, and since it is large values in which 
-we are interested anyway, we can remove it (leaving it
-in complicates plotting later in the analysis, but does not affect
-any of the results).
-
-<<cleanData>>=
-liver <- liver[liver$ALP.M > 1,]
-@
-
-The variables in the dataset all relate to the liver.
-Biologically, the understanding is that liver cells release
-ALT and AST as they die. If a sufficient amount of the liver is
-destroyed that it can no longer function properly, then
-it ceases to be able to clear bilirubin and so bilirubin
-(TBL) goes up. The situation is complicated by the fact that
-ALT and AST can also arise from other sources (e.g.\ muscle),
-and that ALP can rise in response to a blockage in the liver.
-
-Given the biology, ALT and AST are likely to rise early
-on in any drug induced liver damage and initial focus should
-be on those.
-ALT and AST are closely correlated in this example and in
-what follows we focus mostly on ALT.
-%
-\section{Elimination of baseline effect\label{sec:baseline}}
-%
-Since the four lab variables were measured at baseline and
-at a later date in the same patients, we might reasonably
-expect the two values to be related. Figure~\ref{fig:scatterplots} scatterplots (on
-the log scale) reveal this to be true.
-\begin{figure}
-\begin{center}
-<<xyplot, fig=TRUE>>=
-print(
-xyplot(ALT.M ~ ALT.B | dose, data=liver,
-      as.table = TRUE,
-      scales=list(log=2))
-)
-@
-\end{center}
-\caption{Scatterplots of post-baseline versus baseline
-ALT.\label{fig:scatterplots}}
-\end{figure}
-
-We can eliminate the
-baseline effect (and therefore reduce the variance) using
-a linear model. Since we have no reason to suppose the
-data to be normally distributed, and since Figure~\ref{fig:scatterplots}
-reveals outliers not consistent with a Gaussian distribution,
-we will use a robust regression approach. (In general, lab
-safety data should never be assumed to be normally distributed.)
-
-Following Maronna et al~\cite{maronnaMartinYohai} (page 144), we prefer
-an MM-estimated regression line with Gaussian efficiency
-set to 85\% and bisquare weight functions.
-This model can be estimated using the
-{\tt rlm} function in the {\tt MASS} package. By default,
-{\tt rlm} uses 95\% Gaussian efficiency, and we can
-obtain the required 85\% by passing argument {\tt c = 3.44}
-(see~\cite{maronnaMartinYohai}, page 30) into the
-function.
-
-<<MM, fig=TRUE>>=
-rmod <- rlm(log(ALT.M) ~ log(ALT.B) + ndose, data=liver, c=3.44, method="MM")
-summary(rmod)
-par(mfrow=c(2, 2))
-plot(fitted(rmod), resid(rmod), xlab="Fitted", ylab="Residuals")
-abline(h=0, col=2)
-qqnorm(resid(rmod))
-qqline(resid(rmod))
-plot(log(liver$ALT.M), fitted(rmod), xlab="Observed", ylab="Fitted")
-d <- density(resid(rmod))
-hist(resid(rmod), xlab="Residuals", prob=TRUE, ylim=range(d$y))
-lines(d)
-rug(resid(rmod))
-@
-
-The residual plots do not give cause for concern and reveal
-several outliers, justifying the use of a robust method of
-estimation.
-
-In practice, it would be sensible to fit a few models,
-possibly using {\tt dose} as a factor and with alternative
-transformations of ALT. That part of the analysis is left
-as an exercise and we proceed on the understanding
-that the fitted robust linear model is adequate for eliminating
-the effects of baseline and dose on the central tendency of the
-data.
-
-We can now obtain the residuals to be used for the
-extreme value modelling of ALT. We also plot scaled residuals to get
-a preliminary impression of any dose effect.
-
-<<resids, fig=TRUE>>=
-liver$r <- resid(rmod)
-plot(jitter(liver$ndose), liver$r / rmod$s,  # Scaled residuals
-    xlab="Dose", ylab="Scaled residuals", axes=FALSE)
-box(); axis(2)
-axis(1, at=1:4, labels=LETTERS[1:4])
-abline(h=c(-2, 0, 2), lty=c(2, 1, 2), col=c(3,4,3))
-@
-
-It can be seen that there are several large outliers,
-out of keeping with any assumptions about normality, and
-that dose D appears to be associated with more, and larger,
-outliers.
-%****************************************************************
-%****************************************************************
-%
-\section{Generalized Pareto distribution models for ALT}
-%
-We now proceed to fit, evaluate, choose between, and ultimately
-make predictions from generalized Pareto distribution (GPD) models for the residuals
-of the ALT data obtained in Section~\ref{sec:baseline}.
-%
-\subsection{Extreme value modelling and asymptotic motivation for the GPD}
-%
 Extreme value statistical models are unusual among statistical models in that they are often required for extrapolation beyond levels observed in the data.  As statisticians, we are told that extrapolation from statistical models is perilous: our models can only be trusted in regions where we have sufficient data to calibrate and check goodness of model fit.  Extreme value modelling has responded to a demand for extrapolation beyond this safe region.  Since we can no longer rely on data as a check on our model's suitability, extreme value statisticians turn to mathematical arguments to bolster their confidence in their extrapolation.  These arguments provide a justification for the use of a particular type of model to describe tail behaviour of random variables.
 
 This is not a tutorial in Extreme Value Theory, for which we refer the reader to \cite{coles}, which describes a range of methods for modelling the statistical properties of sample maxima, threshold excesses, extremes of dependent series and other aspects of tail behaviour.  
 
-The {\tt texmex} package focusses on the use of {\it threshold exceedances}. Specifically, we fit the generalised Pareto Distribution,
+%
+\subsection{Preliminaries}
+%
+With {\tt texmex} installed, use the {\tt library} command to make the package available to the current session, set the colours used for graphics, and set the random seed so that results are reproducible on a given machine:
+<<setstuff>>=
+library(texmex)
+palette(c("black","purple","cyan","orange"))
+set.seed(20130618)
+@
+%
+\subsection{Data}
+%
+The datasets used in this example analysis are contained in the {\tt texmex}
+package. We give a detailed exposition of the fitting of the GPD without covariates to a {\tt rainfall} dataset which appears in Coles (2001),~\cite{coles}.  We show how to extend the modelling framework to include covariates using the {\tt winter} air pollution data from Heffernan and Tawn (2004),~\cite{heffernanTawn}.  The modelling approach for fitting GEV models that we take within {\tt texmex} is very similar to that for fitting the GPD, so we conclude with a brief demonstration of this by using the annual maxima sea-level dataset, {\tt portpirie}, again from Coles~\cite{coles}.  More details of these datasets are given in their help files.
+\subsubsection{Rainfall data}
+<<data.rain>>=
+head(rain)
+summary(rain)
+length(rain)
+plot(rain)
+@
+\subsubsection{Winter air pollution data}
+\label{section:winterData}
+<<data.winter>>=
+head(winter)
+summary(winter,digits=3)
+dim(winter)
+@
+We focus on the two variables Nitrogen Dioxide, {\tt NO2} and ozone {\tt O3} in the examples of covariate modelling that follow.  A scatter plot of these two variables suggests a negative association:
+<<data.winter2d>>=
+plot(winter[,c("O3","NO2")])
+@
+\subsubsection{Portpirie data}
+<<data.portpirie>>=
+head(portpirie)
+summary(portpirie)
+dim(portpirie)
+plot(portpirie)
+@
+<<dataPlots,fig=TRUE,echo=FALSE>>=
+par(mfrow=c(2,2))
+plot(rain,main="Rainfall data",xlab="")
+plot(winter[,c("O3","NO2")],main="Winter air pollution data")
+plot(portpirie,main="Portpirie data")
+@
+
+%****************************************************************
+%****************************************************************
+%
+\section{Generalized Pareto distribution models}
+%
+We now proceed to fit, evaluate, choose between, and ultimately
+make predictions from generalized Pareto distribution (GPD) models.
+%
+\subsection{Extreme value modelling and asymptotic motivation for the GPD}
+%
+In this section, we show how to fit the generalised Pareto Distribution,
 GPD($\sigma, \xi$)~\cite{davisonSmith} to 
 data points in excess of suitably chosen thresholds.
 The GPD has distribution function
@@ -282,6 +129,7 @@ GPD.  Diagnostic tools to aid the choice of suitable threshold are
 standard, and are described shortly -- see also~\cite{coles}.
 %
 \subsection{Parameterization}
+\label{sect:parameterization}
 %
 The usual parameterization of the GPD (as in Equation~(\ref{eqn:genParetoDistnFun})) is in terms of its
 scale paramter $\sigma$ and shape parameter $\xi$. There
@@ -314,46 +162,74 @@ GPD modelling proceeds by selecting a threshold above
 which the data appear to be well modelled. Standard
 tools for threshold selection that appear in the
 literature (see for example~\cite{coles}) include the \emph{mean residual
-life} plot, and plots of parameters estimated using a range of
+life} (MRL) plot, and plots of parameters estimated using a range of
 thresholds, \emph{threshold stability plots}.
 
 For a suitably chosen threshold, the mean residual life
 plot should be linear and the parameter estimates in threshold stability plots 
-constant beyond the threshold (both of these requirements are assessed by taking account of sampling variability). The sign of the gradient in the linear part of the MRL plot corresponds to the sign of the shape parameter and hence indicates the shape of the tail -- negative slope shows a short tailed distribution, a horizontal line (zero gradient) shows an exponential type tail and a positive slope suggests a heavy tailed distribution.
+constant above the chosen threshold (both of these requirements are assessed by taking account of sampling variability). The sign of the gradient in the linear part of the MRL plot corresponds to the sign of the shape parameter and hence indicates the shape of the tail -- negative slope shows a short tailed distribution, a horizontal line (zero gradient) shows an exponential type tail and a positive slope suggests a heavy tailed distribution.
 
+We illustrate the use of these diagnostics now for the {\tt rain} data:
 <<threshold, fig=TRUE>>=
 par(mfrow=c(2, 2))
-gpdRangeFit(liver$r)
-mrlPlot(liver$r, main="MRL plot")
+grfRain <- gpdRangeFit(rain,umax=30)
+plot(grfRain)
+mrlRain <- mrl(rain)
+plot(mrlRain,main="MRL plot, rain data")
 @
+The threshold stability plots (top) show both (log-)scale and shape parameter estimates to be stable for thresholds of around 20 and above.
 
+The Mean Residual Life plot (bottom) has a linear form from values of around ten, the gradient being positive (up to a threshold of around 60 above which there are only a small handful of points).  This indicates a heavy tail and positive shape parameter.  
 
-For our example, when fitting the GPD to the residuals from our robust regression, a threshold slightly above 0 appears to be sensible. However, we will need to
+Note that this form of MRL plot is typical, with the very highest thresholds giving very erratic estimates with apparently narrow confidence bands.  This commonly observed feature is due to the estimates for very high thresholds being based on a very small number of points - the very largest points in the data set.  These are by construction close to the sample maximum and therefore MRL plots often have a sudden negative slope for very high values of threshold, which can be spurious as in this case.
+
+For our example, a threshold around 20 therefore appears to be sensible. However, we will need to
 do some additional diagnostics to check this.
-We proceed by selecting the $70^{th}$ percentile
-of the residuals as being the candidate threshold.
+We proceed by selecting the $97^{th}$ percentile
+as being the candidate threshold.
 <<thresholdChoice>>=
-quantile(liver$r,0.7)
+quantile(rain,0.97)
 @
-
-
-In many examples, we have found that the $70^{th}$ or quite
-often the $50^{th}$ percentile is a suitable threshold.
-The theory underpinning the GPD tells us that (if the underlying distribution satisfies our conditions) there has to be a
+The theory underpinning the GPD tells us that (if the underlying distribution satisfies our conditions) there exists a
 threshold above which the GPD fits the data, but the
 theory does not specify that the threshold necessarily must be
-high. In our case, we are modelling residuals, and so the
-complete distribution will be near-symmetric and the GPD
-will only fit one tail. So it is unreasonable to examine
-thresholds lower than about the $50^{th}$ percentile.
+high.  Indeed, if the data are realisations from an Exponential distribution -- which is a member of the GPD class, with shape parameter $\xi=0$ --  then a threshold equal to the minimum data point would be appropriate.  In many cases of course, the threshold will be towards the top end of the observed data range, the motivation for the GPD as a tail model being asymptotic as the threshold goes to infinity.  If sample sizes are too small, it may be the case that a suitable threshold cannot be chosen from within the range of the data with any degree of confidence.
+%
+\subsection{GPD fitting in {\tt texmex}}
+%
+
+The generalised Pareto model for threshold excesses can 
+be fit by using the {\tt texmex} function {\tt evm}, {\it Extreme Value Model}, which has a default {\tt family=gpd} argument.  We must specify the threshold to be used for fitting:
+
+For the {\tt rain} data:
+<<evmGPD>>=
+rain.fit <- evm(rain,th=20)
+rain.fit
+@
+The estimated shape parameter shows us that with this threshold, the fitted GPD has a heavy tail, as $\hat\xi>0$.  This is in line with our expectations following inspecation of the MRL plot.
+
+We examine diagnostics plots to see whether these support our initial choice of threshold:
+<<plotGPD,fig=TRUE>>=
+par(mfrow=c(2,2))
+plot(rain.fit)
+@
+The shaded regions in the P-P and Q-Q plots indicate pointwise 95\% tolerance
+intervals, based on 1000 simulated datasets. The shaded region in the return level plot shows 95\% pointwise confidence intervals, based on a normal approximation.
+
+The fit shown in these plots is good, with data and model agreeing well over the range of threshold exceedances.  We can see how a lower threshold (perhaps that suggested by the MRL plot but not the threshold stability plot) gives an estimated slightly less heavy tail and a poorer fit:
+<<plotGPDpoorFit,fig=TRUE>>=
+par(mfrow=c(2,2))
+plot(evm(rain,th=10))
+@
 %
 \subsection{Maximum penalized likelihood estimation}
+\label{section:MPLE}
 %
 With small sample sizes, the GPD log-likelihood function
 often becomes flat and the optimiser can fail to converge.
 One way to overcome this is to penalize the likelihood by
 some function of the parameters. Experience suggests that
-the main problems are overcome by putting fairly modest
+the main problems may be overcome by putting fairly modest
 penalties on $\xi$.
 
 Thus, rather than maximize the log-likelihood $l(\phi, \xi | X)$
@@ -378,88 +254,184 @@ and corresponds to maximum a posteriori estimation.
 For the GPD, $\xi = -1$ corresponds to the distribution
 being uniform, $\xi = 0$ corresponds to it being
 exponential, and $\xi = 1$ corresponds to it being so
-heavy-tailed that its expectation is infinite. For the
-kinds of data we have, $\xi = -1$ and $\xi = 1$ are
+heavy-tailed that its expectation is infinite. For many applications, values of $\xi = -1$ and $\xi = 1$ may be
 implausible, and we would expect values of $\xi$ to be
 fairly close to 0. This implies a prior distribution
 that is Gaussian with standard deviation $\theta = \frac{1}{2}$.
 
 Since convergence issues are generally associated with
-$\xi$, we can choose a diffuse prior for $\phi$,
-$\phi \sim N(0, 10^4)$, say.
+$\xi$, we can choose a diffuse prior for $\phi$, say
+$\phi \sim N(0, 10^4)$.
 
-In general, we will attempt to use MLE or penalized MLE with
+In general, we attempt to use MLE or penalized MLE with
 diffuse priors for both $\phi$ and $\xi$.
 Prior distribution $\xi \sim N(0, \frac{1}{4})$
 independently of a diffuse prior on $\phi$ can be 
-used when convergence issues arise. Such a model can
-be fit using
+used when convergence issues arise:
 
 <<MPLE, eval=FALSE>>=
 pp <- list(c(0, 0), diag(c(10^4, .25)))
-pmod <- gpd(x, qu=.7, priorParameters = pp, prior="gaussian")
+rain.pen <- evm(rain, qu=.97, priorParameters = pp, prior="gaussian")
 @
-
 in which {\tt priorParameters} is a list containing the mean $(0, 0)^T$
 and covariance matrix of the prior Gaussian distribution.
 %
-\subsection{Model selection}
+\subsection{Covariate modelling }
+\label{section:covariateModels}
 %
 We can fit GPD models with covariates in $\phi$,
-in $\xi$, in neither, or in both. We will first
-fit a simple model with no covariates and examine
-some diagnostic plots to see if there are any
-obvious problems suggesting that a higher threshold
-needs to be used.
+in $\xi$, in neither, or in both. We use the {\tt winter} air pollution dataset to illustrate this model fitting, with NO2 as the response and O3 as the explanatory variable. Plots of this data in Section~\ref{section:winterData} suggested a negative association between these variables. A threshold corresponding to the 70\% quantile of the NO2 variable was chosen using the diagnostic techniques in the previous section (output not shown here).  As a starting point we fit the GPD with no covariates:
 
 <<simplegpd, fig=TRUE>>=
-mod <- gpd(r, data=liver, qu=.7, penalty="none")
-mod
+airpoll <- evm(NO2, data=winter, qu=.7, penalty="none", family=gpd)
+airpoll
 par(mfrow=c(2, 2))
-plot(mod)
+plot(airpoll)
 @
 
-The shaded regions in the P-P and Q-Q plots indicate pointwise 95\% tolerance
-intervals, based on 1000 simulated datasets. The shaded region in the return level plot shows 95\% pointwise confidence intervals. The plots
+ The plots
 show no systematic departure of the data from the model at this choice of threshold, so
-we proceed to fit various models with covariates and
-compare them using AIC.
+we proceed to fit various models with covariates:
 
 <<gpdmods1>>==
-mod1 <- gpd(r, data=liver, qu=.7, penalty="none", phi= ~dose, xi= ~dose)
-mod2 <- gpd(r, data=liver, qu=.7, penalty="none", phi= ~ndose, xi= ~ndose)
-AIC(mod1)
-AIC(mod2)
-@
-AIC is lower for {\tt mod2} which treats {\tt dose} as \ numeric variable rather than as a factor at 4 levels.  So we prefer {\tt mod2}.  We proceed to try simplifications of this model:
-<<gpdmods2>>==
-mod3 <- gpd(r, data=liver, qu=.7, penalty="none", phi= ~ndose)
-mod4 <- gpd(r, data=liver, qu=.7, penalty="none", xi= ~ndose)
-AIC(mod3); AIC(mod4); AIC(mod)
+airpoll1 <- update(airpoll, phi= ~O3, xi= ~O3)
+airpoll2 <- update(airpoll, phi= ~O3)
+airpoll3 <- update(airpoll, xi= ~O3)
 @
 
-Since {\tt mod4}
-has the lowest AIC we prefer that model. This is the model with $\phi$ constant and $\xi$ linear in dose (on the log scale).  In practice, a few more models
-might have been tried. Again, that part of the analysis is left as
-an exercise.
+The default model diagnostic plots for the model are different when there are covariates included in the model.  Here we look at diagnostics for the model with O3 included in the linear predictors for both $\phi$ and $\xi$:
+<<gpdCovDiagnostics,fig=TRUE>>=
+par(mfrow=c(2,2))
+plot(airpoll1)
+@
 
-We now take a closer look at {\tt mod4}.
+Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the scale parameter $\phi$ and shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern.  There are no return level or histogram/density plots produced since the estimates of these quantities depend on the procise values oftaken by the covariates in the model.
 
-<<mod4diag, fig=TRUE>>=
+
+<<AIC>>==
+AIC(airpoll)
+AIC(airpoll1)
+AIC(airpoll2)
+AIC(airpoll3)
+@
+AIC is lowest for {\tt airpoll2} which has O3 as a covariate affecting the scale parameter of the GPD, but not the shape parameter. 
+Since {\tt airpoll2}
+has the lowest AIC we prefer that model. 
+
+We now examine diagnostics for our preferred model, {\tt airpoll2}
+<<airpoll2diag, fig=TRUE>>=
 par(mfrow=c(2, 2), pty="s")
-plot(mod4)
-plot(predict(mod4,type="lp",ci.fit=TRUE),main="Fitted shape parameter")
-summary(mod4)
+plot(airpoll2)
+plot(predict(airpoll2,type="lp",ci.fit=TRUE),
+     main="Fitted (log)scale parameter")
+summary(airpoll2)
+@
+The fit of this model is adequate, having apparently captured the dependence of the scale parameter on O3.  The final plot shows the nature of this relationship, with larger values of O3 giving lower values of $\phi$.  This concurs with the observed negative relationship between the variables shown in the original scatter plot, Section~\ref{section:winterData}.
+
+%
+\subsection{GPD parameter uncertainty}
+%
+We examine briefly here Information Matrix summaries and Bootstrap estimates of GPD parameter uncertainty, before going on to use a Bayesian simulation based approach to estimation of our GPD model parameters and associated uncertainty.
+%
+\subsubsection{Information matrix based approaches}
+%
+When the GPD model is fit by using the default (penalized) maximum likelihood estimation, an estimate of the covariance matrix of model parameters is returned.  The default procedure for estimating this covariance matrix is {\tt cov="observed"} in which case the observed information matrix is used, as given in Appendix A of Davison and Smith~\cite{davisonSmith}. The only other option is {\tt cov = "numeric"} in which case a numerical approximation of the Hessian is used (see the help for {\tt optim}). In some cases, particularly with small samples, the numerical approximation can be quite different from the closed form ({\tt cov="observed"}) result, and the value derived from the observed information should be preferred. 
+
+For our fitted model, we compare the two approaches and find that the alternative methods give almost identical estimates of the Information matrix:
+<<numericCovMat>>=
+airpoll2$cov
+update(airpoll2,cov="numeric")$cov
+@
+For small samples, the underlying log-likelihood may be far from quadratic, and the resulting estimates of standard errors derived using either of these methods are liable to approximate poorly the true standard errors.
+
+%
+\subsubsection{Parametric Bootstrap approach}
+An alternative approach to uncertainty estimation is to use a parametric bootstrap -- which does capture the asymmetry of the log-likelihood surface around the maximum likelihood estimates.  This is carried out for our fitted model in {\tt texmex} as follows:
+<<optionsWarningOff,eval=TRUE,echo=FALSE,keep.source=FALSE>>=
+o <- options(warn=-1)
+@
+<<bootstrap>>=
+boot <- evmBoot(airpoll2, trace=1001)
+summary(boot)
+@
+We can compare these reported standard deviations with the correponding estimates derived from the Observed Information matrix estimate -- these are close although not identical, with the largest disagreement occurring for the shape parameter.  This is typical behaviour of the GPD model.
+<<CompareBootSdWithObsInfo>>=
+sqrt(diag(airpoll2$cov))
+@
+We can also compare the bootstrap based estimate of the parameter correlation matrix with that derived from the Observed Information matrix:
+<<InfoMatCorr>>=
+cov2cor(airpoll2$cov)
+cov2cor(summary(boot)$covariance)
+@
+<<optionsWarningOn,eval=TRUE,echo=FALSE,keep.source=FALSE>>=
+options(o)
+@
+Estimates of this correlation matrix are similar although not identical, as anticipated.  
+
+Focussing on the covariance matrix of the parameter estimates is misleading and does not let us explore the asymmetric nature of the uncertainty about the parameter estimates.  This can often be better seen in the bootstrap based confidence intervals for the model parameters shown in the following plots, although the asymmetry is not pronounced in this example:
+<<bootstrapLinPredConfIntsLPplot,fig=TRUE>>=
+par(mfrow=c(1,2))
+O3 <- data.frame(O3=seq(10,60,len=6))
+plot(predict(boot,newdata=O3,type="lp",
+             ci.fit=TRUE),main="Bootstrap");grid()
+plot(predict(airpoll2,newdata=O3,type="lp",
+             ci.fit=TRUE),main="Obs Info");grid()
 @
 
-Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern. 
+\subsection{Bayesian estimation}
+\label{sebsection:BayesEstimation}
+A further alternative approach to uncertainty estimation which accurately reflects the asymmetric nature of the uncertainty is offered by Bayesian simulation based methods.  In {\tt texmex} we can simulate from the posterior distributions of the parameters by using the {\tt evm} function again, this time using {\tt method = "simulate"} to tell the function to simulate from the joint posterior distribution of the parameters. 
 
-From the estimated parameters, we see that as dose increases, so does
-the estimate of $\xi$, starting out negative for dose A (suggesting
-a fairly short-tailed distribution), but moving to positive at
-the higher doses (suggesting a heavy-tailed distribution).
+<<gpdmcmc, eval=FALSE>>=
+airpollSim <- evm(NO2, data=winter, qu=.7, 
+                  phi=~O3, family=gpd, method="simulate")
+@
 
+Equivalently, the Bayesian estimation based on MCMC can also be instigated by the use of the function {\tt update} on the previously chosen model.  The method of estimation is changed from {\tt "optimize"} -- under which estimation is carried out using (penalized) maximum likelihood -- to {\tt "simulate"} -- under which a Metropolis algorithm is used to simulate from the joint posterior distribution of the parameters.  For our preferred model, {\tt airpoll2}, this is implemented as follows:
 
+<<update,fig=TRUE, eval=TRUE>>=
+airpollSim <- update(airpoll2,method="simulate",
+                     trace=40001,penalty="gaussian")
+par(mfrow=c(3, 3))
+plot(airpollSim)
+airpollSim
+@
+
+The plots of the Markov chains ought to look like ``fat hairy 
+caterpillars'' if the algorithm has converged on its target
+distribution. Also, the cumulative means of the chains should
+converge, the acceptance rate should not be too high or too low, and the
+autocorrelation functions should rapidly decay to zero. We 
+conclude from the plots that there is no evidence against convergence of our Markov chains, although we should probably thin our output further to obtain a chain that is closer to independent  (the default is to thin to every 4 observations).  Here we retain the burn-in value of 500 but now discard all but every 20th observation, resulting in an autocorrelation function which decays more rapidly to zero. This restults in the retention of 2000 values after discarding the burn-in and applying the thinning.  (Note that the observations are not discarded destructively and we can use the {\tt thinAndBurn} function repeatedly to examine the impact of using different values of {\tt burn} and {\tt thin}.)
+
+<<thinmcmcE>>=
+airpollSim <- thinAndBurn(airpollSim, burn=500, thin = 20)
+dim(airpollSim$param)
+summary(airpollSim)
+@
+
+We can use the {\tt predict} method to obtain the linear predictors for the model parameters for each unique combination of any covariates that may be in the model. 
+
+<<simparams>>=
+O3 <- data.frame(O3=seq(20,50,by=10))
+predict(airpollSim,newdata=O3,type="lp")
+predict(airpollSim,newdata=O3,M=1000)
+@
+To see linear predictors for the original dataset, simply omit the {\tt newdata} argument (output not shown):
+<<simparams2,eval=FALSE>>=
+predict(airpollSim,type="lp")
+predict(airpollSim,M=1000)
+@
+
+Setting the argument {\tt all = TRUE} returns the linear predictors for all of the simulated parameter values in the (thinned) chains:
+<<airpollParamss>>=
+airpollParams <- predict(airpollSim, newdata=O3, type="lp", all=TRUE)
+@
+ The returned object contains a list called {\tt link} with one item for each unique value of the covariate(s).  The following shows the first five simulated values of $(\phi,\xi)$ for covariate {\tt O3 = 20}:
+<<airpollSimParamsO3.10>>=
+airpollParams$link[[1]][1:5,]
+@
+%
 %
 \subsection{Predicted return levels}
 \label{subsect:retLevelsPtEsts}
@@ -471,349 +443,146 @@ x_m = u + \frac{\sigma}{\xi}\{(mp)^\xi -1 \}.\label{eqn:returnLevel}
 Here $p$ is the probability of exceeding the GPD fitting threshold
 $u$ and $m$ is a large value, so that $x_m$ is termed the
 {\emph m-observation return level} and represents the maximum
-value of $x$ expected to be seen in $m$ observations at a give dose.
+value of $x$ expected to be seen in $m$ observations.
 
-The effect of the variable {\tt ndose} on the GPD fitted to the residuals from our robust regression model is seen clearly when we look at return level plots for the 4 doses represented by our data:
+The effect of the O3 variable on the fitted GPD is seen clearly when we look at return levels and associated plots for different levels of this variable:
 
-<<mod4retLevelNdose, fig=TRUE>>=
-par(mfrow=c(2, 2)); plot(predict(mod4,M=10:100,ci.fit=TRUE))
+<<retLevelO3, fig=TRUE>>=
+par(mfrow=c(2, 2))
+O3 <- data.frame(O3=seq(20,50,by=10))
+pred <- predict(airpoll2,newdata=O3,M=5:1000,ci.fit=TRUE)
+pred[c(1,496,996)]
+plot(pred)
 @
 
-In this plot, {\it Return period} is in units of {\it numbers of observations} and {\it Return level} is in the same units as the residuals to which the GPD model has been fit.
-For our application to the {\tt liver} dataset, prediction of $m$-observation ($m$-patient) return levels is complicated by the relationship between baseline and post-treatment response which must be accounted for.  In order to do this, we must specify a value of baseline and then the value of $u$ in Equation~(\ref{eqn:returnLevel}) is calculated as the expected post-treatment value given that baseline value, plus the threshold used for fitting the GPD model to the residuals.  The resulting value of $x_m$  is then interpreted as the {\emph m-patient return level for patients with that given baseline value}.
+The {\it Return period} is in units of {\it numbers of observations}, in this case, number of winter days. {\it Return level} is in the same units as NO2 variable to which the GPD model has been fit.
 
-So for our fitted model {\tt mod4}, for a given baseline,  $u$ in equation~(\ref{eqn:returnLevel}) is calculated as the expected post-treatment value given that baseline plus the $70^{th}$ percentile
-of the residuals (this was the threshold used for fitting the GPD).  The $m$-patient return level depends on \emph{dose} via the threshold (since the expected values from the regression depend on dose) and through $\xi$ which is also a function of dose.
+This plot shows how the different values of scale parameter affect the size of return levels associated with different return periods but not the shape of this function.  The shape parameter $\xi$ is common to each of the four models used for prediction here -- this is emphasised if we allow the axes for plotting to differ for the four levels of O3:
 
-The estimated robust regression and GPD models are combined in R to obtain return level estimates as follows:
-<<returnLevelsPointEsts>>=
-calcRetLevel <- function(gpdModel,MMmodel, m,base){ 
-
-  newdata <- data.frame(ALT.B=rep(base,4),ndose=1:4)
-  
-  ElogResponse <-predict(MMmodel,newdata)
-  logRL <- ElogResponse + predict(mod4,m,newdata)[[1]][,1]
-  ElogThresh <- ElogResponse + gpdModel$threshold
-  
-  names(logRL) <- names(ElogThresh) <- LETTERS[1:4]
-
-  list(u = exp(ElogThresh), RL = exp(logRL))
-}
+<<retLevelO3sameAxesFALSE, fig=TRUE>>=
+par(mfrow=c(2, 2))
+plot(predict(airpoll2,newdata=O3,M=5:1000,ci.fit=TRUE),sameAxes=FALSE)
 @
+We can see that the underlying shapes of the four curves are identical, the main differences emphasised here is the greater uncertainty associated with the highest value of O3 examined here, which is beyond the range observed in the dataset.  
 
-<<returnLevelsPointEstsPlotCalc>>=
-PlotMpatientRetLevel <- function(Baseline,ylim,Legend=TRUE){
-
-  m <- exp(seq(log(10),log(1000),length=20))
-  RL <- t(sapply(m,function(x,gpd,rmod,base){
-                     calcRetLevel(gpd,rmod,x,base)$RL},
-                     gpd=mod4,rmod=rmod,base=Baseline))
-  u <- calcRetLevel(mod4,rmod,m[1], Baseline)$u
-
-  plot(rep(c(10,m),4),rbind(u,RL),type="n",xlab="m",
-       ylab="m-patient return level",log="x",
-       main=paste("ALT: Baseline =",signif(Baseline,3)),ylim=ylim)
-  for(i in 1:4){
-    lines(m,RL[,i],col=i)
-    abline(h=u[i],col=i,lty=2)
-  }
-  if(Legend){
-    legend(min(m),ylim[2],
-           legend=c(paste(LETTERS[1:4],", 
-                    xi =",signif(predict(mod4,type="lp")[,"xi"],3)),
-                    paste("U,",LETTERS[1:4])),
-           col=rep(1:4,2),lty=rep(1:2,each=4))
-  }
-}
-@
-
-
-\begin{figure}
-\begin{center}
-<<returnLevelsPointEstsPlot, fig=TRUE>>=
-PlotMpatientRetLevel(mean(liver$ALT.B),ylim=c(0,200))
-@
-\end{center}
-\caption{Point estimates of $m$-patient return levels under each treatment, for patients with baseline equal to the mean  observed baseline.\label{fig:pointEstRetLevelMeanBaseline}}
-\end{figure}
-
-An illustration of this calculation is given in Figures~\ref{fig:pointEstRetLevelMeanBaseline} and~\ref{fig:pointEstRetLevelLowerUpperQuartileBaseline}.
-Figure~\ref{fig:pointEstRetLevelMeanBaseline} shows estimated $m$-patient return levels for a patient with baseline equal to the mean observed value of baseline.  For such patients, differences in the values of the thresholds $U$ are due to the difference in expected post-treatment ALT estimated by the MM regression model, whose coefficients depend on treatment (dose).
-
-For small values of $m$, estimated $m$-patient return levels in Figure~\ref{fig:pointEstRetLevelMeanBaseline} show little additional difference between treaments above that already due to the diffences in mean post-treatment ALT captured by the robust regression model.  However, as $m$ increases and we extrapolate further into the tail of the the distribution, differences in shape parameter $\xi$ between the different doses have greater influence on the estimated return levels.  Those treatments with heavier tails (treatments C and D -- the higher doses) have return level estimates that grow much faster than those corresponding to treatments with short tails (treatments A and B -- the lower doses).
-
-Figure~\ref{fig:pointEstRetLevelLowerUpperQuartileBaseline} shows correponding return level estimates for patients with baseline equal to the lower and upper quartiles of the observed baseline.  The absolute value of $m$-patient return level depends on the baseline, but the ordering between the four treatments due to the fitted GPD shape parameters is the same in each case.
-\begin{figure}
-\begin{center}
-<<returnLevelsPointEsts2, fig=TRUE>>=
-par(mfrow=c(1,2),pty="s")
-PlotMpatientRetLevel(quantile(liver$ALT.B,0.25),ylim=c(0,200),Legend=FALSE)
-PlotMpatientRetLevel(quantile(liver$ALT.B,0.75),ylim=c(0,200),Legend=FALSE)
-@
-\end{center}
-\caption{Point estimates of $m$-patient return levels under each treatment, for patients with baseline equal to the lower (left hand plot) and upper quartiles of observed baseline values.  For plot legend, refer to Figure~\ref{fig:pointEstRetLevelMeanBaseline}.
-\label{fig:pointEstRetLevelLowerUpperQuartileBaseline}}
-\end{figure}
-
-\clearpage
-\pagebreak
-
-%
-\subsection{GPD parameter uncertainty}
-%
-We examine briefly here Information Matrix summaries and Bootstrap estimates of GPD parameter uncertainty, before going on to use a Bayesian simulation based approach to estimation of our GPD model parameters and associated uncertainty.
-%
-\subsubsection{Information matrix based approaches}
-%
-When the GPD model is fit by using the default (penalized) maximum likelihood estimation, an estimate of the covariance matrix of model parameters is returned.  The default procedure for estimating this covariance matrix is {\tt cov="observed"} in which case the observed information matrix is used, as given in Appendix A of Davison and Smith~\cite{davisonSmith}. The only other option is {\tt cov = "numeric"} in which case a numerical approximation of the Hessian is used (see the help for {\tt optim}). In some cases, particularly with small samples, the numerical approximation can be quite different from the closed form (cov="observed") result, and the value derived from the observed information should be preferred. 
-
-For our fitted model, we compare the two approaches and find that the alternative methods give almost identical estimates of the Information matrix:
-<<returnLevelsPointEsts2>>=
-mod4$cov
-update(mod4,cov="numeric")$cov
-@
-For small samples, the underlying log-likelihood may be far from quadratic, and the resulting estimates of standard errors derived using either of these methods are liable to approximate poorly the true standard errors.
-
-%
-\subsubsection{Parametric Bootstrap approach}
-An alternative approach to uncertainty estimation is to use a parametric bootstrap -- which does capture the asymmetry of the log-likelihood surface around the maximum likelihood estimates.  This is carried out for our fitted model in {\tt texmex} as follows:
-<<bootstrap>>=
-boot4 <- bootgpd(mod4)
-
-summary(boot4)
-@
-We can compare these reported standard deviations with the correponding estimates derived from the Observed Information matrix estimate -- these are close although not identical, with the largest disagreement occurring for the shape parameter.  This is typical behaviour of the GPD model.
-<<CompareBootSdWithObsInfo>>=
-sqrt(diag(mod4$cov))
-@
-We can also compare the bootstrap based estimate of the parameter correlation matrix with that derived from the Observed Information matrix:
-<<InfoMatCorr>>=
-cov2cor(mod4$cov)
-@
-Estimates of this correlation matrix are similar although not identical, as anticipated.  Focussing on the covariance matrix of the parameter estimates is misleading and does not let us explore the asymmetric nature of the uncertainty about the parameter estimates.  This can be better seen in the bootstrap based confidence intervals for the model parameters, and also particularly for return level estimates, both shown in the following plots:
-<<bootstrapLinPredConfIntsLPplot,fig=TRUE>>=
-par(mfrow=c(1,2))
-plot(predict(boot4,type="lp",ci.fit=TRUE),main="Bootstrap")
-plot(predict(mod4,type="lp",ci.fit=TRUE),main="Obs Info")
-@
-
+The default method for estimating these confidence intervals is to use the Information Matrix and quadratic approximation, however this can lead to poor estimates as this approach gives symmetric intervals centered on the point estimates.
+If we are to extrapolate far beyond the range of the data, then it can be preferable to recognise the inherent reduction in certainty that occurs as we move away from the data where the information dwells.  This is better reflected in the asymmetric confidence/credible intervals obtained by using either the bootstrap or Bayesian simuation based approach:
 <<bootstrapRetLevelConfIntsLPplot,fig=TRUE>>=
-par(mfrow=c(2,4))
-plot(predict(boot4,M=5:100,ci.fit=TRUE),main="Bootstrap")
-plot(predict(mod4,M=5:100,ci.fit=TRUE),main="Obs Info")
+par(mfrow=c(3,2))
+O3 <- data.frame(O3=c(20,50))
+M <- seq(5,1000,len=40)
+plot(predict(airpoll2,newdata=O3,M=M,ci.fit=TRUE),main="Obs Info")
+plot(predict(boot,newdata=O3,M=M,ci.fit=TRUE),main="Bootstrap")
+plot(predict(airpollSim,newdata=O3,M=M,ci.fit=TRUE),main="Simulated")
 @
-
-\subsection{Bayesian estimation}
-\label{sebsection:BayesEstimation}
-A further alternative approach to uncertainty estimation which accurately reflects the asymmetric nature of the uncertainty is offered by Bayesian simulation based methods.  In {\tt texmex} we can simulate from the posterior distributions of the parameters by using the {\tt gpd} function again, this time using {\tt method = "simulate"} to tell the function to simulate from the joint posterior distribution of the parameters. 
-
-<<gpdmcmc, eval=FALSE>>=
-bmod <- gpd(r, data=liver, qu=.7, xi= ~ndose, method="simulate")
-@
-
-Equivalently, the Bayesian estimation based on MCMC can also be instigated by the use of the function {\tt update} on the previously chosen model.  The method of estimation is changed from {\tt "optimize"} -- under which estimation is carried out using (penalized) maximum likelihood -- to {\tt "simulate"} -- under which a Metropolis algorithm is used to simulate from the joint posterior distribution of the parameters.  For our preferred model, {\tt mod4}, this is implemented as follows:
-
-<<update,fig=TRUE, eval=TRUE>>=
-bmod <- update(mod4,method="simulate",trace=40000,penalty="gaussian")
-par(mfrow=c(3, 3))
-plot(bmod)
-summary(bmod)
-@
-
-The plots of the Markov chains ought to look like ``fat hairy 
-caterpillars'' if the algorithm has converged on its target
-distribution. Also, the cumulative means of the chains should
-converge, the acceptance rate should not be too high or too low, and the
-autocorrelation functions should rapidly decay to zero. We 
-conclude from the plots that there is no evidence against convergence of our Markov chains, although we should probably thin our output further to obtain a chain that is closer to independent  (the default is to thin to every 4 observations).  Here we retain the burn-in value of 500 but now discard all but every 20th observation, resulting in an autocorrelation function which decays more rapidly to zero. This restults in the retention of 2000 values after discarding the burn-in and applying the thinning.  (Note that the observations are not discarded destructively and we can use the {\tt thinAndBurn} function repeatedly to examine the impact of using different values of {\tt burn} and {\tt thin}.)
-
-<<thinmcmcE>>=
-bmod <- thinAndBurn(bmod, burn=500, thin = 20)
-nsim <- dim(bmod$param)[1]
-summary(bmod)
-nsim
-@
-
-Since $\phi$ does not vary by {\tt dose}, we can use the simulated
-values of $\phi$ to obtain predictions for any dose.
-However, $\xi$ varies by dose, so we need to make sure
-we use the correct value for each treatment. We can use the {\tt predict} method to obtain the linear predictors for the model parameters and for return level estimates. 
-
-<<simparams>>=
-predict(bmod,type="lp")
-
-predict(bmod,M=1000)
-@
-Setting the argument {\tt all = TRUE} returns the linear predictors for all of the simulated parameter values in the (thinned) chains.
-<<bmodParams>>=
-bmodParams <- predict(bmod, type="lp", all=TRUE)
-@
- The returned object is a list with one item for each unique value of the covariate(s).  The following shows the first five simulated values of $(\phi,\xi)$ for covariate {\tt ndose = 1}:
-<<bmodParamsDose1>>=
-bmodParams[[1]][1:5,]
-@
-Uncertainty in the GPD model parameters is combined with the other sources of uncertainty as follows.
+The asymmetry in the bootstrap based confidence intervals and the Bayesian simulation based credible intervals for high return levels at large values of the covariate is marked here.
+%*********************************************************************
 %
-\subsection{Other sources of uncertainty}
+\section{Generalized Extreme Value models}
 %
-Our estimates of patient return levels on the original scale are derived by combining regression and extreme value models, and also need to reflect variation in baseline. Figure~\ref{fig:pointEstRetLevelLowerUpperQuartileBaseline} illustrates how predictions can depend on patient baseline, which is inherently variable, so we also need to account for this and other sources of uncertainty.  This is achieved by adopting a simulation based approach.  GPD model parameters are simulated according to the Bayesian methodlogy outlined in Section~\ref{sebsection:BayesEstimation}.  The methods of simulation used to represent further sources of uncertainy are described now.
-%
-\subsubsection{Uncertainty due to variation in baseline}
-%
+Whereas GPD models have an asymptotic motivation as models for threshold exceedances, the Generalised Extreme Value (GEV) distribution is derived as the limiting distribution for observations arising as maxima of IID observations.
 
-We simulate baseline values simply by resampling from the
-observed values. The regression model was fit to the logs
-of the data, so we resample the logs.  We simulate {\tt nsim} independent values for each of the four treatment levels (corresponding to the size of sample retained from our simulation from the posterior distribution of GPD model parameters):
+We introduce the GEV distribution now, but refer to Coles~\cite{coles} for more details of this family of distributions, and how it arises.
+%
+\subsection{Extreme value modelling and asymptotic motivation for the GEV}
+%
+In this section, we show how to fit the generalised Extreme Value  Distribution,
+GEV($\mu, \sigma, \xi$) to 
+data points arising as sample maxima.
+The GEV has distribution function
+\begin{eqnarray}
+\label{eqn:GEVDistnFun}
+G(x)=\exp\left[-\left\{1+\xi\left(\frac{x-\mu}{\sigma}\right)\right\}^{-1/\xi}\right],
+\end{eqnarray}
+\mbox{ for } $x$ satisfying $1+\xi(x-u)/\sigma>0$.  The location parameter $\mu$ satisfies $-\infty <\mu<\infty$, scale parameter $\sigma>0$ and shape parameter $\xi$ satisfies $-\infty <\xi<\infty$.  The range of possible values taken
+by realisations from the GEV depends on the parameter values, with the
+distribution having a finite upper end point (short tailed) if the
+shape parameter is negative ($x\leq \mu-\sigma/\xi$ if $\xi<0$) and an
+infinite tail otherwise $x<\infty$ if $\xi\geq 0$.  When $\xi=0$, the GEV corresponds exactly to the Gumbel distribution.
 
-<<simbase>>=
-base <- sample(log(liver$ALT.B), size=4*nsim, replace=TRUE)
+Extreme value theory tells us that under appropriate normalisation of
+the sample maxima, as the underlying sample size from which maxima are taken tends to infinity, the limiting distribution of the sample maxima must fall in the generalised Extreme Value family of distributions
+(given certain conditions concerning non-degeneracy of the limit
+distribution and smoothness of the distribution of the original
+variable). 
+%
+\subsection{Parameterization}
+%
+As for the GPD (Section~\ref{sect:parameterization}), the usual parameterization of the GEV (equation~(\ref{eqn:gevDistnFun})) is in terms of its
+location $\mu$, scale $\sigma$ and shape parameter $\xi$. For the same reasons as those given for the GPD in Section~\ref{sect:parameterization}, we choose to  reparameterize in terms
+of $\phi = \log\sigma$.  Comments made in this section regarding this parameterization in the context of the GPD apply equally to the GEV.
+%
+\subsection{GEV fitting in {\tt texmex}}
+%
+We use the annual maxima sea-level observations in the dataset {\tt portpirie} to illustrate the fitting of the GEV in {\tt texmex}.  The function {\tt evm} (Extreme Value Model) is called, this time with the argument {\tt family=gev}, which fits the GEV model rather than the default family, GPD.  Diagnostic plots are constructed in the usual way:
+<<portpirieFit,fig=TRUE>>=
+port <- evm(SeaLevel,data=portpirie,family=gev)
+par(mfrow=c(2,2))
+plot(port)
+port
+@
+The fit of the GEV to the portpirie sea-level annual maxima appears to be good.
+
+There is no analogue of threshold choice for the GPD (by using MRL plots and threshold stanility plots), and as such there are fewer diagnostics to support the fitting of the GEV distribution.  Where poor fit is observed, it may be due to having taken maxima of an insufficient number of observations (for example, if the data are annual maxima then it may be that one year of data is not a large enough sample size from which to draw maxima).  Sometimes, but not always, it is possible to go back to the original data from which the maxima have been constructed and take maxima of a larger number of observations. This usually results in a smaller number of observed maxima so there is an obvious trade-off between bias and variance here.
+
+Covariates may be included in the GEV models in the same manner as illulstrated in Section~\ref{section:covariateModels} for the GPD.  As an exercise, we try fitting {\tt Year} as a covariate to the {\tt portpirie} sea level observations:
+<<portpirieCov,fig=TRUE>>=
+port1 <- update(port,mu=~Year)
+port2 <- update(port,phi=~Year)
+port3 <- update(port,xi=~I((Year-1955)/1955),start=c(coef(port),0.001))
+par(mfrow=c(2,2))
+plot(port3)
+@
+An examination of the AIC for each of these fitted models ({\tt AIC(port)} etc.) reveals there to be no evidence of an effect of Year on any of the GEV model parameters.
+%
+\subsection{Variants on basic GEV model fitting}
+%
+The various different model estimation strategies outlilned for the GDP model above can be applied equally to the estimation of GEV models.  We can use MCMC to estimate the GEV model parameters, just as for the GPD in Section~\ref{sebsection:BayesEstimation}:
+
+<<gevMCMC,eval=FALSE>>=
+evm(SeaLevel,data=portpirie,family=gev,method="simulate")
+@
+Output may be processed and examined in the same manner as for the GPD model, and we refer to the details of Section~\ref{sebsection:BayesEstimation} for outline examples in this area.
+
+Informative priors or penalties may be applied to model parameters as follows: 
+<<portpiriePenalisedLik>>=
+pp <- list(c(0, 0, 0), diag(c(10^4, 10^4, .25)))
+update(port, priorParameters = pp, prior="gaussian")
+@
+This was illustrated in more detail in Section~\ref{section:MPLE}.
+
+ONLY NUMERIC ESTIMATION OF INFORMATION MATRIX CURRENTLY IMPLEMENTED - DO WE WANT TO ADD OBS INFO FUNCTIONALITY??
+
+Uncertainty estimation via the parametric bootstrap is carried out for our fitted model in {\tt texmex} in the same manner as for the GPD, as follows:
+<<bootstrapGEV,fig=TRUE>>=
+boot <- evmBoot(port, trace=1001)
+summary(boot)
+par(mfrow=c(2,2))
+plot(boot)
+@
+This plot shows the bootstrap distributions of the model parameter estimates, for the GEV fitted to the {\tt portpirie} dataset.
+%
+\subsection{Return level estimation}
+%
+Quantiles of the fitted GEV distribution can be estimated by using the estimated model parameters in the following equation:
+\begin{eqnarray}
+x_p = \left\{
+\begin{array}{ll}
+  \mu - \frac{\sigma}{\xi}[1-\{-\log(1-p)\}^{-\xi}, & \mbox{ for }\xi\neq 0;\\
+  \mu - \sigma\log\{-\log(1-p)\}, & \mbox{ for }\xi=0.
+\end{array}
+\right.
+\label{eqn:GEVreturnLevel}
+\end{eqnarray}
+Here $p$ is the probability satisfying $G(x_p)=1-p$ (where $G(x)$ is defined in equation~(\ref{eqn:GEVDistnFun})).  This has the interpretation of $x_p$ being the {\it return level} associated with return period $1/p$. It is the level which is expected to be exceeded on average once every $1/p$ years.
+
+In {\tt texmex}, return levels are estimated for the GEV as we showed for the GPD:
+<<GEVretLevel,fig=TRUE>>=
+portRL <- predict(port,M=seq(50,1000,by=50),ci.fit=TRUE)
+plot(portRL)
+portRL[c(1,10,20)]
 @
 
-%
-\subsubsection{Robust regression model parameter uncertainty}
-%
-We now need to simulate from the sampling distribution of our robust regression model coefficients. MM-estimates
-are asymptotically Gaussian distributed, so we simulate from
-their joint Gaussian distribution. First we need to construct
-the covariance of the regression parameters from the values returned by the {\tt rlm} summary
-function.
-
-<<simreg>>=
-mycov <- summary(rmod)$cov.unscaled * summary(rmod)$stddev^2
-myloc <- coef(rmod)
-mycoefs <- rmvnorm(4*nsim, mean=myloc, sigma=mycov)
-@
-%
-\subsection{Return level estimation uncertainty}
-%
-We now combine all the simulations from the different components of our model to obtain an estimate of uncertainty about our point estimates of $m$-patient return levels.  Whereas before (Section~\ref{subsect:retLevelsPtEsts}) we had to fix a value of baseline, we can now average over baseline values within our sample.
-
-Simulated expected post-treatment log ALT are obtained by combining the simulated baseline values with the simulated robust regression coefficients.
-
-<<simexp>>=
-ElogALT <- mycoefs[,1] + mycoefs[,2]*base + rep(1:4,each=nsim)*mycoefs[,3]
-ElogALT <- matrix(ElogALT,ncol=4)
-@
-
-Note that the variability in the estimated regression parameters
-will be dwarfed by the variability due to extrapolation
-from the GPD model and by that due to variability in baseline values. As an exercise, try fixing the robust regression
-coefficients at their point estimates and see how much difference
-it makes to the final predictions.
-
-The expected post-treatment values of log ALT are combined with the simulated GPD parameters to obtain simulated values of $m$-patient return levels (Equation~\ref{eqn:returnLevel}) on the log scale:
-
-<<returnLevelsInts>>=
-rl <- predict(bmod,M=1000,all=TRUE)[[1]]
-colnames(rl) <- LETTERS[1:4]
-
-rl[1:5,] 
-logRL <- rl + ElogALT
-@
-
-Finally,
-we exponentiate to get back to the scale of the raw data.  Point estimates and approximate 90\% credible intervals are estimated respectively by the empirical medians and 5 and 95\% quantiles of our simulated return levels.
-
-<<returnLevelsIntsPLot,fig=TRUE>>=
-srl <- exp(apply(logRL,2,quantile,probs=c(0.05,0.5,0.95)))
-
-par(mfrow=c(1,1))
-plot(srl[2, ], 1:4, xlim=range(srl), type="n", log="x",
-     axes=FALSE, xlab="1000-patient return level\n(90% interval)", 
-     ylab="Dose")
-points(srl[2, ], 1:4, pch=16, cex=1.25)
-segments(x0=srl[1, ], x1=srl[3, ], y0=1:4)
-box()
-axis(1)
-axis(2, at=1:4, labels=LETTERS[1:4])
-@
-
-From the resulting figure, there is some evidence that 
-dose D is associated with very large values of ALT, suggesting
-a potential safety issue.
-
-%
-\subsection{Probability estimation uncertainty}
-%
-We can also predict quantities such as $P(ALT > 3\times ULN)$
-by rearranging (\ref{eqn:returnLevel}) on page~\pageref{eqn:returnLevel}:
-\begin{eqnarray*}
-\frac{1}{m} = p\left[(x_m - u)\frac{\xi}{\sigma} + 1\right]^{-1/\xi}.
-\end{eqnarray*}
-(Note, $p$ is the probability of exceeding the threshold for fitting the GPD.)
-Again, things are made complicated by the need to add
-the baseline effect back into the predictions. Here, we need
-also to account for the fact that for some fairly low values
-of interest (e.g.\ ULN, the Upper Limit of Normal), it is possible for the expected value
-of ALT given baseline to be greater than the specified value (in cases where baseline ALT is elevated). If
-the expected value of ALT is greater than ULN, we need to consider
-the full distribution function $F(r)=P(R\leq r)$ of the residuals. The model for this distribution has two components: above the threshold for fitting, the excesses of the residuals over the threshold are modelled by the fitted GPD; below the threshold we use the empirical distribution $\tilde F(r)$ of the residuals:
-\begin{eqnarray*}
-\hat F(r) = \left\{ \begin{array}{ll} 1-p \{1+\xi(r-u)/\sigma\}^{-1/\xi} & r > u\\
-                                      \tilde F(r) & r \leq u.
-                    \end{array} \right.
-\end{eqnarray*}
-
-This consideration is irrelevant for higher values of interest above which
-the expected value of ALT will never fall (e.g.\ interest is more usually in values $3\times ULN$ and
-almost always $10\times ULN$ or higher).
-
-Noting that in the {\tt liver} dataset, the ULN for ALT was 36 U/L,
-the code below does the necessary exceedance probability computations.
-
-<<predprobs>>=
-rp <- function(xm, u, phi, xi, p, r) {
-  res <- p * (1 + xi/exp(phi) * (xm - u))^(-1/xi)
-  if (any(u > xm)){
-    res[u > xm] <- sapply(u[u>xm],
-                          function(x,r,m,p) mean((r + x - quantile(r,1-p)) > m),
-                          r=r,m=xm,p=p)
-  }
-  res[xi < 0 & xm > u - exp(phi)/xi] <- 0
-  res
-}
-getProbs <- function(u, phi, xi, p, r, ULN, m = c(1, 3, 10, 20)) {
-  m <- log(ULN * m)
-  res <- t(sapply(m, rp, u = u, phi = phi, xi = xi, p = p, r=r))
-  res <- apply(res, 1, function(x){ c(quantile(x, c(.05, .95)),
-               Mean=mean(x))[c(1,3,2)] })
-  round(res, 4)
-}
-DoCalc <- function(ElogALT, xi){
-  cnames <- paste("P(ALT > ", c("", "3x", "10x", "20x"), "ULN)",sep = "")
-  out <- getProbs(u = ElogALT+bmod$threshold, 
-                  phi = bmodParams[[1]][,1], xi = xi, 
-                  r=liver$r, p = 1-0.7,ULN = 36)
-  colnames(out) <- cnames
-  out
-}
-rpA <- DoCalc(ElogALT = ElogALT[,1], xi = bmodParams[[1]][,2])
-rpB <- DoCalc(ElogALT = ElogALT[,2], xi = bmodParams[[2]][,2])
-rpC <- DoCalc(ElogALT = ElogALT[,3], xi = bmodParams[[3]][,2])
-rpD <- DoCalc(ElogALT = ElogALT[,4], xi = bmodParams[[4]][,2])
-
-rpA
-rpB
-rpC
-rpD
-@
-
-The above tables contain summary statistics from posterior
-predictive distributions. When computing the return levels, we
-used the median as an estimate of the centre of the posterior
-distribution. The reason for this is that experience has shown
-that for some distributions with extremely heavy tails, the mean
-can be unduly influenced by very large values and can even be
-outside the 90 or 95\% credible interval (as estimated by the
-sample quantiles). The distribution is often skewed,
-so the mean and median can differ substantially; in an ideal
-world we might display the entire posterior rather than simple
-summaries.  For the estimation of probailities, the range of 
-values is bounded by $[0,1]$ and so here we report sample means instead of medians.
-
-The tables suggest that under dose D (the highest dose), approximately 0.2\% of patients
-(about 1 in 500) will get an ALT greater than $20\times ULN$, 
-a level described by CTC as {\em life threatening}.
 
 \bibliography{texmex}
 \bibliographystyle{plain}
