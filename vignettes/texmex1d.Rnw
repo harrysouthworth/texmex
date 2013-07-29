@@ -31,14 +31,14 @@
 \section{Introduction}
 %
 This document illustrates the use of the {\tt texmex} package
-for performing extreme value analysis of some environmental data in {\tt R},~\cite{R}.  This package vignette focusses on univariate extreme value modelling of threshold excesses using the generalized Pareto distribution (GPD), and of data arising as maxima, using the generalized extreme value (GEV) distribuion.  The separate vignette {\tt texmexMultivariate} examines multvariate extreme value
+for performing extreme value analysis of some environmental data in {\tt R},~\cite{R}.  This package vignette focusses on univariate extreme value modelling of threshold excesses using the generalized Pareto distribution (GPD), and of data arising as maxima, using the generalized extreme value (GEV) distribuion.  The separate vignette {\tt texmexMultivariate} examines multivariate extreme value
 modelling using a conditional threshold based approach.  For extreme value modelling of temporally dependent Peaks over Threshold data by using declustering, see the package vignette {\tt declustering}.
 
 To cite this vignette, refer to Vignette name: {\tt texmex1d} and use the package citation:
 <<cite,echo=FALSE,fig=FALSE>>=
 citation("texmex")
 @
-Extreme value statistical models are unusual among statistical models in that they are often required for extrapolation beyond levels observed in the data.  As statisticians, we are told that extrapolation from statistical models is perilous: our models can only be trusted in regions where we have sufficient data to calibrate and check goodness of model fit.  Extreme value modelling has responded to a demand for extrapolation beyond this safe region.  Since we can no longer rely on data as a check on our model's suitability, extreme value statisticians turn to mathematical arguments to bolster their confidence in their extrapolation.  These arguments provide a justification for the use of a particular type of model to describe tail behaviour of random variables.
+Extreme value statistical models are unusual among statistical models in that they are often required for extrapolation beyond levels observed in the data.  As statisticians, we are told that extrapolation from statistical models is perilous: our models can only be trusted in regions where we have sufficient data to calibrate and check goodness of model fit.  Extreme value modelling has responded to a demand for extrapolation beyond this safe region.  Since we can no longer rely on data as a check on our models' suitability, extreme value statisticians turn to mathematical arguments to bolster their confidence in their extrapolation.  These arguments provide a justification for the use of a particular type of model to describe tail behaviour of random variables.
 
 This is not a tutorial in Extreme Value Theory, for which we refer the reader to \cite{coles}, which describes a range of methods for modelling the statistical properties of sample maxima, threshold excesses, extremes of dependent series and other aspects of tail behaviour.  
 
@@ -257,7 +257,7 @@ exponential, and $\xi = 1$ corresponds to it being so
 heavy-tailed that its expectation is infinite. For many applications, values of $\xi = -1$ and $\xi = 1$ may be
 implausible, and we would expect values of $\xi$ to be
 fairly close to 0. This implies a prior distribution
-that is Gaussian with standard deviation $\theta = \frac{1}{2}$.
+that is Gaussian, centred at zero, with standard deviation $\theta = \frac{1}{2}$.
 
 Since convergence issues are generally associated with
 $\xi$, we can choose a diffuse prior for $\phi$, say
@@ -318,13 +318,22 @@ AIC is lowest for {\tt airpoll2} which has O3 as a covariate affecting the scale
 Since {\tt airpoll2}
 has the lowest AIC we prefer that model. 
 
-We now examine diagnostics for our preferred model, {\tt airpoll2}
+We now examine more detailed model diagnostics for our preferred model, {\tt airpoll2}:
 <<airpoll2diag, fig=TRUE>>=
 par(mfrow=c(2, 2), pty="s")
 plot(airpoll2)
 plot(predict(airpoll2,type="lp",ci.fit=TRUE),
      main="Fitted (log)scale parameter")
 summary(airpoll2)
+@
+The {\tt summary} command reveals an alarming number of points to lie outside of the 95\% tolerance interval constructed for the Q-Q plot; the corresponding plot shows these points to be among those lying closest to the fitting threshold.  This suggests that we should re-visit the whole model selection procedure again at a higher threshold (details not shown here).  We eventually settle on the following model, fit at a threshold corresponding to the 90\% quantile:
+<<airpoll4diag, fig=TRUE>>=
+airpoll4 <- update(airpoll2,qu=0.9)
+par(mfrow=c(2, 2), pty="s")
+plot(airpoll4)
+plot(predict(airpoll4,type="lp",ci.fit=TRUE),
+     main="Fitted (log)scale parameter")
+summary(airpoll4)
 @
 The fit of this model is adequate, having apparently captured the dependence of the scale parameter on O3.  The final plot shows the nature of this relationship, with larger values of O3 giving lower values of $\phi$.  This concurs with the observed negative relationship between the variables shown in the original scatter plot, Section~\ref{section:winterData}.
 
@@ -402,7 +411,7 @@ caterpillars'' if the algorithm has converged on its target
 distribution. Also, the cumulative means of the chains should
 converge, the acceptance rate should not be too high or too low, and the
 autocorrelation functions should rapidly decay to zero. We 
-conclude from the plots that there is no evidence against convergence of our Markov chains, although we should probably thin our output further to obtain a chain that is closer to independent  (the default is to thin to every 4 observations).  Here we retain the burn-in value of 500 but now discard all but every 20th observation, resulting in an autocorrelation function which decays more rapidly to zero. This restults in the retention of 2000 values after discarding the burn-in and applying the thinning.  (Note that the observations are not discarded destructively and we can use the {\tt thinAndBurn} function repeatedly to examine the impact of using different values of {\tt burn} and {\tt thin}.)
+conclude from the plots that there is no evidence against convergence of our Markov chains, although we should probably thin our output further to obtain a chain that is closer to independent  (the default is to thin to every 4 observations).  Here we retain the burn-in value of 500 but now discard all but every 20th observation, resulting in an autocorrelation function which decays more rapidly to zero. This results in the retention of 2000 values after discarding the burn-in and applying the thinning.  (Note that the observations are not discarded destructively and we can use the {\tt thinAndBurn} function repeatedly to examine the impact of using different values of {\tt burn} and {\tt thin}.)
 
 <<thinmcmcE>>=
 airpollSim <- thinAndBurn(airpollSim, burn=500, thin = 20)
@@ -508,9 +517,8 @@ variable).
 %
 \subsection{Parameterization}
 %
-As for the GPD (Section~\ref{sect:parameterization}), the usual parameterization of the GEV (equation~(\ref{eqn:gevDistnFun})) is in terms of its
-location $\mu$, scale $\sigma$ and shape parameter $\xi$. For the same reasons as those given for the GPD in Section~\ref{sect:parameterization}, we choose to  reparameterize in terms
-of $\phi = \log\sigma$.  Comments made in this section regarding this parameterization in the context of the GPD apply equally to the GEV.
+As for the GPD (Section~\ref{sect:parameterization}), the usual parameterization of the GEV (equation~(\ref{eqn:GEVDistnFun})) is in terms of its
+location, scale and shape parameters $\mu$, $\sigma$ and $\xi$ respectively. For the same reasons as those given for the GPD in Section~\ref{sect:parameterization}, we choose to  reparameterize in terms of $\phi = \log\sigma$.  Comments made in this section regarding this parameterization in the context of the GPD apply equally to the GEV.
 %
 \subsection{GEV fitting in {\tt texmex}}
 %
@@ -537,7 +545,7 @@ An examination of the AIC for each of these fitted models ({\tt AIC(port)} etc.)
 %
 \subsection{Variants on basic GEV model fitting}
 %
-The various different model estimation strategies outlilned for the GDP model above can be applied equally to the estimation of GEV models.  We can use MCMC to estimate the GEV model parameters, just as for the GPD in Section~\ref{sebsection:BayesEstimation}:
+The various different model estimation strategies outlined for the GDP model above can be applied equally to the estimation of GEV models.  We can use MCMC to estimate the GEV model parameters, just as for the GPD in Section~\ref{sebsection:BayesEstimation}:
 
 <<gevMCMC,eval=FALSE>>=
 evm(SeaLevel,data=portpirie,family=gev,method="simulate")
@@ -574,7 +582,7 @@ x_p = \left\{
 \right.
 \label{eqn:GEVreturnLevel}
 \end{eqnarray}
-Here $p$ is the probability satisfying $G(x_p)=1-p$ (where $G(x)$ is defined in equation~(\ref{eqn:GEVDistnFun})).  This has the interpretation of $x_p$ being the {\it return level} associated with return period $1/p$. It is the level which is expected to be exceeded on average once every $1/p$ years.
+Here $p$ is the probability satisfying $G(x_p)=1-p$ (where $G(x)$ is defined in equation~(\ref{eqn:GEVDistnFun})).  This has the interpretation of $x_p$ being the {\it return level} associated with return period $1/p$. For example, for annual maxima data, it is the level which is expected to be exceeded on average once every $1/p$ years.
 
 In {\tt texmex}, return levels are estimated for the GEV as we showed for the GPD:
 <<GEVretLevel,fig=TRUE>>=
