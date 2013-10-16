@@ -22,7 +22,7 @@ copula(x, na.last = NA)
   The result is obtained by applying \code{\link{edf}} to each
   column of \code{x} in turn.
   
-  Print, plot, show and summary methods are available for the copula class.
+  Print, plot and summary methods are available for the copula class.
 }
 \value{
   A matrix with the same dimensions as \code{x}, each column

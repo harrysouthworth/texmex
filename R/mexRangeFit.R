@@ -43,14 +43,13 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
   res
 }
  
-show.mexRangeFit <-
-  print.mexRangeFit <- function(x, ...){
+print.mexRangeFit <- function(x, ...){
     out <- list(a = sapply(x$ests,function(x)x$dependence$coefficients[1,]),
                 b = sapply(x$ests,function(x)x$dependence$coefficients[2,]))
     colnames(out$a) <- colnames(out$b) <- x$quantiles
     print(out)
     invisible()
-  }
+}
 
 summary.mexRangeFit <- function(object, ...){
   print(object)
