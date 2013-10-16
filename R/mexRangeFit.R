@@ -69,15 +69,16 @@ plot.mexRangeFit <- function(x,col=2,bootcol="grey",addNexcesses=TRUE,...){
   R <- length(boot[[1]]$boot)
   
   for(i in 1:dim(PointEsts)[1]){
-    if( sum((i%%6) == 1:4) ){ # exclude plots from nuisance parameters m and s for which i mod 6 = 5,0 resp
+    if( sum((i %% 6) == 1:4) ){ # exclude plots from nuisance parameters m and s for which i mod 6 = 5,0 resp
       if(sum(PointEsts[i,])){
-        Boot <- sapply(boot,function(x) sapply(x$boot,function(x) x$dependence[i]))
-        ylim <- range(rbind(PointEsts[i,],Boot),na.rm=TRUE)
-        plot(quantiles,PointEsts[i,],col=col,ylab=Names[i],type="b",ylim=ylim,...)
+        Boot <- sapply(boot, function(x) sapply(x$boot, function(x) x$dependence[i]))
+        ylim <- range(rbind(PointEsts[i,],Boot), na.rm=TRUE)
+        plot(quantiles, PointEsts[i,], col=col, ylab=Names[i], type="b", ylim=ylim, ...)
         points(rep(quantiles,each=R),Boot,col=bootcol)
-        points(quantiles,PointEsts[i,],col=col)
+        points(quantiles, PointEsts[i,],col=col)
         if(addNexcesses){
-          axis(3,at=axTicks(1),labels=sapply(axTicks(1),function(u,dat,which)sum(dat[,which] > quantile(dat[,which],u)), dat=data,which=which))
+          axis(3, at=axTicks(1), labels=sapply(axTicks(1), function(u,dat,which)sum(dat[,which] > quantile(dat[,which],u)),
+                                               dat=data, which=which))
           mtext("# threshold excesses")
         }
       }
