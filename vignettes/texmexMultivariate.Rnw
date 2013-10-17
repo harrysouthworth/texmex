@@ -219,6 +219,10 @@ algorithm is rather complicated. Fitted models are arguably most easily interpre
 %
 Now we fit the multivariate model to the winter dataset, conditioning on each of the five marginal variables in turn.  Here, {\tt mqu} specifies the marginal quantile which defines the threshold above which the marginal GPD models will be fitted.
 
+<<warningsOff,echo=FALSE>>
+o <- options(warn=-1)
+@
+
 <<mex>>=
 mex.O3  <- mex(winter, mqu=.7, penalty="none", which="O3")
 mex.NO2 <- mex(winter, mqu=.7, penalty="none", which="NO2")
@@ -233,11 +237,17 @@ The function {\tt mex} is a wrapper for the functions {\tt migpd} and {\tt mexDe
 marg <- migpd(winter, mqu=0.7, penalty="none")
 mex.O3 <- mexDependence(marg, which = "O3")
 @
-This would be a more efficient way to fit the above models, as it does the GPD estimation only once, whereas this was repeated for each of the different conditioning variables in the preceding code chunk.    By default, if no dependence threshold is supplied, the threshold for fitting the dependence component of the model is taken to be equal to that used to fit the GPD model to the tail of the conditioning variable, and a warning message is given. There is, however, no reason why the thresholds employed for marginal and dependence modelling should be the same, and there is no required ordering on the two types of threshold.  Different threholds can be used for marginal and dependence modelling, by specifying the quantile {\tt dqu} to be used for the dependence threshold:
+
+The above would be a more efficient way to fit the above models, as it does the GPD estimation only once, whereas this fitting was repeated for each of the different conditioning variables in the preceding code chunk.    By default, if no dependence threshold is supplied, the threshold for fitting the dependence component of the model is taken to be equal to that used to fit the GPD model to the tail of the conditioning variable, and a warning message is given. There is, however, no reason why the thresholds employed for marginal and dependence modelling should be the same, and there is no required ordering on the two types of threshold.  Different threholds can be used for marginal and dependence modelling, by specifying the quantile {\tt dqu} to be used for the dependence threshold:
 
 <<migpd.mexDependenceDifferentThresh,eval=FALSE>>=
 mexDependence(marg, which = "O3", dqu=0.8)
 @
+
+<<warningsOn,echo=FALSE>>
+o <- options(o)
+@
+
 %
 \subsection{Marginal model diagnostics}
 %
