@@ -52,7 +52,7 @@ texmexJumpConst(j, map)
            fit to the data. Alternatively the family could be \code{gev},
            resulting in a generalized extreme value distribution being
            fit. No other families are currently available in texmex,
-           but users can write their own.}
+           but users may write their own.}
   \item{th}{ For threshold excess models (such as when
            \code{family=gpd}), the threshold for \code{y},
            exceedances above which will be used to fit the upper tail
@@ -85,7 +85,7 @@ texmexJumpConst(j, map)
   \item{cov}{How to compute the covariance matrix of the parameters. Defaults to
            \code{cov = "observed"} in which case the observed information matrix
            is used, if the \code{info} element of the \code{texmexFamily} object
-           is present. The only other
+           is present. Note that currently, this is not implemented for \code{gev}. The only other
            option is \code{cov = "numeric"} in which case a numerical approximation
            of the Hessian is used (see the help for \code{optim}). In some cases,
            particularly with small samples, the numerical approximation can be
