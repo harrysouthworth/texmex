@@ -557,9 +557,9 @@ Informative priors or penalties may be applied to model parameters as follows:
 pp <- list(c(0, 0, 0), diag(c(10^4, 10^4, .25)))
 update(port, priorParameters = pp, prior="gaussian")
 @
-This was illustrated in more detail in Section~\ref{section:MPLE}.
+This was illustrated in more detail for the GPD model in Section~\ref{section:MPLE}.
 
-ONLY NUMERIC ESTIMATION OF INFORMATION MATRIX CURRENTLY IMPLEMENTED - DO WE WANT TO ADD OBS INFO FUNCTIONALITY??
+Currently, there is no implementation in {\tt texmex} of the Observed Information Matrix estimator of the covariance matrix of parameter estimates, instead estimates of this matrix are obtained using a numerical approximation to the Hessian matrix.
 
 Uncertainty estimation via the parametric bootstrap is carried out for our fitted model in {\tt texmex} in the same manner as for the GPD, as follows:
 <<bootstrapGEV,fig=TRUE>>=
