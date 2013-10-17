@@ -265,7 +265,7 @@ If required, the function {\tt gpd} may be called by specifying a penalty or pri
 <<rainbgpd,eval=FALSE>>=
 rain.mcmc <- evm(dc,method="simulate")
 @
-which returns an object of class {\tt bgpd}. See documentation for the {\tt gpd} function for further information.
+which returns an object of class {\tt bgpd}. See documentation for the {\tt evm} function for further information.
 
 \subsubsection*{Estimation of return levels}
 
@@ -327,7 +327,7 @@ The SO2 variable is declustered whilst retaining the covariate structure of the 
 
 <<winterDeclust1,fig=TRUE>>=
 par(mfrow=c(2,2))
-extremalIndexRangeFit(SO2,data=winter,umin=10,umax=50,verb=FALSE)
+extremalIndexRangeFit(SO2,data=winter,umin=10,umax=40,verb=FALSE)
 @
 
 This suggests that we should not use a threshold of below 15.  We further examine threshold choice by using Q-Q plots:
