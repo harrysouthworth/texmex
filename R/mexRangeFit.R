@@ -1,7 +1,6 @@
-`mexRangeFit` <-
+mexRangeFit <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nPass=3, trace=10,
-          margins="laplace", constrain=TRUE, v=10)
-{
+          margins="laplace", constrain=TRUE, v=10){
   if (class(x) == "mex"){
     if( (!missing(margins))){
       warning("margins given, but already specified in 'mex' object.  Using 'mex' value")
@@ -55,7 +54,7 @@ summary.mexRangeFit <- function(object, ...){
   print(object)
 }
 
-plot.mexRangeFit <- function(x,col=2,bootcol="grey",addNexcesses=TRUE,...){
+plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE,...){
   ests <- x$ests
   boot <- x$boot
   quantiles <- x$quantiles

@@ -25,6 +25,7 @@
 \alias{print.summary.predict.mex}
 \alias{plot.ppevm}
 \alias{plot.qqevm}
+\alias{plot.mexRangeFit}
 \alias{print.hist.evmOpt}
 \alias{plot.hist.evmOpt}
 \alias{print.ppevm}
@@ -71,6 +72,8 @@
   \item{object}{ A texmex object of class indicated by method type.}
   \item{digits}{ Number of digits for printing.}
   \item{verbose}{ Logical, whether to show model fitting summary in addition to just model parameter estimates.}
+  \item{col}{ The colour of points on the plot (the point estimates in \code{plot.mexRangeFit}).}
+  \item{bootcol}{ The colour of points for point estimates from bootstrap samples in \code{plot.mexRangeFit}.}
   \item{...}{Further arguments to methods.}
   }
 
