@@ -1,6 +1,6 @@
 all:
 	pdflatex  texmex1d.tex
-        bibtex  texmex1d
+	bibtex  texmex1d
 	pdflatex  texmex1d.tex
 	pdflatex  texmex1d.tex
 	rm *.log texmex1d.aux texmex1d.bbl texmex1d.blg texmex1d.tex
