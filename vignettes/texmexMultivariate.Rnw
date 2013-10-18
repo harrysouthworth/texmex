@@ -34,7 +34,7 @@ This document illustrates the use of the {\tt texmex} package,~\cite{texmex}
 for performing extreme value analysis of multivariate data in {\tt R},~\cite{R}.
 Broadly speaking, the analysis proceeds in
 two steps: generalized Pareto distribution (GPD) modelling of
-the marginal variables followed by conditional multvatiate extreme value
+the marginal variables followed by conditional multivariate extreme value
 modelling.  The first step is covered in more detail in the {\tt texmex} vignette
 {\tt texmex1d}; here we describe briefly the stages of the univariate modelling
 and focus in more detail on the multivariate modelling.
@@ -104,12 +104,10 @@ all pairs of variables.
 
 <<mvdataplots1, fig=TRUE>>=
 par(mfrow=c(2,2))
-#attach(winter)
 plot(O3 ~ NO, data=winter)
 plot(NO2 ~ NO, data=winter)
 plot(SO2 ~ NO, data=winter)
 plot(PM10 ~ NO, data=winter)
-#detach(winter)
 @
 \label{fig:NO.Data}
 
@@ -283,7 +281,7 @@ model is taken to be equal to that used to fit the GPD model to the tail of the
 conditioning variable, and a warning message is given. There is, however, no
 reason why the thresholds employed for marginal and dependence modelling should
 be the same, and there is no required ordering on the two types of threshold.
-Different threholds can be used for marginal and dependence modelling, by
+Different thresholds can be used for marginal and dependence modelling, by
 specifying the quantile {\tt dqu} to be used for the dependence threshold:
 
 <<migpd.mexDependenceDifferentThresh, eval=FALSE>>=
@@ -451,7 +449,7 @@ pPM10 <- predict(mex.PM10, pqu=.9, nsim=nsim)
 
 The resulting conditional distributions are summarised as follows:
 <<summaryPredictMex>>=
-#summary(pO3)
+summary(pO3)
 @
 
 The thresholds cited in the final part of the output are by default taken to be
