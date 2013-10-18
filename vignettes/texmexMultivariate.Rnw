@@ -33,7 +33,7 @@
 This document illustrates the use of the {\tt texmex} package,~\cite{texmex}
 for performing extreme value analysis of multivariate data in {\tt R},~\cite{R}. Broadly speaking, the analysis proceeds in
 two steps: generalized Pareto distribution (GPD) modelling of
-the marginal variables followed by conditional multvatiate extreme value
+the marginal variables followed by conditional multvariate extreme value
 modelling.  The first step is covered in more detail in the {\tt texmex} vignette {\tt texmex1d}; here we describe briefly the stages of the univariate modelling and focus in more detail on the multivariate modelling.
 
 To cite this vignette, refer to Vignette name: {\tt texmexMultivariate} and use the package citation:
