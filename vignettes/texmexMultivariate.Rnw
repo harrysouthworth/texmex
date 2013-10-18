@@ -31,10 +31,13 @@
 \section{Introduction}
 %
 This document illustrates the use of the {\tt texmex} package,~\cite{texmex}
-for performing extreme value analysis of multivariate data in {\tt R},~\cite{R}. Broadly speaking, the analysis proceeds in
+for performing extreme value analysis of multivariate data in {\tt R},~\cite{R}.
+Broadly speaking, the analysis proceeds in
 two steps: generalized Pareto distribution (GPD) modelling of
-the marginal variables followed by conditional multvariate extreme value
-modelling.  The first step is covered in more detail in the {\tt texmex} vignette {\tt texmex1d}; here we describe briefly the stages of the univariate modelling and focus in more detail on the multivariate modelling.
+the marginal variables followed by conditional multvatiate extreme value
+modelling.  The first step is covered in more detail in the {\tt texmex} vignette
+{\tt texmex1d}; here we describe briefly the stages of the univariate modelling
+and focus in more detail on the multivariate modelling.
 
 To cite this vignette, refer to Vignette name: {\tt texmexMultivariate} and use the package citation:
 <<cite,echo=FALSE,fig=FALSE>>=
@@ -43,7 +46,9 @@ citation("texmex")
 %
 \subsection{Preliminaries}
 %
-With {\tt texmex} installed, use the {\tt library} command to make the package available to the current session, set the colours used for graphics, and set the random seed so that results are reproducible on a given machine:
+With {\tt texmex} installed, use the {\tt library} command to make the package
+available to the current session, set the colours used for graphics, and set the
+random seed so that results are reproducible on a given machine:
 <<setstuff>>=
 library(texmex)
 palette(c("black","purple","cyan","orange"))
@@ -53,7 +58,10 @@ set.seed(20130618)
 \subsection{Data}
 %
 The dataset used in this example analysis is contained in the {\tt texmex}
-package. This vignette reproduces some of the analysis presented in Heffernan and Tawn (2004)~\cite{heffernanTawn}, describing the extremal behaviour of daily maxima of hourly means of five air pollutants.  We focus on the {\tt winter} data from the months November to February inclusive:
+package. This vignette reproduces some of the analysis presented in Heffernan
+and Tawn (2004)~\cite{heffernanTawn}, describing the extremal behaviour of daily
+maxima of hourly means of five air pollutants.  We focus on the {\tt winter}
+data from the months November to February inclusive:
 <<data>>=
 data(winter)
 head(winter)
@@ -62,11 +70,11 @@ summary(winter,digits=2)
 
 The response variables are
 \begin{description}
-   \item[O3]Daily maximum ozone in parts per billion.
-    \item[NO2]Daily maximum NO2 in parts per billion.
-    \item[NO]Daily maximum NO in parts per billion.
-    \item[SO2]Daily maximum SO2 in parts per billion.
-    \item[PM10]Daily maximum PM10 in micrograms/metre$^3$.
+\item[O3]Daily maximum ozone in parts per billion.
+\item[NO2]Daily maximum NO2 in parts per billion.
+\item[NO]Daily maximum NO in parts per billion.
+\item[SO2]Daily maximum SO2 in parts per billion.
+\item[PM10]Daily maximum PM10 in micrograms/metre$^3$.
 \end{description}
 
 %
@@ -85,31 +93,37 @@ tell us anything at all about dependence in the extremes.
 %
 Firstly, we attempt to get a feel for the
 data by examining the pairwise  dependence between 
-variables.  A pairwise scatterplot of the data shows some extremal dependence between the variables, the nature of which varies considerably between the pairs. 
+variables.  A pairwise scatterplot of the data shows some extremal dependence between
+the variables, the nature of which varies considerably between the pairs. 
 <<rawData, fig=TRUE>>=
-pairs(winter)
+  pairs(winter)
 @
 
-Next, we plot each of the other variables against NO; a full analysis would consider all pairs of variables.
+Next, we plot each of the other variables against NO; a full analysis would consider
+all pairs of variables.
 
 <<mvdataplots1, fig=TRUE>>=
 par(mfrow=c(2,2))
-attach(winter)
-plot(NO,O3)
-plot(NO,NO2)
-plot(NO,SO2)
-plot(NO,PM10)
-detach(winter)
+#attach(winter)
+plot(O3 ~ NO, data=winter)
+plot(NO2 ~ NO, data=winter)
+plot(SO2 ~ NO, data=winter)
+plot(PM10 ~ NO, data=winter)
+#detach(winter)
 @
 \label{fig:NO.Data}
 
-We see that the dependence between these variables differs markedly from one pair to another.  Ozone (O3) appears to be negatively dependent on NO at high levels, whereas NO2 and PM10 are both clearly positively dependent at these levels, although the latter less strongly so than the former.  Plotting the other pairs of variables is left as an exercise.
+We see that the dependence between these variables differs markedly from one pair to another.
+Ozone (O3) appears to be negatively dependent on NO at high levels, whereas NO2 and PM10 are
+both clearly positively dependent at these levels, although the latter less strongly so than
+the former.  Plotting the other pairs of variables is left as an exercise.
 %
 \subsection{Exploring pairwise extremal dependence}
 %
 We can examine pairwise extremal dependence by plotting summary
 statistics $\chi$ and $\bar\chi$ as defined by Coles, Heffernan
-and Tawn~\cite{colesHeffernanTawn}. Here we do so for associations only between O3 and NO, and between O3 and NO2.
+and Tawn~\cite{colesHeffernanTawn}. Here we do so for associations only between
+O3 and NO, and between O3 and NO2.
 
 <<chi, fig=TRUE>>=
 chiO3 <- chi(winter[, c("O3", "NO")])
@@ -122,22 +136,34 @@ plot(chiNO2, mainChi="Chi: NO2 and NO", mainChiBar="Chi-bar: NO2 and NO")
 The plots are interpreted as follows:
 \begin{description}
 \item[a. Look at limiting value of $\bar\chi(u)$ \bf plot as the quantile $u$
-    tends to 1].  This gives a diagnostic as to whether the data
-  exhibit asymptotic dependence (the very largest values of each variable tend to occur in the same observation).  A limiting value of 1 is indicative
-  of asymptotic dependence.
+tends to 1].  This gives a diagnostic as to whether the data
+exhibit asymptotic dependence (the very largest values of each variable tend to
+occur in the same observation).  A limiting value of 1 is indicative of asymptotic
+dependence.
+
 \item[b. If limit in a. is equal to 1] examine plot of
-  $\chi(u)$ for a measure of the strength of dependence within the
-  asymptotic dependence class.  The limiting value of this function as
-  the quantile $u\rightarrow1$ tells us about the strength of this dependence, with
-  values closer to 1 indicating stronger dependence.
+$\chi(u)$ for a measure of the strength of dependence within the
+asymptotic dependence class.  The limiting value of this function as
+the quantile $u\rightarrow1$ tells us about the strength of this dependence, with
+values closer to 1 indicating stronger dependence.
 \item[c. If limit in a. is less than 1] examine plot of
-  $\bar\chi(u)$ for a measure of the strength of dependence within the
-  asymptotic independence class. Although at asymptotic levels, the largest values of the variables tend not to occur in the same observation, at moderately extreme levels, dependence may still be relatively strong.  The limiting value of this function as
-  $u\rightarrow1$ tells us about the strength of this dependence, with positive 
-  values closer to 1 indicating stronger positive dependence and negative values closer to -1 indicating stronger negative dependence.  Values close to 0 indicate asymptotic near independence.
+$\bar\chi(u)$ for a measure of the strength of dependence within the
+asymptotic independence class. Although at asymptotic levels, the largest values
+of the variables tend not to occur in the same observation, at moderately
+extreme levels, dependence may still be relatively strong.  The limiting value
+of this function as $u\rightarrow1$ tells us about the strength of this
+dependence, with positive values closer to 1 indicating stronger positive
+dependence and negative values closer to -1 indicating stronger negative
+dependence.  Values close to 0 indicate asymptotic near independence.
 \end{description}
-The $\bar\chi$ for O3 and NO shows that these variables are likely to be asymptotically independent, with weak negative dependence within this class. We do not examine the $\chi$ plot for this pair (and hence the $\chi$ plot is automatically greyed out). For NO2 and NO, the $\bar\chi$ plot rises towards the right, and includes 1 as a possble limit
-indicating possible asymptotic dependence. The $\chi$ plot indicates moderate positive dependence within this class.
+
+The $\bar\chi$ for O3 and NO shows that these variables are likely to be
+asymptotically independent, with weak negative dependence within this class. We
+do not examine the $\chi$ plot for this pair (and hence the $\chi$ plot is
+automatically greyed out). For NO2 and NO, the $\bar\chi$ plot rises towards the
+right, and includes 1 as a possble limit indicating possible asymptotic
+dependence. The $\chi$ plot indicates moderate positive dependence within this
+class.
 
 An alternative approach to examining pairwise extremal dependence
 is to examine the multivariate conditional Spearman's correlation
@@ -154,7 +180,7 @@ plot(mcsNO2, main="MCS: NO2 and NO")
 @
 
 The plots of the multivariate conditional Spearman's $\rho$
-do not have the same vertical axes, and tell a similar story
+  do not have the same vertical axes, and tell a similar story
 to the plots of $\chi$ and $\bar\chi$. Confidence intervals can be added to the MCS plots by using
 {\tt bootMCS} and its associated plot method, see documentation for more details.
 
@@ -175,11 +201,13 @@ a bootstrap scheme.
 \subsection{Marginal transformation}
 %
 The structure of the regression type dependence model is defined not on the original data scale, but after marginal transformation to standardised margins.  In the original implementation, Heffernan and Tawn used a transformation to Gumbel margins but subsequent developments (see~\cite{KeefEtAl2013}) in this area show the structure of the regression model to be greatly simplified if Laplace margins are used instead.  The package {\tt texmex} implements both and correspondingly we describe both here.  Let $\bX = (X_1,\ldots,X_d)$ be a $d$ dimensional random variable with arbitrary marginal distributions.  Let $\hat F_i$ denote an estimate of the $i$th marginal distribution function ($i=1,\ldots,d$) and let $G$ denote the distribution function of the standardised marginal distribution, to be determined.  The original vector variable $\bX$ is transfromed to $\bY=(Y_1,\ldots,Y_d)$, a variable having standardised marginal distributions by using the \emph{probability integral transform} as follows:
-\begin{eqnarray}
+  \begin{eqnarray}
 \label{eqn:PIT}
-  Y_i &=& (G^{-1}(\hat F_i(X_i)), i=1,\ldots,d.
+Y_i &=& (G^{-1}(\hat F_i(X_i)), i=1,\ldots,d.
 \end{eqnarray}
-In practice, the $\hat F_i$ can be the marginal empirical distribution functions of the data (in which case Equation~(\ref{eqn:PIT}) is also known as the \emph{rank transform}), or the semi-parametric model using the empirical distributions below a threshold and the fitted GPD models for the tails of the distributions above the threshold.
+In practice, the $\hat F_i$ can be the marginal empirical distribution functions of the data (in which case
+Equation~(\ref{eqn:PIT}) is also known as the \emph{rank transform}), or the semi-parametric model using the empirical
+distributions below a threshold and the fitted GPD models for the tails of the distributions above the threshold.
 %
 \subsubsection{Regression model structure}
 %
@@ -187,42 +215,51 @@ Let $Y_i, i \in \{1,\ldots,d\},$ be the variable on which we are to condition.  
 \begin{description}
 \item[Laplace margins] G is the Laplace distribution function and $\bY$ are marginally Laplace distributed.  Conditional on variable $Y_i$ exceeding a high threshold $t$, the Heffernan and Tawn model for the remaining variables $\bY_{-i}$ takes the form:
 \begin{eqnarray}\label{eqn:HTlaplace}
-  \bY_{-i} = \balpha_{|i} Y_i + (Y_i)^{\bbeta_{|i}}\bZ_{|i}
+\bY_{-i} = \balpha_{|i} Y_i + (Y_i)^{\bbeta_{|i}}\bZ_{|i}
 \end{eqnarray}
 where $\bZ_{|i}$ is a vector residual and $(d-1)$ dimensional parameter vectors $\balpha_{|i}$ and $\bbeta_{|i}$ satisfy $(\balpha_{|i},\bbeta_{|i}) \in [-1, 1]^{d-1}\times(-\infty, 1)^{d-1}$. Here, $\alpha_{j|i}$, the $\balpha_{|i}$ associated with $Y_j, (j\in \{1,\ldots,d\}, j\neq i)$, then $0 < \alpha_{j|i}\leq 1$ and
 $-1 \leq \alpha_{j|i} < 0$ correspond respectively to positive and negative association between $Y_j$ and large values of $Y_i$.
 \item[Gumbel margins] G is the Gumbel distribution function and $\bY$ are marginally Gumbel distributed.  Conditional on variable $Y_i$ exceeding a high threshold $t$, the Heffernan and Tawn model for the remaining variables $\bY_{-i}$ takes the form:
 \begin{eqnarray}\label{eqn:HTgumbel}
-  \bY_{-i} = \balpha_{|i} Y_i + I_{\balpha_{|i}=0,\bbeta_{|i}<0}(\bc_{|i}
-- \bd_{|i} \log Y_i)+ (Y_i)^{\bbeta_{|i}}\bZ_{|i}
+\bY_{-i} = \balpha_{|i} Y_i + I_{\balpha_{|i}=0,\bbeta_{|i}<0}(\bc_{|i}
+                                                                        - \bd_{|i} \log Y_i)+ (Y_i)^{\bbeta_{|i}}\bZ_{|i}
 \end{eqnarray}
 where $\bZ_{|i}$ is a vector residual and $(d-1)$ dimensional parameter vectors $\balpha_{|i}$, $\bbeta_{|i}$, $\bc_{|i}$ and $\bd_{|i}$ this time satisfy $(\balpha_{|i},\bbeta_{|i}, \bc_{|i}, \bd_{|i}) \in [0, 1]^{d-1}\times(-\infty, 1)^{d-1} \times (\infty,\infty)^{d-1}\times(0,1)^{d-1}$.  Here positive association between $Y_j$ and large $Y_i$ is described by $\alpha_{j|i}$, when both $\alpha_{j|i}>0$ and $\beta_{j|i}<0$.  The  model structure changes in the case of negative dependence in which case $\alpha_{j|i}=0$ and further parameters $c_{j|i}$ and $d_{j|i}$ are required.
 \end{description}
-The structure of the dependence model is greatly simplified under the use of Laplace margins, in which case a single model structure suffices to describe both positive and negative dependence.  This makes inference considerably more straightforward, particularly in the case of weak dependence.
 
+The structure of the dependence model is greatly simplified under the use of Laplace margins, in which case a single model structure suffices to describe both positive and negative dependence.  This makes inference considerably more straightforward, particularly in the case of weak dependence.
+         
 Note that in both Laplace and Gumbel cases, there is no parametric family of distributions assumed to describe the distribution of model residuals $\bZ_{|i}$.  Thus the Heffernan and Tawn conditional dependence model is semi-parametric.  For a complete description of the dependence between conditioning variable $Y_i$ and the remaining variables $\bY_{-i}$, we need both the parametric regression type model (either~(\ref{eqn:HTlaplace}) or~(\ref{eqn:HTgumbel})) and the distribution of the model residuals $\bZ_{|i}$, the latter being modelled by the empirical distribution of observed model residuals.  These model residuals are calculated by using transformed data $\bY$ and estimates of model parameters $\hat\balpha,\hat\bbeta$ (and possibly also $\hat\bc$ and $\hat\bd$) in~(\ref{eqn:HTlaplace}) or~(\ref{eqn:HTgumbel}).
 %
 \subsection{Constraints on parameter space}
 %
 Recent developments to the Heffernan and Tawn method,~\cite{KeefEtAl2013} address the issue of validity of the fitted model.  This work shows that in order for the fitted model to be valid, it is necessary impose tighter constraints on the parameters of the Heffernan and Tawn model than the originl box constraints described above.  Constraints suggested by Keef {\it et al.}\ enforce the consistency of the fitted dependence model with the strength of extremal dependence exhibited by the data.  
-
+         
 The effect of these constraints is to limit the shape of the dependence parameter space so that its boundary is curved. The constraint brings with it some performance issues for the optimiser used to estimate the dependence parameters, in particular sensitivity to choice of starting value.
 
-In {\tt texmex}, this constrained estimation is implemented for Laplace margins only.  It is to be preferred to the use of unconstrained estimation which can result in invalid, inconsistent inferences and which can lead to misleading predictions particularly if extrapolation is to be made far into the tail of the modelled distribution.  As such, the package defaults are to use Laplace margins and to constrain the parameters to give valid fitted models.  Diagnostic plots to visualise this constrained parameter space are provided: see examples below in Section~\ref{section:parSpaceConstraints}, page~\pageref{section:parSpaceConstraints}.
+In {\tt texmex}, this constrained estimation is implemented for Laplace margins
+only.  It is to be preferred to the use of unconstrained estimation which can
+result in invalid, inconsistent inferences and which can lead to misleading
+predictions particularly if extrapolation is to be made far into the tail of the
+modelled distribution.  As such, the package defaults are to use Laplace margins
+and to constrain the parameters to give valid fitted models.  Diagnostic plots
+to visualise this constrained parameter space are provided: see examples below
+in Section~\ref{section:parSpaceConstraints},
+page~\pageref{section:parSpaceConstraints}.
 %
 \section{Conditional multivariate extreme value modelling using {\tt texmex}}
 %
-The whole conditional multivariate extreme value modelling
-algorithm is rather complicated. Fitted models are arguably most easily interpreted by using them to predict quantities of interest.
+The whole conditional multivariate extreme value modelling algorithm is rather
+complicated. Fitted models are arguably most easily interpreted by using them to
+predict quantities of interest.
 %
 \subsection{Model fitting}
 %
-Now we fit the multivariate model to the winter dataset, conditioning on each of the five marginal variables in turn.  Here, {\tt mqu} specifies the marginal quantile which defines the threshold above which the marginal GPD models will be fitted.
-
-<<warningsOff,echo=FALSE>>
-o <- options(warn=-1)
-@
-
+Now we fit the multivariate model to the winter dataset, conditioning on each of
+the five marginal variables in turn.  Here, {\tt mqu} specifies the marginal
+quantile which defines the threshold above which the marginal GPD models will be
+fitted.
+         
 <<mex>>=
 mex.O3  <- mex(winter, mqu=.7, penalty="none", which="O3")
 mex.NO2 <- mex(winter, mqu=.7, penalty="none", which="NO2")
@@ -230,29 +267,37 @@ mex.NO  <- mex(winter, mqu=.7, penalty="none", which="NO")
 mex.SO2 <- mex(winter, mqu=.7, penalty="none", which="SO2")
 mex.PM10 <- mex(winter, mqu=.7, penalty="none", which="PM10")
 @
-
+         
 The function {\tt mex} is a wrapper for the functions {\tt migpd} and {\tt mexDependence} which carry out the marginal and dependence modelling stages respectively.  An equivalent way of carrying out the above, conditioning on O3 would be to use:
-
+           
 <<migpd.mexDependence>>=
 marg <- migpd(winter, mqu=0.7, penalty="none")
 mex.O3 <- mexDependence(marg, which = "O3")
 @
 
-The above would be a more efficient way to fit the above models, as it does the GPD estimation only once, whereas this fitting was repeated for each of the different conditioning variables in the preceding code chunk.    By default, if no dependence threshold is supplied, the threshold for fitting the dependence component of the model is taken to be equal to that used to fit the GPD model to the tail of the conditioning variable, and a warning message is given. There is, however, no reason why the thresholds employed for marginal and dependence modelling should be the same, and there is no required ordering on the two types of threshold.  Different threholds can be used for marginal and dependence modelling, by specifying the quantile {\tt dqu} to be used for the dependence threshold:
+This would be a more efficient way to fit the above models, as it does the GPD
+estimation only once, whereas this was repeated for each of the different
+conditioning variables in the preceding code chunk. By default, if no dependence
+threshold is supplied, the threshold for fitting the dependence component of the
+model is taken to be equal to that used to fit the GPD model to the tail of the
+conditioning variable, and a warning message is given. There is, however, no
+reason why the thresholds employed for marginal and dependence modelling should
+be the same, and there is no required ordering on the two types of threshold.
+Different threholds can be used for marginal and dependence modelling, by
+specifying the quantile {\tt dqu} to be used for the dependence threshold:
 
-<<migpd.mexDependenceDifferentThresh,eval=FALSE>>=
+<<migpd.mexDependenceDifferentThresh, eval=FALSE>>=
 mexDependence(marg, which = "O3", dqu=0.8)
 @
 
-<<warningsOn,echo=FALSE>>
-o <- options(o)
-@
-
-%
 \subsection{Marginal model diagnostics}
 %
-We can check the diagnostics for the fitted marginal models in the usual way.  Use of {\tt mrlPlot} and {\tt gpdRangeFit} can also be informative at this stage (see {\tt texmex1d} vignette for more details of these univariate methods - here output is suppressed since it is lengthy!).
-<<plot.migpd,eval=FALSE>>=
+We can check the diagnostics for the fitted marginal models in the usual way.
+Use of {\tt mrlPlot} and {\tt gpdRangeFit} can also be informative at this stage
+(see {\tt texmex1d} vignette for more details of these univariate methods - here
+output is suppressed since it is lengthy!).
+
+<<plot.migpd, eval=FALSE>>=
 plot(marg)
 plot(gpdRangeFit(winter$O3))  # ... etc
 plot(mrl(winter$O3))          # ... etc
@@ -260,7 +305,8 @@ plot(mrl(winter$O3))          # ... etc
 %
 \subsection{Dependence model diagnostics}
 %
-Plotting model diagnostics for the dependence component of the model is carried out as follows - first, for the model fitted by conditioning on the O3 variable:
+Plotting model diagnostics for the dependence component of the model is carried
+out as follows - first, for the model fitted by conditioning on the O3 variable:
 
 <<mexO3, fig=TRUE>>=
 par(mfcol=c(3, 4))
@@ -277,9 +323,9 @@ structure with scatterplot smoothers being more or
 less horizontal.  In the bottom row, the fitted quantiles should 
 agree with the shape of the raw data distribution.  Take care to 
 note that the one dimensional conditional distribution of $(X_j \,|\, X_i)$ 
-(whose estimated quantiles at each value of $X_i$ are shown by the contours) is \emph{not} the same thing as the (two dimensional) 
-joint distribution of the $(X_i,X_j)$, estimated by the scatterplot 
-of the data points.
+(whose estimated quantiles at each value of $X_i$ are shown by the contours) is
+\emph{not} the same thing as the (two dimensional) joint distribution of the
+$(X_i,X_j)$, estimated by the scatterplot of the data points.
 
 For the models fitted by conditioning on the NO variable, we do:
 <<mexNO, fig=TRUE>>=
@@ -288,7 +334,8 @@ plot(mex.NO)
 @
 
 
-Most of the plots support the choice of threshold, however the top plot for SO2 given NO shows a decrease in location with increase in conditioning NO.
+Most of the plots support the choice of threshold, however the top plot for SO2
+given NO shows a decrease in location with increase in conditioning NO.
 
 We can investigate further
 by plotting the dependence structure parameter estimates
@@ -299,29 +346,39 @@ we perform 10 (by default) bootstrap samples.  We set {\tt trace=11}
 to suppress printing of progress reports in this document (the 
 default is to report every ten replicates).
 
-<<mexRangeFit, fig=TRUE>>=
+<<mexRangeFitPlot, fig=TRUE>>=
 par(mfrow=c(4, 2))
 mrf <- mexRangeFit(marg, "NO", trace=11)
 plot(mrf,addNexcesses=FALSE)
 @
 
-The stability of the parameter estimates in the resulting plot provides some reassurance that the $70^{th}$
-percentile is a suitable threshold.
+The stability of the parameter estimates in the resulting plot provides some
+reassurance that the $70^{th}$ percentile is a suitable threshold.
 %
 \subsection{Constrained parameter space}
 \label{section:parSpaceConstraints}
 %
-Before carrying on to examine our fitted models or to use them for prediction, we need to take some care to make sure our parameter estimates do correspond to the true maximum of the objective functions used for estimation.  This is an issue since the performance of the optimiser can be sensitive to the choice of starting value. It is up to the user to check that the parameter estimates have converged to the true maximum likelihood estimates.  This is carried out straightforwardly using simple visual diagnostics.  
+Before carrying on to examine our fitted models or to use them for prediction,
+we need to take some care to make sure our parameter estimates do correspond to
+the true maximum of the objective functions used for estimation.  This is an
+issue since the performance of the optimiser can be sensitive to the choice of
+starting value. It is up to the user to check that the parameter estimates have
+converged to the true maximum likelihood estimates.  This is carried out
+straightforwardly using simple visual diagnostics.  
 
-To reduce the amount of output produced, here we show the procedure only for O3 given NO.  We use {\tt mexDependence} to plot the profile-likelihood surface which is maximised for estimation of the dependence model parameters.  
+To reduce the amount of output produced, here we show the procedure only for O3
+given NO.  We use {\tt mexDependence} to plot the profile-likelihood surface
+which is maximised for estimation of the dependence model parameters.  
 
-<<checkMax1,fig=TRUE>>=
+<<checkMax1,fig=FALSE>>=
 marg.NO2.NO <- migpd(winter[,c("NO2","NO")],mqu=0.7)
 mex.NO2.NO <- mexDependence(marg.NO2.NO, which = "NO",
                             dqu=0.7, PlotLikDo=TRUE)
 @
 
-This plot shows the point estimate to lie on the edge of the permissible parameter space, and we can home in on the region containing this estimate to check that the surface has been successfully maximised:
+This plot shows the point estimate to lie on the edge of the permissible
+parameter space, and we can home in on the region containing this estimate to
+check that the surface has been successfully maximised:
 
 <<checkMax2,fig=TRUE>>=
 par(mfrow=c(1,1))
@@ -330,34 +387,48 @@ mex.NO2.NO <- mexDependence(marg.NO2.NO, which = "NO",
                             PlotLikRange=list(a=c(0.6,0.8),b=c(0.1,0.3) ))
 @
 
-This plot reassures us that the point estimate does correspond to the maximum of the objective function.  If this had not been the case, we should have tried a range of different starting values for the optimisation.  More details are given in the documentation for {\tt mexDependence}.
+This plot reassures us that the point estimate does correspond to the maximum of
+the objective function.  If this had not been the case, we should have tried a
+range of different starting values for the optimisation.  More details are given
+in the documentation for {\tt mexDependence}.
 
-It is left as an exercise to produce plots for all of the conditional models fitted in this section here, for example:
+It is left as an exercise to produce plots for all of the conditional models
+fitted in this section here, for example:
 <<checkDependence,eval=FALSE>>=
 mexDependence(marg,which="O3",dqu=0.7,PlotLikDo=TRUE)
 @
 %
 \subsection{Fitted model parameters}
 %
-Now that we are satisfied with the fit of our model, we can examine the estimated model parameters.  The parameters in the dependence structure are not straighforwardly interpretable, though values of {\tt a} close to 1 (or -1) indicate
-strong positive (or negative) extremal dependence. 
+Now that we are satisfied with the fit of our model, we can examine the
+estimated model parameters.  The parameters in the dependence structure are not
+straighforwardly interpretable, though values of {\tt a} close to 1 (or -1)
+indicate strong positive (or negative) extremal dependence. 
 
 <<mexParsO3>>=
 mex.O3
 @
 
-It is clear from the values of the dependence paramters, that SO2 is the most strongly (negatively) dependent on large values of O3, with the other variables having only weak extremal dependence on ozone.
+It is clear from the values of the dependence paramters, that SO2 is the most
+strongly (negatively) dependent on large values of O3, with the other variables
+having only weak extremal dependence on ozone.
 
 <<mexParsNO>>=
 mex.NO
 @
 
-The values of the estimated dependence parameters show that NO2, SO2 and PM10 all have positive extremal dependence on NO, the strongest being that of PM10 on NO.  Ozone has fairly weak negative dependence on NO.
+The values of the estimated dependence parameters show that NO2, SO2 and PM10
+all have positive extremal dependence on NO, the strongest being that of PM10 on
+NO.  Ozone has fairly weak negative dependence on NO.
 
 %
 \subsection{Prediction under the fitted model}
 %
-The dependence between pairs of variables is described by a pair of parameters $(a,b)$ and also the associated empirical distribution of the residuals $\bZ_{|i}$.  For this reason, the interpretation of the fitted models is arguably most straightforward via prediction of variables given extreme values of the conditioning variable, which we cover now.
+The dependence between pairs of variables is described by a pair of parameters
+$(a,b)$ and also the associated empirical distribution of the residuals
+$\bZ_{|i}$.  For this reason, the interpretation of the fitted models is
+arguably most straightforward via prediction of variables given extreme values
+of the conditioning variable, which we cover now.
 
 Comparison of the plots of the remaining variables against NO
 reveals that the extremal dependence between the variables
@@ -377,31 +448,52 @@ pNO <- predict(mex.NO, pqu=.9, nsim=nsim)
 pSO2 <- predict(mex.SO2, pqu=.9, nsim=nsim)
 pPM10 <- predict(mex.PM10, pqu=.9, nsim=nsim)
 @
+
 The resulting conditional distributions are summarised as follows:
 <<summaryPredictMex>>=
-summary(pO3)
+#summary(pO3)
 @
 
-The thresholds cited in the final part of the output are by default taken to be the marginal thresholds used for fitting the GPD models  (in this case these are the 0.7 quantiles of the marginal distributions).  However, any value of threshold can be used for prediction by specifying the argument {\tt mth} of the {\tt summary} function, for example:
+The thresholds cited in the final part of the output are by default taken to be
+the marginal thresholds used for fitting the GPD models  (in this case these are
+the 0.7 quantiles of the marginal distributions).  However, any value of
+threshold can be used for prediction by specifying the argument {\tt mth} of the
+{\tt summary} function, for example:
 
 <<predict.O3>>=
 summary(pO3,mth=c(39,40,100,10,40))
 @
-The plot method can be used to visualise the fitted conditional models using the importance samples as follows:
+
+The plot method can be used to visualise the fitted conditional models using the
+importance samples as follows:
 <<plotPredictO3, fig=TRUE>>=
 par(mfrow=c(2, 2))
 plot(pO3)
 @
 
-Plots show the original data (purple circles) and data importance sampled under the fitted model above the threshold for prediction (orange crosses).  The solid curve in each plot is for reference and joins equal quantiles of the marginal distributions -- perfectly dependent variables would lie exactly on this line (this line is analogous to the diagnonal line on a QQ plot, but here since the two marginal distributions are not equal, the curve is not a straight line). We can compare the above output conditioning on O3 (which has weak or negative dependence) with that obtained when we condition on NO where the dependence is stronger:
+Plots show the original data (purple circles) and data importance sampled under
+the fitted model above the threshold for prediction (orange crosses).  The solid
+curve in each plot is for reference and joins equal quantiles of the marginal
+distributions -- perfectly dependent variables would lie exactly on this line
+(this line is analogous to the diagnonal line on a QQ plot, but here since the
+two marginal distributions are not equal, the curve is not a straight line). We
+can compare the above output conditioning on O3 (which has weak or negative
+dependence) with that obtained when we condition on NO where the dependence is
+stronger:
 
 <<plotPredictNO, fig=TRUE>>=
 par(mfrow=c(2, 2))
 plot(pNO)
 @
-The strong extremal dependence of winter PM10 on NO is evident here, with the sampled data following closely the curve of equal marginal quantiles.
+The strong extremal dependence of winter PM10 on NO is evident here, with the
+sampled data following closely the curve of equal marginal quantiles.
 
-The importance samples generated by the predict method can also be used to estimate probabilities of arbitrary tail regions falling above the threshold for the conditioning variable used for importance sampling, or to calculate functionals of the multidimensional variables.  The precise implementation will depend on the application in question.
+The importance samples generated by the predict method can also be used to
+estimate probabilities of arbitrary tail regions falling above the threshold for
+the conditioning variable used for importance sampling, or to calculate
+functionals of the multidimensional variables.  The precise implementation will
+depend on the application in question.
+
 
 \bibliography{texmex}
 \bibliographystyle{plain}
