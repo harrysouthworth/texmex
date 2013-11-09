@@ -27,12 +27,12 @@ addCovariance <- function(o, family, cov){
 }
 
 constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
-                         data, priorParameters, cov){
+                         modelData, data, priorParameters, cov){
     o$family <- family
     o$threshold <- th
     o$rate <- rate
     o$penalty <- prior
-    o$data <- data
+    o$data <- modelData
     o$coefficients <- addCoefficients(o)
     o$formulae <- modelParameters
     o$call <- call
@@ -47,5 +47,7 @@ constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
 
     o$value <- o$counts <- o$hessian <- NULL
 
+    o$xlevels <- texmexGetXlevels(o$fo, data)
+    
     o
 }

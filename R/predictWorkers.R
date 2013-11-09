@@ -132,8 +132,8 @@ texmexMakeNewdataD <- function(x, newdata){
     }
     else {
         fo <- x$formulae
-        res <- lapply(fo, function(x, data) model.matrix(as.formula(x), data),
-                      data=newdata)
+        res <- lapply(fo, function(x, data, xlev) model.matrix(as.formula(x), data, xlev=xlev),
+                      data=newdata, xlev=x$xlevels)
       }
     invisible(res)
 }

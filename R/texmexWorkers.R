@@ -193,3 +193,17 @@ texmexPst <- function(msg="",Family){
   paste(msg,", Family = ",Family$name)
 }
 
+texmexGetXlevels <- function(fo, data){
+  # Get all variable names used on RHSs of formulae
+  getVars <- function(fo) { all.vars(update(fo, 0~.)) }
+  allVars <- unique(unlist(lapply(fo, getVars)))
+
+  # Get rid of variables not in data, get classes, then get rid of non-factors
+  data <- data[, allVars, drop=FALSE]
+  classes <- sapply(data, class)
+  data <- data[, classes %in% c("factor", "ordered", "character"), drop=FALSE]
+  
+  data[classes == "character"] <- lapply(data[classes == "character"], as.factor)
+  
+  lapply(data, levels)
+}

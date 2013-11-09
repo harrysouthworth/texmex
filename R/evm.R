@@ -67,7 +67,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     ##### Construct object containing the penalized likelihood estimates
 
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,
-                      modelData, priorParameters, cov)
+                      modelData, data, priorParameters, cov)
 
     #### Simulate from posteriors....
     if (method == "s"){
