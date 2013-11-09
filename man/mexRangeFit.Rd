@@ -7,7 +7,7 @@ Estimate dependence parameters in a conditional multivariate extreme values mode
 Diagnostic tool to aid the choice of threshold to be used for the estimation of the dependence parameters in the conditional multivariate extreme values model of Heffernan and Tawn, 2004.  
 }
 \usage{
-mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), start=c(.01, .01), R = 10, nPass=3, trace=10, col = 2, bootcol = "grey", margins = "laplace", constrain = TRUE, v = 10, addNexcesses = TRUE, ...)
+mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), start=c(.01, .01), R = 10, nPass=3, trace=10, margins = "laplace", constrain = TRUE, v = 10)
 }
 \arguments{
   \item{x}{An object of class \code{\link{mex}} or \code{\link{migpd}}.}
@@ -18,17 +18,13 @@ mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9), start=c(.01, .01), 
   \item{R}{ The number of bootstrap runs to perform at each threshold. Defaults to \code{R}=10.}
   \item{nPass}{Argument passed to function \code{\link{bootmex}}.}
   \item{trace}{Argument passed to function \code{\link{bootmex}}.}
-  \item{col}{
-Plotting colour for the point estimates of the dependence parameters.}
-  \item{bootcol}{
-Plotting colour for the bootstrap estimates of the dependence parameters.}
+%  \item{col}{Plotting colour for the point estimates of the dependence parameters.}
+%  \item{bootcol}{Plotting colour for the bootstrap estimates of the dependence parameters.}
   \item{margins}{Argument passed to function \code{\link{mexDependence}}.}
   \item{constrain}{Argument passed to function \code{\link{mexDependence}}.}
   \item{v}{Argument passed to function \code{\link{mexDependence}}.}
-  \item{addNexcesses}{Logical, whether to annotate the top axis with the number of excesses corresponding to each threshold.}
-  \item{\dots}{
-Further graphical parameters may be passed, which will be used for plotting.
-}
+%  \item{addNexcesses}{Logical, whether to annotate the top axis with the number of excesses corresponding to each threshold.}
+  \item{\dots}{Further graphical parameters may be passed, which will be used for plotting.}
 }
 \details{
 Dependence model parameters are estimated using a range of threshold values.  The sampling variability of these estimates is characterised using the bootstrap.  Point estimates and bootstrap estimates are finally plotted over the range of thresholds.  Choice of threshold should be made such that the point estimates at the chosen threshold and beyond are constant, up to sampling variation.

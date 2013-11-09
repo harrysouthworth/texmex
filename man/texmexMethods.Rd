@@ -8,7 +8,13 @@
 \alias{coefficients.evmOpt}
 \alias{coefficients.mex}
 \alias{coefficients.migpd}
+
 \alias{plot.extremalIndex}
+\alias{plot.ppevm}
+\alias{plot.qqevm}
+\alias{plot.mexRangeFit}
+\alias{plot.hist.evmOpt}
+
 \alias{print.MCS}
 \alias{print.bootMCS}
 \alias{print.chi}
@@ -23,12 +29,9 @@
 \alias{print.summary.evmOpt}
 \alias{print.summary.evmBoot}
 \alias{print.summary.predict.mex}
-\alias{plot.ppevm}
-\alias{plot.qqevm}
-\alias{plot.mexRangeFit}
 \alias{print.hist.evmOpt}
-\alias{plot.hist.evmOpt}
 \alias{print.ppevm}
+
 \alias{summary.MCS}
 \alias{summary.copula}
 \alias{summary.mex}
@@ -47,7 +50,10 @@
 \method{coefficients}{evmOpt}(object,...)
 \method{coefficients}{mex}(object,...)
 \method{coefficients}{migpd}(object,...)
+
 \method{plot}{extremalIndex}(x,...)
+\method{plot}{mexRangeFit}(x, col=2, bootcol="grey", addNexcesses=TRUE, ...)
+
 \method{print}{MCS}(x,...)
 \method{print}{bootMCS}(x,...)
 \method{print}{chi}(x,...)
@@ -74,6 +80,8 @@
   \item{verbose}{ Logical, whether to show model fitting summary in addition to just model parameter estimates.}
   \item{col}{ The colour of points on the plot (the point estimates in \code{plot.mexRangeFit}).}
   \item{bootcol}{ The colour of points for point estimates from bootstrap samples in \code{plot.mexRangeFit}.}
+  \item{addNexcesses}{Whether or not to print the number of threshold excesses in \code{plot.mexRangeFit}.
+        Defaults to \code{TRUE}.}
   \item{...}{Further arguments to methods.}
   }
 
