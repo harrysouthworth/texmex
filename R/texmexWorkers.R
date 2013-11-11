@@ -205,5 +205,10 @@ texmexGetXlevels <- function(fo, data){
   
   data[classes == "character"] <- lapply(data[classes == "character"], as.factor)
   
-  lapply(data, levels)
+  # Get a single named list containing all levels
+  xlevels <- lapply(data, levels)
+  
+  # Split it by formula
+  res <- lapply(fo, getVars)
+  lapply(res, function(X, wh) wh[names(wh) %in% X], wh=xlevels)
 }

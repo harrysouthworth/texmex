@@ -2,7 +2,7 @@ addCov <- function(res, X){ # used in linearPredictors.* to add covariates to co
   if(!is.null(dim(X))){
     if(dim(X)[2] > 1){
        cov <- X[,colnames(X) != "(Intercept)"]
-       res <- cbind(res,cov)
+       res <- cbind(res, cov)
        if(is.vector(cov)) colnames(res)[dim(res)[2]] <- colnames(X)[colnames(X) != "(Intercept)"]
     }
     else {
@@ -131,10 +131,18 @@ texmexMakeNewdataD <- function(x, newdata){
         res <- x$data$D
     }
     else {
+        xl <- function(i, fo, data, xlev){
+          if (length(xlev[[i]]) > 0){
+            model.matrix(fo[[i]], data, xlev=xlev[[i]])
+          }
+          else {
+            model.matrix(fo[[i]], data)
+          }
+        }
         fo <- x$formulae
-        res <- lapply(fo, function(x, data, xlev) model.matrix(as.formula(x), data, xlev=xlev),
-                      data=newdata, xlev=x$xlevels)
+        res <- lapply(1:length(fo), xl, fo=fo, data=newdata, xlev=x$xlevels)
       }
+    names(res) <- names(fo)
     invisible(res)
 }
 
@@ -147,22 +155,7 @@ texmexMakeCISim <- function(x, alpha, object, sumfun, M){
     } else {
         neednames <- FALSE
     }
-# res <- t(sapply(res, function(x, fun){ apply(x, 2, sumfun) }, fun=sumfun))
-    res <- t(apply(x, 2, sumfun))
-#browser()
-    if (FALSE){#    if (neednames){
-        nms <- c("Mean","50%", paste0(100*alpha/2, "%"),
-                 paste0(100*(1-alpha/2), "%"))
-        if (missing(M)){
-            colnames(res) <- apply(expand.grid(names(object$data$D), nms), 1,
-                                   paste0, collapse="")
-        }
-        else {
-            colnames(res) <- apply(expand.grid(paste0("M", M), nms), 1,
-                                   paste0, collapse="", sep=":")
-            colnames(res) <- substring(colnames(res), 1, nchar(colnames(res))-1)
-        }
-    }
-    res
+
+    t(apply(x, 2, sumfun))
 }
 
