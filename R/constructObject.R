@@ -38,7 +38,11 @@ constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
     o$call <- call
     o$residuals <- family$resid(o)
     o$priorParameters <- priorParameters
-    o$loglik <- -o$value
+    o$ploglik <- -o$value # Penalized loglik
+
+    # Get unpenalized version
+    ll <- family$log.lik(modelData, th)
+    o$loglik <- ll(o$coefficients)
 
     oldClass(o) <- 'evmOpt'
 

@@ -36,7 +36,7 @@ evm(y, data, family, ...)
 \method{summary}{evmOpt}(object, nsim=1000, alpha=0.05, ...)
 \method{plot}{evmOpt}(x, main=rep(NULL, 4), xlab=rep(NULL, 4),
            nsim=1000, alpha=0.05, ...)
-\method{AIC}{evmOpt}(object, ..., k=2)
+\method{AIC}{evmOpt}(object, penalized=FALSE, ..., k=2)
 
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
@@ -147,6 +147,9 @@ texmexJumpConst(j, map)
   \item{alpha}{In \code{plot} and \code{summary} methods for class \code{evmSim}.
            A 100(1 - alpha)\% simulation envelope is produced. Defaults to
            \code{alpha = 0.05}}
+  \item{penalized}{Whether to compute AIC using the penalized log-likelihood or
+        the true log-liklihood. Defaults to \code{penalized=FALSE} and uses the
+        true log-likelihood.}
   \item{k}{Constant used in calculation of AIC=-2*loglik + k*p,
            defaults to \code{k=2}.}
   \item{print.seed}{Whether or not to print the seed used in the simulations,
@@ -282,7 +285,9 @@ texmexJumpConst(j, map)
 
     \item{residuals}{Residuals computed using the residual function in the
             \code{texmexFamily} object, if any.}
-    \item{loglik}{The value of the optimized (penalized) log-likelihood.}
+    \item{ploglik}{The value of the optimized penalized log-likelihood.}
+    \item{loglik}{The value of the optimized (unpenalized) log-likelihood. If
+          \code{penalty='none'} is used, this will be identical to \code{ploglik}, above.}
     \item{cov}{The estimated covariance of the parameters in the model.}
     \item{se}{The estimated standard errors of the parameters in the model.}
     \item{xlevels}{A named list containing a named list for each design matrix (main parameter)

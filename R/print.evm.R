@@ -20,10 +20,22 @@ print.evmOpt <- function( x , digits=max(3, getOption("digits") - 3), ... ){
         cat(format(x$rate, digits=digits, ...))
     }
 
-    cat("\n\nLog-lik.\t\tAIC\n")
-    cat(format(x$loglik, digits, ...), "\t\t", format(AIC(x), digits=digits, ...))
+    cat("\n\n")
+    
+    if (x$penalty == "none"){
+      wh <- t(format(c(x$loglik, AIC(x)), digits, ...))
+      colnames(wh) <- c("Log. lik", "AIC")
+      rownames(wh) <- ""
+      print(wh, print.gap=2, quote=FALSE, justify="left")
+    }
+    else {
+      wh <- t(format(c(x$loglik, x$ploglik, AIC(x)), digits, ...))
+      colnames(wh) <- c("Log lik.", "Penalized log lik.", "AIC")
+      rownames(wh) <- ""
+      print(wh, print.gap=2, quote=FALSE, justify="left")
+    }
 
-    co <- cbind( coef( x ), x$se )
+    co <- cbind( coef(x), x$se )
     dimnames(co) <- list(names(coef(x)) , c("Value", "SE"))
     cat( "\n\nCoefficients:\n" )
     print.default(format(co, digits=digits, ...), print.gap=2, quote=FALSE)

@@ -20,18 +20,16 @@ evmFit <- function(data, family, ...,
     min(-log.lik(par), 1e6) + prior(par)
   }
 
-  s <- unlist(lapply(data$D, function(x){ apply(x, 2, sd) }))
-  s[s == 0] <- 1
-
   if (is.null(start)){
     if (is.null(family$start)){ start <- runif(length(s), -.1, .1) }
     else { start <- family$start(data) }
   }
 
    o <- optim(par = start, fn = evm.lik,
-              control = list(maxit = maxit,
-              trace = trace),#, parscale=s),
+              control = list(maxit = maxit, trace = trace),
               hessian = hessian)
 
+  o$ll <- 
+  
     invisible(o)
 }
