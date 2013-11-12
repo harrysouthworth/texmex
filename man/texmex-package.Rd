@@ -36,9 +36,6 @@ package is called `texmex' because it used to be called `texmex'.
                 
 \code{\link{declust}}: Estimation of extremal index and subsequent declustering of dependent sequences using the intervals estimator of Ferro and Segers.
 
-\code{\link{validate.texmex}}: Use the \code{RUnit} package to run lots of tests to
-            establish a high degree of confidence that the functions do what
-            they are supposed to.
 }
 \author{
 Harry Southworth, Janet E. Heffernan
