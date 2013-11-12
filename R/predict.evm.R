@@ -56,7 +56,7 @@ linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 
     res <- texmexMakeParams(coef(object), D)
     colnames(res) <- names(D)
-browser()
+
     # Get the covariance matrices - one for every unique observation
     if(ci.fit | se.fit | full.cov){
       cov.se <- texmexMakeCovariance(object$cov, D)
@@ -110,10 +110,10 @@ rl.evmOpt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
     co <- linearPredictors.evmOpt(object, newdata=newdata, unique.=unique., full.cov=TRUE)
     covs <- co$cov # list of covariance matrices, one for each (unique) observation
     co <- co$link
-    X <- co[,-(1:length(object$data$D))]
+    X <- co[,-(1:length(object$data$D)), drop=FALSE]
     if(is.null(dim(X))){
       X <- matrix(X)
-      dimnames(X) <- list(dimnames(co)[[1]],dimnames(co)[[2]][-(1:length(object$data$D))])
+      dimnames(X) <- list(dimnames(co)[[1]], dimnames(co)[[2]][-(1:length(object$data$D))])
     }
 
     delta <- object$family$delta

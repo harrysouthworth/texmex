@@ -1,7 +1,7 @@
 addCov <- function(res, X){ # used in linearPredictors.* to add covariates to columns reported in output
   if(!is.null(dim(X))){
     if(dim(X)[2] > 1){
-       cov <- X[,colnames(X) != "(Intercept)"]
+       cov <- X[,colnames(X) != "(Intercept)", drop=FALSE]
        res <- cbind(res, cov)
        if(is.vector(cov)) colnames(res)[dim(res)[2]] <- colnames(X)[colnames(X) != "(Intercept)"]
     }
