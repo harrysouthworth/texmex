@@ -13,23 +13,10 @@
 \alias{ConstraintsAreSatisfied}
 \alias{PosGumb.Laplace.negloglik}
 \alias{PosGumb.Laplace.negProfileLogLik}
-\alias{Profile_likelihood_HT_unc}
-\alias{roots}
-\alias{estimate_HT_KPT_joint_posneg_nm}
-\alias{initial_posneg}
-\alias{inv_Laplace}
-\alias{Profile_likelihood_cd_nm_joint_D_KT}
-\alias{Profile_likelihood_cd_nm_joint_D_KT_neg}
-\alias{profile_minmax_joint_posneg_KT}
-\alias{Dcond}
-\alias{estimate_HT}
 \alias{getPlotRLdata}
 \alias{plotRLevm}
 \alias{rFrechet}
 \alias{rMaxAR}
-\alias{.extRemes.decluster.intervals}
-\alias{.extRemes.decluster.runs}
-\alias{.extRemes.exi.intervals}
 
 \alias{addCoefficients}
 \alias{addCovariance}
@@ -56,16 +43,6 @@ gpd.info(o, method="observed")
 ConstraintsAreSatisfied(a,b,z,zpos,zneg,v)
 PosGumb.Laplace.negloglik(yex, ydep, a, b, m, s, constrain, v, aLow)
 PosGumb.Laplace.negProfileLogLik(yex, ydep, a, b, constrain, v, aLow)
-Profile_likelihood_HT_unc(par,listr,x,silly=-10^(40))
-estimate_HT(list,u,pars,params=TRUE)
-Dcond(x,a,b,c,d,zi,zk)
-roots(lev,a,c,b,d,Zj,Zk)
-Profile_likelihood_cd_nm_joint_D_KT_neg(par,listr,x,Zestfun,...,v,silly=-10^(40))
-Profile_likelihood_cd_nm_joint_D_KT(par,listr,x,Zestfun,...,v,silly=-10^(40))
-profile_minmax_joint_posneg_KT (pars,listdata,u,q1=0,q2=1,...,sill=-10^(40))
-initial_posneg(D,...)
-estimate_HT_KPT_joint_posneg_nm(pars,x,listr,params=TRUE,...,k=3)
-inv_Laplace(p)
 namesBoot2sim(bootobject)
 getPlotRLdata(object, alpha, RetPeriodRange)
 plotRLevm(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,
@@ -75,13 +52,10 @@ plotrl.evmOpt(object, alpha = 0.05, xlab, ylab, main, pch = 1, ptcol
                  smooth = FALSE, RetPeriodRange = NULL)
 rFrechet(n)
 rMaxAR(n,theta)
-.extRemes.decluster.intervals(Z, ei)
-.extRemes.decluster.runs(Z, r)
-.extRemes.exi.intervals(Z)
 addCoefficients(o)
 addCovariance(o, family, cov)
 constructEVM(o, family, th, rate, prior, modelParameters, call,
-            data, priorParameters, cov)
+            modelData, data, priorParameters, cov)
 texmexPst(msg, Family)
 }
 
@@ -91,6 +65,7 @@ texmexPst(msg, Family)
   RetPeriodRange, ...}{Arguments to plot functions.}
 \item{N}{ Number of observations corresponding to N-observation
   return level to be calculated.}
+  \item{modelData}{List containing response data and design matrices.}
   \item{la}{Rate at which threshold is exceeded.}
   \item{alpha}{Control nominal coverage of condfidence intervals.
     Defaults to \code{alpha = 0.05}.}

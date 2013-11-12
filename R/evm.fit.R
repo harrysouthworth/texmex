@@ -29,7 +29,5 @@ evmFit <- function(data, family, ...,
               control = list(maxit = maxit, trace = trace),
               hessian = hessian)
 
-  o$ll <- 
-  
     invisible(o)
 }

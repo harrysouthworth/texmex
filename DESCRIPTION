@@ -46,11 +46,11 @@ Collate:
   mexRangeFit.R summary.evm.R
   mexTransform.R summary.migpd.R
   migpdCoefs.R summary.predict.mex.R
-  migpd.R testingFunctions.R
+  migpd.R
   mrl.R
   mspearman.R texmexWorkers.R
   multivariate.cauchy.R thinAndBurn.evm.sim.R
   u2gpd.R
-  plot.evmSim.R validate.texmex.R
+  plot.evmSim.R
   plot.bootmex.R special.functions.R
 

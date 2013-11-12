@@ -132,17 +132,18 @@ texmexMakeNewdataD <- function(x, newdata){
     }
     else {
         xl <- function(i, fo, data, xlev){
-          if (length(xlev[[i]]) > 0){
-            model.matrix(fo[[i]], data, xlev=xlev[[i]])
-          }
-          else {
-            model.matrix(fo[[i]], data)
-          }
-        }
+                if (length(xlev[[i]]) > 0){
+                  model.matrix(fo[[i]], data, xlev=xlev[[i]])
+                }
+                else {
+                  model.matrix(fo[[i]], data)
+                }
+              } # Close function
         fo <- x$formulae
         res <- lapply(1:length(fo), xl, fo=fo, data=newdata, xlev=x$xlevels)
-      }
-    names(res) <- names(fo)
+        names(res) <- names(fo)
+    }
+
     invisible(res)
 }
 
