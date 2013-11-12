@@ -285,6 +285,11 @@ texmexJumpConst(j, map)
     \item{loglik}{The value of the optimized (penalized) log-likelihood.}
     \item{cov}{The estimated covariance of the parameters in the model.}
     \item{se}{The estimated standard errors of the parameters in the model.}
+    \item{xlevels}{A named list containing a named list for each design matrix (main parameter)
+          in the model. Each list contians an element named after each factor in the
+          linear predictor for the respective design matrix. These are used by the \code{predict}
+          method to ensure all factor levels are known, even if they don't appear in
+          \code{newdata}.}
 
     If \code{method = "simulate"}, an object of class \code{evmSim}:
 
