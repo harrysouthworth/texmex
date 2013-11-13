@@ -105,12 +105,6 @@ an object.}
 \item{yex, ydep}{Data for model estimation: \code{yex} is the
   explanatory variable on which the model conditions, and \code{ydep}
   is the dependent variable.}
-\item{par, listr, silly, list, pars, params, c, d, zi, zk, lev}{Arguments to independently
-  coded test functions implementing constrained estimation of the
-  H+T2004 conditional dependence model with Laplace margins.}
-\item{Zj, Zk, Zestfun, listdata, q1, q2, sill, D, k}{Arguments to independently
-  coded test functions implementing constrained estimation of the
-  H+T2004 conditional dependence model with Laplace margins.}
 \item{bootobject}{ Argument to \code{namesBoot2bgpd} which restructures
   an object of class evmBoot to resemble one of class evmSim, which can
   then use methods for the evmSim class.}
@@ -121,9 +115,6 @@ an object.}
 \item{theta}{Argument to \code{rFrechet} and \code{rMaxAR}, the
   dependence parameter \code{theta}. Takes values between 0 and 1,
   with 0 corresponding to perfect dependence and 1 to independence.}
-\item{Z,r,ei}{Arguments to extRemes package functions used for testing
-  of declustering code. Numeric Z logical indicating threshold excess, r
-  run length for runs declustering and ei extremal index estimate.}
 \item{family, rate, prior, modelParameters, call,
   cov}{Information used to obtain various components
   of an object of class 'evmOpt'.}

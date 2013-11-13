@@ -20,8 +20,10 @@ evmFit <- function(data, family, ...,
     min(-log.lik(par), 1e6) + prior(par)
   }
 
+  nco <- sum(sapply(data$D, ncol))
+
   if (is.null(start)){
-    if (is.null(family$start)){ start <- runif(length(s), -.1, .1) }
+    if (is.null(family$start)){ start <- runif(length(nco), -.1, .1) }
     else { start <- family$start(data) }
   }
 

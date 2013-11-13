@@ -30,7 +30,7 @@ Collate:
   dgpd.R print.evmSim.R
   efficient.closures.R print.bootmex.R
   endPoint.R print.evm.R
-  evm.fit.R print.mexDependence.R
+  evmFit.R print.mexDependence.R
   evmSim.R
   evm.R print.mexPrediction.R
   extremalIndex.R print.migpd.R
