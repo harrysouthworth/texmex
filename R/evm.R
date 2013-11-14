@@ -11,7 +11,7 @@ evm <- function(y, data, family=gpd, ...){
 evm.default <-
 function (y, data, family=gpd, th= -Inf, qu,
           ..., # arguments specific to family such as phi = ~ 1
-          penalty = "gaussian", prior = "gaussian",
+          penalty = "none", prior = "gaussian",
           method = "optimize", cov="observed",
           start = NULL, priorParameters = NULL,
           maxit = 10000, trace=NULL,

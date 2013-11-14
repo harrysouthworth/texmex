@@ -1,8 +1,8 @@
 Package: texmex
 Type: Package
 Title: Threshold exceedances and multivariate extremes
-Version: 1.4
-Date: 2012-02-24
+Version: 2.0
+Date: 2013-11-14
 Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
 Description: Conditional multivariate extreme value modelling using
@@ -13,7 +13,6 @@ Suggests: MASS, RUnit, lattice, knitr
 VignetteBuilder: knitr
 LazyLoad: yes
 LazyData: yes
-Packaged: 2010-10-14 11:47:02 UTC; kpzv097
 URL: http://code.google.com/p/texmex/
 Collate:
   globalVariables.R

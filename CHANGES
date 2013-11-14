@@ -57,8 +57,21 @@ Changes from version 1.2:
 
 Changes from version 1.2:
 
-1. Main modelling function switched from gpd to evm.
-2. Added Collate to DESCRIPTION.
-3. Covariance of predictions for GPD model does now NOT take account of the
-   uncertainty in the rate, so estimated variances will be a little lower
-   than in previous versions.
+1.  Main modelling function switched from gpd to evm.
+2.  Added Collate to DESCRIPTION.
+3.  Covariance of predictions for GPD model does now NOT take account of the
+    uncertainty in the rate, so estimated variances will be a little lower
+    than in previous versions.
+4.  GEV family added.
+5.  Default fitting procedure is now MLE rather than weakly penalized MLE.
+6.  Vignettes updated, switched from Sweave to knitr, multivariate vignette
+    added.
+7.  CITATION file added.
+8.  All test functions and validate.texmex removed. These will reappear in a
+    companion package.
+9.  Nasty bug in predict functions fixed - xlevels added to output object from
+    evm function.
+10. Code refactoring.
+11. NAMESPACE now keeps many internal functions internal.
+12. An evm object now contains information in the true log-likelihood and the
+    penalized log-likelihood. AIC uses the true log-likelihood by default.
