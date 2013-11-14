@@ -25,7 +25,7 @@ possibly with explanatory variables.}
 evm(y, data, family, ...)
 
 \method{evm}{default}(y, data, family=gpd, th=-Inf, qu,
-    ..., penalty = "gaussian",
+    ..., penalty = "none",
     prior = "gaussian", method = "optimize", cov="observed", start = NULL,
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
