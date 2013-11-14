@@ -67,7 +67,7 @@ set.seed(20130618)
 \subsection{Data}
 %
 The datasets used in this example analysis are contained in the {\tt texmex}
-package. We give a detailed exposition of the fitting of the GPD without covariates to a {\tt rainfall} dataset which appears in Coles (2001),~\cite{coles}.  We show how to extend the modelling framework to include covariates using the {\tt winter} air pollution data from Heffernan and Tawn (2004),~\cite{heffernanTawn}.  The modelling approach for fitting GEV models that we take within {\tt texmex} is very similar to that for fitting the GPD, so we conclude with a brief demonstration of this by using the annual maxima sea-level dataset, {\tt portpirie}, again from Coles~\cite{coles}.  More details of these datasets are given in their help files.
+package. We give a detailed exposition of the fitting of the GPD without covariates to a daily rainfall dataset, {\tt rain}, which appears in Coles (2001),~\cite{coles}.  We show how to extend the modelling framework to include covariates using the {\tt winter} air pollution data from Heffernan and Tawn (2004),~\cite{heffernanTawn}.  The modelling approach for fitting GEV models that we take within {\tt texmex} is very similar to that for fitting the GPD, so we conclude with a brief demonstration of this by using the annual maxima sea-level dataset, {\tt portpirie}, again from Coles~\cite{coles}.  More details of these datasets are given in their help files.
 \subsubsection{Rainfall data}
 <<data.rain>>=
 head(rain)
@@ -126,7 +126,7 @@ exceed the fitting threshold $u$. The range of possible values taken
 by realisations from the GPD depends on the parameter values, with the
 distribution having a finite upper end point (short tailed) if the
 shape parameter is negative ($u<x\leq u-\sigma/\xi$ if $\xi<0$) and an
-infinite tail otherwise $u<x<\infty$ if $\xi\geq 0$.  When $\xi=0$, the GPD corresponds exactly to the Exponential distribution.
+infinite tail otherwise ($u<x<\infty$ if $\xi\geq 0$).  When $\xi=0$, the GPD corresponds exactly to the Exponential distribution.
 
 Extreme value theory tells us that under appropriate normalisation of
 the threshold excesses, as the threshold $u$ tends to the
@@ -317,7 +317,7 @@ par(mfrow=c(2,2))
 plot(airpoll1)
 @
 
-Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the scale parameter $\phi$ and shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern.  There are no return level or histogram/density plots produced since the estimates of these quantities depend on the procise values oftaken by the covariates in the model.
+Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the scale parameter $\phi$ and shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern.  There are no return level or histogram/density plots produced since the estimates of these quantities depend on the precise values oftaken by the covariates in the model.
 
 
 <<AIC>>==
@@ -356,7 +356,7 @@ We examine briefly here Information Matrix summaries and Bootstrap estimates of 
 %
 \subsubsection{Information matrix based approaches}
 %
-When the GPD model is fit by using the default (penalized) maximum likelihood estimation, an estimate of the covariance matrix of model parameters is returned.  The default procedure for estimating this covariance matrix is {\tt cov="observed"} in which case the observed information matrix is used, as given in Appendix A of Davison and Smith~\cite{davisonSmith}. The only other option is {\tt cov = "numeric"} in which case a numerical approximation of the Hessian is used (see the help for {\tt optim}). In some cases, particularly with small samples, the numerical approximation can be quite different from the closed form ({\tt cov="observed"}) result, and the value derived from the observed information should be preferred. 
+When the GPD model is fit by using the default  maximum likelihood estimation, an estimate of the covariance matrix of model parameters is returned.  The default procedure for estimating this covariance matrix is {\tt cov="observed"} in which case the observed information matrix is used, as given in Appendix A of Davison and Smith~\cite{davisonSmith}. The only other option is {\tt cov = "numeric"} in which case a numerical approximation of the Hessian is used (see the help for {\tt optim}). In some cases, particularly with small samples, the numerical approximation can be quite different from the closed form ({\tt cov="observed"}) result, and the value derived from the observed information should be preferred. 
 
 For our fitted model, we compare the two approaches and find that the alternative methods give almost identical estimates of the Information matrix:
 <<numericCovMat>>=
@@ -394,9 +394,11 @@ Focussing on the covariance matrix of the parameter estimates is misleading and 
 par(mfrow=c(1,2))
 O3 <- data.frame(O3=seq(10,60,len=6))
 plot(predict(boot,newdata=O3,type="lp",
-             ci.fit=TRUE),main="Bootstrap");grid()
+             ci.fit=TRUE),main="Bootstrap")
+grid()
 plot(predict(airpoll2,newdata=O3,type="lp",
-             ci.fit=TRUE),main="Obs Info");grid()
+             ci.fit=TRUE),main="Obs Info")
+grid()
 @
 
 \subsection{Bayesian estimation}
@@ -405,7 +407,7 @@ A further alternative approach to uncertainty estimation which accurately reflec
 
 <<gpdmcmc, eval=FALSE>>=
 airpollSim <- evm(NO2, data=winter, qu=.7, 
-                  phi=~O3, family=gpd, method="simulate")
+                  phi=~O3, method="simulate")
 @
 
 Equivalently, the Bayesian estimation based on MCMC can also be instigated by the use of the function {\tt update} on the previously chosen model.  The method of estimation is changed from {\tt "optimize"} -- under which estimation is carried out using (penalized) maximum likelihood -- to {\tt "simulate"} -- under which a Metropolis algorithm is used to simulate from the joint posterior distribution of the parameters.  For our preferred model, {\tt airpoll2}, this is implemented as follows:
@@ -519,10 +521,10 @@ G(x)=\exp\left[-\left\{1+\xi\left(\frac{x-\mu}{\sigma}\right)\right\}^{-1/\xi}\r
 by realisations from the GEV depends on the parameter values, with the
 distribution having a finite upper end point (short tailed) if the
 shape parameter is negative ($x\leq \mu-\sigma/\xi$ if $\xi<0$) and an
-infinite tail otherwise $x<\infty$ if $\xi\geq 0$.  When $\xi=0$, the GEV corresponds exactly to the Gumbel distribution.
+infinite tail otherwise ($x<\infty$ if $\xi\geq 0$).  When $\xi=0$, the GEV corresponds exactly to the Gumbel distribution.
 
 Extreme value theory tells us that under appropriate normalisation of
-the sample maxima, as the underlying sample size from which maxima are taken tends to infinity, the limiting distribution of the sample maxima must fall in the generalised Extreme Value family of distributions
+the sample maxima, as the underlying sample size from which maxima are taken tends to infinity, the limiting distribution of the sample maxima must fall in the Generalised Extreme Value family of distributions
 (given certain conditions concerning non-degeneracy of the limit
 distribution and smoothness of the distribution of the original
 variable). 
@@ -543,7 +545,7 @@ port
 @
 The fit of the GEV to the portpirie sea-level annual maxima appears to be good.
 
-There is no analogue of threshold choice for the GPD (by using MRL plots and threshold stanility plots), and as such there are fewer diagnostics to support the fitting of the GEV distribution.  Where poor fit is observed, it may be due to having taken maxima of an insufficient number of observations (for example, if the data are annual maxima then it may be that one year of data is not a large enough sample size from which to draw maxima).  Sometimes, but not always, it is possible to go back to the original data from which the maxima have been constructed and take maxima of a larger number of observations. This usually results in a smaller number of observed maxima so there is an obvious trade-off between bias and variance here.
+There is no analogue of threshold choice for the GPD (by using MRL plots and threshold stability plots), and as such there are fewer diagnostics to support the fitting of the GEV distribution.  Where poor fit is observed, it may be due to having taken maxima of an insufficient number of observations (for example, if the data are annual maxima then it may be that one year of data is not a large enough sample size from which to draw maxima).  Sometimes, but not always, it is possible to go back to the original data from which the maxima have been constructed and take maxima of a larger number of observations. This usually results in a smaller number of observed maxima so there is an obvious trade-off between bias and variance here.
 
 Covariates may be included in the GEV models in the same manner as illulstrated in Section~\ref{section:covariateModels} for the GPD.  As an exercise, we try fitting {\tt Year} as a covariate to the {\tt portpirie} sea level observations:
 <<portpirieCov>>=

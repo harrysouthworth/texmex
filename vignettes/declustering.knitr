@@ -191,7 +191,6 @@ We begin by looking at the {\it threshold stability plot} for the extremal index
 
 <<rainfallData, echo=TRUE>>=
 par(mfrow=c(2,2))
-data(rain)
 plot(rain)
 extremalIndexRangeFit(rain,nboot=20,verbose=FALSE)
 @
