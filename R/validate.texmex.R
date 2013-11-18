@@ -1,4 +1,5 @@
-validate.texmex <- function () {
+validate.texmex <-
+function () {
    check <- "package:RUnit" %in% search()
    if (!check) {
        check <- try(library(RUnit))
@@ -26,4 +27,3 @@ validate.texmex <- function () {
    res <- runTestSuite(res)
    res
 }
-
