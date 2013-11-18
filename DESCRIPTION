@@ -1,9 +1,12 @@
 Package: sombrero
 Type: Package
-Title: What the package does (short line)
-Version: 1.0
+Title: Test suite for the texmex package
+Version: 0.1
 Date: 2013-11-18
-Author: Who wrote it
-Maintainer: Who to complain to <yourfault@somewhere.net>
-Description: More about what it does (maybe more than one line)
-License: What license is it under?
+Author: Janet E. Heffernan and Harry Southworth
+Maintainer: Harry Southworth <harry.southworth@gmail.com>
+Description: A suite of unit tests to give confidence that the texmex package
+             does what it ought, currently implemented via RUnit.
+License: GPL (>=2) | BSD
+Depends: texmex, mvtnorm, RUnit, lattice
+

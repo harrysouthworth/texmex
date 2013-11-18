@@ -25,3 +25,13 @@ inv_Laplace(p)
 .extRemes.decluster.intervals(Z, ei)
 .extRemes.decluster.runs(Z, r)
 .extRemes.exi.intervals(Z)
+
+\item{par, listr, silly, list, pars, params, c, d, zi, zk, lev}{Arguments to independently
+  coded test functions implementing constrained estimation of the
+  H+T2004 conditional dependence model with Laplace margins.}
+\item{Zj, Zk, Zestfun, listdata, q1, q2, sill, D, k}{Arguments to independently
+  coded test functions implementing constrained estimation of the
+  H+T2004 conditional dependence model with Laplace margins.}
+\item{Z,r,ei}{Arguments to extRemes package functions used for testing
+  of declustering code. Numeric Z logical indicating threshold excess, r
+  run length for runs declustering and ei extremal index estimate.}
