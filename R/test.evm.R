@@ -1,5 +1,4 @@
-test.evm <-
-function(){
+test.evm <- function(){
   tol <- 0.01
   
   ###################################################################
@@ -42,8 +41,8 @@ function(){
   gp1 <- list(c(0, 0), diag(c(10^4, .25)))
   gp2 <- list(c(0, 0), diag(c(10^4, .05)))
   
-  mod1 <- evm(rain, th=30, priorParameters=gp1)
-  mod2 <- evm(rain, th=30, priorParameters=gp2)
+  mod1 <- evm(rain, th=30, priorParameters=gp1, penalty="gaussian")
+  mod2 <- evm(rain, th=30, priorParameters=gp2, penalty="gaussian")
   
   checkTrue(coef(mod)[2] > coef(mod1)[2],
             msg="gpd: Gaussian penalization xi being drawn to 0")
@@ -55,8 +54,8 @@ function(){
   gp3 <- list(c(0, 0), diag(c(1, 10^4)))
   gp4 <- list(c(0, 0), diag(c(.1, 10^4)))
   
-  mod3 <- evm(rain, th=30, priorParameters=gp3)
-  mod4 <- evm(rain, th=30, priorParameters=gp4)
+  mod3 <- evm(rain, th=30, priorParameters=gp3, penalty="gaussian")
+  mod4 <- evm(rain, th=30, priorParameters=gp4, penalty="gaussian")
   
   checkTrue(coef(mod)[1] > coef(mod3)[1],
             msg="gpd: Gaussian penalization phi being drawn to 0")
@@ -67,8 +66,8 @@ function(){
   gp5 <- list(c(0, 1), diag(c(10^4, .25)))
   gp6 <- list(c(0, 1), diag(c(10^4, .05)))
   
-  mod5 <- evm(rain, th=30, priorParameters=gp5)
-  mod6 <- evm(rain, th=30, priorParameters=gp6)
+  mod5 <- evm(rain, th=30, priorParameters=gp5, penalty="gaussian")
+  mod6 <- evm(rain, th=30, priorParameters=gp6, penalty="gaussian")
   
   checkTrue(1 - coef(mod)[2] > 1 - coef(mod5)[2],
             msg="gpd: Gaussian penalization xi being drawn to 1")
@@ -80,8 +79,8 @@ function(){
   gp7 <- list(c(4, 0), diag(c(1, 10^4)))
   gp8 <- list(c(4, 0), diag(c(.1, 10^4)))
   
-  mod7 <- evm(rain, th=30, priorParameters=gp7)
-  mod8 <- evm(rain, th=30, priorParameters=gp8)
+  mod7 <- evm(rain, th=30, priorParameters=gp7, penalty="gaussian")
+  mod8 <- evm(rain, th=30, priorParameters=gp8, penalty="gaussian")
   
   checkTrue(4 - coef(mod)[1] > 4 - coef(mod7)[1],
             msg="gpd: Gaussian penalization phi being drawn to 4")
@@ -170,7 +169,7 @@ function(){
   
   m <- model.matrix(~ ALT.B + dose, liver)
   
-  ismod <- texmex:::.ismev.gpd.fit(liver$ALT.M,
+  ismod <- sombrero:::.ismev.gpd.fit(liver$ALT.M,
                                    threshold=quantile(liver$ALT.M, .7),
                                    ydat = m, sigl=2:ncol(m),
                                    siglink=exp, show=FALSE)
@@ -194,7 +193,7 @@ function(){
   
   m <- model.matrix(~ ALT.B + dose, liver)
   
-  ismod <- texmex:::.ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B),
+  ismod <- sombrero:::.ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B),
                                    threshold=quantile(log(liver$ALT.M / liver$ALT.B), .7),
                                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
@@ -231,7 +230,7 @@ function(){
   m <- model.matrix(~ a+b, data)
   
   mod <- evm(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
-  ismod <- texmex:::.ismev.gpd.fit(data$y,
+  ismod <- sombrero:::.ismev.gpd.fit(data$y,
                                    threshold=quantile(data$y,0.7),
                                    ydat=m,shl=3,sigl=2,
                                    siglink=exp,
@@ -508,9 +507,16 @@ function(){
                makeDataGev(3,2,myb))
   
   start1 <- c(0,1,2,-0.1)
-  g1.fit <- texmex:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE,muinit=start1[1:2])
-  g2.fit <- texmex:::.ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
-  g3.fit <- texmex:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3, siglink=exp,show=FALSE)
+  g1.fit <- sombrero:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE,muinit=start1[1:2])
+  g2.fit <- sombrero:::.ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
+  g3.fit <- sombrero:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3, siglink=exp,show=FALSE)
+
+# XXX
+ismev.evm <- sombrero:::.ismev.gev.fit
+
+ismev.evm(xdat=data[[3]]$y, ydat=data[[3]], shl=3, siglink=exp, show=FALSE)$mle
+
+
   t1.fit <- evm(y,mu=~u, family=gev,data=data[[1]],start=start1)
   t2.fit <- evm(y,phi=~a,family=gev,data=data[[2]])
   t3.fit <- evm(y,xi=~b, family=gev,data=data[[3]])
@@ -538,7 +544,7 @@ function(){
   data$b <- myb
   
   mod <- evm(y,data=data,mu=~u,phi=~a,xi=~b,penalty="none",family=gev,start=c(5,2,2,-0.1,0,2))
-  ismod <- texmex:::.ismev.gev.fit(data$y,
+  ismod <- sombrero:::.ismev.gev.fit(data$y,
                                    ydat=data,mul=1,shl=3,sigl=2,
                                    siglink=exp,
                                    show=FALSE,muinit=c(5,2),siginit=c(2,-0.1),shinit=c(0,2))
