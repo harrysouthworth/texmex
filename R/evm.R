@@ -11,7 +11,7 @@ evm <- function(y, data, family=gpd, ...){
 evm.default <-
 function (y, data, family=gpd, th= -Inf, qu,
           ..., # arguments specific to family such as phi = ~ 1
-          penalty = "none", prior = "gaussian",
+          penalty = NULL, prior = "gaussian",
           method = "optimize", cov="observed",
           start = NULL, priorParameters = NULL,
           maxit = 10000, trace=NULL,
@@ -24,7 +24,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     ##################### Sort out method, penalty/prior, trace...
 
     method <- texmexMethod(method)
-    prior <- texmexPrior(prior, penalty, method)
+    prior <- texmexPrior(prior, penalty, method, priorParameters)
 
     trace <- texmexTrace(trace, method)
     otrace <- trace[1]; trace <- trace[2]

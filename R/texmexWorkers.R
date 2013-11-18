@@ -25,18 +25,18 @@ function(method){
 }
 
 texmexPrior <-
-    # Take character string(s) passed by user and coerce to standard format
-function(prior, penalty, method){
+    # Take input passed by user and coerce to standard format
+function(prior, penalty, method, pp){
     prior <- casefold(prior)
     penalty <- casefold(penalty)
-    if (prior != penalty){ # User provided one or both of prior or penalty
-      if (prior == 'gaussian'){ # The default
-        if (penalty == 'none' & method != 's'){
-          prior <- penalty
-        }
-      }
-      else if (prior != 'gaussian' & penalty != 'none'){ # User provided both
-        stop('Provide neither or one of prior and penatly, not both.')
+
+    # Deal with default situation and do MLE
+    if (length(penalty) == 0 & is.null(pp) & method != 's'){
+      prior <- "none"
+    }
+    else if (length(penalty) > 0){
+      if (penalty != prior){
+        prior <- penalty
       }
     }
 
