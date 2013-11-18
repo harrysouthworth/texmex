@@ -1,6 +1,6 @@
 validate.texmex <-
 function () {
-   wh <- (1:length(search()))[search() == "package:texmex"]
+   wh <- (1:length(search()))[search() == "package:sombrero"]
    tests <- objects(wh)[substring(objects(wh), 1, 5) == "test."]
 
    # Create temporary directory to put tests into
