@@ -1,6 +1,6 @@
 test.dgpd <-
 function(){
-  evd.dgpd <- texmex:::.evd.dgpd
+  evd.dgpd <- sombrero:::.evd.dgpd
   
   myTest <- function(sig,xi,thresh,msg){
     myd <- sapply(1:nreps,function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))

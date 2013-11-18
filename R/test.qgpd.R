@@ -2,7 +2,7 @@ test.qgpd <-
 function(){
   
   set.seed(201110101)
-  evd.qgpd <- texmex:::.evd.qgpd
+  evd.qgpd <- sombrero:::.evd.qgpd
   myTest <- function(sig,xi,thresh,msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))

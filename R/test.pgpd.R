@@ -1,7 +1,6 @@
 test.pgpd <-
 function(){
-  
-  evd.pgpd <- texmex:::.evd.pgpd
+  evd.pgpd <- sombrero:::.evd.pgpd
   myTest <- function(sig,xi,thresh,msg){
     myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
     ep <- sapply(1:nreps, function(i) evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))

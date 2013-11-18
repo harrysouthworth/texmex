@@ -4,12 +4,12 @@ function(){
   th <- quantile(rain,seq(0.7,0.99,len=10))
   for(i in 1:length(th)){
     texmex.ei <- extremalIndex(rain,threshold=th[i])
-    Ferro.ei  <- texmex:::.extRemes.exi.intervals(rain > th[i])
+    Ferro.ei  <- sombrero:::.extRemes.exi.intervals(rain > th[i])
     
-    Ferro.clust <- texmex:::.extRemes.decluster.intervals(rain> th[i], Ferro.ei)
+    Ferro.clust <- sombrero:::.extRemes.decluster.intervals(rain> th[i], Ferro.ei)
     texmex.clust <- declust(texmex.ei)
     
-    Ferro.runs <-  texmex:::.extRemes.decluster.runs(rain> th[i], 3)
+    Ferro.runs <-  sombrero:::.extRemes.decluster.runs(rain> th[i], 3)
     texmex.runs <- declust(rain,threshold=th[i],r=3,verbose=FALSE)
     
     checkEqualsNumeric(texmex.ei$EIintervals, Ferro.ei,
