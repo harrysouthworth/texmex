@@ -31,7 +31,7 @@ function(prior, penalty, method){
     penalty <- casefold(penalty)
     if (prior != penalty){ # User provided one or both of prior or penalty
       if (prior == 'gaussian'){ # User provided penalty
-        if (method == 'none'){
+        if (penalty == 'none'){
           prior <- penalty
         }
       }
