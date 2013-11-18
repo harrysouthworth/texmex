@@ -30,15 +30,14 @@ function(prior, penalty, method){
     prior <- casefold(prior)
     penalty <- casefold(penalty)
     if (prior != penalty){ # User provided one or both of prior or penalty
-      if (prior == 'gaussian'){ # User provided penalty
-        if (penalty == 'none'){
+      if (prior == 'gaussian'){ # The default
+        if (penalty == 'none' & method != 's'){
           prior <- penalty
         }
       }
-      else if (prior != 'gaussian' & penalty != 'guassian'){ # User provided both
+      else if (prior != 'gaussian' & penalty != 'none'){ # User provided both
         stop('Provide neither or one of prior and penatly, not both.')
       }
-      # else prior was provided and penalty wasn't, which is ok
     }
 
     if (method == 's' & !is.element(prior, c('gaussian', 'cauchy'))){
