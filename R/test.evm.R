@@ -509,13 +509,9 @@ test.evm <- function(){
   start1 <- c(0,1,2,-0.1)
   g1.fit <- sombrero:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE,muinit=start1[1:2])
   g2.fit <- sombrero:::.ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
-  g3.fit <- sombrero:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3, siglink=exp,show=FALSE)
-
-# XXX
-ismev.evm <- sombrero:::.ismev.gev.fit
-
-ismev.evm(xdat=data[[3]]$y, ydat=data[[3]], shl=3, siglink=exp, show=FALSE)$mle
-
+  # siginit specified in call below. Otherwise, it converges to a bad location (as judged by looking at
+  # the likelihood from each fit)
+  g3.fit <- sombrero:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3,siglink=exp, siginit=2, show=FALSE)
 
   t1.fit <- evm(y,mu=~u, family=gev,data=data[[1]],start=start1)
   t2.fit <- evm(y,phi=~a,family=gev,data=data[[2]])
