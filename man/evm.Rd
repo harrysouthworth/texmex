@@ -25,7 +25,7 @@ possibly with explanatory variables.}
 evm(y, data, family, ...)
 
 \method{evm}{default}(y, data, family=gpd, th=-Inf, qu,
-    ..., penalty = "none",
+    ..., penalty = NULL,
     prior = "gaussian", method = "optimize", cov="observed", start = NULL,
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
@@ -68,7 +68,8 @@ texmexJumpConst(j, map)
            "none"", "gaussian"" or "lasso"" are the only allowed
            values. If \code{penalty} is "gaussian" or "lasso" then
            the parameters for the penalization are specified through
-           the \code{priorParameters} argument. See below.}
+           the \code{priorParameters} argument. See below. Defaults to
+           \code{penalty=NULL} and applies maximum likelihood estimation.}
   \item{prior}{If \code{method = "optimize"}, just an alternative way of
            specifying the pentalty, and only one or neither of \code{penalty}
            and \code{prior} should be given. If \code{method = "simulate"},

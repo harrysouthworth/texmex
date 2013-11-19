@@ -12,7 +12,7 @@
 \description{Worker functions not intended for direct use.}
 \usage{
 texmexMethod(method)
-texmexPrior(prior, penalty, method)
+texmexPrior(prior, penalty, method, pp)
 texmexTrace(trace, method)
 texmexPrepareData(y, data, params)
 texmexThresholdData(threshold, data)
@@ -29,6 +29,7 @@ texmexGetParam(data, co)
   to use. The function attempts to interpret it and returns a
   standardized version.}
 \item{penalty}{Character string describing the type of penalty to use.}
+\item{pp}{The \code{priorParameters} object.}
 \item{trace}{Information on whether to report progress to the user.}
 \item{y}{Vector of data to be modelled.}
 \item{data}{A \code{data.frame} containing covariates. Otherwise a list
