@@ -67,7 +67,7 @@ The final command sets the random seed so that the results in this vignette may 
 \subsection{\tt texmex}
 %
 The {\tt texmex} package for R was written by Harry Southworth
-and Janet E. Heffernan. The work was funded by AstraZeneca.  This vignette focusses on the functions in {\tt texmex} which carry out cluster analysis of serially dependent data.  More detailed information on the remainder of the {\tt texmex} package is given in the {\tt texmex package} vignette.
+and Janet E. Heffernan. The work was funded by AstraZeneca.  This vignette focusses on the functions in {\tt texmex} which carry out cluster analysis of serially dependent data.  More detailed information on the remainder of the {\tt texmex} package is given in the texmex1d package vignette.
 %
 \section{Statistical inference for clusters of extreme values}
 %
@@ -166,7 +166,7 @@ plot(extremalIndex(AR,threshold=20))
 %
 \subsubsection{Threshold stability plot}
 %
-We exploit another useful property of the extremal index estimator to derive a further tool for threshold selection.  This property is that of {\it threshold stability}, which is used in threshold selection for many other extreme value models.  More details of its use in other models are are given in the {\tt texmex package} vignette.
+We exploit another useful property of the extremal index estimator to derive a further tool for threshold selection.  This property is that of {\it threshold stability}, which is used in threshold selection for many other extreme value models.  More details of its use in other models are are given in the texmex1d package vignette.
 
 The threshold stability of the extremal index estimator refers to its invariance to change in threshold above a suitably high threshold.  Simply put, once a threshold is {\it high enough}, raising the threshold further should not dramatically change the estimated value of $\theta$. As the threshold increases, the sample size used for estimation will fall so sampling uncertainty will increase, but the estimated values of of $\hat\theta$ should not alter above this anticipated sampling variation.  Any apparent trend in the estimated $\theta$ with threshold is an indication that the threshold is too low.
 
@@ -308,7 +308,7 @@ Specifying a run length {\tt r} forces the use of the {\it runs} declustering me
 declust(rain,th=13)
 @
 %
-\subsubsection{Modelling dependent series with covariates  -- air pollution data}
+\subsection{Modelling dependent series with covariates  -- air pollution data}
 %
 We now look at the possibility of including covariates in our GPD model for cluster maxima.  This is demonstrated by using the five-dimensional {\it winter air pollution} dataset included in {\tt texmex}. For more information on this dataset type
 

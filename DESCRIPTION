@@ -1,15 +1,27 @@
 Package: texmex
 Type: Package
-Title: Threshold exceedances and multivariate extremes
+Title: Statistical modelling of extreme values
 Version: 2.0
 Date: 2013-11-14
 Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
-Description: Conditional multivariate extreme value modelling using
-             the approach of Heffernan and Tawn.
+Description: Statistical extreme value modelling of threshold excesses,
+  maxima and multivariate extremes.  Univariate models for threshold
+  excesses and maxima are the Generalised Pareto, and Generalised
+  Extreme Value model respectively.  These models may be fitted by
+  using maximum (optionally penalised-)likelihood, or Bayesian
+  estimation, and both classes of models may be fitted with covariates
+  in any/all model parameters.  Model diagnostics support the fitting
+  process. Graphical output for visualising fitted models and return
+  level estimates is provided.  For serially dependent sequences, the
+  intervals declustering algorithm of Ferro and Segers is provided,
+  with diagnostic support to aid selection of threshold and declustering
+  horizon.  Multivariate modelling is performed via the conditional
+  approach of Heffernan and Tawn, with graphical tools for threshold
+  selection and to diagnose estimation convergence. 
 License: GPL (>=2)
 Depends: mvtnorm
-Suggests: MASS, RUnit, lattice, knitr
+Suggests: MASS, lattice, knitr
 VignetteBuilder: knitr
 LazyLoad: yes
 LazyData: yes

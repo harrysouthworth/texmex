@@ -218,7 +218,7 @@ For the {\tt rain} data:
 rain.fit <- evm(rain,th=20)
 rain.fit
 @
-The estimated shape parameter shows us that with this threshold, the fitted GPD has a heavy tail, as $\hat\xi>0$.  This is in line with our expectations following inspecation of the MRL plot.
+The estimated shape parameter shows us that with this threshold, the fitted GPD has a heavy tail, as $\hat\xi>0$.  This is in line with our expectations following inspection of the MRL plot.
 
 We examine diagnostics plots to see whether these support our initial choice of threshold:
 <<plotGPD>>=
@@ -317,7 +317,7 @@ par(mfrow=c(2,2))
 plot(airpoll1)
 @
 
-Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the scale parameter $\phi$ and shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern.  There are no return level or histogram/density plots produced since the estimates of these quantities depend on the precise values oftaken by the covariates in the model.
+Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the scale parameter $\phi$ and shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern.  There are no return level or histogram/density plots produced since the estimates of these quantities depend on the precise values taken by the covariates in the model.
 
 
 <<AIC>>==

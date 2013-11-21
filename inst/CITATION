@@ -4,7 +4,7 @@ year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
 vers <- paste("R package version", meta$Version)
 
 citEntry(entry = "Manual",
-         title = "texmex: Threshold exceedances and multivariate extremes",
+         title = "texmex: Statistical modelling of extreme values",
          author = personList(as.person("Harry Southworth"),
                              as.person("Janet E. Heffernan")),
          year = year,
@@ -12,5 +12,5 @@ citEntry(entry = "Manual",
 
          textVersion =
          paste0("Harry Southworth and Janet E. Heffernan (",year,").",
-                "texmex: Threshold exceedances and multivariate extremes.",
+                "texmex: Statistical modelling of extreme values.",
                 vers, "."))
