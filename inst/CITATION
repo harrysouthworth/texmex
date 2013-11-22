@@ -11,6 +11,6 @@ citEntry(entry = "Manual",
          note = vers,
 
          textVersion =
-         paste0("Harry Southworth and Janet E. Heffernan (",year,").",
-                "texmex: Statistical modelling of extreme values.",
+         paste0("Harry Southworth and Janet E. Heffernan (",year,"). ",
+                "texmex: Statistical modelling of extreme values. ",
                 vers, "."))
