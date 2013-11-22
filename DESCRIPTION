@@ -4,7 +4,7 @@ Title: Statistical modelling of extreme values
 Version: 2.0
 Date: 2013-11-14
 Author: Harry Southworth, Janet E. Heffernan
-Maintainer: Harry Southworth <harry.southworth@astrazeneca.com>
+Maintainer: Harry Southworth <harry.southworth@gmail.com>
 Description: Statistical extreme value modelling of threshold excesses,
   maxima and multivariate extremes.  Univariate models for threshold
   excesses and maxima are the Generalised Pareto, and Generalised

@@ -37,14 +37,16 @@ type = "return level", se.fit = FALSE,
 ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE,
 sumfun = NULL,...)
 
-linearPredictors(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, 
-unique. = TRUE, ...)
+linearPredictors(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
+                 alpha = 0.050, unique. = TRUE, ...)
 
-\method{linearPredictors}{evmOpt}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, 
+\method{linearPredictors}{evmOpt}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
 alpha = 0.05, unique. = TRUE, full.cov = FALSE,...)
-\method{linearPredictors}{evmSim}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, 
+\method{linearPredictors}{evmSim}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
 alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
-\method{linearPredictors}{evmBoot}(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
+\method{linearPredictors}{evmBoot}(object, newdata = NULL, se.fit = FALSE,
+                                   ci.fit = FALSE, alpha = 0.050, unique. = TRUE,
+                                   all = FALSE, sumfun = NULL,...)
 
 \method{print}{lp.evmOpt}(x, digits=3,...)
 \method{print}{lp.evmSim}(x, digits=3,...)
@@ -54,7 +56,8 @@ alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL,...)
 \method{summary}{lp.evmSim}(object, digits=3,...)
 \method{summary}{lp.evmBoot}(object, digits=3,...)
 
-\method{plot}{lp.evmOpt}(x, main=NULL, pch=1, ptcol=2, cex=.75, linecol=4, cicol=1, polycol=15,...)
+\method{plot}{lp.evmOpt}(x, main=NULL, pch=1, ptcol=2, cex=.75,
+                         linecol=4, cicol=1, polycol=15,...)
 \method{plot}{lp.evmSim}(x, type="median", ...)
 \method{plot}{lp.evmBoot}(x, type="median", ...)
 }

@@ -98,7 +98,8 @@ plot(chiD)
 
 A <- liver[liver$dose == "A",]
 chiA <- chi(A[, 5:6])
-# here the limiting value of chi bar(u) lies away from one so the chi plot is not relevant and is plotted in grey
+# here the limiting value of chi bar(u) lies away from one so the chi plot is
+# not relevant and is plotted in grey
 plot(chiA) 
 
 

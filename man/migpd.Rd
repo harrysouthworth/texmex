@@ -10,7 +10,9 @@
 \usage{
 migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
       trace = 0, verbose = FALSE, priorParameters = NULL)
-\method{plot}{migpd}(x, main=c("Probability plot","Quantile plot","Return level plot","Histogram and density"), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... )
+\method{plot}{migpd}(x, main=c("Probability plot","Quantile plot",
+                               "Return level plot","Histogram and density"),
+                     xlab=rep(NULL,4), nsim=1000, alpha=.05, ... )
 }
 \arguments{
   \item{data}{ A matrix or data.frame, each column of which is to be modelled. }
