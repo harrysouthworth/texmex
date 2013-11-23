@@ -4,12 +4,12 @@ evmFit <- function(data, family, ...,
                    maxit = 10000, trace = 0, hessian=TRUE) {
 
   penFactory <- switch(prior,
-                       laplace=texmex:::.make.lasso.penalty,
-                       lasso=texmex:::.make.lasso.penalty,
-                       l1=texmex:::.make.lasso.penalty,
-                       quadratic=texmex:::.make.quadratic.penalty,
-                       gaussian=texmex:::.make.quadratic.penalty,
-                       none=texmex:::.make.dummy.penalty,
+                       laplace=.make.lasso.penalty,
+                       lasso=.make.lasso.penalty,
+                       l1=.make.lasso.penalty,
+                       quadratic=.make.quadratic.penalty,
+                       gaussian=.make.quadratic.penalty,
+                       none=.make.dummy.penalty,
                        function() {stop("Bad penalty ref.")})
 
   prior <- penFactory(priorParameters)
