@@ -46,8 +46,8 @@ constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
 
     oldClass(o) <- 'evmOpt'
 
-    o$cov <- addCovariance(o, family, cov)
-    o$se <- sqrt(diag(o$cov))
+    o$cov <- try(addCovariance(o, family, cov))
+    o$se <- try(sqrt(diag(o$cov)))
 
     o$value <- o$counts <- o$hessian <- NULL
 

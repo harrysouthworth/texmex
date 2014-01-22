@@ -1,7 +1,7 @@
 Package: texmex
 Type: Package
 Title: Statistical modelling of extreme values
-Version: 2.1
+Version: 2.2
 Date: 2013-12-10
 Author: Harry Southworth, Janet E. Heffernan
 Maintainer: Harry Southworth <harry.southworth@gmail.com>
