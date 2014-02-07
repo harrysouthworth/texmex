@@ -53,7 +53,6 @@ function (y, data, family=gpd, th= -Inf, qu,
     priorParameters <- texmexPriorParameters(prior, priorParameters, modelData)
 
     ################################## Do the optimization....
-
     o <- evmFit(data = modelData, family=family, th=th,
                  prior=prior,
                  start=start, hessian = cov == "numeric",
@@ -65,7 +64,6 @@ function (y, data, family=gpd, th= -Inf, qu,
     }
 
     ##### Construct object containing the penalized likelihood estimates
-
     o <- constructEVM(o, family, th, rate, prior, modelParameters, theCall,
                       modelData, data, priorParameters, cov)
 

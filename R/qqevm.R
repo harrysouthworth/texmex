@@ -1,5 +1,5 @@
 qqevm <- function(object, nsim=1000, alpha=.050){
-    # Want parameters as a matrix with one for for passing
+    # Want parameters as a matrix with one row for passing
     # through to family$rng etc.
     a <- t(object$coefficients)
     u <- object$threshold

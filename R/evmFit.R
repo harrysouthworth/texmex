@@ -17,7 +17,7 @@ evmFit <- function(data, family, ...,
   log.lik <- family$log.lik(data, ...)
 
   evm.lik <- function(par) {
-    min(-log.lik(par), 1e6) + prior(par)
+    min(-log.lik(par), 1e12) + prior(par)
   }
 
   nco <- sum(sapply(data$D, ncol))
@@ -27,9 +27,9 @@ evmFit <- function(data, family, ...,
     else { start <- family$start(data) }
   }
 
-   o <- optim(par = start, fn = evm.lik,
-              control = list(maxit = maxit, trace = trace),
-              hessian = hessian)
+  o <- optim(par = start, fn = evm.lik,
+            control = list(maxit = maxit, trace = trace),
+            hessian = hessian)
 
-    invisible(o)
+  invisible(o)
 }

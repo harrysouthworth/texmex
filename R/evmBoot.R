@@ -16,11 +16,12 @@ evmBoot <- function(o, R=1000, trace=100, theCall){
 
         evmFit(d, o$family, th=o$threshold, prior=o$penalty,
                priorParameters=o$priorParameters,
-               start=o$coefficients, hessian=FALSE)$par
+               start=o$coefficients,
+               hessian=FALSE)$par
     }
 
     res <- t(sapply(1:R, bfun))
-
+    
     se <- apply(res, 2, sd)
     b <- apply(res, 2, mean) - coef(o)
 
@@ -64,9 +65,9 @@ summary.evmBoot <- function(object, ...){
         warning("Ratio of bias to standard error is high")
     }
 
-covs <- var(object$replicates)
+    covs <- var(object$replicates)
     res <- list(call = object$call, margins=res, covariance=covs)
-    oldClass(res) <- "summary.evm.boot"
+    oldClass(res) <- "summary.evmBoot"
     res
 }
 
