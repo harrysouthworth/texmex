@@ -10,9 +10,9 @@ gpd <- texmexFamily(name = 'GPD',
                                  phi <- X.phi %*% param[1:n.phi]
                                  xi <- X.xi %*% param[(1 + n.phi):n.end]
                                  sum(dgpd(y, exp(phi), xi, u=th, log.d=TRUE))
-                                }
+                               }
                    }, # Close log.lik
-                   param = c('phi', 'xi'),
+                   param = c(phi=0, xi=0),
                    info = gpd.info,
                    start = function(data){
                              y <- data$y

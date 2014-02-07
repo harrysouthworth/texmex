@@ -167,8 +167,8 @@ function(call,...){
 
 texmexParameters <- function(call, fam, ...){
     # Create intercept formula for every parameter
-    mp <- lapply(fam$param, function(x) ~1)
-    names(mp) <- fam$param
+    mp <- lapply(names(fam$param), function(x) ~1)
+    names(mp) <- names(fam$param)
 
     # Splice in parameters from function call
     p <- findFormulae(call, ...)
@@ -191,7 +191,7 @@ texmexGetParam <- function(data, co){
 }
 
 texmexPst <- function(msg="",Family){
-  paste(msg,", Family = ",Family$name)
+  paste(msg,", Family = ", Family$name)
 }
 
 texmexGetXlevels <- function(fo, data){
@@ -212,4 +212,14 @@ texmexGetXlevels <- function(fo, data){
   # Split it by formula
   res <- lapply(fo, getVars)
   lapply(res, function(X, wh) wh[names(wh) %in% X], wh=xlevels)
+}
+
+texmexStandardForm <- function(object){
+  # See if there are covariates in the model. If so, squish them.
+  if (sum(sapply(object$data$D, ncol)) > length(object$family$param)){
+    object$data$y <- resid(object)
+    object$threshold <- 0
+    object$coefficients <- object$family$param
+  }
+  object
 }

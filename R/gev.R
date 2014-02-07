@@ -1,5 +1,5 @@
 gev <- texmexFamily(name = 'GEV',
-                    param = c('mu', 'phi', 'xi'),
+                    param = c(mu=0, phi=0, xi=0),
                     log.lik = function(data, ...) {
                                 y <- data$y
                                 X.mu <- data$D$mu

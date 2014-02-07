@@ -12,7 +12,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
   }
 
   makelp <- function(x, family){
-      p <- family$param
+      p <- names(family$param)
       res <- vector("list", length=length(p))
       names(res) <- p
       for (i in 1:length(p)){
@@ -21,7 +21,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
       res
   }
   Ests <- makelp(data.frame(x), family)
-  Names <- family$param
+  Names <- names(family$param)
   cn <- colnames(x)
   which <- cn != "mu" & cn != "phi"    & cn != "xi" &
            cn != "mu.lo" & cn != "mu.hi" &
@@ -65,7 +65,7 @@ plot.lp.evmSim <- function(x, type="median", ...){
   if(dim(x$link)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
-  p <- x$family$param
+  p <- names(x$family$param)
   np <- length(p)
 # re-format to same column structure as lp.evmOpt x
   ColIndexMeans <- 1+4*(0:(np-1))
