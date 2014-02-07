@@ -3,7 +3,6 @@ function(){
   
   liver <- liver
   liver$ndose <- as.numeric(liver$dose)
-  require(MASS,quietly=TRUE) # For rlm
   
   ralt <- resid(rlm(log(ALT.M) ~ log(ALT.B) + ndose, data=liver))
   rast <- resid(rlm(log(AST.M) ~ log(AST.B) + ndose, data=liver))

@@ -7,6 +7,6 @@ Author: Janet E. Heffernan and Harry Southworth
 Maintainer: Harry Southworth <harry.southworth@gmail.com>
 Description: A suite of unit tests to give confidence that the texmex package
              does what it ought, currently implemented via RUnit.
-License: GPL (>=2) | BSD
-Depends: texmex, mvtnorm, RUnit, lattice
+License: GPL (>=2)
+Depends: texmex, mvtnorm, MASS, RUnit, lattice
 
