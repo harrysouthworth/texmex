@@ -11,8 +11,7 @@ function(object , nsim = 1000, alpha = .050){
     rfun <- object$family$rng
 
     ModPoints <- ppoints(dat)
-
-	# If doing the envelope, simulate, sort and get the quantiles
+    # If doing the envelope, simulate, sort and get the quantiles
     if (nsim > 0){
         n <- length(dat)
         sim <- matrix(rfun(nsim * n, a, object), ncol = nsim)

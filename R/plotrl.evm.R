@@ -41,7 +41,7 @@ getPlotRLdata <- function(object, alpha, RetPeriodRange){
 
     xrange <- range(m)
     yrange <- range(c(xdat, range(xm[plotX,])))
-    
+
     list(n=n, xdat=xdat, m=m, xm=xm, plotX=plotX, xrange=xrange, yrange=yrange)
 }
 

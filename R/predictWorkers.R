@@ -41,7 +41,7 @@ function(cov, data){
     wh <- 1
     for (i in 1:length(covs)){
         which <- wh:(wh -1 + ncol(data[[i]]))
-        covs[[i]] <- as.matrix(cov[which, which])
+        covs[[i]] <- cov[which, which, drop=FALSE]
         # covs[[]i] contains the block of the full covariance which relates to parameter[i]
  
         # Get the variance of the linear predictors
@@ -55,17 +55,17 @@ function(cov, data){
     # We now need the off-diagonal elements of the covariance matrix. The dimensions
     # of the covariance will depend on the length of object$data$D
 
-    getOffDiagonal <- function(k, x1, x2, cov){
+    getOffDiagonal <- function(row, x1, x2, cov, cindex){
         covar <- 0
-        for (i in 1:ncol(x1)){
-            for (j in 1:ncol(x2)){
-                covar <- covar + x1[k, i] * x2[k, j] * cov[i, ncol(x1) + j]
+        for (j in 1:ncol(x1)){
+            for (k in 1:ncol(x2)){
+                covar <- covar + x1[row, j] * x2[row, k] * cov[j, cindex + k] # XXX <-----------------------------------
             } # Close for j
         } # Close for i
         covar
     } # Close getOffDiagonal
 
-    getCovEntry <- function(data){
+    getCovEntry <- function(cov, data){
         # Recursively produce off-diagonal elements of the covariance.
         # These are computed by row.
         x1 <- data[[1]]
@@ -73,18 +73,22 @@ function(cov, data){
         n <- length(data)
 
         res <- vector('list', length=n)
+        wh <- 1
         for (i in 1:n){
-            res[[i]] <- sapply(1:nrow(x1), getOffDiagonal, x1, data[[i]], cov)
+            res[[i]] <- sapply(1:nrow(x1), getOffDiagonal, x1, data[[i]], cov, wh)
+            wh <- wh + ncol(data[[i]]) # Increment column index for next dataset
         }
-        if (length(data) > 1){
-            res <- c(res, getCovEntry(data))
+        if (n > 1){
+            # Get next covariance block. Already pruned data, now prune cov of those elements already used.
+            cov <- cov[-(1:ncol(x1)), -(1:ncol(x1)), drop=FALSE]
+            res <- c(res, getCovEntry(cov, data))
         }
         else {
             res
         }
     } # Close getCovEntry
 
-    co <- getCovEntry(data)
+    co <- getCovEntry(cov, data)
 
     # Now need to restructure to return a list of covariance matrices,
     # one element for every observation. The covariance is of the linear
