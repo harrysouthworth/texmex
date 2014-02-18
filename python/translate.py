@@ -56,8 +56,6 @@ def checkEquals(fname):
     infile.close()
     outfile.close()
 
-  
-
 def translateArgs(txt, i, outfile):
     checkTrue = False
     if i == 10:
@@ -85,9 +83,10 @@ def translateArgs(txt, i, outfile):
 
     else: # if checkTrue
       outfile.write(", is_true(), ")
-      for char in txt[(i+2):]:
-        outfile.write(char.strip())
-      outfile.write("\n")
+
+    for char in txt[(i+2):]:
+      outfile.write(char.strip())
+    outfile.write("\n")
 
 
 checkEquals("wh")
