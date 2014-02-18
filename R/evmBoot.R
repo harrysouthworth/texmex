@@ -1,4 +1,4 @@
-evmBoot <- function(o, R=1000, trace=100, theCall){
+evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     if (class(o) != "evmOpt"){
         stop("o must be of class 'evmOpt'")
     }
@@ -9,9 +9,23 @@ evmBoot <- function(o, R=1000, trace=100, theCall){
     param <- texmexMakeParams(coef(o), d$D)
     rng <- o$family$rng
 
-    bfun <- function(i){
-        if (i %% trace == 0){ cat("Replicate", i, "\n") }
+    getCluster <- function(n){
+      wh <- try(library(parallel))
+      if (class(wh) != "try-error"){
+        if (is.null(n)) n <- detectCores()
+        if (n == 1) { NULL }
+        else makeCluster(n)
+      }
+      else NULL
+    }
+    cluster <- getCluster(cores)
+    on.exit(if (!is.null(cluster)){ stopCluster(cluster) })
+    
+    bfun <- function(X){
+        if (X %% trace == 0){ cat("Replicate", X, "\n") }
 
+        s <- set.seed(seeds[[X]])
+        
         d$y <- rng(length(d$y), param, o)
 
         evmFit(d, o$family, th=o$threshold, prior=o$penalty,
@@ -19,8 +33,14 @@ evmBoot <- function(o, R=1000, trace=100, theCall){
                start=o$coefficients,
                hessian=FALSE)$par
     }
-
-    res <- t(sapply(1:R, bfun))
+    seeds <- as.integer(runif(R, -(2^31 - 1), 2^31))
+    
+    if (!is.null(cluster)){
+      res <- t(parallel::parSapply(cluster, X=1:R, bfun))
+    }
+    else {
+      res <- t(sapply(1:R, bfun))
+    }
     
     se <- apply(res, 2, sd)
     b <- apply(res, 2, mean) - coef(o)

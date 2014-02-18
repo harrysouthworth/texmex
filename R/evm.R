@@ -17,7 +17,8 @@ function (y, data, family=gpd, th= -Inf, qu,
           maxit = 10000, trace=NULL,
           iter = 40500, burn=500, thin = 4,
           proposal.dist = c("gaussian", "cauchy"),
-          jump.cov, jump.const=NULL, R=100, verbose=TRUE) {
+          jump.cov, jump.const=NULL,
+          R=100, cores=NULL, verbose=TRUE) {
 
     modelParameters <- texmexParameters(theCall, family,...)
 
@@ -78,7 +79,7 @@ function (y, data, family=gpd, th= -Inf, qu,
                     trace=trace, theCall)
     } # Close else
     else if (method == "b"){
-        o <- evmBoot(o, R=R)
+        o <- evmBoot(o, R=R, cores=cores)
     }
 
     o

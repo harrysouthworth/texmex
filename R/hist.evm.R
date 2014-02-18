@@ -6,15 +6,7 @@ function(x, xlab, ylab, main, ...){
     u <- x$threshold
     if (!is.finite(u)){ u <- min(x$data$y) }
 
-    # FOLLOWING if BLOCK COMMENTED OUT TO ACCOUNT FOR DIFFERENCE
-    # BETWEEN GEV AND GPD. MIGHT HAVE TO DO SOMETHING MORE
-    # SENSIBLE LATER.
-#    if(a[2] < 0){
-#         UpperEndPoint <- u - a[1]/a[2]
-#    }
-#    else {
-        UpperEndPoint <- Inf
-#    }
+    UpperEndPoint <- x$family$endpoint(a, x)
 
     dat <- x$data$y
     dfun <- x$family$density
