@@ -1,7 +1,9 @@
-test.plot.migpd <-
-function(){
-  par(mfrow=c(2,2))
+context("plot.migpd")
+
+test_that("plot.migpd behaves as it should", {
+    par(mfrow=c(2,2))
   mod <- migpd(winter, mqu=.7, penalty = "none")
   res <- plot(mod)
-  checkEquals(res,NULL,msg="plot.migpd: successful execution")
+  expect_that(res, equals(NULL), label="plot.migpd:successfulexecution")
 }
+)

@@ -1,4 +1,6 @@
-test.specfun.safe.product <-
+context("specfun.safe.product")
+
+test_that("specfun.safe.product behaves as it should", {
 function() {
   prod <- texmex:::.specfun.safe.product
   
@@ -6,7 +8,7 @@ function() {
   x <- runif(10, -5, 5)
   y <- runif(length(x), -5, 5)
   
-  checkEqualsNumeric(prod(x, y), pmax(x*y, -1),
+  expect_that(prod(x, equals(y)), pmax(x*y,-1),
                      "safe product: simple values")
   
   ## complicated values
@@ -14,6 +16,7 @@ function() {
   y <- c(Inf, -Inf, Inf, -Inf)
   
   res <- c(0, 0, Inf, -1)
-  checkEqualsNumeric(prod(x, y), res,
+  expect_that(prod(x, equals(y)), res,
                      "safe product: complicated values")
 }
+)

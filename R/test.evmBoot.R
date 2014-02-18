@@ -1,11 +1,12 @@
-test.evmBoot <-
-function(){
-  tol <- 0.1
+context("evmBoot")
+
+test_that("evmBoot behaves as it should", {
+    tol <- 0.1
   
   for(Family in list(gpd,gev)){
     set.seed(20130615)
     
-    pst <- function(msg) texmexPst(msg,Family=Family)
+    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
     
     u    <- switch(Family$name,GPD=30,GEV=-Inf)
     data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
@@ -23,8 +24,8 @@ function(){
     bse <- apply(rep, 2, sd)
     cse <- switch(Family$name,GPD=c(.958432, .101151),GEV=c(0.02792848, 0.02024846, 0.09823441))
     
-    checkEqualsNumeric(cse,bse,tolerance=tol,
-                       msg=pst("evmBoot: bootstrap se of parameter estimates matches Coles"))
+  expect_that(cse, equals(bse), tolerance=tol,
+                       label=pst("evmBoot: bootstrap se of parameter estimates matches Coles"))
     
     ## Check penalization works - set harsh penalty and do similar
     ## checks to above
@@ -36,12 +37,12 @@ function(){
     bse <- apply(boot$replicates, 2, sd)
     rse <- bse / fit$se
     rse <- ifelse(rse < 1, 1/rse, rse)
-    checkTrue(max(rse) < 1.1, msg=pst("evmBoot: SEs with xi in model, with penalty applied"))
+  expect_that(max(rse)<1.1, is_true(), label=pst("evmBoot:SEswithxiinmodel,withpenaltyapplied"))
     
     best <- apply(boot$replicates, 2, median)
     fest <- coef(fit)
     rdiff <- abs((best - fest)/fest)
-    checkTrue(all(rdiff < 0.06), msg=pst("evmBoot: medians in line with point ests, with penalty applied"))
+  expect_that(all(rdiff<0.06), is_true(), label=pst("evmBoot:mediansinlinewithpointests,withpenaltyapplied"))
     
     ##################################################################
     # models with covariates. Due to apparent instability
@@ -58,13 +59,13 @@ function(){
       bse <- apply(boot$replicates, 2, sd)
       rse <- bse / fit$se
       rse <- ifelse(rse < 1, 1/rse, rse)
-      checkTrue(max(rse) < 1.5, msg=pst(paste("evmBoot: SEs with covariates in",txt)))
+  expect_that(max(rse)<1.5, is_true(), label=pst(paste("evmBoot:SEswithcovariatesin",txt)))
       
       best <- apply(boot$replicates, 2, median)
       fest <- coef(fit)
       rdiff <- abs((best - fest)/fest)
       
-      checkTrue(all(rdiff < 0.2), msg=pst(paste("evmBoot: medians in line with point ests, covariates in",txt)))
+  expect_that(all(rdiff<0.2), is_true(), label=pst(paste("evmBoot:mediansinlinewithpointests,covariatesin",txt)))
     }
     
     param <- switch(Family$name,GPD=cbind(2+X[,1],xi),GEV=cbind(mu,2+X[,1],xi))
@@ -84,3 +85,4 @@ function(){
     test(boot,fit,"xi")
   }
 }
+)

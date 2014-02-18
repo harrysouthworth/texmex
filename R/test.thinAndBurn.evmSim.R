@@ -1,6 +1,7 @@
-test.thinAndBurn.evmSim <-
-function(){
-  
+context("thinAndBurn.evmSim")
+
+test_that("thinAndBurn.evmSim behaves as it should", {
+    
   # generate data to use for checking
   d <- sample(3:10,1)
   nrow <- 100
@@ -9,30 +10,30 @@ function(){
   
   # test appropriate errors for misspecification of thin and burn
   
-  checkException(thinAndBurn(x,burn=2),silent=TRUE,msg="thinAndBurn.evmSim: errors for misspecification of thin and burn")
-  checkException(thinAndBurn(x,thin=1),silent=TRUE,msg="thinAndBurn.evmSim: errors for misspecification of thin and burn")
+  expect_that(thinAndBurn(x, equals(burn=2)), silent=TRUE,label="thinAndBurn.evmSim:errorsformisspecificationofthinandburn")
+  expect_that(thinAndBurn(x, equals(thin=1)), silent=TRUE,label="thinAndBurn.evmSim:errorsformisspecificationofthinandburn")
   
   #  test burn in
   burn <- sample(nrow/2,1)
   burnOnly <- thinAndBurn(x,burn=burn,thin=1)
-  checkEqualsNumeric(x$chains[burn+1,], burnOnly$param[1,],msg="thinAndBurn.evmSim: burn in  ")
+  expect_that(x$chains[burn+1, equals(]), burnOnly$param[1,],label="thinAndBurn.evmSim:burnin")
   
   # test thinning
   thin <- 2
   thinOnly <- thinAndBurn(x,thin=thin,burn=0)
   
-  checkEqualsNumeric(seq(thin,nrow,by=thin), thinOnly$param[,1],msg="thinAndBurn.evmSim: thinning  ")
+  expect_that(seq(thin, equals(nrow), by=thin),thinOnly$param[,1],label="thinAndBurn.evmSim:thinning")
   
   # test thinning and burning simultaneously
   
   thinBurn <- thinAndBurn(x,thin=thin,burn=burn)
   
-  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn$param[,1],msg="thinAndBurn.evmSim: thinning and burning simultaneously")
+  expect_that(seq(burn+thin, equals(nrow), by=thin),thinBurn$param[,1],label="thinAndBurn.evmSim:thinningandburningsimultaneously")
   
   # test returned values of thin and burn
   
-  checkEqualsNumeric(thin, thinBurn$thin,burn=0,msg="thinAndBurn.evmSim: test returned value of thin")
-  checkEqualsNumeric(burn, thinBurn$burn,thin=1,msg="thinAndBurn.evmSim: test returned value of burn")
+  expect_that(thin, equals(thinBurn$thin), burn=0,label="thinAndBurn.evmSim:testreturnedvalueofthin")
+  expect_that(burn, equals(thinBurn$burn), thin=1,label="thinAndBurn.evmSim:testreturnedvalueofburn")
   
   # test passing thin and burn via object
   
@@ -40,14 +41,15 @@ function(){
   x$burn <- burn
   thinBurn1 <- thinAndBurn(x)
   
-  checkEqualsNumeric(seq(burn + thin, nrow,by=thin), thinBurn1$param[,1],msg="thinAndBurn.evmSim: test passing thin and burn via object")
-  checkEqualsNumeric(dim(thinBurn$param),dim(thinBurn1$param),msg="thinAndBurn.evmSim: test passing thin and burn via object")
+  expect_that(seq(burn+thin, equals(nrow), by=thin),thinBurn1$param[,1],label="thinAndBurn.evmSim:testpassingthinandburnviaobject")
+  expect_that(dim(thinBurn$param), equals(dim(thinBurn1$param)), label="thinAndBurn.evmSim:testpassingthinandburnviaobject")
   
   # test thinning and burning a previously thinned and burned object
   
   thin2 <- 4
   burn2 <- 4
   thinBurn2 <- thinAndBurn(thinBurn1,thin=thin2,burn=burn2)
-  checkEqualsNumeric(dim(thinBurn1$chains)[2], dim(thinBurn2$chains)[2],msg="thinAndBurn.evmSim: thinning and burning a previously thinned and burned object")
-  checkEqualsNumeric((nrow - burn2) / thin2, dim(thinBurn2$param)[1],msg="thinAndBurn.evmSim: thinning and burning a previously thinned and burned object")
+  expect_that(dim(thinBurn1$chains)[2], equals(dim(thinBurn2$chains)[2]), label="thinAndBurn.evmSim:thinningandburningapreviouslythinnedandburnedobject")
+  expect_that((nrow-burn2)/thin2, equals(dim(thinBurn2$param)[1]), label="thinAndBurn.evmSim:thinningandburningapreviouslythinnedandburnedobject")
 }
+)

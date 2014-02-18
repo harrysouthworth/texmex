@@ -1,6 +1,7 @@
-test.mexRangeFit <-
-function(){
-  
+context("mexRangeFit")
+
+test_that("mexRangeFit behaves as it should", {
+    
   which <- 2
   quantiles <- seq(0.5,0.9,length=5)
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
@@ -12,12 +13,12 @@ function(){
   mrf2 <- mexRangeFit(wmexmod.gum,quantiles = quantiles,R=R,trace=R+1)
   mrf3 <- mexRangeFit(wmexmod.lap,quantiles = quantiles,R=R,trace=R+1)
   
-  checkException(mexRangeFit(TRUE,which=2),silent=TRUE,msg="mexRangeFit: exception handle")
-  checkException(mexRangeFit(5,which=1),silent=TRUE,msg="mexRangeFit: exception handle")
+  expect_that(mexRangeFit(TRUE, equals(which=2)), silent=TRUE,label="mexRangeFit:exceptionhandle")
+  expect_that(mexRangeFit(5, equals(which=1)), silent=TRUE,label="mexRangeFit:exceptionhandle")
   
-  checkEquals(mrf1$ests[[1]][1:2],wmexmod.lap[1:2])
-  checkEquals(mrf2$ests[[1]][1:2],wmexmod.gum[1:2])
-  checkEquals(mrf3$ests[[1]][1:2],wmexmod.lap[1:2])
+  expect_that(mrf1$ests[[1]][1:2], equals(wmexmod.lap[1:2])), 
+  expect_that(mrf2$ests[[1]][1:2], equals(wmexmod.gum[1:2])), 
+  expect_that(mrf3$ests[[1]][1:2], equals(wmexmod.lap[1:2])), 
   
   # now 2-d data
   
@@ -26,7 +27,7 @@ function(){
   m <- mexDependence(wavesurge.fit,which=1,dqu=mqu)
   mrf4 <- mexRangeFit(wavesurge.fit,which=1,margins="laplace",R=R,trace=R+1)
   mrf5 <- mexRangeFit(m,R=R,trace=R+1)
-  checkEquals(mrf4$ests[[2]][1:2],mrf5$ests[[2]][1:2])
+  expect_that(mrf4$ests[[2]][1:2], equals(mrf5$ests[[2]][1:2])), 
   
   # test specification of starting values
   R <- 5
@@ -40,3 +41,4 @@ function(){
   plot(mrf6,main="start=(0.01,0.01)",addNexcesses=FALSE)
   plot(mrf7,main=paste("start=",signif(coef(m)$dependence[1:2],2)),addNexcesses=FALSE)
 }
+)
