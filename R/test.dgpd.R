@@ -3,10 +3,10 @@ context("dgpd")
 test_that("dgpd behaves as it should", {
     evd.dgpd <- sombrero:::.evd.dgpd
   
-  myTest <- function(sig,xi,thresh,msg){
-    myd <- sapply(1:nreps,function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
+  myTest <- function(sig, xi, thresh, label){
+    myd <- sapply(1:nreps, function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
     ed <- sapply(1:nreps, function(i) evd.dgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-  expect_that(ed, equals(myd), label=msg)
+  expect_that(ed, equals(myd), label=label)
   }
   
   set.seed(20101111)

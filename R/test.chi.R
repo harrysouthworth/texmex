@@ -73,11 +73,11 @@ test_that("chi behaves as it should", {
   chi <- chi(wavesurge,nq=nq,qlim=range(chi.JH$u),trunc= TRUE)
   
   expect_that(chi.JH$u, equals(chi$quantile), label="chi:u")
-  expect_that(chi.JH$Chi, equals(chi$chi[), 2],label="chi:Chi")
-  expect_that(chi.JH$ChiLower, equals(chi$chi[), 1],label="chi:ChiLower")
-  expect_that(chi.JH$ChiUpper, equals(chi$chi[), 3],label="chi:ChiUpper")
-  expect_that(chi.JH$ChiBar, equals(chi$chibar[), 2],label="chi:ChiBar")
-  expect_that(chi.JH$ChiBarLower, equals(chi$chibar[), 1],label="chi:ChiBarLower")
-  expect_that(chi.JH$ChiBarUpper, equals(chi$chibar[), 3],label="chi:ChiBarUpper")
+  expect_that(chi.JH$Chi, equals(chi$chi[, 2]), label="chi:Chi")
+  expect_that(chi.JH$ChiLower, equals(chi$chi[, 1]), label="chi:ChiLower")
+  expect_that(chi.JH$ChiUpper, equals(chi$chi[, 3]), label="chi:ChiUpper")
+  expect_that(chi.JH$ChiBar, equals(chi$chibar[, 2]), label="chi:ChiBar")
+  expect_that(chi.JH$ChiBarLower, equals(chi$chibar[, 1]), label="chi:ChiBarLower")
+  expect_that(chi.JH$ChiBarUpper, equals(chi$chibar[, 3]), label="chi:ChiBarUpper")
 }
 )

@@ -11,6 +11,7 @@ test_that("evm behaves as it should", {
   
   cparas <- c(7.44, 0.184)
   cse <- c(0.958432, 0.101151)
+  names(cparas) <- names(cse) <- c("sigma", "xi")
   
   ccov <- matrix(c(.9188, -.0655, -.0655, .0102), nrow=2)
   cloglik <- -485.1
@@ -19,18 +20,18 @@ test_that("evm behaves as it should", {
   mod.coef <- coef(mod)
   
   mod.coef[1] <- exp(mod.coef[1])
-  names(mod.coef)[1] <- "sigma"
+  names(mod.coef) <- c("sigma", "xi")
   
   mod.loglik <- mod$loglik
   mod.cov22 <- mod$cov[2, 2]
   
-  expect_that(cparas, equals(mod.coef), tolerance=tol,
+  expect_that(cparas, equals(mod.coef, tolerance=tol),
                      label="gpd: parameter ests page 85 Coles")
-  expect_that(cse[2], equals(mod$se[2]), tolerance=tol,
+  expect_that(cse[2], equals(mod$se[2], tolerance=tol),
                      label="gpd: standard errors page 85 Coles")
-  expect_that(ccov[2, equals(2]), mod$cov[2,2],tolerance=tol,
+  expect_that(ccov[2, 2), equals(mod$cov[2,2], tolerance=tol),
                      label="gpd: Covariance page 85 Coles")
-  expect_that(cloglik, equals(mod.loglik), tolerance=tol,
+  expect_that(cloglik, equals(mod.loglik, tolerance=tol),
                      label="gpd: loglik page 85 Coles")
   
   ###################################################################

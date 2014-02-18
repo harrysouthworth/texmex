@@ -15,8 +15,8 @@ test_that("copula behaves as it should", {
   
   op <- options()
   options(show.error.messages=FALSE)
-  expect_that(copula(TRUE), equals(label="copula:exception")), 
-  expect_that(copula("text"), equals(label="copula:exception")), 
+  expect_that(copula(TRUE), throws_error(), label="copula:exception")
+  expect_that(copula("text"), throws_error(), label="copula:exception")
   options(op)
 }
 )
