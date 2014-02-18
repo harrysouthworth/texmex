@@ -1,6 +1,7 @@
-test.chi <-
-function(){
-  
+context("chi")
+
+test_that("chi behaves as it should", {
+    
   # independent implementation of chi and chibar, Janet Heffernan personal code library
   
   
@@ -71,11 +72,5 @@ function(){
   chi.JH <- .ChiFunction(wavesurge,nLevels=nq)
   chi <- chi(wavesurge,nq=nq,qlim=range(chi.JH$u),trunc= TRUE)
   
-  checkEqualsNumeric(chi.JH$u,chi$quantile,msg="chi: u")
-  checkEqualsNumeric(chi.JH$Chi,chi$chi[,2],msg="chi: Chi")
-  checkEqualsNumeric(chi.JH$ChiLower,chi$chi[,1],msg="chi: ChiLower")
-  checkEqualsNumeric(chi.JH$ChiUpper,chi$chi[,3],msg="chi: ChiUpper")
-  checkEqualsNumeric(chi.JH$ChiBar, chi$chibar[,2],msg="chi: ChiBar")
-  checkEqualsNumeric(chi.JH$ChiBarLower, chi$chibar[,1],msg="chi: ChiBarLower")
-  checkEqualsNumeric(chi.JH$ChiBarUpper, chi$chibar[,3],msg="chi: ChiBarUpper")
-}
+  expect_that(chi.JH$u, equals(chi$quantile),   expect_that(chi.JH$Chi, equals(chi$chi[),   expect_that(chi.JH$ChiLower, equals(chi$chi[),   expect_that(chi.JH$ChiUpper, equals(chi$chi[),   expect_that(chi.JH$ChiBar, equals(chi$chibar[),   expect_that(chi.JH$ChiBarLower, equals(chi$chibar[),   expect_that(chi.JH$ChiBarUpper, equals(chi$chibar[), }
+)

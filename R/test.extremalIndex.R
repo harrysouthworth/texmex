@@ -1,6 +1,7 @@
-test.extremalIndex <-
-function(){
-  tol <- 0.0001
+context("extremalIndex")
+
+test_that("extremalIndex behaves as it should", {
+    tol <- 0.0001
   th <- quantile(rain,seq(0.7,0.99,len=10))
   for(i in 1:length(th)){
     texmex.ei <- extremalIndex(rain,threshold=th[i])
@@ -12,14 +13,10 @@ function(){
     Ferro.runs <-  sombrero:::.extRemes.decluster.runs(rain> th[i], 3)
     texmex.runs <- declust(rain,threshold=th[i],r=3,verbose=FALSE)
     
-    checkEqualsNumeric(texmex.ei$EIintervals, Ferro.ei,
-                       tolerance = tol,msg="extremalIndex: extRemes implementation")
-    checkEqualsNumeric(texmex.clust$sizes, Ferro.clust$size,
-                       tolerance = tol,msg="extremalIndex: declustering")
+  expect_that(texmex.ei$EIintervals, equals(Ferro.ei),                        tolerance = tol,label="extremalIndex: extRemes implementation")
+  expect_that(texmex.clust$sizes, equals(Ferro.clust$size),                        tolerance = tol,label="extremalIndex: declustering")
     
-    checkEqualsNumeric(texmex.runs$nCluster,Ferro.runs$nc,msg="extremalIndex: runs declustering nc")
-    checkEqualsNumeric(texmex.runs$sizes,Ferro.runs$size,msg="extremalIndex: runs declustering sizes")
-  }
+  expect_that(texmex.runs$nCluster, equals(Ferro.runs$nc),   expect_that(texmex.runs$sizes, equals(Ferro.runs$size),   }
   
   # check passing data through data frames
   
@@ -33,22 +30,13 @@ function(){
   data.ei <- extremalIndex(RAIN,data=data,threshold=th[1])
   resp.ei <- extremalIndex(data$RAIN,threshold=th[1])
   
-  checkEqualsNumeric(data.ei$EIintervals,resp.ei$EIintervals,tolerance=tol,msg="extremalIndex: using data frame to pass response")
-  checkEqualsNumeric(data.de$clusters,resp.de$clusters,tolerance=tol,msg="extremalIndex: using data frame to pass numeric response to declustering")
-  
+  expect_that(data.ei$EIintervals, equals(resp.ei$EIintervals),   expect_that(data.de$clusters, equals(resp.de$clusters),   
   # test covariate fitting
   
   ei <- extremalIndex(SO2,data=winter,threshold=20)
   d <- declust(ei)
   evm(d,phi=~NO)
   
-  checkEqualsNumeric(662.9508, AIC(evm(d,phi=~NO)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(662.8874, AIC(evm(d,phi=~NO2)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(651.8747, AIC(evm(d,phi=~O3)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(663.0015, AIC(evm(d,phi=~PM10)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(651.7874, AIC(evm(d,phi=~O3,xi=~NO)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(653.2512, AIC(evm(d,phi=~O3,xi=~NO2)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(653.6385, AIC(evm(d,phi=~O3,xi=~O3)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  checkEqualsNumeric(652.9238, AIC(evm(d,phi=~O3,xi=~PM10)),tolerance=tol, msg="extremalIndex: covariate fitting after declustering")
-  
+  expect_that(662.9508, equals(AIC(evm(d),   expect_that(662.8874, equals(AIC(evm(d),   expect_that(651.8747, equals(AIC(evm(d),   expect_that(663.0015, equals(AIC(evm(d),   expect_that(651.7874, equals(AIC(evm(d),   expect_that(653.2512, equals(AIC(evm(d),   expect_that(653.6385, equals(AIC(evm(d),   expect_that(652.9238, equals(AIC(evm(d),   
 }
+)

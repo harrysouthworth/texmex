@@ -1,6 +1,7 @@
-test.MCS <-
-function(){
-  myMCS <- function(x,p){
+context("MCS")
+
+test_that("MCS behaves as it should", {
+    myMCS <- function(x,p){
     # First and second args are
     # x (dxn matrix) and p (vector of probabilities).
     
@@ -30,16 +31,13 @@ function(){
   tmRl <- MCS(t(data),p)
   myRl <- myMCS(data,tmRl$p)
   
-  checkEqualsNumeric(myRl,tmRl$mcs,msg="MCS: independent normal data")
-  checkEqualsNumeric(p,tmRl$p, msg="MCS: mathching p argument")
-  
+  expect_that(myRl, equals(tmRl$mcs),   expect_that(p, equals(tmRl$p),   
   # winter air pollution data - dimension 5
   tmWinterMCS <- MCS(winter,p)
   myWinterMCS <- myMCS(t(winter),p)
-  checkEqualsNumeric(myWinterMCS,tmWinterMCS$mcs,msg="MCS: winter air pollution data")
-  
+  expect_that(myWinterMCS, equals(tmWinterMCS$mcs),   
   # summer airpollution data - dimension 5
   tmSummerMCS <- MCS(summer,p)
   mySummerMCS <- myMCS(t(summer),p)
-  checkEqualsNumeric(mySummerMCS,tmSummerMCS$mcs,msg="MCS: summer air pollution data")
-}
+  expect_that(mySummerMCS, equals(tmSummerMCS$mcs), }
+)

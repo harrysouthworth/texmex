@@ -1,6 +1,7 @@
-test.migpdCoefs <-
-function(){
-  
+context("migpdCoefs")
+
+test_that("migpdCoefs behaves as it should", {
+    
   liver <- liver
   liver$ndose <- as.numeric(liver$dose)
   
@@ -28,8 +29,7 @@ function(){
   newALTco[1] <- log(newALTco[1]) # For comparison with altco
   oldALTco[1] <- log(oldALTco[1])
   
-  checkEqualsNumeric(altco, newALTco, msg="migpdCoefs: change one set of coefficients")
-  checkTrue(all(newALTco != oldALTco), msg="migpdCoefs: change one set of coefficients")
+  expect_that(altco, equals(newALTco),   expect_that(all(newALTco!=oldALTco), is_true(), label="migpdCoefs:changeonesetofcoefficients")
   
   # Change 2 sets of coefficients at once
   
@@ -41,6 +41,6 @@ function(){
   newCo[1,] <- log(newCo[1,])
   oldCo[1,] <- log(oldCo[1,])
   
-  checkEqualsNumeric(cbind(altco, astco),newCo, msg="migpdCoefs: change two set of coefficients at once")
-  checkTrue(all(newCo != oldCo), "migpdCoefs: change two set of coefficients at once")
+  expect_that(cbind(altco, equals(astco)),   expect_that(all(newCo!=oldCo), is_true(), "migpdCoefs:changetwosetofcoefficientsatonce")
 }
+)

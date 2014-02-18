@@ -1,6 +1,7 @@
-test.predict.evmBoot <-
-function(){
-  # functionality all tested already in test.predict.evm, so just check output of correct format.
+context("predict.evmBoot")
+
+test_that("predict.evmBoot behaves as it should", {
+    # functionality all tested already in test.predict.evm, so just check output of correct format.
   
   n <- 1000
   nx <- 9
@@ -9,7 +10,7 @@ function(){
   
   for(Family in list(gpd,gev)){
     
-    pst <- function(msg) texmexPst(msg,Family=Family)
+    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
     set.seed(20130513)
     
     X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
@@ -27,24 +28,16 @@ function(){
     M <- seq(from,to,length=nm)
     pred <- predict(boot,newdata=newX,M=M,ci=TRUE)
     
-    checkEquals(target=predict(boot), current=rl(boot),msg=pst("predict.evmBoot: predict with type=rl gives same as direct call to rl with default arguments"))
-    checkEquals(target=predict(boot,type="lp"), current=linearPredictors(boot),msg=pst("predict.evmBoot: predict with type=lp gives same as direct call to linearPredictors with default arguments"))
-    
-    checkEqualsNumeric(target=nm,current=length(pred),msg=pst("predict.evmBoot: output length"))
-    checkEquals(target=paste("M.",from,sep=""),current=names(pred)[1],msg=pst("predict.evmBoot: names of output"))
-    checkEquals(target=paste("M.",to,sep=""),current=names(pred)[nm],msg=pst("predict.evmBoot: names of output"))
-    
+  expect_that(target=predict(boot), equals(current=rl(boot)),   expect_that(target=predict(boot, equals(type="lp")),     
+  expect_that(target=nm, equals(current=length(pred)),   expect_that(target=paste("M.", equals(from),   expect_that(target=paste("M.", equals(to),     
     cnames <- c( "Mean","50%","2.5%","97.5%",names(X)[1:2])
-    checkEquals(target=cnames,current=colnames(pred[[1]]),msg=pst("predict.evmBoot: colnames"))
-    
-    checkEqualsNumeric(target=c(nx,6),current=dim(pred[[1]]),msg=pst("predict.evmBoot: dimension"))
-    for(i in 1:nm){
-      checkEqualsNumeric(target=newX[,1],current=pred[[i]][,5],msg=pst("predict.evmBoot: covariates inoutput"))
-      checkEqualsNumeric(target=newX[,2],current=pred[[i]][,6],msg=pst("predict.evmBoot: covariates inoutput"))
-    }
+  expect_that(target=cnames, equals(current=colnames(pred[[1]])),     
+  expect_that(target=c(nx, equals(6)),     for(i in 1:nm){
+  expect_that(target=newX[, equals(1]),   expect_that(target=newX[, equals(2]),     }
     
     par(mfrow=n2mfrow(nx))
     plot(pred,sameAxes=FALSE,type="median",main="Bootstrap median rl")
     plot(pred,sameAxes=FALSE,type="mean",main="Bootstrap mean rl")
   }
 }
+)
