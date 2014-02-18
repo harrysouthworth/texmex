@@ -7,39 +7,46 @@ def checkEqualsNumeric(fname):
   
   for line in infile:
     sline = line.strip()
+    
     if sline[0:18] == "checkEqualsNumeric":
-      outfile.write(" expect_that(")
-      sline = sline[19:]
-      i = 0
-      for char in sline:
-        if char != ",":
-          outfile.write(char)
-          i += 1
-        else:
-          break
-      outfile.write(",  equals(")
-      for char in sline[(i+2):]:
-        if char != ",":
-          outfile.write(char)
-          i += 1
-        else:
-          break
-      outfile.write("), label")
-      for char in sline[(i+1):]:
-        if char != "\"":
-          i += 1
-          pass
-        else:
-          break
-      for char in sline[i:]:
-        outfile.write(char)
-      outfile.write("\n")
+      index = 19
+      translateArgs(sline, index, outfile)
+    elif sline[0:11] == "checkEquals":
+      index = 12
+      translateArgs(sline, index, outfile)
     else:
       outfile.write(line)
-      
-  
-  
+
   infile.close()
   outfile.close()
+
+def translateArgs(txt, i, outfile):
+    txt = txt[i:]
+    outfile.write(" expect_that(")
+    i = 0
+    for char in txt:
+      if char != ",":
+        outfile.write(char.strip())
+        i += 1
+      else:
+        break
+    outfile.write(", equals(")
+    for char in txt[(i+1):]:
+      if char != ",":
+        outfile.write(char.strip())
+        i += 1
+      else:
+        break
+    outfile.write("), label")
+    for char in txt[(i+1):]:
+      if char != "\"":
+        i += 1
+        pass
+      else:
+        break
+    for char in txt[i:]:
+      outfile.write(char.strip())
+    outfile.write("\n")
+
 
 checkEqualsNumeric("test.bootmex.R")
