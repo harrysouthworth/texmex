@@ -1,7 +1,6 @@
-context("revTransform")
-
-test_that("revTransform behaves as it should", {
-    set.seed(20111010)
+test.revTransform <-
+function(){
+  set.seed(20111010)
   n <- 5000
   x <- cbind(rexp(n),rexp(n,3))
   
@@ -32,5 +31,8 @@ test_that("revTransform behaves as it should", {
   x.g.e <- cbind(revTransform(u.g.e[,1],x[,1],method="empirical"),
                  revTransform(u.g.e[,2],x[,2],method="empirical"))
   
-  expect_that(x.l.e, equals(x),   expect_that(x.l.m, equals(x),   expect_that(x.g.e, equals(x),   expect_that(x.g.m, equals(x), }
-)
+  checkEqualsNumeric(x.l.e,x,tolerance=0.0001,msg="revTransform: empirical transformation, laplace target")
+  checkEqualsNumeric(x.l.m,x,tolerance=0.0001,msg="revTransform: mixture transformation, laplace target")
+  checkEqualsNumeric(x.g.e,x,tolerance=0.0001,msg="revTransform: empirical transformation, gumbel target")
+  checkEqualsNumeric(x.g.m,x,tolerance=0.0001,msg="revTransform: mixture transformation, gumbel target")
+}

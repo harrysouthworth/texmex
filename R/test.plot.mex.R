@@ -1,7 +1,6 @@
-context("plot.mex")
-
-test_that("plot.mex behaves as it should", {
-    
+test.plot.mex <-
+function(){
+  
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
   
@@ -54,12 +53,14 @@ test_that("plot.mex behaves as it should", {
   
   op <- options()
   options(show.error.messages=FALSE)
-  expect_that(plot.mex(smarmod), equals(label="plot.mex:exceptionhandle")),   expect_that(plot.mex(TRUE), equals(label="plot.mex:exceptionhandle")),   options(op)
+  checkException(plot.mex(smarmod),msg="plot.mex: exception handle")
+  checkException(plot.mex(TRUE),msg="plot.mex: exception handle")
+  options(op)
   
   # check execution for 2-d data
   wavesurge.fit <- migpd(wavesurge,mqu=0.8)
   wavesurge.mex <- mexDependence(wavesurge.fit,dqu=0.8,which=2,margins="gumbel",constrain=FALSE)
   par(mfrow=c(2,2))
   res <- plot(wavesurge.mex,main="Wave surge data")
-  expect_that(res, equals(NULL), }
-)
+  checkEquals(res,NULL,msg = "plot.mex: successful execution")
+}

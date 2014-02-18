@@ -1,9 +1,8 @@
-context("endPoint")
-
-test_that("endPoint behaves as it should", {
-    
+test.endPoint <-
+function(){
+  
   for(Family in list(gpd,gev)){
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
     set.seed(20130617)
     
     for(i in 1:5){
@@ -13,13 +12,15 @@ test_that("endPoint behaves as it should", {
       ep.current <- endPoint(fit,verbose=FALSE,.unique=TRUE)
       ep.target <- switch(Family$name,GPD=ifelse(co[2] < 0, th-exp(co[1])/co[2],Inf),
                           GEV=ifelse(co[3] < 0, co[1]-exp(co[2])/co[3],Inf))
-  expect_that(ep.current, equals(ep.target),       
+      checkEqualsNumeric(ep.current, ep.target, msg=pst("endPoint: check calc for evmOpt no covariates"))
+      
       fit <- evm(rnorm(100),th=th,family=Family,method="simulate",trace=50000)
       co <- coef(fit$map)
       ep.current <- endPoint(fit,verbose=FALSE,.unique=TRUE)
       ep.target <- switch(Family$name,GPD=ifelse(co[2] < 0, th-exp(co[1])/co[2],Inf), 
                           GEV=ifelse(co[3] < 0, co[1]-exp(co[2])/co[3],Inf))
-  expect_that(ep.current, equals(ep.target),     }  
+      checkEqualsNumeric(ep.current, ep.target, msg=pst("endPoint: check calc for evmSim no covariates"))
+    }  
     
     # test with covariates
     
@@ -35,7 +36,7 @@ test_that("endPoint behaves as it should", {
       ep.current <- endPoint(fit,verbose=FALSE,.unique=FALSE)
       ep.target <- switch(Family$name,GPD=ifelse(lp[,2] < 0, th-exp(lp[,1])/lp[,2],Inf),
                           GEV=ifelse(lp[,3] < 0, lp[,1]-exp(lp[,2])/lp[,3],Inf))
-  expect_that(ep.current, equals(ep.target),     }
+      checkEqualsNumeric(ep.current, ep.target, msg=pst("endPoint: check calc for evmSim with covariates"))
+    }
   }
 }
-)

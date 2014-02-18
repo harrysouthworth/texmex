@@ -1,7 +1,6 @@
-context("migpd")
-
-test_that("migpd behaves as it should", {
-    
+test.migpd <-
+function(){
+  
   # values from Heffernan and Tawn (2004) Table 4.
   # Note values in published Table 4 for u_{Xi} in cols NO2 and NO Winter were reversed.
   
@@ -20,12 +19,14 @@ test_that("migpd behaves as it should", {
   
   tol <- c(1, 0.05, .5, 0.5)
   for(i in 1:4){
-  expect_that(htsummer[i, equals(]),   expect_that(htwinter[i, equals(]),   }
+    checkEqualsNumeric(htsummer[i,], summer.gpd[i,],tolerance=tol[i],msg=paste("migpd: Table 4 summer",i))
+    checkEqualsNumeric(htwinter[i,], winter.gpd[i,],tolerance=tol[i],msg=paste("migpd: Table 4 winter",i))
+  }
   
   # check excecution for 2-d data
   
   wavesurge.fit <- migpd(wavesurge,mqu=.7)
-  expect_that(wavesurge.fit$models$wave$loglik, equals(evm(wavesurge$wave),                      tolerance=0.001,label="migpd: 2-d data gpd fit wave")
+  checkEqualsNumeric(wavesurge.fit$models$wave$loglik, evm(wavesurge$wave,qu=0.7)$loglik,
+                     tolerance=0.001,msg="migpd: 2-d data gpd fit wave")
   
 }
-)

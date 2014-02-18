@@ -1,7 +1,6 @@
-context("predict.mex")
-
-test_that("predict.mex behaves as it should", {
-    # reproduce Table 5 in Heffernan and Tawn 2004
+test.predict.mex <-
+function(){
+  # reproduce Table 5 in Heffernan and Tawn 2004
   smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel",constrain=FALSE)
   wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel",constrain=FALSE)
   set.seed(20111010)
@@ -30,8 +29,12 @@ test_that("predict.mex behaves as it should", {
   
   tol <- 0.05
   
-  expect_that(Table5summer, equals(resSummer),   expect_that(Table5winter, equals(resWinter),   
-  expect_that(pointEstSummer, equals(resSummer[1),   expect_that(pointEstWinter, equals(resWinter[1),   
+  checkEqualsNumeric(Table5summer, resSummer,tolerance=tol,msg="predict.mex: Table 5 summer data")
+  checkEqualsNumeric(Table5winter, resWinter,tolerance=tol,msg="predict.mex: Table 5 winter data")
+  
+  checkEqualsNumeric(pointEstSummer, resSummer[1,],tolerance=tol,msg="predict.mex: point est vs boot, summer data")
+  checkEqualsNumeric(pointEstWinter, resWinter[1,],tolerance=tol,msg="predict.mex: point est vs boot, winter data")
+  
   # check execution for 2-d data
   
   R <- 20
@@ -40,7 +43,10 @@ test_that("predict.mex behaves as it should", {
   wavesurge.boot <- bootmex(wavesurge.mex,R=R,trace=R+1)
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim,trace=R+1)
   
-  expect_that(length(wavesurge.pred$replicates), equals(R),   expect_that(dim(wavesurge.pred$replicates[[3]]), equals(c(nsim),   expect_that(names(wavesurge.pred$replicates[[4]]), equals(names(wavesurge)),   
+  checkEqualsNumeric(length(wavesurge.pred$replicates),R,msg="predict.mex execution for 2-d data")
+  checkEqualsNumeric(dim(wavesurge.pred$replicates[[3]]),c(nsim,2))
+  checkEquals(names(wavesurge.pred$replicates[[4]]),names(wavesurge),msg="predict.mex execution for 2-d data")
+  
   # check predictions Laplace estimation equal to Gumbel for large samples and high threshold
   
   tol <- 0.01
@@ -66,6 +72,6 @@ test_that("predict.mex behaves as it should", {
     lap.ans <- summary(lap.pred)$ans
     gum.ans <- summary(gum.pred)$ans
     
-  expect_that(lap.ans, equals(gum.ans),   }
+    checkEqualsNumeric(lap.ans,gum.ans,tolerance=tol,msg=paste("predict.mex Laplace predictions equal to Gumbel, test replicate",i))
+  }
 }
-)

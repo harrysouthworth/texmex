@@ -1,6 +1,4 @@
-context("log1prel")
-
-test_that("log1prel behaves as it should", {
+test.log1prel <-
 function() {
   ## pull in from the namespace
   
@@ -15,10 +13,12 @@ function() {
   r.values <- rep.int(1, length(x))
   flag <- x!=0
   r.values[flag] <- log1p(x[flag]) / x[flag]
-  expect_that(log1prel.values, equals(r.values),                      label="log1prel: value tests")
+  checkEqualsNumeric(log1prel.values, r.values,
+                     msg="log1prel: value tests")
   
   ## special values
-  expect_that(log1prel(c(-1, equals(0),                      label="log1prel: special value tests")
+  checkEqualsNumeric(log1prel(c(-1, 0, Inf)), c(Inf, 1, 0),
+                     msg="log1prel: special value tests")
   
   ## check with reference to .exprel
   
@@ -27,7 +27,7 @@ function() {
   
   xi <- exprel(x * y) * y
   
-  expect_that(log1prel(xi*x)*xi, equals(),                      y, "log1prel: exprel inversion")
+  checkEqualsNumeric(log1prel(xi * x) * xi,
+                     y, "log1prel: exprel inversion")
   
 }
-)

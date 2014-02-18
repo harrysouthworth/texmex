@@ -1,7 +1,6 @@
-context("plotrl.evm")
-
-test_that("plotrl.evm behaves as it should", {
-    # no covariates
+test.plotrl.evm <-
+function(){
+  # no covariates
   
   rain.fit <- evm(rain,th=30)
   par(mfrow=c(1,1))
@@ -13,7 +12,7 @@ test_that("plotrl.evm behaves as it should", {
   # with covariates
   
   for(Family in list(gpd,gev)){
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
     set.seed(20130513)
     n <- 100    
     X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
@@ -22,6 +21,6 @@ test_that("plotrl.evm behaves as it should", {
     X$Y <- Family$rng(n,param,list(threshold=th))
     fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,family=Family)
     
-  expect_that(plotrl.evmOpt(fit), equals(silent=TRUE),   }
+    checkException(plotrl.evmOpt(fit),silent=TRUE,msg=pst("plotrl.evmOpt : failure for model with covariates"))
+  }
 }
-)

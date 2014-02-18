@@ -1,10 +1,9 @@
-context("predict.evmOpt")
-
-test_that("predict.evmOpt behaves as it should", {
-    
+test.predict.evmOpt <-
+function(){
+  
   for(Family in list(gpd,gev)){
     set.seed(20130513)
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
     
     # no covariates
     
@@ -14,13 +13,16 @@ test_that("predict.evmOpt behaves as it should", {
     r.fit <- evm(data,th=u,family=Family)
     co <- coef(r.fit)
     
-    if(Family$name == "GPD")checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],label=pst("predict.evmOpt: GPD retrieve threshold"))
+    if(Family$name == "GPD")checkEqualsNumeric(target=u,current = predict(r.fit,M=1/r.fit$rate)[[1]],msg=pst("predict.evmOpt: GPD retrieve threshold"))
     
-  expect_that(target=predict(r.fit), equals(current=rl(r.fit)),   expect_that(target=predict(r.fit, equals(type="lp")),     
+    checkEquals(target=predict(r.fit), current=rl(r.fit),msg=pst("predict.evmOpt: predict with type=rl gives same as direct call to rl with default arguments"))
+    checkEquals(target=predict(r.fit,type="lp"), current=linearPredictors(r.fit),msg=pst("predict.evmOpt: predict with type=lp gives same as direct call to linearpredictors with default arguments"))
+    
     r.fit$rate <- 1
     prob <- c(0.5,0.9,0.95,0.99,0.999)
     for(p in prob){
-  expect_that(target=Family$quant(p, equals(t(co)),                          current = unlist(predict(r.fit,M=1/(1-p))),label=pst("predict.evmOpt: est ret levels no covariates"))
+      checkEqualsNumeric(target = Family$quant(p,t(co),r.fit),
+                         current = unlist(predict(r.fit,M=1/(1-p))),msg=pst("predict.evmOpt: est ret levels no covariates"))
     }
     
     # with covariates
@@ -40,7 +42,9 @@ test_that("predict.evmOpt behaves as it should", {
     AllCo <- predict(fit,type="lp")$link[,1:length(Family$param)]
     pred <- predict(fit,M=M)
     
-  expect_that(target=X$a, equals(current=pred[[1]][),   expect_that(target=Family$quant(1-1/M, equals(AllCo),                        current = pred[[1]][,1],label=pst("predict.evmOpt: ret level estimation with covariates in phi only"))
+    checkEqualsNumeric(target=X$a,current=pred[[1]][,-1],msg=pst("predict.evmOpt: ret level correct reporting of covariates for single cov in phi only"))
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
+                       current = pred[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in phi only"))
     
     mu <- 1
     sig <- 2
@@ -51,7 +55,9 @@ test_that("predict.evmOpt behaves as it should", {
     AllCo <- predict(fit,type="lp")$link[,1:length(Family$param)]
     pred <- predict(fit,M=M)
     
-  expect_that(target=X$b, equals(current=pred[[1]][),   expect_that(target=Family$quant(1-1/M, equals(AllCo),                        current = pred[[1]][,1],label=pst("predict.evmOpt: ret level estimation with covariates in xi only"))
+    checkEqualsNumeric(target=X$b,current=pred[[1]][,-1],msg=pst("predict.evmOpt: ret level correct reporting of covariates for single cov in xi only"))
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
+                       current = pred[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in xi only"))
     
     # covariates in all parameters
     
@@ -63,7 +69,8 @@ test_that("predict.evmOpt behaves as it should", {
     
     AllCo <- predict(fit,type="lp")$link[,1:length(Family$param)]
     
-  expect_that(target=Family$quant(1-1/M, equals(AllCo),                        current = predict(fit,M=M)[[1]][,1],label=pst("predict.evmOpt: ret level estimation with covariates in all parameters"))
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCo,fit),
+                       current = predict(fit,M=M)[[1]][,1],msg=pst("predict.evmOpt: ret level estimation with covariates in all parameters"))
     
     # check multiple M
     M <- c(10,50,100,500,1000)
@@ -72,7 +79,8 @@ test_that("predict.evmOpt behaves as it should", {
     current <- predict(fit,M=M)
     
     for(i in 1:length(M)){
-  expect_that(target[, equals(i]),     }
+      checkEqualsNumeric(target[,i],current[[i]][,1],msg=pst("predict.evmOpt: ret level estimation multiple M"))
+    }
     
     # new data
     nx <- 20
@@ -80,11 +88,17 @@ test_that("predict.evmOpt behaves as it should", {
     newX <- data.frame(a=runif(nx,0,5),b=runif(nx,-0.1,0.5))
     AllCoNew <- predict(fit,type="lp",newdata=newX)$link[,1:length(Family$param)]
     
-  expect_that(target=Family$quant(1-1/M, equals(AllCoNew),     
-  expect_that(dim(AllCoNew)+c(0, equals(3)),   expect_that(dim(AllCoNew)+c(0, equals(2)),   expect_that(dim(AllCoNew)+c(0, equals(4)),     
+    checkEqualsNumeric(target=Family$quant(1-1/M,AllCoNew,fit),current=predict(fit,M=M,newdata=newX)[[1]][,1],msg=pst("predict.evmOpt: ret level ests with new data"))
+    
+    checkEqualsNumeric(dim(AllCoNew) + c(0,3),dim(predict(fit,ci=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension of return object for ci calc"))
+    checkEqualsNumeric(dim(AllCoNew) + c(0,2),dim(predict(fit,se=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension of return object for se calc"))
+    checkEqualsNumeric(dim(AllCoNew) + c(0,4),dim(predict(fit,se=TRUE,ci=TRUE,newdata=newX)[[1]]), msg=pst("predict.evmOpt: dimension of return object for se and ci calc"))
+    
     Labels <- switch(Family$name,GPD=c("a","b"),GEV=c("a","a","b"))
     
-  expect_that(c("RL", equals("2.5%"),   expect_that(c("RL", equals("5%"),     
+    checkEquals(c("RL","2.5%","97.5%","se.fit",Labels), colnames(predict(fit,se=TRUE,ci=TRUE)[[1]]), msg=pst("predict.evmOpt: colnames of return obejct for se and ci calc, default alpha"))
+    checkEquals(c("RL","5%","95%","se.fit",Labels), colnames(predict(fit,se=TRUE,ci=TRUE,alpha=0.1)[[1]]), msg=pst("predict.evmOpt: colnames of return obejct for se and ci calc, alpha=0.1"))
+    
     # alpha
     
     alpha <- c(0.01,0.05,0.1,0.2,0.5,0.9,0.99)
@@ -92,21 +106,30 @@ test_that("predict.evmOpt behaves as it should", {
     
     for(a in 1:length(alpha)){
       p <- predict(fit,alpha=alpha[a],ci=TRUE,se=TRUE)[[1]]
-  expect_that(current=colnames(p)[2:3], equals(target=c(paste(100*alpha[a]/2),   expect_that(target=p[, equals(1]+z[a),   expect_that(target=p[, equals(1]+z[a),     }
+      checkEquals(current = colnames(p)[2:3],target = c(paste(100*alpha[a]/2,"%",sep=""),paste(100*(1-alpha[a]/2),"%",sep="")),msg=pst("predict.evmOpt: labelling of confidence intervals"))
+      checkEqualsNumeric(target = p[,1] + z[a,1]*p[,4],current = p[,2], msg=pst("predict.evmOpt: ret level Conf Interval calc for different alpha"))
+      checkEqualsNumeric(target = p[,1] + z[a,2]*p[,4],current = p[,3], msg=pst("predict.evmOpt: ret level Conf Interval calc for different alpha"))
+    }
     
     
     # linear predictors
     
-  expect_that(target=c(nx, equals(switch(Family$name),   expect_that(target=c(nx, equals(switch(Family$name),     
+    checkEqualsNumeric(target = c(nx,switch(Family$name,GPD=6,GEV=9)), dim(predict(fit,newdata=newX,se=TRUE,type="lp")$link), msg=pst("predict.evmOpt: dimension of return object, linear predictor, se calc"))
+    checkEqualsNumeric(target = c(nx,switch(Family$name,GPD=8,GEV=12)),dim(predict(fit,newdata=newX,ci=TRUE,type="lp")$link), msg=pst("predict.evmOpt: dimension of return object, linear predictor, ci calc"))
+    
     nameCI <- switch(Family$name,GPD = c("phi", "xi", "phi.lo", "phi.hi", "xi.lo", "xi.hi","a","b"),GEV = c("mu","phi", "xi", "mu.lo","mu.hi","phi.lo", "phi.hi", "xi.lo", "xi.hi","a","a","b"))
     nameSE <- switch(Family$name,GPD = c("phi", "xi", "phi.lo", "phi.hi", "xi.lo", "xi.hi","phi.se", "xi.se","a","b"),GEV = c("mu","phi", "xi", "mu.lo","mu.hi","phi.lo", "phi.hi", "xi.lo", "xi.hi","mu.se","phi.se", "xi.se","a","a","b"))
-  expect_that(target=nameCI, equals(current=colnames(predict(fit),   expect_that(target=nameSE, equals(current=colnames(predict(fit),     
+    checkEquals(target = nameCI, current = colnames(predict(fit,newdata=newX,ci=TRUE,type="lp")$link),msg=pst("predict.evmOpt: colnames for linear predictor return object"))
+    checkEquals(target = nameSE, current = colnames(predict(fit,newdata=newX,ci=TRUE,se=TRUE,type="lp")$link),msg=pst("predict.evmOpt: colnames for linear predictor return object"))
+    
     # unique
     
     newX <- data.frame(a=c(0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),b=c(-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1)) # checks for duplicates in one and both covariates.
     U <- !duplicated(newX)
-  expect_that(current=predict(fit, equals(newdata=newX),                        target = predict(fit,newdata=newX,unique.=FALSE,type="lp")$link[U,], label=pst("predict.evmOpt: functioning of argument unique, for linear predictor"))
-  expect_that(current=predict(fit, equals(newdata=newX)[[1]]),                        target =  predict(fit,newdata=newX,unique.=FALSE)[[1]][U,], label=pst("predict.evmOpt: functioning of argument unique, for return levels"))
+    checkEqualsNumeric(current = predict(fit,newdata=newX,type="lp")$link,
+                       target = predict(fit,newdata=newX,unique.=FALSE,type="lp")$link[U,], msg=pst("predict.evmOpt: functioning of argument unique, for linear predictor"))
+    checkEqualsNumeric(current = predict(fit,newdata=newX)[[1]],
+                       target =  predict(fit,newdata=newX,unique.=FALSE)[[1]][U,], msg=pst("predict.evmOpt: functioning of argument unique, for return levels"))
     
     # check standard errors - this takes a while since using bootstrap
     
@@ -122,7 +145,6 @@ test_that("predict.evmOpt behaves as it should", {
     fit.seb <- lapply(fit.bp,function(X) apply(X,2,sd))
     fit.seboot <- unlist(fit.seb)
     
-  expect_that(all(abs((fit.seboot-fit.seest)/fit.seest)<0.3), is_true(), abel=pst("predict.evmOpt:returnlevelstandarderrorestimatecomparedwithbootstrapstandarderrors"))
+    checkTrue(all(abs((fit.seboot -  fit.seest) / fit.seest) < 0.3),msg=pst("predict.evmOpt: return level standard error estimate compared with bootstrap standard errors"))
   }  
 }
-)

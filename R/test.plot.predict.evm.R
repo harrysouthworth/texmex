@@ -1,13 +1,12 @@
-context("plot.predict.evm")
-
-test_that("plot.predict.evm behaves as it should", {
-    # testing all of: plot.lp.evm* and plot.rl.evm* where * is opt, sim and boot
+test.plot.predict.evm <-
+function(){
+  # testing all of: plot.lp.evm* and plot.rl.evm* where * is opt, sim and boot
   
   # first with no covariates
   n <- 100
   for(Family in list(gpd,gev)){
     set.seed(20130513)
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
     
     u    <- switch(Family$name,GPD=14,GEV=-Inf)
     data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
@@ -31,7 +30,10 @@ test_that("plot.predict.evm behaves as it should", {
     p.lp.sim <- predict(fit.sim,type="lp",ci=TRUE)
     p.lp.boot <- predict(fit.boot,type="lp",ci=TRUE)
     
-  expect_that(plot(p.lp.opt), equals(silent=TRUE),   expect_that(plot(p.lp.sim), equals(silent=TRUE),   expect_that(plot(p.lp.boot), equals(silent=TRUE),     
+    checkException(plot(p.lp.opt),silent=TRUE,msg=pst("plot.lp.evmOpt: fail if no covariates"))
+    checkException(plot(p.lp.sim),silent=TRUE,msg=pst("plot.lp.evmSim: fail if no covariates"))
+    checkException(plot(p.lp.boot),silent=TRUE,msg=pst("plot.lp.evmBoot: fail if no covariates"))
+    
     # now with covariates
     
     n <- 1000
@@ -107,4 +109,3 @@ test_that("plot.predict.evm behaves as it should", {
     plot(p.lp.boot,main=paste(Family$name,"Bootstrap"),polycol="cyan")
   }
 }
-)

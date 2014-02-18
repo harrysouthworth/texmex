@@ -1,6 +1,4 @@
-context("closures")
-
-test_that("closures behaves as it should", {
+test.closures <-
 function() {
   make.mvn.prior <- texmex:::.make.mvn.prior
   make.quad.prior <- texmex:::.make.quadratic.penalty
@@ -11,12 +9,13 @@ function() {
     centre <- rexp(dimn)
     mvnprior <- make.mvn.prior(list(centre, cov.matrix))
     point <- rexp(dimn)
-  expect_that(mvnprior(point), equals(),                        dmvnorm(point, centre, cov.matrix, log=TRUE),
+    checkEqualsNumeric(mvnprior(point),
+                       dmvnorm(point, centre, cov.matrix, log=TRUE),
                        "efficient.closures: multivariate Gaussian prior")
     quadprior <- make.quad.prior(list(centre, cov.matrix))
-  expect_that(quadprior(point), equals(),                        mahalanobis(point, centre, cov.matrix),
+    checkEqualsNumeric(quadprior(point),
+                       mahalanobis(point, centre, cov.matrix),
                        "efficient.closures: Mahalanobis distance")
     # or "A-norm", as it's otherwise called
   }
 }
-)

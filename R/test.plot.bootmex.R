@@ -1,7 +1,6 @@
-context("plot.bootmex")
-
-test_that("plot.bootmex behaves as it should", {
-    
+test.plot.bootmex <-
+function(){
+  
   set.seed(3141593)
   
   # 2-d wavesurge data
@@ -54,5 +53,7 @@ test_that("plot.bootmex behaves as it should", {
   plot(Sboot.PM10,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
   plot(Wboot.PM10,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
   
-  expect_that(check1, equals(NULL),   expect_that(check2, equals(NULL),   expect_that(check3, equals(NULL), }
-)
+  checkEquals(check1,NULL,msg="plot.bootmex successful execution of plotting code 2-d data")
+  checkEquals(check2,NULL,msg="plot.bootmex successful execution of plotting code 2-d data")
+  checkEquals(check3,NULL,msg="plot.bootmex successful execution of plotting code 3-d data")
+}
