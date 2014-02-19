@@ -12,12 +12,12 @@ test_that("extremalIndex behaves as it should", {
     
     Ferro.runs <-  sombrero:::.extRemes.decluster.runs(rain> th[i], 3)
     texmex.runs <- declust(rain,threshold=th[i],r=3,verbose=FALSE)
-    
-  expect_that(texmex.ei$EIintervals, equals(Ferro.ei), 
-                       tolerance = tol,label="extremalIndex: extRemes implementation")
-  expect_that(texmex.clust$sizes, equals(Ferro.clust$size), 
-                       tolerance = tol,label="extremalIndex: declustering")
-    
+
+    expect_that(texmex.ei$EIintervals, equals(Ferro.ei, tolerance = tol),
+                label="extremalIndex: extRemes implementation")
+    expect_that(texmex.clust$sizes, equals(Ferro.clust$size, tolerance = tol),
+                label="extremalIndex: declustering")
+
   expect_that(texmex.runs$nCluster, equals(Ferro.runs$nc), label="extremalIndex:runsdeclusteringnc")
   expect_that(texmex.runs$sizes, equals(Ferro.runs$size), label="extremalIndex:runsdeclusteringsizes")
   }
@@ -34,8 +34,10 @@ test_that("extremalIndex behaves as it should", {
   data.ei <- extremalIndex(RAIN,data=data,threshold=th[1])
   resp.ei <- extremalIndex(data$RAIN,threshold=th[1])
   
-  expect_that(data.ei$EIintervals, equals(resp.ei$EIintervals), tolerance=tol,label="extremalIndex:usingdataframetopassresponse")
-  expect_that(data.de$clusters, equals(resp.de$clusters), tolerance=tol,label="extremalIndex:usingdataframetopassnumericresponsetodeclustering")
+  expect_that(data.ei$EIintervals, equals(resp.ei$EIintervals, tolerance=tol),
+              label="extremalIndex: using data frame to pass response")
+  expect_that(data.de$clusters, equals(resp.de$clusters, tolerance=tol),
+              label="extremalIndex: using data frame to pass numeric response to declustering")
   
   # test covariate fitting
   
@@ -43,14 +45,22 @@ test_that("extremalIndex behaves as it should", {
   d <- declust(ei)
   evm(d,phi=~NO)
   
-  expect_that(662.9508, equals(AIC(evm(d), phi=~NO)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(662.8874, equals(AIC(evm(d), phi=~NO2)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(651.8747, equals(AIC(evm(d), phi=~O3)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(663.0015, equals(AIC(evm(d), phi=~PM10)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(651.7874, equals(AIC(evm(d), phi=~O3,xi=~NO)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(653.2512, equals(AIC(evm(d), phi=~O3,xi=~NO2)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(653.6385, equals(AIC(evm(d), phi=~O3,xi=~O3)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
-  expect_that(652.9238, equals(AIC(evm(d), phi=~O3,xi=~PM10)),tolerance=tol,label="extremalIndex:covariatefittingafterdeclustering")
+  expect_that(662.9508, equals(AIC(evm(d), phi=~NO), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(662.8874, equals(AIC(evm(d), phi=~NO2), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(651.8747, equals(AIC(evm(d), phi=~O3), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(663.0015, equals(AIC(evm(d), phi=~PM10), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(651.7874, equals(AIC(evm(d), phi=~O3,xi=~NO), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(653.2512, equals(AIC(evm(d), phi=~O3,xi=~NO2), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(653.6385, equals(AIC(evm(d), phi=~O3,xi=~O3), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
+  expect_that(652.9238, equals(AIC(evm(d), phi=~O3,xi=~PM10), tolerance=tol),
+              label="extremalIndex: covariate fitting after declustering")
   
 }
 )

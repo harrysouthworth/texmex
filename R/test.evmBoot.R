@@ -24,8 +24,8 @@ test_that("evmBoot behaves as it should", {
     bse <- apply(rep, 2, sd)
     cse <- switch(Family$name,GPD=c(.958432, .101151),GEV=c(0.02792848, 0.02024846, 0.09823441))
     
-  expect_that(cse, equals(bse), tolerance=tol,
-                       label=pst("evmBoot: bootstrap se of parameter estimates matches Coles"))
+    expect_that(cse, equals(unname(bse), tolerance=tol),
+                label=pst("evmBoot: bootstrap se of parameter estimates matches Coles"))
     
     ## Check penalization works - set harsh penalty and do similar
     ## checks to above
@@ -37,12 +37,12 @@ test_that("evmBoot behaves as it should", {
     bse <- apply(boot$replicates, 2, sd)
     rse <- bse / fit$se
     rse <- ifelse(rse < 1, 1/rse, rse)
-  expect_that(max(rse)<1.1, is_true(), label=pst("evmBoot:SEswithxiinmodel,withpenaltyapplied"))
+    expect_that(max(rse)<1.1, is_true(), label=pst("evmBoot:SEswithxiinmodel,withpenaltyapplied"))
     
     best <- apply(boot$replicates, 2, median)
     fest <- coef(fit)
     rdiff <- abs((best - fest)/fest)
-  expect_that(all(rdiff<0.06), is_true(), label=pst("evmBoot:mediansinlinewithpointests,withpenaltyapplied"))
+    expect_that(all(rdiff<0.06), is_true(), label=pst("evmBoot:mediansinlinewithpointests,withpenaltyapplied"))
     
     ##################################################################
     # models with covariates. Due to apparent instability
@@ -59,13 +59,13 @@ test_that("evmBoot behaves as it should", {
       bse <- apply(boot$replicates, 2, sd)
       rse <- bse / fit$se
       rse <- ifelse(rse < 1, 1/rse, rse)
-  expect_that(max(rse)<1.5, is_true(), label=pst(paste("evmBoot:SEswithcovariatesin",txt)))
+      expect_that(max(rse)<1.5, is_true(), label=pst(paste("evmBoot:SEswithcovariatesin",txt)))
       
       best <- apply(boot$replicates, 2, median)
       fest <- coef(fit)
       rdiff <- abs((best - fest)/fest)
-      
-  expect_that(all(rdiff<0.2), is_true(), label=pst(paste("evmBoot:mediansinlinewithpointests,covariatesin",txt)))
+
+      expect_that(all(rdiff<0.2), is_true(), label=pst(paste("evmBoot:mediansinlinewithpointests,covariatesin",txt)))
     }
     
     param <- switch(Family$name,GPD=cbind(2+X[,1],xi),GEV=cbind(mu,2+X[,1],xi))

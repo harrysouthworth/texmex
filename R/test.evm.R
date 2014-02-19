@@ -11,7 +11,6 @@ test_that("evm behaves as it should", {
   
   cparas <- c(7.44, 0.184)
   cse <- c(0.958432, 0.101151)
-  names(cparas) <- names(cse) <- c("sigma", "xi")
   
   ccov <- matrix(c(.9188, -.0655, -.0655, .0102), nrow=2)
   cloglik <- -485.1
@@ -25,11 +24,15 @@ test_that("evm behaves as it should", {
   mod.loglik <- mod$loglik
   mod.cov22 <- mod$cov[2, 2]
   
+  # equals function checks for names. is_equivalent_to doesn't, but doesn't take
+  # a tolerance argument.
+  names(cparas) <- names(cse) <- names(mod$se) <- c("sigma", "xi")
+  
   expect_that(cparas, equals(mod.coef, tolerance=tol),
                      label="gpd: parameter ests page 85 Coles")
   expect_that(cse[2], equals(mod$se[2], tolerance=tol),
                      label="gpd: standard errors page 85 Coles")
-  expect_that(ccov[2, 2), equals(mod$cov[2,2], tolerance=tol),
+  expect_that(ccov[2, 2], equals(mod$cov[2,2], tolerance=tol),
                      label="gpd: Covariance page 85 Coles")
   expect_that(cloglik, equals(mod.loglik, tolerance=tol),
                      label="gpd: loglik page 85 Coles")
@@ -91,8 +94,8 @@ test_that("evm behaves as it should", {
             label="gpd: Gaussian penalization phi being drawn to 4")
   
   ###################################################################
-  #   Logical checks on the effect of penalization using lasso or L1 penalization. The smaller the
-  #    variance, the more the parameter should be drawn towards the
+  #   Logical checks on the effect of penalization using lasso or L1 penalization.
+  #   The smaller the variance, the more the parameter should be drawn towards the
   #    mean.
   
   # 2a.1 Tests for xi being drawn to 0
@@ -158,7 +161,7 @@ test_that("evm behaves as it should", {
   
   mod <- evm(rainfall, th=30, data=d, phi= ~ time, penalty="none")
   
-  expect_that(-484.6, equals(mod$loglik), tolerance=tol,
+  expect_that(-484.6, equals(mod$loglik, tolerance=tol),
                      label="gpd: loglik Coles page 119")
   
   ####################################################################
@@ -177,15 +180,12 @@ test_that("evm behaves as it should", {
                                    ydat = m, sigl=2:ncol(m),
                                    siglink=exp, show=FALSE)
   
-  expect_that(ismod$mle, equals(), 
-                     coef(mod),
-                     tolerance=tol,
+  expect_that(ismod$mle, equals(unname(coef(mod)), tolerance=tol),
                      label="gpd: covariates in phi only, point ests")
   
   # SEs for phi will not be same as for sigma, but we can test xi
-  expect_that(ismod$se[length(ismod$se)], equals(), 
-                     mod$se[length(mod$se)],
-                     tolerance=tol,
+  expect_that(ismod$se[length(ismod$se)],
+              equals(mod$se[length(mod$se)], tolerance=tol),
                      label="gpd: covariates in phi only, standard errors")
   
   ######################################################################
@@ -202,14 +202,10 @@ test_that("evm behaves as it should", {
   mco <- coef(mod)
   mco[1] <- exp(mco[1])
   
-  expect_that(ismod$mle, equals(), 
-                     mco,
-                     tolerance=tol,
+  expect_that(ismod$mle, equals(unname(mco), tolerance=tol),
                      label="gpd: covariates in xi only: point ests")
   # SEs for phi will not be same as for sigma, but we can test xi
-  expect_that(ismod$se[-1], equals(), 
-                     mod$se[-1],
-                     tolerance = tol,
+  expect_that(ismod$se[-1], equals(mod$se[-1], tolerance = tol),
                      label="gpd: covariates in xi only: standard errors")
   
   ######################################################################
@@ -239,13 +235,9 @@ test_that("evm behaves as it should", {
                                    siglink=exp,
                                    show=FALSE)
   
-  expect_that(ismod$mle, equals(), 
-                     coef(mod),
-                     tolerance = tol,
+  expect_that(ismod$mle, equals(unname(coef(mod)), tolerance = tol),
                      label="gpd: covariates in phi and xi: point ests")
-  expect_that(ismod$se, equals(), 
-                     sqrt(diag(mod$cov)),
-                     tolerance = tol,
+  expect_that(ismod$se, equals(sqrt(diag(mod$cov)), tolerance = tol),
                      label="gpd: covariates in phi and xi: std errs")
   
   ####################################################################
@@ -391,9 +383,9 @@ test_that("evm behaves as it should", {
   coOpt[2] <- exp(coOpt[2])
   coSim[2] <- exp(coSim[2])
   # check point estimates
-  expect_that(coles, equals(coOpt), tolerance=tol,
+  expect_that(coles, equals(unname(coOpt), tolerance=tol),
                      label="gev: optimisation, parameter ests page 59 Coles")
-  expect_that(coles, equals(coSim), tolerance=tol,
+  expect_that(coles, equals(unname(coSim), tolerance=tol),
                      label="gev: simulation, parameter ests page 59 Coles")
   
   # Check non-sigma elements of covariance
@@ -401,19 +393,21 @@ test_that("evm behaves as it should", {
                     -.00107, .00965), ncol=2)
   coOpt <- mOpt$cov[c(1,3), c(1,3)]
   coSim <- cov(mSim$param)[c(1,3), c(1,3)]
-  expect_that(coles, equals(coOpt), tolerance=tol,
+  expect_that(coles, equals(coOpt, tolerance=tol),
                      label="gev: optimisation, covariance page 59 coles")
-  expect_that(coles, equals(coSim), tolerance=tol,
+  expect_that(coles, equals(coSim, tolerance=tol),
                      label="gev: simulation, covariance page 59 coles")
   mcOpt <- max(abs(coles - coOpt))
   mcSim <- max(abs(coles - coSim))
-  expect_that(0, equals(mcOpt), tolerance=tol,label="gev:optimisation,maxabscovariance")
-  expect_that(0, equals(mcSim), tolerance=tol,label="gev:simulation,maxabscovariance")
+  expect_that(0, equals(mcOpt, tolerance=tol),
+              label="gev:optimisation,maxabscovariance")
+  expect_that(0, equals(mcSim, tolerance=tol),
+              label="gev:simulation,maxabscovariance")
   
   # Check log-likelihood
   coles <- 4.34
   co <- mOpt$loglik
-  expect_that(coles, equals(co), tolerance=tol,
+  expect_that(coles, equals(co, tolerance=tol),
                      label="gev: optimisation, loglik page 59 coles")
   
   ###################################################################
@@ -520,17 +514,17 @@ test_that("evm behaves as it should", {
   t2.fit <- evm(y,phi=~a,family=gev,data=data[[2]])
   t3.fit <- evm(y,xi=~b, family=gev,data=data[[3]])
   
-  expect_that(g1.fit$mle, equals(coef(t1.fit)), tolerance=tol,label="gev:covariatesinmupointest")
-  expect_that(g2.fit$mle, equals(coef(t2.fit)), tolerance=tol,label="gev:covariatesinphipointest")
-  expect_that(g3.fit$mle, equals(coef(t3.fit)), tolerance=tol,label="gev:covariatesinxipointest")
+  expect_that(g1.fit$mle, equals(unname(coef(t1.fit)), tolerance=tol), label="gev:covariatesinmupointest")
+  expect_that(g2.fit$mle, equals(unname(coef(t2.fit)), tolerance=tol), label="gev:covariatesinphipointest")
+  expect_that(g3.fit$mle, equals(unname(coef(t3.fit)), tolerance=tol), label="gev:covariatesinxipointest")
   
-  expect_that(g1.fit$nllh, equals(-t1.fit$loglik), tolerance=tol,label="gev:covariatesinmu,log-lik")
-  expect_that(g2.fit$nllh, equals(-t2.fit$loglik), tolerance=tol,label="gev:covariatesinphi,log-lik")
-  expect_that(g3.fit$nllh, equals(-t3.fit$loglik), tolerance=tol,label="gev:covariatesinxi,log-lik")
+  expect_that(g1.fit$nllh, equals(-t1.fit$loglik, tolerance=tol), label="gev:covariatesinmu,log-lik")
+  expect_that(g2.fit$nllh, equals(-t2.fit$loglik, tolerance=tol), label="gev:covariatesinphi,log-lik")
+  expect_that(g3.fit$nllh, equals(-t3.fit$loglik, tolerance=tol), label="gev:covariatesinxi,log-lik")
   
-  expect_that(g1.fit$cov, equals(t1.fit$cov), tolerance=tol,label="gev:covariatesinmu,cov")
-  expect_that(g2.fit$cov, equals(t2.fit$cov), tolerance=tol,label="gev:covariatesinphi,cov")
-  expect_that(g3.fit$cov, equals(t3.fit$cov), tolerance=tol,label="gev:covariatesinxi,cov")
+  expect_that(g1.fit$cov, equals(t1.fit$cov, tolerance=tol), label="gev:covariatesinmu,cov")
+  expect_that(g2.fit$cov, equals(t2.fit$cov, tolerance=tol), label="gev:covariatesinphi,cov")
+  expect_that(g3.fit$cov, equals(t3.fit$cov, tolerance=tol), label="gev:covariatesinxi,cov")
   
   ######################################################################
   # 5.4 GEV - Test mu phi & xi simultaneously. Use simulated data.
@@ -548,8 +542,8 @@ test_that("evm behaves as it should", {
                                    siglink=exp,
                                    show=FALSE,muinit=c(5,2),siginit=c(2,-0.1),shinit=c(0,2))
   
-  expect_that(ismod$mle, equals(coef(mod)), tolerance=tol,label="gev:covariatesinmuphiandxi:pointests")
-  expect_that(ismod$se, equals(sqrt(diag(mod$cov))), tolerance=tol,label="gev:covariatesinmuphiandxi:stderrs")
+  expect_that(ismod$mle, equals(unname(coef(mod)), tolerance=tol), label="gev:covariatesinmuphiandxi:pointests")
+  expect_that(ismod$se, equals(sqrt(diag(mod$cov)), tolerance=tol), label="gev:covariatesinmuphiandxi:stderrs")
   
   ####################################################################
   # 5.5 GEV:  Check that using priors gives expected behaviour when covariates are included.
@@ -623,7 +617,5 @@ test_that("evm behaves as it should", {
             label="gev: with covariates, mu drawn to 4")
   expect_that(abs(4-coef(mod10)[1])>abs(4-coef(mod11)[1]), is_true(), 
             label="gev: with covariates, mu drawn to 4")
-  
-  
 }
 )
