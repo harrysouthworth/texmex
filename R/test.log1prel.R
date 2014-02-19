@@ -1,7 +1,6 @@
 context("log1prel")
 
 test_that("log1prel behaves as it should", {
-function() {
   ## pull in from the namespace
   
   log1prel <- texmex:::.log1prel
@@ -19,7 +18,7 @@ function() {
                      label="log1prel: value tests")
   
   ## special values
-  expect_that(log1prel(c(-1, equals(0), Inf)),c(Inf,1,0),
+  expect_that(log1prel(c(-1, 0, Inf)), equals(c(Inf,1,0)),
                      label="log1prel: special value tests")
   
   ## check with reference to .exprel
@@ -29,8 +28,7 @@ function() {
   
   xi <- exprel(x * y) * y
   
-  expect_that(log1prel(xi*x)*xi, equals(), 
-                     y, "log1prel: exprel inversion")
+  expect_that(log1prel(xi*x)*xi, equals(y), "log1prel: exprel inversion")
   
 }
 )
