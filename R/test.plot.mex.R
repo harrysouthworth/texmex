@@ -54,8 +54,8 @@ test_that("plot.mex behaves as it should", {
   
   op <- options()
   options(show.error.messages=FALSE)
-  expect_that(plot.mex(smarmod), equals(label="plot.mex:exceptionhandle")), 
-  expect_that(plot.mex(TRUE), equals(label="plot.mex:exceptionhandle")), 
+  expect_that(plot.mex(smarmod), throws_error(),label="plot.mex: exception handle")), 
+  expect_that(plot.mex(TRUE), throws_error(), label="plot.mex: exception handle")), 
   options(op)
   
   # check execution for 2-d data
@@ -63,6 +63,6 @@ test_that("plot.mex behaves as it should", {
   wavesurge.mex <- mexDependence(wavesurge.fit,dqu=0.8,which=2,margins="gumbel",constrain=FALSE)
   par(mfrow=c(2,2))
   res <- plot(wavesurge.mex,main="Wave surge data")
-  expect_that(res, equals(NULL), msg="plot.mex:successfulexecution")
+  expect_that(res, equals(NULL), label="plot.mex:successfulexecution")
 }
 )

@@ -1,51 +1,55 @@
 context("predict.evmSim")
 
 test_that("predict.evmSim behaves as it should", {
-    
+
   for(Family in list(gpd,gev)){
-    
+
     pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
     set.seed(20130513)
     # no covariates
-    
+
     u    <- switch(Family$name,GPD=14,GEV=-Inf)
     data <- switch(Family$name,GPD=rain,GEV=portpirie$SeaLevel)
-    
+
     r.fit <- evm(data,th=u,family=Family,method="sim",trace=50000)
     co <- coef(r.fit)
     
     if(Family$name == "GPD"){
-  expect_that(target=u, equals(current=predict(r.fit), M=1/r.fit$map$rate)[[1]],label=pst("predict.evmSim:retrievethreshold"))
+      expect_that(u, equals(predict(r.fit, M=1/r.fit$map$rate)[[1]]), label=pst("predict.evmSim: retrieve threshold"))
     }
-    
+
     r.fit$map$rate <- 1
     p <- c(0.5,0.9,0.95,0.99,0.999)
-  expect_that(target=Family$quant(p, equals(t(co)), r.fit$map),tolerance=0.01,
-                       current = unlist(predict(r.fit,M=1/(1-p))),label=pst("predict.evmSim: ret level estimation"))
-    
-  expect_that(target=predict(r.fit, equals(M=1/(1-p))), current=rl(r.fit,M=1/(1-p)),label=pst("predict.evmSim:predictwithtype=rlgivessameasdirectcalltorlwithdefaultarguments"))
-  expect_that(target=predict(r.fit, equals(type="lp")$link), current=linearPredictors(r.fit)$link,label=pst("predict.evmSim:predictwithtype=rlgivessameasdirectcalltorlwithdefaultarguments"))
-    
+    expect_that(Family$quant(p, t(co), r.fit$map), 
+                equals(unlist(predict(r.fit,M=1/(1-p))), tolerance=0.01,)
+                label=pst("predict.evmSim: ret level estimation"))
+
+    expect_that(predict(r.fit, M=1/(1-p)), equals(rl(r.fit,M=1/(1-p))),
+                label=pst("predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments"))
+    expect_that(predict(r.fit, type="lp")$link, equals(linearPredictors(r.fit)$link),
+                label=pst("predict.evmSim: predict with type=rl gives same as direct call to rl with default arguments"))
+
     # with covariates
-    
+
     n <- 1000
     M <- 1000
     mu <- 1
-    
+
     X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))
     param <- switch(Family$name,GPD=X,GEV=cbind(mu,X))
     th <- switch(Family$name,GPD=0,GEV=-Inf)
     X$Y <- Family$rng(n,param,list(threshold=th))
     start <- switch(Family$name,GPD=c(0,1,0,1),GEV=c(1,0,1,0,1))
     fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,method="sim",trace=50000,family=Family,start=start)
-    
+
     AllCo <- predict(fit,type="lp",all=TRUE)$link
     PostMeanRL <- function(AllCo,M){
       AllQuant <- lapply(AllCo,function(X)Family$quant(1-1/M,X[,1:length(Family$param)],fit$map))
       sapply(AllQuant,mean)
     }
-    
-  expect_that(target=PostMeanRL(AllCo, equals(M)), current=predict(fit,M=M)[[1]][,1],label=pst("predict.evmSim:retlevelestimationwithcovariatesinallparameters"))
+
+    expect_that(PostMeanRL(AllCo, M), equals(predict(fit,M=M)[[1]][,1]),
+                label=pst("predict.evmSim:retlevelestimationwithcovariatesinallparameters"))
     # multiple M
     
     M <- c(10,50,100,500,1000)
@@ -54,7 +58,8 @@ test_that("predict.evmSim behaves as it should", {
     current <- predict(fit,M=M)
     
     for(i in 1:length(M)){
-  expect_that(target[[i]], equals(current[[i]][), 1],tolerance=0.02,label=pst("predict.evmSim:retlevelestimationmultipleM"))
+      expect_that(target[[i]], equals(current[[i]][, 1], tolerance=0.02),
+                  label=pst("predict.evmSim: ret level estimation multiple M"))
     }
     
     # new data
@@ -64,8 +69,10 @@ test_that("predict.evmSim behaves as it should", {
     
     AllCoNew <- predict(fit,type="lp",newdata=newX,all=TRUE)$link
     
-  expect_that(target=PostMeanRL(AllCoNew, equals(M)), current=predict(fit,M=M,newdata=newX)[[1]][,1],label=pst("predict.evmSim:retlevelestswithnewdata"))
-  expect_that(target=as.matrix(newX), equals(current=predict(fit), M=M,newdata=newX)[[1]][,2:3],label=pst("predict.evmSim:retlevelestimationwithnewdata,covariatesaddedcorrectlytooutput"))
+    expect_that(PostMeanRL(AllCoNew, M), equals(predict(fit,M=M,newdata=newX[[1]][,1]),
+                label=pst("predict.evmSim: ret level ests with newdata"))
+    expect_that(as.matrix(newX), equals(predict(fit, M=M, newdata=newX)[[1]][,2:3]),
+                label=pst("predict.evmSim: ret level estimation with newdata, covariates added correctly to output"))
     
     
     p <- predict(fit,all=TRUE,newdata=newX)
@@ -76,8 +83,8 @@ test_that("predict.evmSim behaves as it should", {
       m.L <- unlist(l.L)
       m.U <- unlist(l.U)
       r <- predict(fit,newdata=newX,ci=TRUE,alpha=a)
-  expect_that(target=m.L, equals(current=r[[1]][), 3],label=pst("predict.evmSim:lowerconfintsforretlevelswithnewdata"))
-  expect_that(target=m.U, equals(current=r[[1]][), 4],label=pst("predict.evmSim:upperconfintsforretlevelswithnewdata"))
+      expect_that(m.L, equals(r[[1]][), 3]), label=pst("predict.evmSim: lower conf ints for ret levels with newdata"))
+      expect_that(m.U, equals(r[[1]][), 4]), label=pst("predict.evmSim: upper conf ints for ret levels with newdata"))
     }
     
     # check linear predictors
@@ -85,12 +92,12 @@ test_that("predict.evmSim behaves as it should", {
     l <- lapply(p,function(l) apply(l,2,mean))
     m <- matrix(unlist(l),ncol=length(l[[1]]),byrow=TRUE)
     r <- predict(fit,type="lp",newdata=newX)$link
-  expect_that(target=m, equals(current=r), label=pst("predict.evmSim:linearpredictorsofparameterswithnewdata"))
+    expect_that(m, equals(r), label=pst("predict.evmSim: linear predictors of parameters with newdata"))
     Offset <- switch(Family$name,GEV=1,GPD=0)
-  expect_that(current=predict(fit, equals(newdata=newX), type="lp")$link[,Offset+1:2],
-                       target = cbind(apply(cbind(rep(1,nx),newX[,1]) %*% t(fit$param[,Offset + 1:2]),1,mean),
-                                      apply(cbind(rep(1,nx),newX[,2]) %*% t(fit$param[,Offset + 3:4]),1,mean)),
-                       msg = pst("predict.evmSim: linear predictor estimates"))
+    expect_that(predict(fit, newdata=newX, type="lp")$link[,Offset+1:2],
+                equals(cbind(apply(cbind(rep(1,nx),newX[,1]) %*% t(fit$param[,Offset + 1:2]),1,mean),
+                             apply(cbind(rep(1,nx),newX[,2]) %*% t(fit$param[,Offset + 3:4]),1,mean))),
+                label = pst("predict.evmSim: linear predictor estimates"))
     
     alpha <- c(0.05,0.1)
     for(a in alpha){
@@ -100,36 +107,46 @@ test_that("predict.evmSim behaves as it should", {
       m.U <- matrix(unlist(l.U),ncol=length(l[[1]]),byrow=TRUE)
       r <- predict(fit,type="lp",newdata=newX,ci=TRUE,alpha=a)$link
       npar <- length(Family$param)
-  expect_that(target=m.L[, equals(1:npar]), current=r[,(1:(4*npar))[rep(c(F,F,T,F),npar)]],label=pst("predict.evmSim:lowerconfintsforlinearpredictorsofparameterswithnewdata"))
-  expect_that(target=m.U[, equals(1:npar]), current=r[,(1:(4*npar))[rep(c(F,F,F,T),npar)]],label=pst("predict.evmSim:upperconfintsforlinearpredictorsofparameterswithnewdata"))
+      expect_that(m.L[, 1:npar], equals(r[,(1:(4*npar))[rep(c(F,F,T,F),npar)]]),
+                  label=pst("predict.evmSim: lower conf ints for linear predictors of parameters with newdata"))
+     expect_that(m.U[, 1:npar], equals(r[,(1:(4*npar))[rep(c(F,F,F,T),npar)]]),
+                 label=pst("predict.evmSim: upper conf ints for linear predictors of parameters with newdata"))
     }
-    
+
     # structure of output
-    
-  expect_that(target=c(n, equals(6)), current=dim(predict(fit,ci=TRUE)[[1]]),label=pst("predict.evmSim:dimensionofoutputwithcicalculation"))
+
+    expect_that(target=c(n, 6), equals(dim(predict(fit,ci=TRUE)[[1]]),label=pst("predict.evmSim: dimension of output with ci calculation"))
     o <- options(warn=-1) # since se=TRUE gives a warning
-  expect_that(target=c(n, equals(6)), current=dim(predict(fit,se=TRUE,ci=TRUE)[[1]]),label=pst("predict.evmSim:dimensionofoutputwithciandsecalculation"))
+    expect_that(target=c(n, 6), equals(dim(predict(fit,se=TRUE,ci=TRUE)[[1]]),label=pst("predict.evmSim: dimension of output with ci and se calculation"))
     options(o)
-    
-  expect_that(target=c("Mean", equals("50%"), "2.5%","97.5%","a","b"),colnames(predict(fit,ci=TRUE)[[1]]),label=pst("predict.evmSim:colnamesofretlevelestswithCIestimation"))
-  expect_that(target=c("Mean", equals("50%"), "5%","95%","a","b"),colnames(predict(fit,alpha=0.1,ci=TRUE)[[1]]),label=pst("predict.evmSim:colnamesofretlevelestswithCIestimation,alpha=0.1"))
-    
-  expect_that(target=c(nx, equals(4*npar+2)), dim(predict(fit,newdata=newX,ci=TRUE,type="lp")$link),label=pst("predict.evmSim:dimensionoflinearpredictorreturnobject"))
-    
+
+    expect_that(c("Mean", "50%", "2.5%","97.5%","a","b"), equals(colnames(predict(fit,ci=TRUE)[[1]])),
+                label=pst("predict.evmSim: colnames of ret level ests with CI estimation"))
+    expect_that(c("Mean", "50%", "5%","95%","a","b"), equals(colnames(predict(fit, alpha=0.1, ci=TRUE)[[1]])),
+                label=pst("predict.evmSim: colnames of ret level ests with CI estimation, alpha=0.1"))
+
+    expect_that(c(nx, 4*npar+2), equals(dim(predict(fit,newdata=newX,ci=TRUE,type="lp")$link)),
+                label=pst("predict.evmSim: dimension of linear predictor return object"))
+
     cnamesGPD <- c("phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")# this specific format assumed by plot.rl.evmSim and plot.lp.evmSim
     cnamesGEV <- c("mu: Mean",  "mu: 50%",  "mu: 2.5%",  "mu: 97.5%",  "phi: Mean", "phi: 50%", "phi: 2.5%", "phi: 97.5%", "xi: Mean", "xi: 50%", "xi: 2.5%", "xi: 97.5%")
     cnames<- switch(Family$name,GPD=cnamesGPD,GEV=cnamesGEV)
     
-  expect_that(current=cnames, equals(target=colnames(predict(fit), newdata=newX,ci=TRUE,type="lp")$link)[1:(4*npar)],label=pst("predict.evmSim:colnamesoflinpredictorswithCIcalcs"))
+    expect_that(cnames, equals(colnames(predict(fit), newdata=newX,ci=TRUE,type="lp"$link)[1:(4*npar)]),
+                label=pst("predict.evmSim: colnames of lin predictors with CI calcs"))
     o <- options(warn=-1) # since se=TRUE gives a warning
-  expect_that(current=cnames, equals(target=colnames(predict(fit), newdata=newX,ci=TRUE,se=TRUE,type="lp")$link)[1:(4*npar)],label=pst("predict.evmSim:colnamesoflinpredictorswithCI+SEcalcs"))
+    expect_that(cnames, equals(colnames(predict(fit), newdata=newX,ci=TRUE,se=TRUE,type="lp")$link[1:(4*npar)]),
+                label=pst("predict.evmSim: colnames of lin predictors with CI + SE calcs"))
     options(o)
     
     # unique
     newX <- data.frame(a=c(0,0,0,1,1,1,2,2,2,3,3,3,4,4,4),b=c(-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1,-.1,.1,.1))
     
-  expect_that(current=predict(fit, equals(newdata=newX)[[1]]), target=unique(predict(fit,newdata=newX,unique.=FALSE)[[1]]),pst("predict.evmSim:uniquefunctioningforretlevelests"))
-  expect_that(current=predict(fit, equals(newdata=newX), type="lp")$link[,],target=unique(predict(fit,newdata=newX,unique.=FALSE,type="lp")$link[,]),label=pst("predict.evmSim:uniquefunctioningforlinpredests"))
+    expect_that(predict(fit, newdata=newX)[[1]], equals(unique(predict(fit,newdata=newX,unique.=FALSE)[[1]])),
+                        label=pst("predict.evmSim:uniquefunctioningforretlevelests"))
+    expect_that(predict(fit, newdata=newX, type="lp")$link[,],
+                equals(unique(predict(fit,newdata=newX,unique.=FALSE,type="lp")$link[,])),
+                       label=pst("predict.evmSim: unique functioning for lin pred ests"))
   }
 }
 )

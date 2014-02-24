@@ -31,9 +31,9 @@ test_that("plot.predict.evm behaves as it should", {
     p.lp.sim <- predict(fit.sim,type="lp",ci=TRUE)
     p.lp.boot <- predict(fit.boot,type="lp",ci=TRUE)
     
-  expect_that(plot(p.lp.opt), equals(silent=TRUE), label=pst("plot.lp.evmOpt:failifnocovariates"))
-  expect_that(plot(p.lp.sim), equals(silent=TRUE), label=pst("plot.lp.evmSim:failifnocovariates"))
-  expect_that(plot(p.lp.boot), equals(silent=TRUE), label=pst("plot.lp.evmBoot:failifnocovariates"))
+    expect_that(plot(p.lp.opt), throws_error(), label=pst("plot.lp.evmOpt: fail if no covariates"))
+    expect_that(plot(p.lp.sim), throws_error(), label=pst("plot.lp.evmSim: fail if no covariates"))
+    expect_that(plot(p.lp.boot), throws_error(), label=pst("plot.lp.evmBoot: fail if no covariates"))
     
     # now with covariates
     

@@ -22,7 +22,7 @@ test_that("plotrl.evm behaves as it should", {
     X$Y <- Family$rng(n,param,list(threshold=th))
     fit <- evm(Y,data=X,phi=~a,xi=~b,th=th,family=Family)
     
-  expect_that(plotrl.evmOpt(fit), equals(silent=TRUE), label=pst("plotrl.evmOpt:failureformodelwithcovariates"))
+  expect_that(plotrl.evmOpt(fit), throws_error(), label=pst("plotrl.evmOpt: failure for model with covariates"))
   }
 }
 )

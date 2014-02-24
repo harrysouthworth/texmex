@@ -28,25 +28,27 @@ test_that("predict.evmBoot behaves as it should", {
     M <- seq(from,to,length=nm)
     pred <- predict(boot,newdata=newX,M=M,ci=TRUE)
     
-  expect_that(target=predict(boot), equals(current=rl(boot)), label=pst("predict.evmBoot:predictwithtype=rlgivessameasdirectcalltorlwithdefaultarguments"))
-  expect_that(target=predict(boot, equals(type="lp")), current=linearPredictors(boot),label=pst("predict.evmBoot:predictwithtype=lpgivessameasdirectcalltolinearPredictorswithdefaultarguments"))
+    expect_that(predict(boot), equals(rl(boot)),
+                label=pst("predict.evmBoot: predict with type=rl gives same as direct call to rl with default arguments"))
+    expect_that(predict(boot, type="lp"), equals(linearPredictors(boot)),
+                label=pst("predict.evmBoot: predict with type=lp gives same as direct call to linearPredictors with default arguments"))
     
-  expect_that(target=nm, equals(current=length(pred)), label=pst("predict.evmBoot:outputlength"))
-  expect_that(target=paste("M.", equals(from), sep=""),current=names(pred)[1],label=pst("predict.evmBoot:namesofoutput"))
-  expect_that(target=paste("M.", equals(to), sep=""),current=names(pred)[nm],label=pst("predict.evmBoot:namesofoutput"))
+    expect_that(nm, equals(length(pred)), label=pst("predict.evmBoot: output length"))
+    expect_that(paste("M.", from, sep=""), equals(names(pred)[1]), label=pst("predict.evmBoot: names of output"))
+    expect_that(paste("M.", to, sep=""), equals(names(pred)[nm]), label=pst("predict.evmBoot: names of output"))
     
     cnames <- c( "Mean","50%","2.5%","97.5%",names(X)[1:2])
-  expect_that(target=cnames, equals(current=colnames(pred[[1]])), label=pst("predict.evmBoot:colnames"))
+    expect_that(cnames, equals(colnames(pred[[1]])), label=pst("predict.evmBoot: colnames"))
     
-  expect_that(target=c(nx, equals(6)), current=dim(pred[[1]]),label=pst("predict.evmBoot:dimension"))
+    expect_that(c(nx, 6), equals(dim(pred[[1]])), label=pst("predict.evmBoot: dimension"))
     for(i in 1:nm){
-  expect_that(target=newX[, equals(1]), current=pred[[i]][,5],label=pst("predict.evmBoot:covariatesinoutput"))
-  expect_that(target=newX[, equals(2]), current=pred[[i]][,6],label=pst("predict.evmBoot:covariatesinoutput"))
+      expect_that(unname(newX[, 1]), equals(unname(pred[[i]][,5])), label=pst("predict.evmBoot: covariates in output"))
+      expect_that(unname(newX[, 2]), equals(unname(pred[[i]][,6])), label=pst("predict.evmBoot: covariates in output"))
     }
     
     par(mfrow=n2mfrow(nx))
-    plot(pred,sameAxes=FALSE,type="median",main="Bootstrap median rl")
-    plot(pred,sameAxes=FALSE,type="mean",main="Bootstrap mean rl")
+    plot(pred, sameAxes=FALSE, type="median", main="Bootstrap median rl")
+    plot(pred, sameAxes=FALSE, type="mean", main="Bootstrap mean rl")
   }
 }
 )

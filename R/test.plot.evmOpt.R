@@ -1,7 +1,7 @@
 context("plot.evmOpt")
 
 test_that("plot.evmOpt behaves as it should", {
-    par(mfrow=c(2,2))
+  par(mfrow=c(2,2))
   mod <- evm(rain, th=30, penalty="none")
   res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),
                              c("\nProbability plot","\nQuantile Plot","\nReturn Level Plot\n(SCALE IS DAYS NOT YEARS)","\nDensity Plot")), 
