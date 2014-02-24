@@ -20,15 +20,15 @@ test_that("migpd behaves as it should", {
   
   tol <- c(1, 0.05, .5, 0.5)
   for(i in 1:4){
-  expect_that(htsummer[i, equals(]), summer.gpd[i,],tolerance=tol[i],label=paste("migpd:Table4summer",i))
-  expect_that(htwinter[i, equals(]), winter.gpd[i,],tolerance=tol[i],label=paste("migpd:Table4winter",i))
+    expect_that(htsummer[i, ], equals(unname(summer.gpd[i,]), tolerance=tol[i]), label=paste("migpd:Table4summer", i))
+    expect_that(htwinter[i, ], equals(unname(winter.gpd[i,]), tolerance=tol[i]), label=paste("migpd:Table4winter", i))
   }
   
   # check excecution for 2-d data
   
   wavesurge.fit <- migpd(wavesurge,mqu=.7)
-  expect_that(wavesurge.fit$models$wave$loglik, equals(evm(wavesurge$wave), qu=0.7)$loglik,
-                     tolerance=0.001,label="migpd: 2-d data gpd fit wave")
+  expect_that(wavesurge.fit$models$wave$loglik, equals(evm(wavesurge$wave, qu=0.7)$loglik, tolerance=0.001),
+              label="migpd: 2-d data gpd fit wave")
   
 }
 )

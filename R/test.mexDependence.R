@@ -1,7 +1,7 @@
 context("mexDependence")
 
 test_that("mexDependence behaves as it should", {
-    smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
+  smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
   
   mySdepO3 <- mexDependence(smarmod,which=1,dqu=0.7,margins="gumbel",constrain=FALSE)
@@ -89,27 +89,26 @@ test_that("mexDependence behaves as it should", {
     plot(jhWdepNO2, myWdepNO2$dependence$coefficients);abline(0,1)
     plot(jhWdepNO,  myWdepNO$dependence$coefficients);abline(0,1)
     plot(jhWdepSO2, myWdepSO2$dependence$coefficients);abline(0,1)
-    plot(jhWdepPM10,myWdepPM10$dependence$coefficients);abline(0,1)
+    plot(jhWdepPM10, myWdepPM10$dependence$coefficients);abline(0,1)
     
     plot(jhSdepO3,  mySdepO3$dependence$coefficients);abline(0,1)
     plot(jhSdepNO2, mySdepNO2$dependence$coefficients);abline(0,1)
     plot(jhSdepNO,  mySdepNO$dependence$coefficients);abline(0,1)
     plot(jhSdepSO2, mySdepSO2$dependence$coefficients);abline(0,1)
-    plot(jhSdepPM10,mySdepPM10$dependence$coefficients);abline(0,1)
+    plot(jhSdepPM10, mySdepPM10$dependence$coefficients);abline(0,1)
   }
   
-  expect_that(jhWdepO3, equals(myWdepO3$dependence$coefficients[1:4, ], tolerance=tol),
-              label="mexDependence:WinterO3")
-  expect_that(jhWdepNO2, equals(myWdepNO2$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:WinterNO2")
-  expect_that(jhWdepNO, equals(myWdepNO$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:WinterNO")
-  expect_that(jhWdepSO2, equals(myWdepSO2$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:WinterSO2")
-  expect_that(jhWdepPM10, equals(myWdepPM10$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:WinterPM10")
+  expect_that(c(jhWdepO3), equals(c(myWdepO3$dependence$coefficients[1:4, ]), tolerance=tol), label="mexDependence:WinterO3")
+  expect_that(c(jhWdepNO2), equals(c(myWdepNO2$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:WinterNO2")
+  expect_that(c(jhWdepNO), equals(c(myWdepNO$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:WinterNO")
+  expect_that(c(jhWdepSO2), equals(c(myWdepSO2$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:WinterSO2")
+  expect_that(c(jhWdepPM10), equals(c(myWdepPM10$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:WinterPM10")
   
-  expect_that(jhSdepO3, equals(mySdepO3$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:SummerO3")
-  expect_that(jhSdepNO2, equals(mySdepNO2$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:SummerNO2")
-  expect_that(jhSdepNO, equals(mySdepNO$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:SummerNO")
-  expect_that(jhSdepSO2, equals(mySdepSO2$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:SummerSO2")
-  expect_that(jhSdepPM10, equals(mySdepPM10$dependence$coefficients[1:4, ], tolerance=tol),label="mexDependence:SummerPM10")
+  expect_that(c(jhSdepO3), equals(c(mySdepO3$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:SummerO3")
+  expect_that(c(jhSdepNO2), equals(c(mySdepNO2$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:SummerNO2")
+  expect_that(c(jhSdepNO), equals(c(mySdepNO$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:SummerNO")
+  expect_that(c(jhSdepSO2), equals(c(mySdepSO2$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:SummerSO2")
+  expect_that(c(jhSdepPM10), equals(c(mySdepPM10$dependence$coefficients[1:4, ]), tolerance=tol),label="mexDependence:SummerPM10")
   
   # test functionality with 2-d data
   
@@ -122,7 +121,7 @@ test_that("mexDependence behaves as it should", {
   options(op)
   
   expect_that(wavesurge.mex[1:2], equals(wavesurge.dep[1:2]), label="mexDependence:missingdquargument")
-  expect_that(dim(wavesurge.mex$dependence$Z), equals(c(578), 1),label="mexDependence:executionfor2-ddata")
+  expect_that(dim(wavesurge.mex$dependence$Z), equals(c(578, 1)), label="mexDependence:executionfor2-ddata")
   expect_that(wavesurge.mex$dependence$dqu, equals(dqu), label="mexDependence:executionfor2-ddata")
   expect_that(wavesurge.mex$dependence$which, equals(which), label="mexDependence:executionfor2-ddata")
   
@@ -162,12 +161,12 @@ test_that("mexDependence behaves as it should", {
       HTSest <- KTPest <- matrix(0,ncol=2,nrow=dim(pairs)[1])
       
       for(i in 1:dim(pairs)[1]){
-        mar.model <- migpd(winter[,pairs[i,]],mqu=Mquant,penalty="none")
-        mar.trans <- mexTransform(mar.model,margins=margins,method=marTrans)
+        mar.model <- migpd(winter[,pairs[i,]], mqu=Mquant,penalty="none")
+        mar.trans <- mexTransform(mar.model, margins=margins, method=marTrans)
         X <- list(mar.trans$transformed)
         Dqu <- 1 - mean(mar.trans$transformed[,1] > dth)
-        init <- initial_posneg(D=1,listdata=X,u=dth,v=v)
-        a <- estimate_HT_KPT_joint_posneg_nm(pars=init,x=dth,listr=X,params=FALSE,k=k,v=v)
+        init <- initial_posneg(D=1, listdata=X, u=dth, v=v)
+        a <- estimate_HT_KPT_joint_posneg_nm(pars=init, x=dth,listr=X,params=FALSE,k=k,v=v)
         KTPest[i,] <- a$par
         b <- mexDependence(mar.trans,which=1,dqu=Dqu,margins=margins,constrain=TRUE,v=v,
                            marTransform=marTrans,start=init,nOptim=k)

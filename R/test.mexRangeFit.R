@@ -16,9 +16,9 @@ test_that("mexRangeFit behaves as it should", {
   expect_that(mexRangeFit(TRUE, equals(which=2)), silent=TRUE,label="mexRangeFit:exceptionhandle")
   expect_that(mexRangeFit(5, equals(which=1)), silent=TRUE,label="mexRangeFit:exceptionhandle")
   
-  expect_that(mrf1$ests[[1]][1:2], equals(wmexmod.lap[1:2])), 
-  expect_that(mrf2$ests[[1]][1:2], equals(wmexmod.gum[1:2])), 
-  expect_that(mrf3$ests[[1]][1:2], equals(wmexmod.lap[1:2])), 
+  expect_that(mrf1$ests[[1]][1:2], equals(wmexmod.lap[1:2]), label="mexmod: lap")
+  expect_that(mrf2$ests[[1]][1:2], equals(wmexmod.gum[1:2]), label="mexmod: gum")
+  expect_that(mrf3$ests[[1]][1:2], equals(wmexmod.lap[1:2]), label="mexmod:lap2")
   
   # now 2-d data
   
@@ -27,7 +27,7 @@ test_that("mexRangeFit behaves as it should", {
   m <- mexDependence(wavesurge.fit,which=1,dqu=mqu)
   mrf4 <- mexRangeFit(wavesurge.fit,which=1,margins="laplace",R=R,trace=R+1)
   mrf5 <- mexRangeFit(m,R=R,trace=R+1)
-  expect_that(mrf4$ests[[2]][1:2], equals(mrf5$ests[[2]][1:2])), 
+  expect_that(mrf4$ests[[2]][1:2], equals(mrf5$ests[[2]][1:2]), label="mrf5ests")
   
   # test specification of starting values
   R <- 5

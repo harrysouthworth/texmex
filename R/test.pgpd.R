@@ -2,11 +2,11 @@ context("pgpd")
 
 test_that("pgpd behaves as it should", {
     evd.pgpd <- sombrero:::.evd.pgpd
-  myTest <- function(sig,xi,thresh,msg){
-    myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
-    ep <- sapply(1:nreps, function(i) evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-  expect_that(ep, equals(myp), label=msg)
-  }
+    myTest <- function(sig, xi, thresh, msg){
+      myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
+      ep <- sapply(1:nreps, function(i) evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+      expect_that(ep, equals(myp), label=msg)
+    } # Close myTest
   
   set.seed(20101111)
   
@@ -21,18 +21,18 @@ test_that("pgpd behaves as it should", {
   
   x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
   
-  myTest(sig=p[,1], xi=p[,2],thresh=thresh, label="pgpd: random xi")
+  myTest(sig=p[,1], xi=p[,2],thresh=thresh, msg="pgpd: random xi")
   
   #*************************************************************
   # 6.8. Test pgpd when some or all of xi == 0
   
   p[sample(1:nreps,nreps/2),2] <- 0
   x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
-  myTest(sig=p[,1], xi=p[,2], thresh=thresh, label="pgpd: some zero xi")
+  myTest(sig=p[,1], xi=p[,2], thresh=thresh, msg="pgpd: some zero xi")
   
   p[,2] <-  0
   x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
-  myTest(sig=p[,1], xi=p[,2], thresh=thresh, label="pgpd: all zero xi")
+  myTest(sig=p[,1], xi=p[,2], thresh=thresh, msg="pgpd: all zero xi")
   
   #*************************************************************
   # 6.9. Test vectorization of pgpd.
