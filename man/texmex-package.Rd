@@ -9,8 +9,8 @@ approach of Heffernan and Tawn (2004).}
 \tabular{ll}{
 Package: \tab mex\cr
 Type: \tab Package\cr
-Version: \tab 2.1\cr
-Date: \tab 2013-12-10\cr
+Version: \tab 2.3\cr
+Date: \tab 2014-03-03\cr
 License: \tab GPL (>=2) | BSD\cr
 }
 The packages was originally called `texmex' for Threshold EXceedances and
