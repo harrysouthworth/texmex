@@ -41,14 +41,15 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     else {
       res <- t(sapply(1:R, bfun))
     }
-    
-    se <- apply(res, 2, sd)
-    b <- apply(res, 2, mean) - coef(o)
 
-    if (any(abs(b/se) > .25)){
+    if (R > 1){
+      se <- apply(res, 2, sd)
+      b <- apply(res, 2, mean) - coef(o)
+      
+      if (any(abs(b/se) > .25)){
         warning("Ratio of bias to standard error is high")
-    }
-
+      }
+    } # Close if (R > 1)
     res <- list(call=theCall, replicates=res, map=o)
     oldClass(res) <- "evmBoot"
     res
