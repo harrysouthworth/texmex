@@ -59,12 +59,14 @@ print.evmBoot <- function(x, ...){
     print(x$call)
     means <- apply(x$replicates, 2, mean)
     medians <- apply(x$replicates, 2, median)
-    sds <- apply(x$replicates, 2, sd)
+    sds <- rep(NA, length(means))
+    if (nrow(x$replicates) > 1)
+      sds <- apply(x$replicates, 2, sd)
     bias <- means - x$map$coefficients
     res <- rbind(x$map$coefficients, means, bias, sds, medians)
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
     print(res, ...)
-    if (any(abs(res[3,] / res[4,]) > .25)){
+    if (nrow(x$replicates) > 1 & any(abs(res[3,] / res[4,]) > .25)){
         warning("Ratio of bias to standard error is high")
     }
     invisible(res)
