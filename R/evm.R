@@ -18,7 +18,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           iter = 40500, burn=500, thin = 4,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL,
-          R=100, cores=NULL, verbose=TRUE) {
+          R=1000, cores=NULL, verbose=TRUE) {
 
     modelParameters <- texmexParameters(theCall, family,...)
 

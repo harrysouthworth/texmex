@@ -30,7 +30,7 @@ evm(y, data, family, ...)
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
     proposal.dist = c("gaussian", "cauchy"),
-    jump.cov, jump.const=NULL, R=100, verbose = TRUE)
+    jump.cov, jump.const=NULL, R=1000, cores=NULL, verbose = TRUE)
 
 \method{print}{evmOpt}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{evmOpt}(object, nsim=1000, alpha=0.05, ...)
@@ -171,7 +171,10 @@ texmexJumpConst(j, map)
            (penalized) likelihood. The function is not intended to be called by
            the end user.}
   \item{R}{The number of parametric bootstrap samples to run when
-           \code{method = "bootstrap"} is requested. Defaults to 100.}
+           \code{method = "bootstrap"} is requested. Defaults to 1000.}
+  \item{cores}{The number of cores to use when bootstrapping. Defaults to
+           \code{cores=NULL} and the function guess how many cores are available
+           and uses them all.}
 }
 \details{
   In previous versions of \code{texmex}, the main modelling
