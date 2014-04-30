@@ -26,7 +26,7 @@ addCovariance <- function(o, family, cov){
     cov
 }
 
-constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
+constructEVM <- function(o, family, ..., th, rate, prior, modelParameters, call,
                          modelData, data, priorParameters, cov){
     o$family <- family
     o$threshold <- th
@@ -41,7 +41,7 @@ constructEVM <- function(o, family, th, rate, prior, modelParameters, call,
     o$ploglik <- -o$value # Penalized loglik
 
     # Get unpenalized version
-    ll <- family$log.lik(modelData, th)
+    ll <- family$log.lik(modelData, th, ...)
     o$loglik <- ll(o$coefficients)
 
     oldClass(o) <- 'evmOpt'
