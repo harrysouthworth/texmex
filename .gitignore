@@ -1,1 +1,6 @@
 *~
+*.pdf
+*.log
+*.sas7bdat
+*.csv
+*.aux
