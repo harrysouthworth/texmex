@@ -1,3 +1,6 @@
+# Translate R code using RUnit to use testthat instead.
+# This is only a partial translation. Some manual fixing is required.
+
 def getTestFiles():
   from os import listdir
   inpath = "../R/"

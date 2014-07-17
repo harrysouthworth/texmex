@@ -112,15 +112,14 @@ As a result, the function takes a while to run.
 \code{\link{texmex-package}}
 }
 \examples{
-# Uncomment the following lines to run - commented out to make CRAN happy
+# Uncomment the following lines to run
 ## open device to save plotted output
-#library(RUnit)
 #pdf("texmexPlots.pdf")
 #val <- validate.texmex()
 #printHTMLProtocol(val, "texmexReport.html")
 ## finish writing to device
 #dev.off()
 }
-\keyword{ models }
+\keyword{models}
 \keyword{multivariate}
 

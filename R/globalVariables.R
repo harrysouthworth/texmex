@@ -1,1 +1,1 @@
-globalVariables("Y", "rainfall", "ALT.B", "ALT.M", "y")
+globalVariables(c("rainfall", "Y", "ALT.B"))

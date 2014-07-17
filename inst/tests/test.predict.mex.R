@@ -30,11 +30,11 @@ test_that("predict.mex behaves as it should", {
   
   tol <- 0.05
   
-  expect_that(Table5summer, equals(resSummer), tolerance=tol,label="predict.mex:Table5summerdata")
-  expect_that(Table5winter, equals(resWinter), tolerance=tol,label="predict.mex:Table5winterdata")
+  expect_that(Table5summer, equals(resSummer), tolerance=tol, label="predict.mex:Table5summerdata")
+  expect_that(Table5winter, equals(resWinter), tolerance=tol, label="predict.mex:Table5winterdata")
   
-  expect_that(pointEstSummer, equals(resSummer[1), ],tolerance=tol,label="predict.mex:pointestvsboot,summerdata")
-  expect_that(pointEstWinter, equals(resWinter[1), ],tolerance=tol,label="predict.mex:pointestvsboot,winterdata")
+  expect_that(pointEstSummer, equals(resSummer[1, ]),tolerance=tol, label="predict.mex:pointestvsboot,summerdata")
+  expect_that(pointEstWinter, equals(resWinter[1, ]),tolerance=tol, label="predict.mex:pointestvsboot,winterdata")
   
   # check execution for 2-d data
   

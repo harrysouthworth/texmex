@@ -9,26 +9,26 @@ function() {
   core.sanity.test <- function(xi) {
     base.quantiles <- qgev(probabilities, 0, 1, xi)
     ## check that the values are ascending
-  expect_that(all(diff(base.quantiles)>=0), is_true(), "qgev:ascendingquantiles")
+    expect_that(all(diff(base.quantiles)>=0), is_true(), "qgev:ascendingquantiles")
     ## and check that we're descending correctly for upper tail
     bq2 <- qgev(probabilities, 0, 1, xi, lower.tail=FALSE)
-  expect_that(all(diff(bq2)<=0), is_true(), "qgev:descendingquantiles")
+    expect_that(all(diff(bq2)<=0), is_true(), "qgev:descendingquantiles")
     ## does lower.tail work
-  expect_that(base.quantiles, equals(), 
-                       qgev(1 - probabilities, 0, 1, xi, lower.tail=FALSE),
-                       "qgev: lower.tail works correctly")
+    expect_that(base.quantiles, equals(), 
+                qgev(1 - probabilities, 0, 1, xi, lower.tail=FALSE),
+                "qgev: lower.tail works correctly")
     ## does log.p work?
-  expect_that(base.quantiles, equals(), 
-                       qgev(log(probabilities), 0, 1, xi, log.p=TRUE),
-                       "qgev: log.p works")
+    expect_that(base.quantiles, equals(), 
+                qgev(log(probabilities), 0, 1, xi, log.p=TRUE),
+                "qgev: log.p works")
     ## check shift and scale property
     sigma <- rexp(1)
     mu    <- runif(1, -5, 5)
     shifted <- mu + sigma * base.quantiles
-  expect_that(shifted, equals(), 
+    expect_that(shifted, equals(), 
                        qgev(probabilities, mu, sigma, xi),
                        "qgev: shift and scale")
-  }
+  } # Close core.sanity.test
   
   lapply(c(0, seq(-5, 5, length.out=10)), core.sanity.test)
   
@@ -40,5 +40,4 @@ function() {
   expect_that(qgev(0.5, equals(0), 1,xi),
                      expm1(-log(log(2))*xi) / xi,
                      "qgev: median match at nonzero xi")
-}
-)
+}})

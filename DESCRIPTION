@@ -2,11 +2,12 @@ Package: sombrero
 Type: Package
 Title: Test suite for the texmex package
 Version: 0.1
-Date: 2013-11-18
+Date: 2014-07-17
 Author: Janet E. Heffernan and Harry Southworth
 Maintainer: Harry Southworth <harry.southworth@gmail.com>
 Description: A suite of unit tests to give confidence that the texmex package
-             does what it ought, currently implemented via RUnit.
+             does what it ought, currently implemented via testthat.
 License: GPL (>=2)
-Depends: texmex, mvtnorm, MASS, RUnit, lattice, testthat
+Depends: texmex, mvtnorm, MASS, lattice, testthat
+LazyData: no
 

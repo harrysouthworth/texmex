@@ -14,6 +14,7 @@
 \alias{estimate_HT}
 
 \title{Internal functions used to run tests on texmex}
+\description{Internal functions used to run tests on texmex.}
 
 \usage{
   Profile_likelihood_HT_unc(par,listr,x,silly=-10^(40))

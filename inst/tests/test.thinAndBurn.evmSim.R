@@ -16,7 +16,7 @@ test_that("thinAndBurn.evmSim behaves as it should", {
   #  test burn in
   burn <- sample(nrow/2,1)
   burnOnly <- thinAndBurn(x,burn=burn,thin=1)
-  expect_that(x$chains[burn+1, equals(]), burnOnly$param[1,],label="thinAndBurn.evmSim:burnin")
+  expect_that(x$chains[burn+1], equals(burnOnly$param[1,]),label="thinAndBurn.evmSim:burnin")
   
   # test thinning
   thin <- 2

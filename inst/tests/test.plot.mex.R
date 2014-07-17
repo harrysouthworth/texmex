@@ -54,8 +54,8 @@ test_that("plot.mex behaves as it should", {
   
   op <- options()
   options(show.error.messages=FALSE)
-  expect_that(plot.mex(smarmod), throws_error(),label="plot.mex: exception handle")), 
-  expect_that(plot.mex(TRUE), throws_error(), label="plot.mex: exception handle")), 
+  expect_that(plot.mex(smarmod), throws_error(), label="plot.mex: exception handle")
+  expect_that(plot.mex(TRUE), throws_error(), label="plot.mex: exception handle") 
   options(op)
   
   # check execution for 2-d data

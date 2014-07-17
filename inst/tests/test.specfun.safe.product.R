@@ -18,5 +18,5 @@ function() {
   res <- c(0, 0, Inf, -1)
   expect_that(prod(x, equals(y)), res,
                      "safe product: complicated values")
-}
+}}
 )
