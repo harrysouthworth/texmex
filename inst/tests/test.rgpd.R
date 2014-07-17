@@ -1,7 +1,7 @@
 context("rgpd")
 
 test_that("rgpd behaves as it should", {
-    ## testing an RNG...
+  ## testing an RNG...
   num.simple <- 1000
   num.quantile <- 1e6
   
@@ -12,19 +12,18 @@ test_that("rgpd behaves as it should", {
     seed <- as.integer(runif(1, -1, 1)*(2**30))
     set.seed(seed)
     samples <- rgpd(num.simple, 1, xi)
-  expect_that(length(samples), equals(num.simple), 
+    expect_that(length(samples), equals(num.simple), 
                 "rgpd: output of correct length")
     if (xi < 0) {
-  expect_that(all(samples<=-1/xi), is_true(), "rgpd:upperboundcheck")
+      expect_that(all(samples<=-1/xi), is_true(), "rgpd:upperboundcheck")
     }
-  expect_that(all(samples>0), is_true(), "rgpd:lowerboundcheck")
+    expect_that(all(samples>0), is_true(), "rgpd:lowerboundcheck")
     
     sigma <- rexp(1)
     mu    <- runif(1, -5, 5)
     shifted <- mu + sigma * samples
     set.seed(seed)
-  expect_that(shifted, equals(), 
-                       rgpd(num.simple, sigma, xi, u=mu),
+    expect_that(shifted, equals(rgpd(num.simple, sigma, xi, u=mu)),
                        "rgpd: scale and shift")
   }
   
@@ -35,11 +34,11 @@ test_that("rgpd behaves as it should", {
                           probs=test.quantiles,
                           names=FALSE)
     ## this is a bit crude, but hey...
-  expect_that(test.quantiles, equals(quantiles), 
+    expect_that(test.quantiles, equals(quantiles), 
                        tolerance=0.02,
                        "rgpd: quantile test")
   }
-  
+
   lapply(xi.values, core.sanity.test)
   lapply(xi.values, quantile.test)
 }

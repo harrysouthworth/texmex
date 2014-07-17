@@ -8,16 +8,16 @@ test_that("qgpd behaves as it should", {
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))
     eq <- sapply(1:nreps, function(i) evd.qgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-  expect_that(eq, equals(myq), label=paste(msg,"testusing.evd.qgpd"))
-  expect_that(x, equals(myp), label=paste(msg,"testusingqgpd"))
+    expect_that(eq, equals(myq), label=paste(msg,"testusing.evd.qgpd"))
+    expect_that(x, equals(myp), label=paste(msg,"testusingqgpd"))
   }
   
   #*************************************************************
   # 6.4.0 Test exception for out of range probabilties
   op <- options()
   options(show.error.messages=FALSE)
-  expect_that(qgpd(1.5, equals(1), 0,2),label="qgpd:exceptionforoutofrangeprob")
-  expect_that(qgpd(-1, equals(1), 0,2),label="qgpd:exceptionforoutofrangeprob")
+  expect_error(qgpd(1.5, 1, 0, 2), label="qgpd:exceptionforoutofrangeprob")
+  expect_error(qgpd(-1, 1, 0, 2), label="qgpd:exceptionforoutofrangeprob")
   options(op)
   
   #*************************************************************

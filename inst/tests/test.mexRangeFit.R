@@ -13,8 +13,8 @@ test_that("mexRangeFit behaves as it should", {
   mrf2 <- mexRangeFit(wmexmod.gum,quantiles = quantiles,R=R,trace=R+1)
   mrf3 <- mexRangeFit(wmexmod.lap,quantiles = quantiles,R=R,trace=R+1)
   
-  expect_that(mexRangeFit(TRUE, equals(which=2)), silent=TRUE,label="mexRangeFit:exceptionhandle")
-  expect_that(mexRangeFit(5, equals(which=1)), silent=TRUE,label="mexRangeFit:exceptionhandle")
+  expect_error(mexRangeFit(TRUE), label="mexRangeFit:exceptionhandle")
+  expect_error(mexRangeFit(5, which=1), label="mexRangeFit:exceptionhandle")
   
   expect_that(mrf1$ests[[1]][1:2], equals(wmexmod.lap[1:2]), label="mexmod: lap")
   expect_that(mrf2$ests[[1]][1:2], equals(wmexmod.gum[1:2]), label="mexmod: gum")

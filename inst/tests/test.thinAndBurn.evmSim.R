@@ -10,8 +10,8 @@ test_that("thinAndBurn.evmSim behaves as it should", {
   
   # test appropriate errors for misspecification of thin and burn
   
-  expect_that(thinAndBurn(x, equals(burn=2)), silent=TRUE,label="thinAndBurn.evmSim:errorsformisspecificationofthinandburn")
-  expect_that(thinAndBurn(x, equals(thin=1)), silent=TRUE,label="thinAndBurn.evmSim:errorsformisspecificationofthinandburn")
+  expect_that(thinAndBurn(x, equals(burn=2)), label="thinAndBurn.evmSim:errorsformisspecificationofthinandburn")
+  expect_that(thinAndBurn(x, equals(thin=1)), label="thinAndBurn.evmSim:errorsformisspecificationofthinandburn")
   
   #  test burn in
   burn <- sample(nrow/2,1)

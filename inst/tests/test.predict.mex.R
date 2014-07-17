@@ -30,11 +30,11 @@ test_that("predict.mex behaves as it should", {
   
   tol <- 0.05
   
-  expect_that(Table5summer, equals(resSummer), tolerance=tol, label="predict.mex:Table5summerdata")
-  expect_that(Table5winter, equals(resWinter), tolerance=tol, label="predict.mex:Table5winterdata")
+  expect_that(Table5summer, equals(resSummer, tolerance=tol), label="predict.mex:Table5summerdata")
+  expect_that(Table5winter, equals(resWinter, tolerance=tol), label="predict.mex:Table5winterdata")
   
-  expect_that(pointEstSummer, equals(resSummer[1, ]),tolerance=tol, label="predict.mex:pointestvsboot,summerdata")
-  expect_that(pointEstWinter, equals(resWinter[1, ]),tolerance=tol, label="predict.mex:pointestvsboot,winterdata")
+  expect_that(pointEstSummer, equals(resSummer[1, ], tolerance=tol), label="predict.mex:pointestvsboot,summerdata")
+  expect_that(pointEstWinter, equals(resWinter[1, ], tolerance=tol), label="predict.mex:pointestvsboot,winterdata")
   
   # check execution for 2-d data
   
@@ -62,18 +62,18 @@ test_that("predict.mex behaves as it should", {
     data <- data.frame(x=x,y=y)
     
     data.gpd <- migpd(data , mqu=mqu, penalty="none")
-    lap.mex <- mexDependence(data.gpd,which=1, dqu=dqu,start=c(-0.1,0.1),PlotLikDo=FALSE,v=20)
-    gum.mex <- mex(data,mqu=c(0,0.9),which=1, dqu=dqu,margins="gumbel",constrain=FALSE)
+    lap.mex <- mexDependence(data.gpd, which=1, dqu=dqu, start=c(-0.1,0.1), PlotLikDo=FALSE,v=20)
+    gum.mex <- mex(data,mqu=c(0,0.9), which=1, dqu=dqu, margins="gumbel", constrain=FALSE)
     
     set.seed(seeds[i])
-    lap.pred <- predict(lap.mex,nsim=10000,trace=R+1)
+    lap.pred <- predict(lap.mex, nsim=10000, trace=R+1)
     set.seed(seeds[i])
-    gum.pred <- predict(gum.mex,nsim=10000,trace=R+1)
+    gum.pred <- predict(gum.mex, nsim=10000, trace=R+1)
     
     lap.ans <- summary(lap.pred)$ans
     gum.ans <- summary(gum.pred)$ans
     
-  expect_that(lap.ans, equals(gum.ans), tolerance=tol,label=paste("predict.mexLaplacepredictionsequaltoGumbel,testreplicate",i))
+  expect_that(lap.ans, equals(gum.ans, tolerance=tol), label=paste("predict.mexLaplacepredictionsequaltoGumbel,testreplicate",i))
   }
 }
 )

@@ -68,7 +68,7 @@ expected behaviour
 validate.texmex()
 }
 \details{
-The function uses functionality in the \code{RUnit} package to perform many
+The function uses functionality in the \code{testthat} package to perform many
 tests to ensure that \code{texmex} behaves as expected. These include tests
 to make sure that \code{texmex} can reproduce published results (often parameter
 estimates and model summaries that appear in Coles (2001) or in Heffernan
@@ -87,8 +87,7 @@ If all is well, the result should indicate that no errors or fails have
 occurred.
 }
 \value{
-An object of class \code{RUnitTestData}. See the help for \code{RUnit} for
-details.
+A data frame of the summary test results.
 
 Plots are also produced on the active plotting device; those plots 
 that reproduce figures in the referenced material are labelled with the Figure 
@@ -116,7 +115,7 @@ As a result, the function takes a while to run.
 ## open device to save plotted output
 #pdf("texmexPlots.pdf")
 #val <- validate.texmex()
-#printHTMLProtocol(val, "texmexReport.html")
+#val
 ## finish writing to device
 #dev.off()
 }

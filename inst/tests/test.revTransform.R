@@ -5,7 +5,7 @@ test_that("revTransform behaves as it should", {
   n <- 5000
   x <- cbind(rexp(n),rexp(n,3))
   
-  x.fit <- migpd(x,mqu = 0.5,penalty="none")
+  x.fit <- migpd(x,mqu = 0.5, penalty="none")
   
   y.l.m <- mexTransform(x.fit,method="mixture", margins="laplace")$transformed
   y.l.e <- mexTransform(x.fit,method="empirical",margins="laplace")$transformed
@@ -32,9 +32,9 @@ test_that("revTransform behaves as it should", {
   x.g.e <- cbind(revTransform(u.g.e[,1],x[,1],method="empirical"),
                  revTransform(u.g.e[,2],x[,2],method="empirical"))
   
-  expect_that(x.l.e, equals(x), tolerance=0.0001,label="revTransform:empiricaltransformation,laplacetarget")
-  expect_that(x.l.m, equals(x), tolerance=0.0001,label="revTransform:mixturetransformation,laplacetarget")
-  expect_that(x.g.e, equals(x), tolerance=0.0001,label="revTransform:empiricaltransformation,gumbeltarget")
-  expect_that(x.g.m, equals(x), tolerance=0.0001,label="revTransform:mixturetransformation,gumbeltarget")
+  expect_that(x.l.e, equals(x, tolerance=0.0001), label="revTransform:empiricaltransformation,laplacetarget")
+  expect_that(x.l.m, equals(x, tolerance=0.0001), label="revTransform:mixturetransformation,laplacetarget")
+  expect_that(x.g.e, equals(x, tolerance=0.0001), label="revTransform:empiricaltransformation,gumbeltarget")
+  expect_that(x.g.m, equals(x, tolerance=0.0001), label="revTransform:mixturetransformation,gumbeltarget")
 }
 )
