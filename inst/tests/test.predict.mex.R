@@ -30,6 +30,10 @@ test_that("predict.mex behaves as it should", {
   
   tol <- 0.05
   
+  # Get rid of dimnames to stop it causing equals() to fail
+  dimnames(Table5summer) <- dimnames(Table5winter) <- dimnames(resSummer) <- dimnames(resWinter) <-
+    names(pointEstSummer) <- names(pointEstWinter) <- NULL
+  
   expect_that(Table5summer, equals(resSummer, tolerance=tol), label="predict.mex:Table5summerdata")
   expect_that(Table5winter, equals(resWinter, tolerance=tol), label="predict.mex:Table5winterdata")
   
@@ -45,7 +49,7 @@ test_that("predict.mex behaves as it should", {
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim,trace=R+1)
   
   expect_that(length(wavesurge.pred$replicates), equals(R), label="predict.mexexecutionfor2-ddata")
-  expect_that(dim(wavesurge.pred$replicates[[3]]), equals(c(nsim), 2))
+  expect_that(dim(wavesurge.pred$replicates[[3]]), equals(c(nsim, 2)))
   expect_that(names(wavesurge.pred$replicates[[4]]), equals(names(wavesurge)), label="predict.mexexecutionfor2-ddata")
   
   # check predictions Laplace estimation equal to Gumbel for large samples and high threshold
