@@ -15,10 +15,9 @@
 
 <<setup, echo=FALSE>>=
 
-seed <- 20140303
+seed <- 20140721
 set.seed(seed)
 suppressMessages(library(sombrero))
-
 @
 
 \section{Introduction}
@@ -53,7 +52,7 @@ reproducibility.
 The only end-user function provided by sombrero is \code{validate.texmex}.
 To run the validation suite, execute the validation function with no arguments
 as follows. The resulting output should be as it appears in the remainder of
-this vignette. A summary of the R session appears in the appendix.
+this vignette.
 
 <<validate, echo=TRUE, fig.cap="Output from {\tt validate.texmex}">>=
 validate.texmex()

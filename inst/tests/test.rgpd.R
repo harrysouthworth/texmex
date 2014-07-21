@@ -34,9 +34,8 @@ test_that("rgpd behaves as it should", {
                           probs=test.quantiles,
                           names=FALSE)
     ## this is a bit crude, but hey...
-    expect_that(test.quantiles, equals(quantiles), 
-                       tolerance=0.02,
-                       "rgpd: quantile test")
+    expect_that(test.quantiles, equals(quantiles, tolerance=0.02),
+                "rgpd: quantile test")
   }
 
   lapply(xi.values, core.sanity.test)

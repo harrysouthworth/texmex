@@ -41,8 +41,9 @@ test_that("evmBoot behaves as it should", {
     
     best <- apply(boot$replicates, 2, median)
     fest <- coef(fit)
-    rdiff <- abs((best - fest)/fest)
-    expect_that(all(rdiff < 0.1), is_true(), label=pst("evmBoot: medians in line with point ests, with penalty applied"))
+    rdiff <- abs(best - fest)
+    # Do 80% test
+    expect_that(all(rdiff < 1.281552*fit$se), is_true(), label=pst("evmBoot: medians in line with point ests, with penalty applied"))
     
     ##################################################################
     # models with covariates. Due to apparent instability
