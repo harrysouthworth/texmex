@@ -1,0 +1,73 @@
+\documentclass[a4paper]{article}
+\usepackage[british]{babel}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\pagestyle{fancy}
+\rfoot{DRAFT}
+\rhead{DRAFT}
+
+\begin{document}
+\title{The sombrero package: a validation suite for texmex}
+\author{Janet E. Heffernan and Harry Southworth}
+\maketitle%\thispagestyle{empty}
+\tableofcontents
+\clearpage
+
+<<setup, echo=FALSE>>=
+
+seed <- 20140303
+set.seed(seed)
+suppressMessages(library(sombrero))
+
+@
+
+\section{Introduction}
+The sombrero~\cite{sombrero} package for R provides a suite of test routines
+for the texmex~\cite{texmex} package. These tests include comparisons of
+parameter estimates with published versions -- particulary values published in
+works by Coles~\cite{coles} and Heffernan and Tawn~\cite{heffTawn} -- as well
+as many comparisons with values produced by independently written code, and many
+logical checks and checks for routine failure in the context of inappropriate
+usage.
+
+Many graphs are produced by the test suite and these can be visually compared
+with published versions, or evaluated against known plausible output.
+
+Some of the independently written code that is used for validation is borrowed
+from the ismev~\cite{ismev} and evm~\cite{evm} packages. Other code has been
+provided by Yiannis Papastathopoulos.
+
+The testthat~\cite{testthat} package is used to provide the testing environment.
+
+In total, over 1000 tests are performed providing a reasonable degree of
+confidence that texmex produces the output expected of it.
+
+\subsection{Software}
+\Sexpr{version$version.string}~\cite{R} was used in the construction of this
+vignette together with PROVIDE VERSIONS OF TEXMEX AND SOMBRERO HERE XXX
+
+A summary of the R session appears in the Appendix, in the interests of
+reproducibility.
+
+\section{Validation suite output}
+The only end-user function provided by sombrero is \code{validate.texmex}.
+To run the validation suite, execute the validation function with no arguments
+as follows. The resulting output should be as it appears in the remainder of
+this vignette. A summary of the R session appears in the appendix.
+
+<<validate, echo=TRUE, fig.cap="Output from {\tt validate.texmex}">>=
+validate.texmex()
+@
+
+
+\clearpage
+\section{Appendix}
+\subsection{Information on the R session}
+Information on the R session, in the interests of reproducibility.
+<<sessionInfo, echo=FALSE, results='verbatim'>>=
+sessionInfo()
+@
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\end{document}
