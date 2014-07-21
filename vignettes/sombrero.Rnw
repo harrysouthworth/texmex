@@ -34,7 +34,7 @@ with published versions, or evaluated against known plausible output.
 
 Some of the independently written code that is used for validation is borrowed
 from the ismev~\cite{ismev} and evm~\cite{evm} packages. Other code has been
-provided by Yiannis Papastathopoulos.
+provided by Yiannis Papastathopoulos~\cite{yiannis}.
 
 The testthat~\cite{testthat} package is used to provide the testing environment.
 
