@@ -33,10 +33,6 @@ usage.
 Many graphs are produced by the test suite and these can be visually compared
 with published versions, or evaluated against known plausible output.
 
-Some of the independently written code that is used for validation is borrowed
-from the ismev~\cite{ismev} and evd~\cite{evd} packages. Other code has been
-provided by Yiannis Papastathopoulos~\cite{yiannis}.
-
 The testthat~\cite{testthat} package is used to provide the testing environment.
 
 In total, over 1000 tests are performed providing a reasonable degree of
@@ -44,10 +40,15 @@ confidence that texmex produces the output expected of it.
 
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} was used in the construction of this
-vignette together with PROVIDE VERSIONS OF TEXMEX AND SOMBRERO HERE XXX
+vignette. Versions of texmex, sombrero, test that and other packages can be
+found in the Appendix.
 
-A summary of the R session appears in the Appendix, in the interests of
-reproducibility.
+\subsection{Acknowledgements}
+Some of the independently written code that is used for validation is borrowed
+from the ismev~\cite{coles} and evd~\cite{evd} packages. Other code has been
+provided by Yiannis Papastathopoulos~\cite{yiannis}.
+
+The development of the sombrero package was partially funded by AstraZeneca.
 
 \section{Validation suite output}
 The only end-user function provided by sombrero is {\tt validate.texmex}.
