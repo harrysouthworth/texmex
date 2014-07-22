@@ -34,10 +34,10 @@ export(endPoint.evmSim)
 
 export(degp3)
 export(egp3)
-export(egp3RangeFit)
 export(pegp3)
 export(qegp3)
 export(regp3)
+export(egp3RangeFit)
 
 export(evm)
 export(evmBoot)
