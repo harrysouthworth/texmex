@@ -30,7 +30,7 @@ evm(y, data, family, ...)
     priorParameters = NULL, maxit = 10000, trace = NULL,
     iter = 40500, burn = 500, thin = 4,
     proposal.dist = c("gaussian", "cauchy"),
-    jump.cov, jump.const=NULL, R=100, verbose = TRUE)
+    jump.cov, jump.const=NULL, R=100, cores=NULL, verbose = TRUE)
 
 \method{print}{evmOpt}(x, digits=max(3, getOption("digits") - 3), ...)
 \method{summary}{evmOpt}(object, nsim=1000, alpha=0.05, ...)
@@ -129,6 +129,11 @@ texmexJumpConst(j, map)
   \item{jump.cov}{Covariance matrix for proposal distribution of
            Metropolis algorithm.  This is scaled by \code{jump.const}.}
   \item{jump.const, j}{ Control parameter for the Metropolis algorithm. }
+  \item{cores}{How many cores to use to do the simulation. At present this
+               only affects how many cores are used when bootstrapping.
+               Defaults to \code{cores=NULL} in which case the function tries
+               to guess how many cores you've got available and uses all of
+               them.}
   \item{verbose}{Whether or not to print progress to screen. Defaults to
            \code{verbose=TRUE}.}
  \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}

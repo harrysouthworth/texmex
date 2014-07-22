@@ -1,4 +1,4 @@
-degp3 <- function(x, kappa=1, sigma=1, xi, u=0, log.d=FALSE){
+degp3 <- function(x, kappa=1, sigma, xi, u=0, log.d=FALSE){
 
   below <- kappa <= 0 | x < u
   x <- pmax((x - u) / sigma, 0)

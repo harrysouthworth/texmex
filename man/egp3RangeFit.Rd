@@ -1,4 +1,4 @@
-\name{egpRangeFit}
+\name{egp3RangeFit}
 \alias{egp3RangeFit}
 \alias{print.egp3RangeFit}
 \alias{plot.egp3RangeFit}
@@ -12,7 +12,6 @@
 egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
             penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 \method{print}{egp3RangeFit}(x, ...)
-\method{summary}{egp3RangeFit}(object, ...)
 \method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, ...)
 }
 
@@ -28,7 +27,7 @@ egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10
                  See the help for \code{\link{evm}} for more informaiton.}
   \item{alpha}{100(1 - alpha)\% confidence intervals will be plotted with the 
                point estimates. Defaults to \code{alpha = 0.05}.}
-  \item{x, object}{Arguments to \code{print} and \code{summary} functions.}
+  \item{x}{Argument to the \code{print} functions.}
   \item{xlab}{ Label for the x-axis. }
   \item{ylab}{ Label for the y-axis. }
   \item{main}{ The main title. }
@@ -59,7 +58,11 @@ egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10
   Note this function does not extend to assessing model fit when there are
   covariates included in the model.
 }
-
+\references{
+I. Papastathopoulos and J. A. Tawn, Extended generalized Pareto modles for
+tail estimation, Journal of Statistical Planning and Inference, 143, 131 -- 143,
+2013
+}
 \author{Harry Southworth}
 \seealso{ \code{\link{evm}}, \code{\link{gpdRangeFit}}, \code{\link{mrl}} }
 \examples{

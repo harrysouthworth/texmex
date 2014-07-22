@@ -38,6 +38,8 @@ export(pegp3)
 export(qegp3)
 export(regp3)
 export(egp3RangeFit)
+export(print.egp3RangeFit)
+export(plot.egp3RangeFit)
 
 export(evm)
 export(evmBoot)
