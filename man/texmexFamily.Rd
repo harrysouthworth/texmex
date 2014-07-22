@@ -4,6 +4,7 @@
 \alias{summary.texmexFamily}
 \alias{gpd}
 \alias{gev}
+\alias{egp3}
 
 \title{Create families of distributions}
 
@@ -46,7 +47,8 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   equal to the number of parameters, and a fitted model object
   even if the model object is not used by the function.
 
-  Examples of "texmexFamily" objects are \code{gpd} and \code{gev}.
+  Examples of "texmexFamily" objects are \code{gpd}, \code{gev}
+  and \code{egp3}.
   Take a look at those objects to see how the functions should
   be constructed.
 
@@ -61,7 +63,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
 }
 \author{Harry Southworth}
 \note{
-  The \code{gpd} and \code{gev} families are provided. The
+  The \code{gpd}, \code{gev} and \code{egp3} families are provided. The
   \code{\link{evm}} function defaults to using the \code{gpd}
   family.
 }

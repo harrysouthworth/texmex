@@ -1,12 +1,13 @@
 texmex
 ======
 
-Extreme value modelling with R
+The texmex package for R
+========================
 
-Extreme value modelling using (so far) the Generalized Pareto distribution and generalized
-extreme value distribution. The ability to add new distributions through new 'family' objects
-is supported.
+Extreme value modelling with R. Includes univariate
+modelling using generalized Pareto distributions and
+generalized extreme value distributions, and the
+multivariate conditional approach of Heffernan and
+Tawn.
 
-The conditional multivariate approach of Heffernan and Tawn (2004) is also implemented.
-
-The development of texmex has been partially funded by AstraZeneca.
+This work was partially funded by AstraZeneca.

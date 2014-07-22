@@ -129,6 +129,11 @@ texmexJumpConst(j, map)
   \item{jump.cov}{Covariance matrix for proposal distribution of
            Metropolis algorithm.  This is scaled by \code{jump.const}.}
   \item{jump.const, j}{ Control parameter for the Metropolis algorithm. }
+  \item{cores}{How many cores to use to do the simulation. At present this
+               only affects how many cores are used when bootstrapping.
+               Defaults to \code{cores=NULL} in which case the function tries
+               to guess how many cores you've got available and uses all of
+               them.}
   \item{verbose}{Whether or not to print progress to screen. Defaults to
            \code{verbose=TRUE}.}
  \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}
