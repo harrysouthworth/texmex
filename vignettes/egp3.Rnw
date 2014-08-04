@@ -1,0 +1,110 @@
+\documentclass[a4paper]{article}
+\usepackage[british]{babel}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\pagestyle{fancy}
+\rfoot{DRAFT}
+\rhead{DRAFT}
+
+\begin{document}
+\title{Implementation of the Extended Generalized Pareto Distribution 3 (EGP3) in texmex}
+\author{Harry Southworth}
+\maketitle%\thispagestyle{empty}
+\tableofcontents
+\clearpage
+
+<<setup, echo=FALSE>>=
+
+seed <- 20140804
+set.seed(seed)
+suppressMessages(library(margarita))
+#suppressMessages(library(xtable))
+#suppressMessages(library(ggplot2))
+#suppressMessages(library(gridExtra))
+
+#setwd("~/Work/repos/bitbucket/***")
+#dataPath <- "data/"
+
+@
+
+\section{Introduction}
+Version 2 of the the texmex~\cite{texmex} package for R~\cite{R} introduced
+the ability to add new families of extreme value distributions to the package
+and itself added the Generalized Extreme Value (GEV) distribution, previous
+releases having supported modelling only with the Generalized Pareto
+Distribution (GPD). We here describe the implementation of a a new extreme
+value family, the Extended Generalized Pareto Distribution 3 (EGP3) described
+by Papastathopoulos and Tawn~\cite{egp3}.
+
+\subsection{Software}
+\Sexpr{version$version.string}~\cite{R} will be used for all analyses.
+A summary of the R session appears in the Appendix, in the interests of
+reproducibility.
+
+\section{The EGP3 distribution}
+The EGP3 family introduces a new parameter, $\kappa$, to the familiar
+parameters $\sigma$ and $\xi$ in the GPD family. The threshold $u$ remains.
+The EPG3 distribution function is then obtained by raising the GPD distribution
+function to $\kappa$.
+
+\subsection{Distribution function, probability density function and random number generation}
+
+The cumulative distribution function for the EGP3 family is
+\begin{eqnarray}
+F(x) = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
+               \begin{array}{ll}
+               \left[ 1 - \left[ 1 + \xi \frac{x - u}{\sigma} \right]^{-1/\xi}\right]^\kappa & \xi \ne 0 \label{eqn:cdf}\\
+               \left[ 1 - \exp\left(-\frac{(x-u)}{\sigma}\right)\right]^\kappa & \xi = 0
+               \end{array}
+               \right.
+\end{eqnarray}
+
+which yields probability density function
+
+\begin{eqnarray}
+f(x) = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
+       \begin{array}{ll}
+       \frac{\kappa}{\sigma}\left\{1 - (1 + \xi (x-u)/\sigma)^{-1/\xi}\right\}^{\kappa - 1}(1 + \xi (x-u)/\sigma)^{-1/\xi -1} & \xi \ne 0 \label{eqn:pdf}\\
+       \frac{\kappa}{\sigma}\left(1 - e^{-x/\sigma}\right)^{\kappa - 1} & \xi = 1.
+       \end{array}
+       \right.
+\end{eqnarray}
+
+Equations (\ref{eqn:cdf}) and (\ref{eqn:pdf}) are implemented in texmex in the
+functions {\tt pegp3} and {\tt degp3}.
+
+Inversion of (\ref{eqn:cdf}) yields
+
+\begin{eqnarray}
+z = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
+    \begin{array}{ll}
+    u + \frac{\sigma}{\xi}\left[\left(1 - x^{1/\kappa}\right)^{-\xi} - 1\right] & \xi \ne 0 \label{eqn:rgn}\\
+    u + \frac{\sigma}{\xi}\log\left(1 - x^{1/\kappa}\right) & \xi = 0
+    \end{array}
+    \right.
+\end{eqnarray}
+
+enabling random number generation as implemented in {\tt regp3}.
+
+\subsection{Return levels}
+Papastathopoulos and Tawn~\cite{egp} provide formulae for return levels, but
+there is an error in the EGP3 calculation. The correction, as agreed by
+Papastathopoulos, is as follows:
+
+\begin{eqnarray}
+x_M = u + \frac{\sigma}{\xi}\left[\left\{1 - \left( 1 - \frac{1}{T\theta_u}\right)^{1/\kappa}\right\} - 1\right]
+\end{eqnarray}
+
+for M-observation return level $x_M$.
+
+\clearpage
+\section{Appendix}
+\subsection{Information on the R session}
+Information on the R session, in the interests of reproducibility.
+<<sessionInfo, echo=FALSE, results='verbatim'>>=
+sessionInfo()
+@
+
+\bibliographystyle{plain}
+\bibliography{texmex.bib}
+\end{document}

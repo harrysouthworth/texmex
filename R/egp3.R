@@ -35,7 +35,9 @@ egp3 <- texmexFamily(name="EGP3",
                               c(0, log(mean(data$y)), rep(1e-05, sum(sapply(data$D, ncol)) - 2))
                      }, # Close start
                      rl = function(m, param, model){
-                            model$threshold + exp(param[, 2]) / param[, 3] * ((1 - (1 - 1/(m*model$rate))^(1/exp(param[, 1])))^(-param[, 3]) - 1)
+                       qegp3(1/(m * model$rate),
+                             exp(param[, 1]), exp(param[, 2]), param[, 3], u=model$threshold,
+                             lower.tail=FALSE)
                      },
                      endpoint = function(param, model){
                        res <- model$threshold - exp(param[, 2]) / param[, 3]
