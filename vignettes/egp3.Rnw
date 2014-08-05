@@ -1,10 +1,10 @@
 \documentclass[a4paper]{article}
 \usepackage[british]{babel}
-\usepackage{fancyhdr}
+%\usepackage{fancyhdr}
 \usepackage{rotating}
-\pagestyle{fancy}
-\rfoot{DRAFT}
-\rhead{DRAFT}
+%\pagestyle{fancy}
+%\rfoot{DRAFT}
+%\rhead{DRAFT}
 
 \begin{document}
 \title{Implementation of the Extended Generalized Pareto Distribution 3 (EGP3) in texmex}
@@ -34,7 +34,11 @@ and itself added the Generalized Extreme Value (GEV) distribution, previous
 releases having supported modelling only with the Generalized Pareto
 Distribution (GPD). We here describe the implementation of a a new extreme
 value family, the Extended Generalized Pareto Distribution 3 (EGP3) described
-by Papastathopoulos and Tawn~\cite{egp3}.
+by Papastathopoulos and Tawn~\cite{egp}.
+
+The EGP3 family introduces a new parameter, $\kappa > 0$. For the purposes
+of numerical stability and avoiding negative values, when modelling data we
+work with $\lambda = \log\kappa$.
 
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} will be used for all analyses.
@@ -45,7 +49,7 @@ reproducibility.
 The EGP3 family introduces a new parameter, $\kappa$, to the familiar
 parameters $\sigma$ and $\xi$ in the GPD family. The threshold $u$ remains.
 The EPG3 distribution function is then obtained by raising the GPD distribution
-function to $\kappa$.
+function to $\kappa > 0$.
 
 \subsection{Distribution function, probability density function and random number generation}
 
@@ -87,15 +91,58 @@ z = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
 enabling random number generation as implemented in {\tt regp3}.
 
 \subsection{Return levels}
-Papastathopoulos and Tawn~\cite{egp} provide formulae for return levels, but
-there is an error in the EGP3 calculation. The correction, as agreed by
-Papastathopoulos, is as follows:
+Following Coles (\cite{coles} Section 4.3.3) computation of return levels proceeds
+as follows. We note that
+
+\begin{eqnarray*}
+P(X > x | X > u) = 1 - F(X)_{X > u}
+\end{eqnarray*}
+
+so that
+
+\begin{eqnarray*}
+P(X > x) = \theta_u\{1 - F(X)\}
+\end{eqnarray*}
+
+where $\theta_u = P(X > u)$ for threshold u. Therefore, the level $x_M$ that is
+exceeded on average once every $M$ observations is the solution to
 
 \begin{eqnarray}
-x_M = u + \frac{\sigma}{\xi}\left[\left\{1 - \left( 1 - \frac{1}{T\theta_u}\right)^{1/\kappa}\right\} - 1\right]
+\frac{1}{M} = \theta_u\{1 - F(X)\} \label{eqn:rl}.
 \end{eqnarray}
 
-for M-observation return level $x_M$.
+For the EGP3 distribution, we solve (\ref{eqn:rl}) to yield
+
+\begin{eqnarray}
+x_M = u + \frac{\sigma}{\xi}\left[\left\{1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right\}^{-\xi} - 1\right]
+\end{eqnarray}
+
+\begin{eqnarray}
+x_M = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
+      \begin{array}{ll}
+      u + \frac{\sigma}{\xi}\left[\left\{1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right\}^{-\xi} - 1\right] & \xi \ne 0 \label{eqn:retlev}\\
+      u - \sigma\log\left[1 - \left(1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right] & \xi = 0
+      \end{array}
+      \right.
+\end{eqnarray}
+
+correcting Papastathopoulos and Tawn.
+
+\subsubsection{Deriviatives}
+In order to compute approximate standard errors for return levels, we need derivatives
+of (\ref{eqn:retlev}) with respect to each of $\kappa$, $\sigma$ and $\xi$. These
+are found to be
+
+\begin{eqnarray}
+\frac{dx_M}{d\kappa} &=& -\frac{\left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa} \sigma\left( 1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi -1}\log\left( 1 - \frac{1}{M\theta_u}\right)}
+\end{eqnarray}
+
+\subsection{Upper endpoint}
+When $\xi < 0$, the GPD has upper endpoint $u - \frac{\sigma}{\xi}$. This value
+is obtained by setting the distribution function to 1 and solving. Working with
+(\ref{eqn:cdf}), setting it to 1 and solving reveals the EGP3 distribution to have
+the same upper endpoint as the GPD.
+
 
 \clearpage
 \section{Appendix}
