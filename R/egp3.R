@@ -33,13 +33,13 @@ egp3 <- texmexFamily(name="EGP3",
                     }, # Close log.lik
                     start = function(data){
                               c(0, log(mean(data$y)), rep(1e-05, sum(sapply(data$D, ncol)) - 2))
-                     }, # Close start
-                     rl = function(m, param, model){
+                    }, # Close start
+                    rl = function(m, param, model){
                        qegp3(1/(m * model$rate),
                              exp(param[, 1]), exp(param[, 2]), param[, 3], u=model$threshold,
                              lower.tail=FALSE)
-                     },
-                     endpoint = function(param, model){
+                    },
+                    endpoint = function(param, model){
                        res <- model$threshold - exp(param[, 2]) / param[, 3]
                        res[param[, 3] >= 0] <- Inf
                        res

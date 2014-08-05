@@ -7,24 +7,15 @@
 %\rhead{DRAFT}
 
 \begin{document}
-\title{Implementation of the Extended Generalized Pareto Distribution 3 (EGP3) in texmex}
+\title{The Extended Generalized Pareto Distribution 3 (EGP3) in texmex}
 \author{Harry Southworth}
 \maketitle%\thispagestyle{empty}
 \tableofcontents
 \clearpage
 
 <<setup, echo=FALSE>>=
-
 seed <- 20140804
 set.seed(seed)
-suppressMessages(library(margarita))
-#suppressMessages(library(xtable))
-#suppressMessages(library(ggplot2))
-#suppressMessages(library(gridExtra))
-
-#setwd("~/Work/repos/bitbucket/***")
-#dataPath <- "data/"
-
 @
 
 \section{Introduction}
@@ -40,12 +31,147 @@ The EGP3 family introduces a new parameter, $\kappa > 0$. For the purposes
 of numerical stability and avoiding negative values, when modelling data we
 work with $\lambda = \log\kappa$.
 
+\subsection{Acknowledgements}
+This work was partly funded by AstraZeneca.
+
+I'm grateful to Yiannis Papastathopoulos for his comments.
+
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} will be used for all analyses.
 A summary of the R session appears in the Appendix, in the interests of
 reproducibility.
 
-\section{The EGP3 distribution}
+\section{Using the EGP3 distribution for extreme value modelling}
+The additional parameter, $\kappa$ in the EGP models is allowed to vary
+over the positive real line, and in each case a value of $\kappa = 1$ results in
+a distribution identical to the GPD. This property suggests a new diagnostic
+plot to aid threshold selection: plot the estimated value of $\kappa$ with a
+confidence interval over a range of thresholds and select the lowest threshold
+which contains the value $\hat\kappa = 1$. GPD modelling can the be performed.
+This diagnostic plot provides a useful addition to the standard methods of
+examining the values of $\hat\sigma_*$ and $\hat\xi$ over a range of thresholds,
+and examining the mean residual life plot as described by Coles~\cite{coles}.
+
+\subsection{River Nidd example}
+Following Papastathopoulos and Tawn, we work with the River Nidd data, producing
+the standard threshold selection plots and the new plot based on EGP3.
+
+<<nidd, echo=TRUE, fig.cap="Threshold selection plots for the River Nidd data. The bottom right panel displays the $\\hat\\kappa$ with an approximate 95\\% confidence interval. The lowest value of $\\hat\\kappa$ for which the confidence interval contains 1 is approximately 75, suggesting this as a threshold above which GPD modelling can be performed.">>=
+library(texmex)
+par(mfrow=c(2, 2))
+plot(gpdRangeFit(nidd, cov="numeric", umax=90, umin=65, nint=20))
+plot(mrl(nidd))
+plot(egp3RangeFit(nidd, umax=90, umin=65, nint=20))
+@
+
+Figure~\ref{fig:nidd} displays the results. The lowest threshold for which
+$\hat\kappa$ is similar to 1 is at about 75, suggesting that GPD models can be
+used above this level.
+
+\subsection{Pharmaceutical example}
+The introduction of $\kappa$ into the distribution suggests that lower thresholds
+might be usable for extreme value modelling. We now follow Southworth and
+Heffernan~\cite{southHeffMultivariate} in analysing some clinical trial safety data.
+Southworth and Heffernan model all the values of various safety related laboratory
+variables above the $70^{th}$ percentile
+using GPD models allowing $\hat\xi$ to vary linearly with dose. In each case,
+they find a linear relationship with dose, except for bilirubin. Following
+Papastathopoulos and Tawn, we revisit the issue of threshold selection, hoping
+to find a lower threshold above which EGP3 models can be fit, thus including
+more of the available data in the model, increasing the chance of identifying
+a dose effect if one exists.
+
+Notice that the EGP models, like the GPD model, only exist for $x > 0$. Since
+we will be working with residuals from a linear model, about half of them will
+be negative. Therefore, we add a positive constant to them to make them all
+positive. The positive constant is arbitrary, so long as it is greater than the
+minimum of the residuals. However, in practical applications, the automatic
+choice of starting values for the optimizer of the likelihood can be poor for
+some choices of the constant.
+
+<<liver, echo=TRUE, fig.cap="Diagnostic plots for the GPD model with a linear term in dose fitted to the liver data above the $70^{th}$ percentile.">>=
+library(MASS)
+rmod <- rlm(log(TBL.M) ~ log(TBL.B) + as.numeric(dose),
+            data=liver, method="MM", c=3.44)
+liver$r <- resid(rmod) + 1.25
+
+par(mfrow=c(2, 2))
+for (dose in LETTERS[1:4]){
+  plot(egp3RangeFit(liver$r[liver$dose == dose], umax=1.35))
+  title(paste("Dose", dose), line=2)
+}
+@
+
+The plots of $\hat\kappa$ over the range of thresholds in Figure~\ref{fig:liver}
+suggests that GPD models
+ought to fit above a threshold of about 1.3, the $57^{th}$ percentile, for each
+dose.
+
+We now pool the residual bilirubin data from all doses and present the standard
+threshold selection plots as well as the EGP3 plot. The results appear in
+Figure~\ref{fig:liverthresh} and also suggest a threshold of 1.3 ought to be ok,
+gaining us an additional 79 observations compared to the $70^{th}$ percentile
+used by Southworth and Heffernan.
+
+<<liverthresh, echo=TRUE, fig.cap="Threshold selection plots for the liver data. The bottom right panel displays our new plot based on the EGP3 distribution.">>=
+par(mfrow=c(2, 2))
+plot(gpdRangeFit(liver$r, nint=20))
+plot(mrl(liver$r))
+plot(egp3RangeFit(liver$r, nint=20))
+@
+
+We now fit the GPD model and produce diagnostic plots and a summary of the model.
+<<gmod, echo=TRUE, fig.cap="Diagnostic plots for the GPD model with threshold at 1.3.">>=
+gmod <- evm(r, data=liver, th=1.3, xi=~as.numeric(dose))
+par(mfrow=c(2, 2))
+plot(gmod)
+summary(gmod)
+@
+
+The GPD model fit to all values above 1.3 seems to fit ok, the diagnostic plots
+revealing no great cause for concern and all points on the QQ-plot falling inside
+the simualted envelope. The summary table reveals there to be still no evidence of a dose
+effect, at least according to the approximate test implied by the t-value.
+
+We now attempt to model {\em all} the data using the EGP3 distribution.
+
+<<liveregp3, echo=TRUE, fig.cap="Diagnostic plots from fitting the EGP3 distribution to all of the residual bilirubin data.">>=
+emod <- evm(r, data=liver, family=egp3, th=0,
+            xi=~as.numeric(dose))
+par(mfrow=c(2, 2))
+plot(emod)
+summary(emod)
+@
+
+In Figure~\ref{fig:liveregp3} there is some noticable structure in the diagnostic
+plots. The simulation test reveals there to be almost 50\% of the observations
+outside of the simulated envelope, so that the model is a terrible fit to the
+data. We now attempt a somewhat higher threshold of 1, corresponding to -0.3 on
+the original scale of the residuals.
+
+<<liveregp3.2, echo=TRUE, fig.cap="Diagnostic plots for the EGP3 model when using a threshold of 1.">>=
+emod <- evm(r, data=liver, family=egp3, th=1,
+            xi=~as.numeric(dose))
+par(mfrow=c(2, 2))
+plot(emod)
+summary(emod)
+@
+
+We see from the output that the model appears to fit the data, and still there
+is no evidence of a dose effect.
+
+\subsection{Discussion}
+In the pharmaceutical example, we were able to claw back some additional data into
+the model by using the EGP3 distribution, at the expense of an additional
+parameter. However, when all of the data were used, the fit was awful. It appears
+that the EPG3 distribution's most useful function might be to provide an extra
+threshold selection plot, or even a test to decide on a lower threshold. For
+modelling extreme values it will, at least in some examples, allow inclusion of
+a larger proportion of observations, but some care will need to be taken in
+selection of the threshold, and no obvious threshold selection methods for EPG3
+are currently available.
+
+\section{The EGP3 distribution: some technical details}
 The EGP3 family introduces a new parameter, $\kappa$, to the familiar
 parameters $\sigma$ and $\xi$ in the GPD family. The threshold $u$ remains.
 The EPG3 distribution function is then obtained by raising the GPD distribution
@@ -114,10 +240,6 @@ exceeded on average once every $M$ observations is the solution to
 For the EGP3 distribution, we solve (\ref{eqn:rl}) to yield
 
 \begin{eqnarray}
-x_M = u + \frac{\sigma}{\xi}\left[\left\{1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right\}^{-\xi} - 1\right]
-\end{eqnarray}
-
-\begin{eqnarray}
 x_M = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
       \begin{array}{ll}
       u + \frac{\sigma}{\xi}\left[\left\{1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right\}^{-\xi} - 1\right] & \xi \ne 0 \label{eqn:retlev}\\
@@ -133,9 +255,11 @@ In order to compute approximate standard errors for return levels, we need deriv
 of (\ref{eqn:retlev}) with respect to each of $\kappa$, $\sigma$ and $\xi$. These
 are found to be
 
-\begin{eqnarray}
-\frac{dx_M}{d\kappa} &=& -\frac{\left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa} \sigma\left( 1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi -1}\log\left( 1 - \frac{1}{M\theta_u}\right)}
-\end{eqnarray}
+\begin{eqnarray*}
+\frac{dx_M}{d\kappa} &=& -\frac{\left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa} \sigma\left( 1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi -1}\log\left( 1 - \frac{1}{M\theta_u}\right)}{\kappa^2}\\
+\frac{dx_M}{d\sigma} &=& \frac{\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi} -1}{\xi}\\
+\frac{dx_M}{d\xi} &=& -\frac{\sigma\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)\log\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)}{\xi} - \frac{\sigma\left(\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi} -1\right)}{\xi^2}
+\end{eqnarray*}
 
 \subsection{Upper endpoint}
 When $\xi < 0$, the GPD has upper endpoint $u - \frac{\sigma}{\xi}$. This value
@@ -153,5 +277,5 @@ sessionInfo()
 @
 
 \bibliographystyle{plain}
-\bibliography{texmex.bib}
+\bibliography{texmex}
 \end{document}

@@ -2,12 +2,13 @@
 \alias{rain}
 \alias{wavesurge}
 \alias{portpirie}
+\alias{nidd}
 \docType{data}
 \title{
-Rain, wavesurge and portpirie datasets.
+Rain, wavesurge, portpirie and nidd datasets.
 }
 \description{
-Rainfall, wave-surge and Port Pirie data sets.
+Rainfall, wave-surge, Port Pirie and River Nidd data sets.
 }
 \usage{
 data(rain)
@@ -22,14 +23,26 @@ data(portpirie)
   functions in \code{texmex}.
 
   The Port Pirie data has two columns: 'Year' and 'SeaLevel'.
+  
+  The River Nidd data represents 154 measurements of the level of the River Nidd
+  at Hunsingore Weir (Yorkshire, UK) between 1934 and 1969. Each measurement
+  breaches the threshold of $65 m^3/2$. Various authors have analysed this dataset,
+  as described by Papastathopoulos and Tawn~\cite{egp}, there being some
+  apparent difficulty in identifying a threshold above which GPD models are
+  suitable.
 }
 \details{
-The datasets are used by Coles and appear in the \code{ismev} package.
+The rain, wave-surge and Port Pirie datasets are used by Coles and appear in the
+\code{ismev} package.
+The River Nidd data appear in the \code{evir} package.
 }
 \source{
-Copied from the \code{ismev} package.
+Copied from the \code{ismev} package and the \code{evir} package
 }
 \references{
 S. Coles, An Introduction to Statistical Modeling of Extreme Values, Springer, 2001
+
+I. Papastathopoulos and J. A. Tawn, Extended Generalised Pareto Models for Tail
+Estimation, Journal of Statistical Planning and Inference, 143, 134 -- 143, 2011
 }
 \keyword{datasets}
