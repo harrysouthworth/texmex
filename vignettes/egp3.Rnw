@@ -1,10 +1,14 @@
 \documentclass[a4paper]{article}
 \usepackage[british]{babel}
 %\usepackage{fancyhdr}
+\usepackage{amsmath}
 \usepackage{rotating}
 %\pagestyle{fancy}
 %\rfoot{DRAFT}
 %\rhead{DRAFT}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{texmex: The extended generalized Pareto distribution 3}
 
 \begin{document}
 \title{The Extended Generalized Pareto Distribution 3 (EGP3) in texmex}
@@ -180,25 +184,20 @@ function to $\kappa > 0$.
 \subsection{Distribution function, probability density function and random number generation}
 
 The cumulative distribution function for the EGP3 family is
-\begin{eqnarray}
-F(x) = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
-               \begin{array}{ll}
-               \left[ 1 - \left[ 1 + \xi \frac{x - u}{\sigma} \right]^{-1/\xi}\right]^\kappa & \xi \ne 0 \label{eqn:cdf}\\
-               \left[ 1 - \exp\left(-\frac{(x-u)}{\sigma}\right)\right]^\kappa & \xi = 0
-               \end{array}
-               \right.
-\end{eqnarray}
+\begin{equation} \label{eqn:cdf}
+F(x) = \begin{cases}
+  \left[ 1 - \left[ 1 + \xi \frac{x - u}{\sigma} \right]^{-1/\xi}\right]^\kappa & \xi \ne 0 \\
+  \left[ 1 - \exp\left(-\frac{(x-u)}{\sigma}\right)\right]^\kappa & \xi = 0
+\end{cases}
+\end{equation}
 
 which yields probability density function
-
-\begin{eqnarray}
-f(x) = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
-       \begin{array}{ll}
-       \frac{\kappa}{\sigma}\left\{1 - (1 + \xi (x-u)/\sigma)^{-1/\xi}\right\}^{\kappa - 1}(1 + \xi (x-u)/\sigma)^{-1/\xi -1} & \xi \ne 0 \label{eqn:pdf}\\
-       \frac{\kappa}{\sigma}\left(1 - e^{-x/\sigma}\right)^{\kappa - 1} & \xi = 1.
-       \end{array}
-       \right.
-\end{eqnarray}
+\begin{equation}\label{eqn:pdf}
+f(x) = \begin{cases}
+  \frac{\kappa}{\sigma}\left\{1 - (1 + \xi (x-u)/\sigma)^{-1/\xi}\right\}^{\kappa - 1}(1 + \xi (x-u)/\sigma)^{-1/\xi -1} & \xi \ne 0 \\
+  \frac{\kappa}{\sigma}e^{-(x - u)/\sigma}\left(1 - e^{-(x-u)/\sigma}\right)^{\kappa - 1} & \xi = 0.
+\end{cases}
+\end{equation}
 
 Equations (\ref{eqn:cdf}) and (\ref{eqn:pdf}) are implemented in texmex in the
 functions {\tt pegp3} and {\tt degp3}.
@@ -209,7 +208,7 @@ Inversion of (\ref{eqn:cdf}) yields
 z = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spacing
     \begin{array}{ll}
     u + \frac{\sigma}{\xi}\left[\left(1 - x^{1/\kappa}\right)^{-\xi} - 1\right] & \xi \ne 0 \label{eqn:rgn}\\
-    u + \frac{\sigma}{\xi}\log\left(1 - x^{1/\kappa}\right) & \xi = 0
+    u - \sigma \log\left(1 - x^{1/\kappa}\right) & \xi = 0
     \end{array}
     \right.
 \end{eqnarray}
