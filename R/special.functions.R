@@ -15,6 +15,13 @@ NULL
   .Call(.c.log1prel, x)
 }
 
+##' Accurately compute log(1-exp(x))
+##' @param x numeric vector
+##' @return a numeric vector
+.log1mexp <- function(x) {
+    .Call(.c.log1mexp, x)
+}
+
 ##' Compute pmax(x y, -1) in such a way that zeros in x beat
 ##' infinities in y.
 ##'

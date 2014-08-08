@@ -2,7 +2,7 @@
 importFrom(mvtnorm, dmvnorm, rmvnorm)
 
 # Export all names that don't start with "." or are just workers
-useDynLib(texmex, .c.exprel, .c.log1prel)
+useDynLib(texmex, .c.exprel, .c.log1prel, .c.log1mexp)
 
 export(AIC.evmOpt)
 export(bootExtremalIndex)
