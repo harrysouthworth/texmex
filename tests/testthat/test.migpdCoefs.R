@@ -1,7 +1,7 @@
 context("migpdCoefs")
 
 test_that("migpdCoefs behaves as it should", {
-    
+  library("MASS")
   liver <- liver
   liver$ndose <- as.numeric(liver$dose)
   
