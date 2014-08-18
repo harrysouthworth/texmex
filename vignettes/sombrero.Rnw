@@ -4,6 +4,10 @@
 \usepackage{rotating}
 \usepackage{morefloats}
 \pagestyle{fancy}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{texmex: Validation suite}
+
 \rfoot{DRAFT}
 \rhead{DRAFT}
 
@@ -15,10 +19,9 @@
 \clearpage
 
 <<setup, echo=FALSE>>=
-
 seed <- 20140721
 set.seed(seed)
-suppressMessages(library(sombrero))
+suppressMessages(library(texmex))
 @
 
 \section{Introduction}
@@ -65,7 +68,7 @@ suppressWarnings(validate.texmex())
 \section{Appendix}
 \subsection{Information on the R session}
 Information on the R session, in the interests of reproducibility.
-<<sessionInfo, echo=FALSE, results='verbatim'>>=
+<<sessionInfo, echo=FALSE>>=
 sessionInfo()
 @
 
