@@ -4,7 +4,7 @@ test_that("predict.evmSim behaves as it should", {
 
   for(Family in list(gpd,gev)){
 
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
     set.seed(20130513)
     # no covariates
 

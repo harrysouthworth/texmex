@@ -3,7 +3,7 @@ context("exprel")
 test_that("exprel behaves as it should", {
   ## pull in from the namespace because RUnit doesn't give access to
   ## internal functions.
-  exprel <- texmex:::.exprel
+  exprel <- .exprel
   
   ## first check some simple values
   values <- c(-Inf, NA, seq(-5, 5, length.out=10))

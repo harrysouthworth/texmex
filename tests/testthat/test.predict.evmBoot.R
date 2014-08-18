@@ -10,7 +10,7 @@ test_that("predict.evmBoot behaves as it should", {
   
   for(Family in list(gpd,gev)){
     
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
     set.seed(20130513)
     
     X <- data.frame(a = rnorm(n),b = runif(n,-0.1,0.1))

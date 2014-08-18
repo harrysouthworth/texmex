@@ -2,7 +2,7 @@ context("specfun.safe.product")
 
 test_that("specfun.safe.product behaves as it should", {
 function() {
-  prod <- texmex:::.specfun.safe.product
+  prod <- .specfun.safe.product
   
   ## simple values
   x <- runif(10, -5, 5)

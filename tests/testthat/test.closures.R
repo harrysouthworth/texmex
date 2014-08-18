@@ -1,9 +1,9 @@
 context("closures")
 
 test_that("closures behaves as it should", {
-  make.mvn.prior <- texmex:::.make.mvn.prior
-  make.quad.prior <- texmex:::.make.quadratic.penalty
-  make.spd.matrix <- texmex:::.random.spd.matrix
+  make.mvn.prior <- .make.mvn.prior
+  make.quad.prior <- .make.quadratic.penalty
+  make.spd.matrix <- .random.spd.matrix
   for (count in 1:100) {
     dimn <- sample(10, size=1)
     cov.matrix <- make.spd.matrix(dimn)

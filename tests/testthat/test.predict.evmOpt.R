@@ -4,7 +4,7 @@ test_that("predict.evmOpt behaves as it should", {
 
   for(Family in list(gpd,gev)){
     set.seed(20130513)
-    pst <- function(msg) texmex:::texmexPst(msg,Family=Family)
+    pst <- function(msg) texmexPst(msg,Family=Family)
   
     # no covariates
   
