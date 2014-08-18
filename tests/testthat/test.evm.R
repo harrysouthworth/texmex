@@ -175,7 +175,7 @@ test_that("evm behaves as it should", {
   
   m <- model.matrix(~ ALT.B + dose, liver)
   
-  ismod <- sombrero:::.ismev.gpd.fit(liver$ALT.M,
+  ismod <- .ismev.gpd.fit(liver$ALT.M,
                                    threshold=quantile(liver$ALT.M, .7),
                                    ydat = m, sigl=2:ncol(m),
                                    siglink=exp, show=FALSE)
@@ -196,7 +196,7 @@ test_that("evm behaves as it should", {
   
   m <- model.matrix(~ ALT.B + dose, liver)
   
-  ismod <- sombrero:::.ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B),
+  ismod <- .ismev.gpd.fit(log(liver$ALT.M / liver$ALT.B),
                                    threshold=quantile(log(liver$ALT.M / liver$ALT.B), .7),
                                    ydat = m, shl=2:ncol(m), show=FALSE)
   mco <- coef(mod)
@@ -229,7 +229,7 @@ test_that("evm behaves as it should", {
   m <- model.matrix(~ a+b, data)
   
   mod <- evm(y,qu=0.7,data=data,phi=~a,xi=~b,penalty="none")
-  ismod <- sombrero:::.ismev.gpd.fit(data$y,
+  ismod <- .ismev.gpd.fit(data$y,
                                    threshold=quantile(data$y,0.7),
                                    ydat=m,shl=3,sigl=2,
                                    siglink=exp,
@@ -504,11 +504,11 @@ test_that("evm behaves as it should", {
                makeDataGev(3,2,myb))
   
   start1 <- c(0,1,2,-0.1)
-  g1.fit <- sombrero:::.ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE,muinit=start1[1:2])
-  g2.fit <- sombrero:::.ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
+  g1.fit <- .ismev.gev.fit(xdat=data[[1]]$y,ydat=data[[1]],mul=1, siglink=exp,show=FALSE,muinit=start1[1:2])
+  g2.fit <- .ismev.gev.fit(xdat=data[[2]]$y,ydat=data[[2]],sigl=2,siglink=exp,show=FALSE)
   # siginit specified in call below. Otherwise, it converges to a bad location (as judged by looking at
   # the likelihood from each fit)
-  g3.fit <- sombrero:::.ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3,siglink=exp, siginit=2, show=FALSE)
+  g3.fit <- .ismev.gev.fit(xdat=data[[3]]$y,ydat=data[[3]],shl=3,siglink=exp, siginit=2, show=FALSE)
 
   t1.fit <- evm(y,mu=~u, family=gev,data=data[[1]],start=start1)
   t2.fit <- evm(y,phi=~a,family=gev,data=data[[2]])
@@ -537,7 +537,7 @@ test_that("evm behaves as it should", {
   data$b <- myb
   
   mod <- evm(y,data=data,mu=~u,phi=~a,xi=~b,penalty="none",family=gev,start=c(5,2,2,-0.1,0,2))
-  ismod <- sombrero:::.ismev.gev.fit(data$y,
+  ismod <- .ismev.gev.fit(data$y,
                                    ydat=data,mul=1,shl=3,sigl=2,
                                    siglink=exp,
                                    show=FALSE,muinit=c(5,2),siginit=c(2,-0.1),shinit=c(0,2))

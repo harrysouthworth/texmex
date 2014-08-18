@@ -5,12 +5,12 @@ test_that("extremalIndex behaves as it should", {
   th <- quantile(rain,seq(0.7,0.99,len=10))
   for(i in 1:length(th)){
     texmex.ei <- extremalIndex(rain,threshold=th[i])
-    Ferro.ei  <- sombrero:::.extRemes.exi.intervals(rain > th[i])
+    Ferro.ei  <- .extRemes.exi.intervals(rain > th[i])
     
-    Ferro.clust <- sombrero:::.extRemes.decluster.intervals(rain> th[i], Ferro.ei)
+    Ferro.clust <- .extRemes.decluster.intervals(rain> th[i], Ferro.ei)
     texmex.clust <- declust(texmex.ei)
     
-    Ferro.runs <-  sombrero:::.extRemes.decluster.runs(rain> th[i], 3)
+    Ferro.runs <-  .extRemes.decluster.runs(rain> th[i], 3)
     texmex.runs <- declust(rain,threshold=th[i],r=3,verbose=FALSE)
 
     expect_that(texmex.ei$EIintervals, equals(Ferro.ei, tolerance = tol),

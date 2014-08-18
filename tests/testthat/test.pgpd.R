@@ -1,7 +1,7 @@
 context("pgpd")
 
 test_that("pgpd behaves as it should", {
-    evd.pgpd <- sombrero:::.evd.pgpd
+    evd.pgpd <- .evd.pgpd
     myTest <- function(sig, xi, thresh, msg){
       myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
       ep <- sapply(1:nreps, function(i) evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))

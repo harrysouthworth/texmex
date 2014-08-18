@@ -3,7 +3,7 @@ context("qgpd")
 test_that("qgpd behaves as it should", {
     
   set.seed(201110101)
-  evd.qgpd <- sombrero:::.evd.qgpd
+  evd.qgpd <- .evd.qgpd
   myTest <- function(sig, xi, thresh, msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))
