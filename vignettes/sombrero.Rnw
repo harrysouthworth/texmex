@@ -60,7 +60,8 @@ as follows. The resulting output should be as it appears in the remainder of
 this vignette.
 
 <<validate, echo=TRUE, fig.cap="Output from running the validation suite.">>=
-suppressWarnings(validate.texmex())
+library("testthat")
+test_package("texmex")
 @
 
 
