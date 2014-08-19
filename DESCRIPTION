@@ -21,7 +21,7 @@ Description: Statistical extreme value modelling of threshold excesses,
   selection and to diagnose estimation convergence. 
 License: GPL (>=2)
 Depends: mvtnorm
-Suggests: MASS, lattice, knitr
+Suggests: MASS, lattice, knitr, testthat
 LazyLoad: yes
 LazyData: yes
 URL: http://code.google.com/p/texmex/
