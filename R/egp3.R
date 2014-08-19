@@ -66,7 +66,7 @@ egp3 <- texmexFamily(name="EGP3",
                                out
                      },
                      resid = function(o){
-                       p <- texmex:::texmexMakeParams(coef(o), o$data$D)
+                       p <- texmexMakeParams(coef(o), o$data$D)
                        delta <- (o$data$y - o$threshold) / exp(p[, 2]) * p[, 3]
                        #(texmex:::.log1prel(delta * p[, 3]) * delta)^{exp(p[, 1])} # Standard exponential
                        r <- (1 - (1 + delta)^(-1/p[, 3]))^exp(p[, 1])
