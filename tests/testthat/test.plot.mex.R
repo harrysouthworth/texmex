@@ -26,8 +26,7 @@ test_that("plot.mex behaves as it should", {
   myWdep4.gum <- mexDependence(wmarmod,which=4, dqu=0.8, margins = "gumbel",constrain=FALSE)
   mySdep5.gum <- mexDependence(smarmod,which=5, dqu=0.85, margins = "gumbel",constrain=FALSE)
   myWdep5.gum <- mexDependence(wmarmod,which=5, dqu=0.9, margins = "gumbel",constrain=FALSE)
-  
-  
+
   # check plots produced for variety of thresholds and parameter combinations
   par(mfcol=c(3,4),pty="m")
   plot(mySdep1.gum,main=paste("Summer\nfitting quantile =",mySdep1.gum$dependence$dqu,"\nGumbel margins"))
