@@ -21,7 +21,7 @@ Description: Statistical extreme value modelling of threshold excesses,
   selection and to diagnose estimation convergence. 
 License: GPL (>=2)
 Depends: mvtnorm
-Suggests: MASS, lattice, knitr
+Suggests: MASS, lattice, knitr, testthat
 LazyLoad: yes
 LazyData: yes
 URL: http://code.google.com/p/texmex/
@@ -69,4 +69,16 @@ Collate:
   pegp3.R
   qegp3.R
   regp3.R
+  Dcond.R
+  Profile_likelihood_HT_unc.R
+  Profile_likelihood_cd_nm_joint_D_KT.R
+  Profile_likelihood_cd_nm_joint_D_KT_neg.R
+  estimate_HT.R
+  estimate_HT_KPT_joint_posneg_nm.R
+  initial_posneg.R
+  inv_Laplace.R
+  profile_minmax_joint_posneg_KT.R
+  roots.R
+  sombrero-internal.R
+  validate.texmex.R
 

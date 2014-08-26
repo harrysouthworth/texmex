@@ -1,0 +1,78 @@
+\documentclass[a4paper]{article}
+\usepackage[british]{babel}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage{morefloats}
+\pagestyle{fancy}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{texmex: Validation suite}
+
+\rfoot{DRAFT}
+\rhead{DRAFT}
+
+\begin{document}
+\title{The sombrero package: a validation suite for texmex}
+\author{Janet E. Heffernan and Harry Southworth}
+\maketitle%\thispagestyle{empty}
+\tableofcontents
+\clearpage
+
+<<setup, echo=FALSE>>=
+seed <- 20140721
+set.seed(seed)
+suppressMessages(library(texmex))
+@
+
+\section{Introduction}
+The sombrero~\cite{sombrero} package for R provides a suite of test routines
+for the texmex~\cite{texmex} package. These tests include comparisons of
+parameter estimates with published versions -- particulary values published in
+works by Coles~\cite{coles} and Heffernan and Tawn~\cite{heffernanTawn} -- as well
+as many comparisons with values produced by independently written code, and many
+logical checks and checks for routine failure in the context of inappropriate
+usage.
+
+Many graphs are produced by the test suite and these can be visually compared
+with published versions, or evaluated against known plausible output.
+
+The testthat~\cite{testthat} package is used to provide the testing environment.
+
+In total, over 1000 tests are performed providing a reasonable degree of
+confidence that texmex produces the output expected of it.
+
+\subsection{Software}
+\Sexpr{version$version.string}~\cite{R} was used in the construction of this
+vignette. Versions of texmex, sombrero, test that and other packages can be
+found in the Appendix.
+
+\subsection{Acknowledgements}
+Some of the independently written code that is used for validation is borrowed
+from the ismev~\cite{coles} and evd~\cite{evd} packages. Other code has been
+provided by Yiannis Papastathopoulos~\cite{yiannis}.
+
+The development of the sombrero package was partially funded by AstraZeneca.
+
+\section{Validation suite output}
+The only end-user function provided by sombrero is {\tt validate.texmex}.
+To run the validation suite, execute the validation function with no arguments
+as follows. The resulting output should be as it appears in the remainder of
+this vignette.
+
+<<validate, echo=TRUE, fig.cap="Output from running the validation suite.">>=
+library("testthat")
+test_package("texmex")
+@
+
+
+\clearpage
+\section{Appendix}
+\subsection{Information on the R session}
+Information on the R session, in the interests of reproducibility.
+<<sessionInfo, echo=FALSE>>=
+sessionInfo()
+@
+
+\bibliographystyle{plain}
+\bibliography{bibliography}
+\end{document}
