@@ -65,7 +65,7 @@ Collate:
   plot.bootmex.R special.functions.R
   degp3.R
   egp3.R
-  egp3RangeFit.R
+  egp3RangeFit.R egp3Thresh.R
   pegp3.R
   qegp3.R
   regp3.R
@@ -80,5 +80,4 @@ Collate:
   profile_minmax_joint_posneg_KT.R
   roots.R
   sombrero-internal.R
-  validate.texmex.R
 
