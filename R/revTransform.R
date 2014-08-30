@@ -11,9 +11,12 @@ function (x, data, qu, th = 0, sigma = 1, xi = 0, method = "mixture") {
                 }, 0, p=probs)
    px <- as.integer(round(px * (1 + n)))
    res <- sort(data)[px]
-#browser()
+
+   # Real data contain ties which can cause x[res > th] < qu
    if (method == "mixture" & any(res > th)) {
-     res[res > th] <- u2gpd(x[res > th], p=1-qu, th = th, sigma = sigma, xi = xi)
+     wh <- u2gpd(x[x >= qu], p=1-qu, th=th, sigma=sigma, xi=xi)
+     res[length(res):(length(res) - length(wh) +1)] <- wh    
+#     res[res > th] <- u2gpd(x[res > th], p = 1-qu, th = th, sigma = sigma, xi = xi)
    }
    res[order(x)] <- sort(res)
    res

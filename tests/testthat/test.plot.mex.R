@@ -39,7 +39,7 @@ test_that("plot.mex behaves as it should", {
   plot(myWdep4.gum,main=paste("Winter\nfitting quantile =",myWdep4.gum$dependence$dqu,"\nGumbel margins"))
   plot(mySdep5.gum,main=paste("Summer\nfitting quantile =",mySdep5.gum$dependence$dqu,"\nGumbel margins"))
   plot(myWdep5.gum,main=paste("Winter\nfitting quantile =",myWdep5.gum$dependence$dqu,"\nGumbel margins"))
-  
+
   plot(mySdep1.lap,main=paste("Summer\nfitting quantile =",mySdep1.lap$dependence$dqu,"\nLaplace margins"))
   plot(myWdep1.lap,main=paste("Winter\nfitting quantile =",myWdep1.lap$dependence$dqu,"\nLaplace margins"))
   plot(mySdep2.lap,main=paste("Summer\nfitting quantile =",mySdep2.lap$dependence$dqu,"\nLaplace margins"))

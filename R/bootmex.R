@@ -17,15 +17,15 @@ function (x, R = 100, nPass = 3, trace = 10) {
         qu <- qu[i]
         data <- c(data[, i])
         if (margins == "gumbel"){
-			     res <- revTransform(exp(-exp(-x)), data = data, th = th,
-            					qu = qu, sigma = exp(param[1]), xi = param[2])
-		    } else {
-			    y <- x
-			    y[x < 0] <- exp(x[x < 0]) / 2
-			    y[x >= 0] <- 1 - exp(-x[x >= 0]) / 2
-			    res <- revTransform(y, data = data, th = th,
-					     			qu = qu, sigma = exp(param[1]), xi = param[2])
-		    }
+           res <- revTransform(exp(-exp(-x)), data = data, th = th,
+                               qu = qu, sigma = exp(param[1]), xi = param[2])
+        } else {
+            y <- x
+            y[x < 0] <- exp(x[x < 0]) / 2
+            y[x >= 0] <- 1 - exp(-x[x >= 0]) / 2
+            res <- revTransform(y, data = data, th = th,
+                                qu, sigma = exp(param[1]), xi = param[2])
+        }
         res
     }
 
@@ -79,7 +79,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
         dimnames(g)[[2]] <- names(mar$models)
 
         ggpd <- migpd(g, mth = mar$mth,
-					  penalty = penalty, priorParameters = priorParameters)
+                      penalty = penalty, priorParameters = priorParameters)
 
         gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins, constrain=constrain, v=v, start=start)
         res <- list(GPD = coef(ggpd)[3:4, ],
