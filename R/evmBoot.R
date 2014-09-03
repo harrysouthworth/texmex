@@ -47,7 +47,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
       b <- apply(res, 2, mean) - coef(o)
       
       if (any(abs(b/se) > .25)){
-        warning("Ratio of bias to standard error is high")
+        message("Ratio of bias to standard error is high")
       }
     } # Close if (R > 1)
     res <- list(call=theCall, replicates=res, map=o)
@@ -67,7 +67,7 @@ print.evmBoot <- function(x, ...){
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
     print(res, ...)
     if (nrow(x$replicates) > 1 & any(abs(res[3,] / res[4,]) > .25)){
-        warning("Ratio of bias to standard error is high")
+        message("Ratio of bias to standard error is high")
     }
     invisible(res)
 }
@@ -85,7 +85,7 @@ summary.evmBoot <- function(object, ...){
     rownames(res) <- c("Original", "Bootstrap mean", "Bias", "SD", "Bootstrap median")
 
     if (any(abs(res[3,] / res[4,]) > .25)){
-        warning("Ratio of bias to standard error is high")
+        message("Ratio of bias to standard error is high")
     }
 
     covs <- var(object$replicates)

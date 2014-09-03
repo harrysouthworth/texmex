@@ -18,7 +18,7 @@ function(o, method="observed"){
     xi.i <- colSums(xi * t(z))
     w.i <- (o$data$y - o$threshold) / exp(phi.i)
 
-    if (any(xi.i < -.50)){ warning("Fitted values of xi < -0.5") }
+    if (any(xi.i < -.50)){ message("Fitted values of xi < -0.5") }
 
     # Second derivatives of penalties
     p <- matrix(0, nrow=ns+nk, ncol=ns+nk)

@@ -15,7 +15,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
    }
 
    if (missing(which)) {
-       warning("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
+       message("Missing 'which'. Conditioning on", dimnames(x$transformed)[[2]][1], "\n")
        which <- 1
    }
    else if (length(which) > 1)

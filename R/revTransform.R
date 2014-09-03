@@ -12,13 +12,21 @@ function (x, data, qu, th = 0, sigma = 1, xi = 0, method = "mixture") {
    px <- as.integer(round(px * (1 + n)))
    res <- sort(data)[px]
 
-   # Real data contain ties which can cause x[res > th] < qu
-   if (method == "mixture" & any(res > th)) {
-     wh <- u2gpd(x[x >= qu], p=1-qu, th=th, sigma=sigma, xi=xi)
-     res[length(res):(length(res) - length(wh) +1)] <- wh    
-#     res[res > th] <- u2gpd(x[res > th], p = 1-qu, th = th, sigma = sigma, xi = xi)
+   # Real data contain ties which can cause x[res > th] < qu, res[res < th] > qu
+   i.x <- x >= qu
+   i.r <- res > th
+   i.rx <- apply(cbind(i.x, i.r), 1, all)
+   
+   if (method == "mixture" & sum(i.rx > 0)){
+     wh <- u2gpd(x[i.rx], p=1-qu, th=th, sigma=sigma, xi=xi)
+     rth <- res[i.rx]
+     o <- order(rth)
+     rth <- rth[o]
+     rth[length(rth):(length(rth) - length(wh) + 1)] <- rev(sort(wh))
+     rth <- rth[order(o)]
+     res[i.rx] <- rth
    }
+
    res[order(x)] <- sort(res)
    res
 }
-
