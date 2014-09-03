@@ -106,7 +106,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
             wh <- !unlist(lapply(res, function(x) dim(x$Z)[[1]] > 0))
             rerun <- apply(cbind(rerun, wh), 1, any)
             if (sum(rerun) > 0) {
-                cat("Pass", pass, ":", sum(rerun), "samples to rerun.\n")
+                message("Pass", pass, ":", sum(rerun), "samples to rerun.\n")
                 rerun <- (1:R)[rerun]
                 res[rerun] <- lapply((1:R)[rerun], innerFun,
                   x = x, which = which, dth = dth, dqu = dqu, margins=margins,

@@ -10,7 +10,7 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
 
     if (missing(which)){
         which <- colnames(data)[1]
-        cat("which not given. Conditioning on", which, "\n")
+        message("which not given. Conditioning on", which, "\n")
     }
 
     if (missing(mth)){

@@ -83,7 +83,7 @@ function(x, log.lik, proposals, verbose, trace){
         warning("Acceptance rate in Metropolis algorithm is low.")
     }
     if ((trace < nrow(x)) & verbose) {
-        cat("Acceptance rate:", round(acc , 3) , "\n")
+        message("Acceptance rate:", round(acc , 3) , "\n")
     }
 
     attr(x, "acceptance") <- acc
