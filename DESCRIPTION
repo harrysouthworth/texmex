@@ -24,7 +24,8 @@ Depends: mvtnorm
 Suggests: MASS, lattice, knitr, testthat
 LazyLoad: yes
 LazyData: yes
-URL: http://code.google.com/p/texmex/
+URL: https://github.com/harrysouthworth/texmex
+VignetteBuilder: knitr
 Collate:
   globalVariables.R
   texmexFamily.R AIC.evm.R plot.evm.R
