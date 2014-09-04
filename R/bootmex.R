@@ -11,22 +11,9 @@ function (x, R = 100, nPass = 3, trace = 10) {
     ans$call <- theCall
 
     getTran <- function(i, x, data, mod, th, qu, margins) {
-        x <- c(x[, i])
         param <- mod[[i]]$coefficients
-        th <- th[i]
-        qu <- qu[i]
-        data <- c(data[, i])
-        if (margins == "gumbel"){
-           res <- revTransform(exp(-exp(-x)), data = data, th = th,
-                               qu = qu, sigma = exp(param[1]), xi = param[2])
-        } else {
-            y <- x
-            y[x < 0] <- exp(x[x < 0]) / 2
-            y[x >= 0] <- 1 - exp(-x[x >= 0]) / 2
-            res <- revTransform(y, data = data, th = th,
-                                qu, sigma = exp(param[1]), xi = param[2])
-        }
-        res
+        revTransform(margins$q2p(c(x[, i])), data = c(data[, i]), th = th[i],
+                     qu = qu[i], sigma = exp(param[1]), xi = param[2])
     }
 
     mar <- x$margins
@@ -64,11 +51,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
         while (!ok) {
           for (j in 1:(dim(g)[[2]])){
             u <- runif(nrow(g))
-            if (margins == "gumbel"){
-              g[order(g[, j]), j] <- sort(-log(-log(u)))
-            } else {
-              g[order(g[, j]), j] <- sort(sign(u - .5) * log(1 - 2*abs(u - .5)))
-            }
+            g[order(g[, j]), j] <- sort(margins$p2q(u))
           }
           if (sum(g[, which] > dth) > 1  &   all(g[g[,which] > dth , which] > 0)){ ok <- TRUE }
         }
@@ -81,7 +64,7 @@ function (x, R = 100, nPass = 3, trace = 10) {
         ggpd <- migpd(g, mth = mar$mth,
                       penalty = penalty, priorParameters = priorParameters)
 
-        gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins, constrain=constrain, v=v, start=start)
+        gd <- mexDependence(ggpd, dqu = dqu, which = which, margins=margins[[1]], constrain=constrain, v=v, start=start)
         res <- list(GPD = coef(ggpd)[3:4, ],
                     dependence = gd$dependence$coefficients,
                     Z = gd$dependence$Z,

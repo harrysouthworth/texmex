@@ -1,5 +1,5 @@
 mexTransform <-
-function(x, method = "mixture", divisor = "n+1", na.rm = TRUE, margins = "laplace"){
+function(x, margins, method = "mixture", divisor = "n+1", na.rm = TRUE){
 
   if (!is.element(method, c("mixture", "empirical")))
     stop("method should be either 'mixture' or 'empirical'")
@@ -47,12 +47,7 @@ function(x, method = "mixture", divisor = "n+1", na.rm = TRUE, margins = "laplac
 
   dimnames(res) <- list(NULL, names(x$models))
 
-  if (margins == "gumbel")
-    x$transformed <- -log(-log(res))
-  else if (margins == "laplace")
-    x$transformed <- ifelse(res < .5, log(2 * res), -log(2 * (1 - res)))
-  else
-    stop("margins need to be gumbel or laplace")
+  x$transformed <- margins$p2q(res)
 
   invisible(x)
 }

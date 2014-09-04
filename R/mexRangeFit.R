@@ -17,8 +17,8 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
     constrain <- x$dependence$constrain
     v <- x$dependence$v
     which <- x$dependence$which
+    margins <- x$dependence$margins
     x <- x[[1]]
-    margins <- x$margins
   } else {
     if (class(x) != "migpd"){
       stop("object should have class mex or migpd")
@@ -31,7 +31,7 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
 
   ests <- lapply(quantiles, function(qu, which, x, margins, start, constrain=constrain, v=v)
                                      mexDependence(x=x, which=which, dqu=qu, margins = margins, start=start, constrain=constrain, v=v),
-                 which=which, x=x, margins = margins, start=start, constrain=constrain, v=v)
+                 which=which, x=x, margins = margins[[1]], start=start, constrain=constrain, v=v)
 
   boot <- lapply(ests, function(X, R, nPass, trace)
                                 bootmex(x=X, R=R, nPass=nPass, trace=trace),

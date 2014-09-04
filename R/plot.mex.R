@@ -43,9 +43,9 @@ plot.mex <- function(x, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...){
       abline(v=depThr)
   
       # Add contours
-      plotp <- seq(dep$dqu, plim, len=len)[-len] # take out largest point to avoid Inf in log(log(1)) if xlim[2]==upperEnd
+      plotp <- seq(dep$dqu, plim, len=len)[-len] # take out largest point to avoid Inf in p2q transform
       co <- coef(dep)[, i]
-      xq <- -log(-log(plotp)) # Transform to Gumbel scale
+      xq <- dep$margins$p2q(plotp) # Transform to Laplace or Gumbel scale
       zq <- quantile(dep$Z[, i], quantiles)
       yq <- sapply(zq, function(z, co, xq){
                          co["a"] * xq + co["c"] - co["d"]*log(xq) + xq^co["b"] * z
@@ -54,7 +54,7 @@ plot.mex <- function(x, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...){
       
       plotx <- revTransform(plotp, data=mar$data[, dep$which], qu=dep$dqu, th=depThr, sigma=sig, xi=xi)
 
-      ploty <- apply(exp(-exp(-yq)), 2, revTransform, data=d,
+      ploty <- apply(dep$margins$q2p(yq), 2, revTransform, data=d,
                      qu=mar$mqu[-dep$which][i], th=mar$mth[-dep$which][i],
                      sigma=coef(mar)[3, -dep$which][i], xi=coef(mar)[4, -dep$which][i])
       

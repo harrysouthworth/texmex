@@ -5,7 +5,7 @@ function(x, ...){
 
     cat("\nThresholding quantiles for transformed data: dqu = ", x$dqu, sep="")
 
-    cat("\nUsing ",x$margins," margins for dependence estimation.", sep="")
+    cat("\nUsing ",x$margins[[1]]," margins for dependence estimation.", sep="")
     if(x$constrain){
         cat("\nConstrained estimation of dependence parameters using v =",x$v,".")
     }

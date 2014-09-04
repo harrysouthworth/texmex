@@ -13,7 +13,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
       migpd <- object$simpleMar
       margins <- object$margins
       constrain <- object$constrain
-      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins, constrain=constrain )
+      dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins[[1]], constrain=constrain )
   } else {
       which <- object$dependence$which
       migpd <- object$margins
@@ -25,13 +25,8 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
     ui <- runif( nsim , min=pqu )
-    if( margins == "gumbel"){
-      y <- -log( -log( ui ) )
-      distFun <- function(x) exp(-exp(-x))
-    } else if (margins == "laplace"){
-      y <- ifelse(ui < .5,  log(2 * ui), -log(2 * (1 - ui) ))
-      distFun <- function(x) ifelse(x<0, exp(x)/2, 1-exp(-x)/2)
-    }
+    y <- margins$p2q(ui)
+    distFun <- margins$q2p
 
     z <- as.matrix(z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,])
     ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )

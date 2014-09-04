@@ -34,8 +34,7 @@ qqevm(object, nsim = 1000, alpha = 0.05)
 ppevm(object, nsim = 1000, alpha = 0.05)
 qgpd2(N, sigma = 1, xi = 1, u = 0, la = 1)
 u2gpd(u, p=1, th=0, sigma, xi)
-mexTransform(x, method = "mixture", divisor = "n+1", na.rm=TRUE,
-     margins="laplace")
+mexTransform(x, margins, method = "mixture", divisor = "n+1", na.rm=TRUE)
 revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
 evmFit(data, family, ..., prior="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0, hessian = TRUE)
@@ -79,8 +78,7 @@ texmexPst(msg, Family)
   to \code{gpd.info} which currently does nothing.}
 \item{divisor}{Divisor used in estimation of empirical distribution.}
 \item{na.rm}{Whether or not to remove missing values.}
-\item{margins}{Form of margins to which to transform \code{x}. Can
-  take values \code{margins="laplace"} or \code{margins="gumbel"}.}
+\item{margins}{Form of margins to which to transform \code{x}. List of length three, first element is character with values \code{margins="laplace"} or \code{margins="gumbel"}, second is inverse distribution function transforming from [0,1] to quantile of that marginal distribution, and third is distribution function transforming from quantile to ][0,1].}
 \item{start, priorParameters, maxit, trace}{Arguments
     supplied to \code{gpd}, \code{migpd} or \code{mex}, or inferred from
     those functions after some preprocessing.}

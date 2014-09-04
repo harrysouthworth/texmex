@@ -6,10 +6,17 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
    if (class(x) != "migpd")
        stop("you need to use an object created by migpd")
 
-   x$margins <-  casefold(margins)
-   x <- mexTransform(x, margins = casefold(margins),method = marTransform)
+   margins <- list(casefold(margins),
+                   p2q = switch(casefold(margins),
+                                "gumbel" = function(p)-log(-log(p)),
+                                "laplace" = function(p)ifelse(p < .5, log(2 * p), -log(2 * (1 - p)))),
+                   q2p = switch(casefold(margins),
+                                "gumbel" = function(q)exp(-exp(-q)),
+                                "laplace" = function(q)ifelse(q < 0, exp(q)/2, 1- 0.5*exp(-q))))
 
-   if (margins == "gumbel" & constrain){
+   x <- mexTransform(x, margins = margins, method = marTransform)
+
+   if (margins[[1]] == "gumbel" & constrain){
      warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
      constrain <- FALSE
    }
@@ -34,7 +41,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
        dqu <- rep(dqu, length = length(dependent))
 
    # Allowable range of 'a' depends on marginal distributions
-   aLow <- ifelse(x$margins == "gumbel", 10^(-10),-1 + 10^(-10))
+   aLow <- ifelse(margins[[1]] == "gumbel", 10^(-10),-1 + 10^(-10))
 
    if (missing(start)){
      start <- c(.01, .01)
@@ -158,7 +165,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
 
    res <- sapply(1:length(dependent),
                  function(X,dat,yex,wh,aLow,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,aLow,margins,constrain,v,maxit,start[,X]),
-                 dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins, 
+                 dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins[[1]], 
                  constrain=constrain, v=v, maxit=maxit, start=start)
 
    loglik <- -res[7,]

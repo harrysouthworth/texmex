@@ -45,7 +45,7 @@ function( x , plots = "gpd", main="", ... ){
       offset <- (X-1) * 6
       plot(lco[[offset + 1]],lco[[offset + 2]],xlab=labs[offset + 1],ylab=labs[offset + 2],main=main, ...)
       points(pointEst[1,X],pointEst[2,X],pch="@",col=2)
-      if( margins == "gumbel"){
+      if( margins[[1]] == "gumbel"){
         plot(lco[[offset + 3]],lco[[offset + 4]],xlab=labs[offset + 3],ylab=labs[offset + 4],main=main, ...)
         points(pointEst[3,X],pointEst[4,X],pch="@",col=2)
       }
