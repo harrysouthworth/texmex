@@ -2,7 +2,10 @@ egp3RangeFit <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
           nint = 10,
           penalty="gaussian", priorParameters=NULL, alpha=.05) {
-    
+
+  if (umin < 0)
+    stop("umin < 0: data must be non-negative. Add a constant or increase umin and try again")
+
   m <- s <- hi <- lo <- rep(0, nint)
   u <- seq(umin, umax, length = nint)
   qz <- qnorm(1 - alpha/2)
@@ -32,7 +35,7 @@ plot.egp3RangeFit <- function(x, xlab="Threshold", ylab="kappa",
 
   yl <- range(x$hi, x$lo, 1)
   plot(x$th, x$par, ylim = yl, type = "b",
-       xlab=xlab, ylab=ylab, main=main, ...)
+       xlab=xlab, ylab=ylab, main=main, log="y", ...)
   for (j in 1:length(x$th)){
     lines(c(x$th[j], x$th[j]), c(x$hi[j], x$lo[j]))
   }

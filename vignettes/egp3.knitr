@@ -36,9 +36,8 @@ of numerical stability and avoiding negative values, when modelling data we
 work with $\lambda = \log\kappa$.
 
 \subsection{Acknowledgements}
-This work was partly funded by AstraZeneca.
-
-I'm grateful to Yiannis Papastathopoulos for his comments.
+This work was partly funded by AstraZeneca. I'm also grateful to Yiannis
+Papastathopoulos and Paul Metcalfe for various comments and corrections.
 
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} will be used for all analyses.
@@ -51,7 +50,8 @@ over the positive real line, and in each case a value of $\kappa = 1$ results in
 a distribution identical to the GPD. This property suggests a new diagnostic
 plot to aid threshold selection: plot the estimated value of $\kappa$ with a
 confidence interval over a range of thresholds and select the lowest threshold
-which contains the value $\hat\kappa = 1$. GPD modelling can the be performed.
+which contains the value $\hat\kappa = 1$. GPD modelling can then be performed
+on values above this threshold.
 This diagnostic plot provides a useful addition to the standard methods of
 examining the values of $\hat\sigma_*$ and $\hat\xi$ over a range of thresholds,
 and examining the mean residual life plot as described by Coles~\cite{coles}.
