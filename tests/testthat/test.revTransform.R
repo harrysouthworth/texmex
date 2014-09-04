@@ -7,20 +7,19 @@ test_that("revTransform behaves as it should", {
 
   x.fit <- migpd(x, mqu = 0.5, penalty="none")
 
-  y.l.m <- mexTransform(x.fit, method="mixture", margins="laplace")$transformed
-  y.l.e <- mexTransform(x.fit, method="empirical", margins="laplace")$transformed
+  marg.l <- list("laplace",p2q = function(p) ifelse(p<0.5,log(2*p),-log(2*(1-p))), q2p = function(q) ifelse(q<0, exp(q)/2, 1-exp(-q)/2))
+  marg.g <- list("gumbel", p2q = function(p) -log(-log(p)), q2p = function(q) exp(-exp(-q)))
+  y.l.m <- mexTransform(x.fit, method="mixture", margins=marg.l)$transformed
+  y.l.e <- mexTransform(x.fit, method="empirical", margins=marg.l)$transformed
 
-  y.g.m <- mexTransform(x.fit, method="mixture", margins="gumbel")$transformed
-  y.g.e <- mexTransform(x.fit, method="empirical", margins="gumbel")$transformed
+  y.g.m <- mexTransform(x.fit, method="mixture", margins=marg.g)$transformed
+  y.g.e <- mexTransform(x.fit, method="empirical", margins=marg.g)$transformed
 
-  distFun.l <- function(x) ifelse(x<0, exp(x)/2, 1-exp(-x)/2)
-  distFun.g <- function(x) exp(-exp(-x))
+  u.g.m <- marg.g$q2p(y.g.m)
+  u.g.e <- marg.g$q2p(y.g.e)
 
-  u.g.m <- distFun.g(y.g.m)
-  u.g.e <- distFun.g(y.g.e)
-
-  u.l.m <- distFun.l(y.l.m)
-  u.l.e <- distFun.l(y.l.e)
+  u.l.m <- marg.l$q2p(y.l.m)
+  u.l.e <- marg.l$q2p(y.l.e)
 
   x.l.m <- cbind(revTransform(u.l.m[, 1], x[, 1], x.fit$mqu[1], x.fit$mth[1],
                               exp(x.fit$models[[1]]$coefficients[1]), x.fit$models[[1]]$coefficients[2]),
