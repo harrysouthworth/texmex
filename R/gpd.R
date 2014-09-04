@@ -49,7 +49,7 @@ gpd <- texmexFamily(name = 'GPD',
                              # Next line contains exp(param[2]) because the derivative is of log(sigma), unlike in Coles page 82
                              out[1,] <- exp(param[2]) / param[3] * ((m * param[1])^param[3] - 1)
                              out[2,] <- -exp(param[2]) / (param[3] * param[3]) * ( (m * param[1] )^param[3] - 1 ) +
-                             exp(param[2]) / param[3] * (m * param[1])^param[3] * log(m * param[1])
+                                        exp(param[2]) / param[3] * (m * param[1])^param[3] * log(m * param[1])
                              }
                              out
                     }, # Close delta

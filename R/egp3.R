@@ -53,15 +53,15 @@ egp3 <- texmexFamily(name="EGP3",
 
                                z <- 1 - 1/(m*model$rate)
 
-                               dk <- -(z * sigma * (1 - z)^(-xi - 1) * log(1 - 1/(m*model$rate))) / (xi * kappa^2)
+                               dk <- -(z^(1/kappa) * sigma * (1 - z^(1/kappa))^(-xi - 1) * log(z)) / kappa^2
                                ds <- ((1 - z^(1/kappa))^(-xi) -1 ) / xi
 
                                dz1 <- -sigma * (1 - z^(1/kappa))^(-xi) * log(1 - z^(1/kappa)) / xi
                                dz2 <- -sigma * ((1 - z^(1/kappa))^(-xi) -1) / xi^2
                                dz <- dz1 + dz2
                                
-                               out[1, ] <- dk * k
-                               out[2, ] <- ds * s
+                               out[1, ] <- dk * kappa # To account for working with exp(lambda)
+                               out[2, ] <- ds * sigma # To account for working with exp(phi)
                                out[3, ] <- dz
                                out
                      },
