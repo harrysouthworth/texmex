@@ -257,7 +257,7 @@ are found to be
 \begin{eqnarray*}
 \frac{dx_M}{d\kappa} &=& -\frac{\left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa} \sigma\left( 1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi -1}\log\left( 1 - \frac{1}{M\theta_u}\right)}{\kappa^2}\\
 \frac{dx_M}{d\sigma} &=& \frac{\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi} -1}{\xi}\\
-\frac{dx_M}{d\xi} &=& -\frac{\sigma\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)\log\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)}{\xi} - \frac{\sigma\left(\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi} -1\right)}{\xi^2}
+\frac{dx_M}{d\xi} &=& -\frac{\sigma\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi}\log\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)}{\xi} - \frac{\sigma\left(\left(1 - \left( 1 - \frac{1}{M\theta_u}\right)^{1/\kappa}\right)^{-\xi} -1\right)}{\xi^2}
 \end{eqnarray*}
 
 \subsection{Upper endpoint}
