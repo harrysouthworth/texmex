@@ -53,7 +53,7 @@ Changes from version 1.2:
 6. NAMESPACE added.
 7. Fixed bug in using linear predictor formulas when not passing a data.frame in.
 
----------------------------------- Version 2?? ------------------------------------
+---------------------------------- Version 2.1 ------------------------------------
 
 Changes from version 1.2:
 
@@ -75,3 +75,19 @@ Changes from version 1.2:
 11. NAMESPACE now keeps many internal functions internal.
 12. An evm object now contains information in the true log-likelihood and the
     penalized log-likelihood. AIC uses the true log-likelihood by default.
+
+---------------------------------- Version 2.3 -----------------------------------
+
+Changes from version 2.1
+
+1. egp3 family added together with vignette. Additional threshold selection plot
+   based on egp3 added.
+2. Test suite added back in, together with vignette.
+3. Bug in u2gpd that was called from revTransform is now fixed. This affected
+   plot.mex bootmex and a couple of other things.
+4. Bootstrap of evm models is not parallelized.
+5. AstraZeneca's support for the development of texmex is now credited in various
+   places.
+6. Available vignettes should now be listed from the package Index page.
+7. Some instances of 'cat' and 'warning' have been changed to 'message' to allow
+   for easier suppression and less annoyance.

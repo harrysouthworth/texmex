@@ -1,0 +1,118 @@
+\documentclass[a4paper]{article}
+\usepackage[british]{babel}
+\usepackage{fancyhdr}
+\usepackage{rotating}
+\usepackage{morefloats}
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{texmex: Validation suite}
+
+\begin{document}
+\title{A validation suite for texmex}
+\author{Janet E. Heffernan and Harry Southworth}
+\maketitle%\thispagestyle{empty}
+\tableofcontents
+%\clearpage
+
+<<setup, echo=FALSE>>=
+seed <- 20140721
+set.seed(seed)
+#suppressMessages(library(texmex))
+@
+
+\section{Introduction}
+The texmex~\cite{texmex} package for R provides a suite of test routines
+These tests include comparisons of
+parameter estimates with published versions -- particulary values published in
+works by Coles~\cite{coles} and Heffernan and Tawn~\cite{heffernanTawn} -- as well
+as many comparisons with values produced by independently written code, and many
+logical checks and checks for routine failure in the context of inappropriate
+usage.
+
+Many graphs are produced by the test suite and these can be visually compared
+with published versions, or evaluated against known plausible output.
+
+The testthat~\cite{testthat} package is used to provide the testing environment.
+
+In total, over 1000 tests are performed providing a reasonable degree of
+confidence that texmex produces the output expected of it.
+
+\subsection{Software}
+\Sexpr{version$version.string}~\cite{R} was used in the construction of this
+vignette. Versions of texmex, sombrero, test that and other packages can be
+found in the Appendix.
+
+\subsection{Acknowledgements}
+Some of the independently written code that is used for validation is borrowed
+from the ismev~\cite{coles} and evd~\cite{evd} packages. Other code has been
+provided by Yiannis Papastathopoulos~\cite{yiannis} and by Paul Metcalfe of
+AstraZeneca.
+
+The development of the the texmex package, including its test suite, was
+partially funded by AstraZeneca.
+
+\section{Using the validation suite}
+To install the test suite, it is necessary to install the package with the option
+{\tt --install-tests}. For example, if installing version 2.3 at the command
+line from the package source (the .tar.gz file), the command would be
+
+\begin{verbatim}
+R CMD INSTALL --install-tests texmex_2.3.tar.gz
+\end{verbatim}
+
+The test suite depends upon the testthat~\cite{testthat} package, so it is
+necessary to load that package before attempting to run any tests.
+
+The test scripts are located under the package directory in {\tt tests/testthat}.
+To run a specific test script, you can use
+
+<<test_file, echo=TRUE, eval=FALSE>>=
+library(texmex)
+library(testthat)
+test_file("texmex/tests/testthat/test.revTransform.R")
+@
+
+for example. To run all test scripts (which will take a while), the command
+is as follows, and the output consists of the majority of the remainder of this
+document.
+
+<<validate, echo=TRUE, fig.cap="Output from running the validation suite.">>=
+#test_package("texmex")
+@
+
+\clearpage
+\section{Appendix}
+\subsection{Information on the R session}
+Information on the R session, in the interests of reproducibility.
+<<sessionInfo, echo=FALSE>>=
+sessionInfo()
+@
+
+%\bibliographystyle{plain}
+\begin{thebibliography}{99}
+\bibitem{texmex}Harry Southworth and Janet E. Heffernan, texmex: Statistical modelling
+  of extreme values, 2014
+
+\bibitem{coles}Stuart Coles, An Introduction to the Statistical Modeling of Extreme Values,
+  Springer, 2001
+
+\bibitem{heffernanTawn}Janet E. Heffernan and Jonathan A. Tawn, A conditional approach for multivariate
+  extreme values, Journal of the Royal Statistical Society, Series B, 66,
+  497 -- 546, 2004
+
+\bibitem{testthat}Hadley Wickham, testthat: Get Started with Testing. The R Journal, vol. 3, no.
+  1, pp. 5--10, 2011
+
+\bibitem{R}R Core Team, R: A language and environment for statistical computing. R
+  Foundation for Statistical Computing, Vienna, Austria, 2013
+
+\bibitem{ismev}Stuart Coles, Janet E. Heffernan and Alec G. Stephenson, ismev: An Introduction
+  to Statistical Modeling of Extreme Values, 2012
+
+\bibitem{evd}A. G. Stephenson, evd: Extreme Value Distributions. R News, 2(2):31-32, June 2002.
+
+\bibitem{yiannis}Ioannis Papastathopoulos, Statistical Models for Pharmaceutical Extremes,
+PhD Thesis, Lancaster University, 2013
+
+\end{thebibliography}
+\end{document}
