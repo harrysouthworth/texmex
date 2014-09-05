@@ -18,4 +18,9 @@ test_that("egp3 family behaves as it should", {
   rgp <- do.call("rbind", predict(gpmod, M=seq(100, 2000, by=100), se.fit=TRUE))
   re3 <- do.call("rbind", predict(e3mod,  M=seq(100, 2000, by=100), se.fit=TRUE))
   expect_that(rgp, equals(re3, tol=.0001), label="egp3: return levels")
-})
+
+  # Check that the plot for the Nidd data has generally similar shape to that in
+  # Papastathopoulos and Tawn: they use EGP1, not 3, so the plots won't be the same
+  plot(egp3RangeFit(nidd, umin=65, umax=90, nint=50), pch=16)
+
+  })
