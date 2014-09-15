@@ -32,7 +32,7 @@ egp3 <- texmexFamily(name="EGP3",
                                   }
                     }, # Close log.lik
                     start = function(data){
-                              c(0, log(mean(data$y)), rep(1e-05, sum(sapply(data$D, ncol)) - 2))
+                              c(0, log(sd(data$y)), rep(1e-05, sum(sapply(data$D, ncol)) - 2))
                     }, # Close start
                     rl = function(m, param, model){
                        qegp3(1/(m * model$rate),
