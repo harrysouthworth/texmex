@@ -49,13 +49,17 @@ declustering:
 	
 egp3:
 	pdflatex egp3.tex
+	bibtex egp3
 	pdflatex egp3.tex
-	rm *.log egp3.aux egp3.toc
+	pdflatex egp3.tex
+	rm *.log egp3.aux egp3.toc egp3.bbl egp3.blg egp3.tex
 	
 test_texmex:
 	pdflatex test_texmex.tex
+	bibtex test_texmex
 	pdflatex test_texmex.tex
-	rm *.log test_texmex.aux test_texmex.tex
+	pdflatex test_texmex.tex
+	rm *.log test_texmex.aux test_texmex.bbl test_texmex.blg  test_texmex.tex
 	
 clean:
 	rm *.log *.aux *.bbl *.blg *.tex

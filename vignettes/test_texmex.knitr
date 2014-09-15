@@ -77,7 +77,7 @@ is as follows, and the output consists of the majority of the remainder of this
 document.
 
 <<validate, echo=TRUE, fig.cap="Output from running the validation suite.">>=
-#test_package("texmex")
+test_package("texmex")
 @
 
 \clearpage
