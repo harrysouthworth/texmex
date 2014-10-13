@@ -36,26 +36,26 @@ test_that("pgpd behaves as it should", {
   
   #*************************************************************
   # 6.9. Test vectorization of pgpd.
-  
+
   sig <- runif(nsim, 0, 2)
   xi <- runif(nsim)
   thresh <- rnorm(nsim)
-  
+
   x <- rgpd(nsim, sig, xi,u=thresh)
   myp <- pgpd(x, sig, xi,u=thresh)
-  
+
   ep <- sapply(1:nsim, function(i)evd.pgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
   expect_that(ep, equals(myp), label="pgpd:vectorisation")
-  
+
   #*************************************************************
   # 6.10 test log.p argument
   
   lp <- pgpd(x,sig,xi,u=thresh,log.p=TRUE)
   expect_that(myp, equals(exp(lp)), label="pgpd:logprobabilities")
-  
+
   #*************************************************************
   # 6.11 test lower tail argument
-  
+
   sp <- pgpd(x,sig,xi,u=thresh,lower.tail=FALSE)
   expect_that(myp, equals(1-sp), label="pgpd:lowertail")
   
