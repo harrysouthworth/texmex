@@ -27,7 +27,7 @@ Version 2 of the the texmex~\cite{texmex} package for R~\cite{R} introduced
 the ability to add new families of extreme value distributions to the package
 and itself added the Generalized Extreme Value (GEV) distribution, previous
 releases having supported modelling only with the Generalized Pareto
-Distribution (GPD). We here describe the implementation of a a new extreme
+Distribution (GPD). We here describe the implementation of a new extreme
 value family, the Extended Generalized Pareto Distribution 3 (EGP3) described
 by Papastathopoulos and Tawn~\cite{egp}.
 
@@ -38,7 +38,7 @@ work with $\lambda = \log\kappa$.
 Papastathopoulos and Tawn~\cite{egp} work more with their EGP1 and 2 models
 than with EGP3, but state that there are few differences in results between
 the 3 versions. The EGP3 model has the advantage of closed form derivatives
-for approximating the standard errors of return levels, which is provides
+for approximating the standard errors of return levels, which is
 one reason why it is preferred here. Section~\ref{sec:egp3} contains some
 technical details.
 
@@ -82,7 +82,7 @@ used above this level.
 \subsection{Pharmaceutical example}
 The introduction of $\kappa$ into the distribution suggests that lower thresholds
 might be usable for extreme value modelling. We now follow Southworth and
-Heffernan~\cite{southHeffMultivariate} in analysing some clinical trial safety data.
+Heffernan~\cite{southHeffMultivariate} in analyzing some clinical trial safety data.
 Southworth and Heffernan model all the values of various safety related laboratory
 variables above the $70^{th}$ percentile
 using GPD models allowing $\hat\xi$ to vary linearly with dose. In each case,
@@ -92,7 +92,7 @@ to find a lower threshold above which EGP3 models can be fit, thus including
 more of the available data in the model, increasing the chance of identifying
 a dose effect if one exists.
 
-<<liver, echo=TRUE, fig.cap="Diagnostic plots for the GPD model with a linear term in dose fitted to the liver data above the $70^{th}$ percentile.">>=
+<<liver, echo=TRUE, fig.cap="The EGP3 threshold selection plot for each dose group in the liver data.">>=
 library(MASS)
 rmod <- rlm(log(TBL.M) ~ log(TBL.B) + as.numeric(dose),
             data=liver, method="MM", c=3.44)
@@ -100,7 +100,8 @@ liver$r <- resid(rmod)
 
 par(mfrow=c(2, 2))
 for (dose in LETTERS[1:4]){
-  plot(egp3RangeFit(liver$r[liver$dose == dose], umin=-.5, umax=.15))
+  plot(egp3RangeFit(liver$r[liver$dose == dose],
+                    umin=-.5, umax=.15))
   title(paste("Dose", dose), line=2)
 }
 @
@@ -109,6 +110,8 @@ The plots of $\hat\kappa$ over the range of thresholds in Figure~\ref{fig:liver}
 suggests that GPD models
 ought to fit above a threshold of about 0, the $57^{th}$ percentile, for each
 dose.
+
+\clearpage
 
 We now pool the residual bilirubin data from all doses and present the standard
 threshold selection plots as well as the EGP3 plot. The results appear in
@@ -122,6 +125,7 @@ plot(gpdRangeFit(liver$r, nint=20))
 plot(mrl(liver$r))
 plot(egp3RangeFit(liver$r, nint=20))
 @
+\clearpage
 
 We now fit the GPD model and produce diagnostic plots and a summary of the model.
 <<gmod, echo=TRUE, fig.cap="Diagnostic plots for the GPD model with threshold at 1.3.">>=
@@ -139,7 +143,8 @@ fit is not seriously called into question. The summary table reveals there to
 be still no evidence of a dose
 effect, at least according to the approximate test implied by the t-value.
 
-We now attempt to model {\em all} the data using the EGP3 distribution.
+\clearpage
+We next attempt to model {\em all} the data using the EGP3 distribution.
 
 <<liveregp3, echo=TRUE, fig.cap="Diagnostic plots from fitting the EGP3 distribution to all of the residual bilirubin data.">>=
 emod <- evm(r, data=liver, family=egp3, th=min(liver$r - .0001),
@@ -149,12 +154,14 @@ plot(emod)
 summary(emod)
 @
 
-In Figure~\ref{fig:liveregp3} there is some noticable structure in the diagnostic
+In Figure~\ref{fig:liveregp3} there is some noticeable structure in the diagnostic
 plots. The simulation test reveals there to be about 65\% of the observations
 outside of the simulated envelope, so that the model is a terrible fit to the
-data. We now attempt a somewhat higher threshold of -0.25.
+data.
+\clearpage
 
-<<liveregp3.2, echo=TRUE, fig.cap="Diagnostic plots for the EGP3 model when using a threshold of 1.">>=
+We now attempt a somewhat higher threshold of -0.25.
+<<liveregp3_2, echo=TRUE, fig.cap="Diagnostic plots for the EGP3 model when using a threshold of -0.25">>=
 emod <- evm(r, data=liver, family=egp3, th=-.25,
             xi=~as.numeric(dose))
 par(mfrow=c(2, 2))
@@ -169,13 +176,14 @@ is no evidence of a dose effect.
 In the pharmaceutical example, we were able to claw back some additional data into
 the model by using the EGP3 distribution, at the expense of an additional
 parameter. However, when all of the data were used, the fit was awful. It appears
-that the EPG3 distribution's most useful function might be to provide an extra
+that the EGP3 distribution's most useful function might be to provide an extra
 threshold selection plot, or even a test to decide on a lower threshold. For
 modelling extreme values it will, at least in some examples, allow inclusion of
 a larger proportion of observations, but some care will need to be taken in
 selection of the threshold, and no obvious threshold selection methods for EPG3
 are currently available.
 
+\clearpage
 \section{\label{sec:egp3}The EGP3 distribution: some technical details}
 The EGP3 family introduces a new parameter, $\kappa$, to the familiar
 parameters $\sigma$ and $\xi$ in the GPD family. The threshold $u$ remains.
@@ -250,7 +258,7 @@ x_M = \left\{ \arraycolsep=1.4pt\def\arraystretch{2.2} % increase vertical spaci
 
 correcting Papastathopoulos and Tawn.
 
-\subsubsection{Deriviatives}
+\subsubsection{Derivatives}
 In order to compute approximate standard errors for return levels, we need derivatives
 of (\ref{eqn:retlev}) with respect to each of $\kappa$, $\sigma$ and $\xi$. These
 are found to be
