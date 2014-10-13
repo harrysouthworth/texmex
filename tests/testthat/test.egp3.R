@@ -27,6 +27,7 @@ test_that("egp3 family behaves as it should", {
 
 test_that("regp3 behaves as it should", {
   regp3_test <- function(n, kappa=1, sigma, xi, u=0){
+    # Implement rng via direct cdf inversion and compare to version that uses qegp3
     kappa <- rep(kappa, length.out=n)
     sigma <- rep(sigma, length.out=n)
     xi <- rep(xi, length.out=n)
@@ -97,39 +98,40 @@ test_that("pegp3 behaves as expected", {
   # pgpd implicitly does some testing of pegp3. Also the test of qegp3 implicity
   # tests pegp3
   
-  s <- runif(100) + 1
-  xi <- runif(100, -1, 1)
-  k <- runif(100) * 3
-  p <- runif(100)
-
-  # Test lower.tail argument
-  x <- pegp3(p, sigma=s, xi=xi, kappa=k)
-  y <- 1 - pegp3(p, sigma=s, xi=xi, kappa=k, lower.tail=FALSE)
-  expect_equal(x, y)
-  
-  # Test wtih log.p
-  x <- exp(pegp3(p, sigma=s, xi=xi, kappa=k, log.p=TRUE))
-  y <- 1 - exp(pegp3(p, sigma=s, xi=xi, kappa=k, lower.tail=FALSE, log.p=TRUE))
-  expect_equal(x, y)
+  for (i in 1:10){
+    s <- runif(100) + 1
+    xi <- runif(100, -1, 1)
+    k <- runif(100) * 3
+    p <- runif(100)
+    
+    # Test lower.tail argument
+    x <- pegp3(p, sigma=s, xi=xi, kappa=k)
+    y <- 1 - pegp3(p, sigma=s, xi=xi, kappa=k, lower.tail=FALSE)
+    expect_equal(x, y)
+    
+    # Test wtih log.p
+    x <- exp(pegp3(p, sigma=s, xi=xi, kappa=k, log.p=TRUE))
+    y <- 1 - exp(pegp3(p, sigma=s, xi=xi, kappa=k, lower.tail=FALSE, log.p=TRUE))
+    expect_equal(x, y)
+  }
 })
 
 test_that("degp3 behaves as expected", {
   degp3_test <- function(x, kappa=1, sigma, xi){
     y <- 1 + x * xi/sigma
-    res <- log(k/sigma) + (k - 1) * log(1 - y^(-1/xi)) - (1/xi + 1) * log(y)
+    res <- log(kappa/sigma) + (kappa - 1) * log(1 - y^(-1/xi)) - (1/xi + 1) * log(y)
     exp(res)
   }
 
-  xi <- runif(1, -1, 1)
-  kappa <- runif(1) * 3
-  sigma <- runif(1) + 1
-  
-  x <- regp3(100, sigma=sigma, xi=xi, kappa=kappa)
-  d1 <- degp3(x, sigma=sigma, xi=xi, kappa=kappa)
-  d2 <- degp3_test(x, sigma=sigma, xi=xi, kappa=kappa)
-  par(mfrow=c(2, 1))
-  hist(d1); hist(d2)
-  
-  expect_equal(d1, d2)
-  
+  for (i in 1:10){
+    xi <- runif(1, -1, 1)
+    kappa <- runif(1) * 3
+    sigma <- runif(1) + 1
+
+    x <- regp3(100, sigma=sigma, xi=xi, kappa=kappa)
+    d1 <- degp3(x, sigma=sigma, xi=xi, kappa=kappa)
+    d2 <- degp3_test(x, sigma=sigma, xi=xi, kappa=kappa)
+    
+    expect_that(d1, equals(d2, tol=1.0e-03))
+  }
 })
