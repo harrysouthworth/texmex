@@ -17,7 +17,7 @@
 <<setup, echo=FALSE>>=
 seed <- 20140721
 set.seed(seed)
-#suppressMessages(library(texmex))
+suppressMessages(library(testthat))
 @
 
 \section{Introduction}
@@ -67,8 +67,8 @@ The test scripts are located under the package directory in {\tt tests/testthat}
 To run a specific test script, you can use
 
 <<test_file, echo=TRUE, eval=FALSE>>=
-library(texmex)
 library(testthat)
+library(texmex)
 test_file("texmex/tests/testthat/test.revTransform.R")
 @
 

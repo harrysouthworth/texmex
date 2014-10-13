@@ -5,6 +5,7 @@ importFrom(mvtnorm, dmvnorm, rmvnorm)
 useDynLib(texmex, .c.exprel, .c.log1prel, .c.log1mexp)
 
 export(AIC.evmOpt)
+export(logLik.evmOpt)
 export(bootExtremalIndex)
 export(bootMCS)
 export(bootmex)
