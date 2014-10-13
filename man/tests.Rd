@@ -42,6 +42,7 @@
   \item{Z,r,ei}{Arguments to extRemes package functions used for testing
   of declustering code. Numeric Z logical indicating threshold excess, r
   run length for runs declustering and ei extremal index estimate.}
+  \item{x, u, a, b, v, p, ...}{Other arguments used in internal functions.}
 }
 
 \author{

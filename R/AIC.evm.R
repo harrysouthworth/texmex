@@ -3,3 +3,7 @@ AIC.evmOpt <- function(object, penalized=FALSE, ..., k=2){
   else {ll <- object$loglik }
   -2*ll + k*length(coef(object))
 }
+
+logLik.evmOpt <- function(object, ...){
+  object$loglik
+}

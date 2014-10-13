@@ -53,7 +53,7 @@ rFrechet(n)
 rMaxAR(n,theta)
 addCoefficients(o)
 addCovariance(o, family, cov)
-constructEVM(o, family, th, rate, prior, modelParameters, call,
+constructEVM(o, family, ..., th, rate, prior, modelParameters, call,
             modelData, data, priorParameters, cov)
 texmexPst(msg, Family)
 }

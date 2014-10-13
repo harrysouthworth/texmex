@@ -42,7 +42,7 @@ Harry Southworth, Janet E. Heffernan
 
 Maintainer: Harry Southworth <harry.southworth@gmail.com>
 
-URL: http://code.google.com/p/texmex/
+URL: https://github.com/harrysouthworth/texmex
 }
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach
@@ -59,7 +59,7 @@ C.A.T Ferro and J. Segers, Inference for Clusters of Extreme Values, Journal of 
 # Analyse the winter data used by Heffernan and Tawn
 mymex <- mex(winter, mqu = .7, penalty="none", dqu=.7, which = "NO")
 plot(mymex)
-# Only do 20 replicates to keep CRAN happy. Do many more in any
+# Only do 10 replicates to keep CRAN checks happy. Do many more in any
 # real application
 myboot <- bootmex(mymex, R=10)
 plot(myboot)

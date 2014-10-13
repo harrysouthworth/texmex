@@ -12,6 +12,7 @@
 \alias{plot.evmOpt}
 \alias{coef.evmOpt}
 \alias{AIC.evmOpt}
+\alias{logLik.evmOpt}
 \alias{print.evmSim}
 \alias{summary.evmSim}
 \alias{plot.evmSim}
@@ -37,6 +38,7 @@ evm(y, data, family, ...)
 \method{plot}{evmOpt}(x, main=rep(NULL, 4), xlab=rep(NULL, 4),
            nsim=1000, alpha=0.05, ...)
 \method{AIC}{evmOpt}(object, penalized=FALSE, ..., k=2)
+\method{logLik}{evmOpt}(object, ...)
 
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
@@ -129,11 +131,6 @@ texmexJumpConst(j, map)
   \item{jump.cov}{Covariance matrix for proposal distribution of
            Metropolis algorithm.  This is scaled by \code{jump.const}.}
   \item{jump.const, j}{ Control parameter for the Metropolis algorithm. }
-  \item{cores}{How many cores to use to do the simulation. At present this
-               only affects how many cores are used when bootstrapping.
-               Defaults to \code{cores=NULL} in which case the function tries
-               to guess how many cores you've got available and uses all of
-               them.}
   \item{verbose}{Whether or not to print progress to screen. Defaults to
            \code{verbose=TRUE}.}
  \item{x, object}{Object of class \code{evmOpt}, \code{evmSim}, \code{summary.evmOpt}
@@ -178,7 +175,7 @@ texmexJumpConst(j, map)
   \item{R}{The number of parametric bootstrap samples to run when
            \code{method = "bootstrap"} is requested. Defaults to 1000.}
   \item{cores}{The number of cores to use when bootstrapping. Defaults to
-           \code{cores=NULL} and the function guess how many cores are available
+           \code{cores=NULL} and the function guesses how many cores are available
            and uses them all.}
 }
 \details{

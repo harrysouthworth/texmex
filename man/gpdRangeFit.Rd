@@ -11,7 +11,7 @@
 }
 \usage{
 gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
-            penalty = "gaussian", priorParameters = NULL, alpha=0.05)
+            penalty = "gaussian", priorParameters = NULL, alpha=0.05, cov="observed")
 \method{print}{gpdRangeFit}(x, ...)
 \method{summary}{gpdRangeFit}(object, ...)
 \method{plot}{gpdRangeFit}(x, xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
@@ -29,6 +29,10 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
                  See the help for \code{\link{evm}} for more informaiton.}
   \item{alpha}{100(1 - alpha)\% confidence intervals will be plotted with the 
                point estimates. Defaults to \code{alpha = 0.05}.}
+  \item{cov}{How to compute the covariance for estimating the confidence intervals.
+             The argument is passed through to \code{evm} and the options are
+             "observed" (the default) and "numeric" which will use a numerical
+             approximation.}
   \item{x, object}{Arguments to \code{print} and \code{summary} functions.}
   \item{xlab}{ Label for the x-axis. }
   \item{ylab}{ Label for the y-axis. }

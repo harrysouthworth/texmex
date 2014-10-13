@@ -12,7 +12,8 @@
 egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
             penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 \method{print}{egp3RangeFit}(x, ...)
-\method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, ...)
+\method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL,
+                            addNexcesses=TRUE, log.="", ...)
 }
 
 \arguments{
@@ -34,7 +35,10 @@ egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10
   \item{addNexcesses}{ Annotate top axis with numbers of threshold excesses
                        arising with the corresponding values of threshold on the
                        bottom axis.}
-  \item{\dots}{ Arguments to \code{plot} }
+  \item{log.}{Argument passed through to \code{plot}. Can take values "x" for plotting
+              the x-axis on the log scale, "y" for plotting the y-axis on the log
+              scale, "xy" for both, or "" (the default) for neither.}
+  \item{\dots}{ Arguments to \code{plot}.}
 }
 \details{
   Papastathopoulos and Tawn present 3 extended versions of the generalized Pareto
