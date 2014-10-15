@@ -1,6 +1,6 @@
 #! /bin/bash
 
-cd /home/harry/Work/repos/googlecode/texmex/vignettes
+cd /home/harry/Work/repos/github/texmex/vignettes
 mv declustering.knitr declustering.Rnw
 mv texmex1d.knitr texmex1d.Rnw
 mv texmexMultivariate.knitr texmexMultivariate.Rnw
