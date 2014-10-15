@@ -88,31 +88,6 @@ Information on the R session, in the interests of reproducibility.
 sessionInfo()
 @
 
-%\bibliographystyle{plain}
-\begin{thebibliography}{99}
-\bibitem{texmex}Harry Southworth and Janet E. Heffernan, texmex: Statistical modelling
-  of extreme values, 2014
-
-\bibitem{coles}Stuart Coles, An Introduction to the Statistical Modeling of Extreme Values,
-  Springer, 2001
-
-\bibitem{heffernanTawn}Janet E. Heffernan and Jonathan A. Tawn, A conditional approach for multivariate
-  extreme values, Journal of the Royal Statistical Society, Series B, 66,
-  497 -- 546, 2004
-
-\bibitem{testthat}Hadley Wickham, testthat: Get Started with Testing. The R Journal, vol. 3, no.
-  1, pp. 5--10, 2011
-
-\bibitem{R}R Core Team, R: A language and environment for statistical computing. R
-  Foundation for Statistical Computing, Vienna, Austria, 2013
-
-\bibitem{ismev}Stuart Coles, Janet E. Heffernan and Alec G. Stephenson, ismev: An Introduction
-  to Statistical Modeling of Extreme Values, 2012
-
-\bibitem{evd}A. G. Stephenson, evd: Extreme Value Distributions. R News, 2(2):31-32, June 2002.
-
-\bibitem{yiannis}Ioannis Papastathopoulos, Statistical Models for Pharmaceutical Extremes,
-PhD Thesis, Lancaster University, 2013
-
-\end{thebibliography}
+\bibliography{texmex}
+\bibliographystyle{plain}
 \end{document}
