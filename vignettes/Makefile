@@ -15,6 +15,7 @@ all:
 	pdflatex  declustering.tex
 	rm *.log declustering.aux declustering.bbl declustering.blg declustering.tex
 	pdflatex egp3.tex
+	bibtex egp3
 	pdflatex egp3.tex
 	rm *.log egp3.aux egp3.tex egp3.toc egp3.bbl egp3.blg
 	pdflatex test_texmex.tex
