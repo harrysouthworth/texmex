@@ -8,17 +8,16 @@
 }
 \usage{
 \method{simulate}{evmOpt}(object, nsim=1, seed=NULL, param=NULL, ...)
-\method{simulate}{evmSim}(object, nsim=NULL, seed=NULL, ...)
-\method{simulate}{evmBoot}(object, nsim=NULL, seed=NULL, ...)
+\method{simulate}{evmSim}(object, nsim=1, seed=NULL, ...)
+\method{simulate}{evmBoot}(object, nsim=1, seed=NULL, ...)
 }
 
 \arguments{
   \item{object}{A fitted evm object having class 'evmOpt', 'evmSim' or 'evmBoot'.}
-  \item{nsim}{The number of random numbers to simulate. For \code{simulate.evmOpt},
-        defaults to \code{nsim=1}. For \code{simulate.evmSim} and \code{simulate.evmBoot},
-        it is ignored and the number of simulated values is inferred from the number of
-        simulated parameters left in the Markov chains after removing the burn-in and
-        thinning, or the number of bootstrap replicates, respectively.}
+  \item{nsim}{The number of simulations to perform. Defaults to \code{nsim=1}.
+              A single simulation involves simulating a new set of responses from the
+              data that was provided to \code{evm} (after thresholding if thresholding
+              is performed.)}
   \item{seed}{An integer to be passed to \code{set.seed}. Defaults to \code{seed=NULL}.}
   \item{param}{Parameters to use in the random number generator. Defaults to
         \code{param=NULL} in which case the parameters from the fitted model are used.
@@ -27,8 +26,13 @@
   \item{...}{Unused.}
 }
 \value{
-  A vector or random numbers simulated from the fitted model object.
+  If \code{nsim=1}, a vector or random numbers simulated from the fitted model object.
+  If \code{nsim > 1}, a matrix with each column being a set of simulated responses.
 }
+\details{For \code{simulate.evmSim} and \code{simulate.evmBoot}, the parameters
+   from the Markov chains or bootstrap replicates are randomly permuted prior to
+   each set of simulated responses being computed. In this way, reusing the same
+   set of values is avoided.}
 
 \author{Paul Metcalfe, Harry Southworth}
 \seealso{ \code{\link{evm}} }

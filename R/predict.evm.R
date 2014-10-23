@@ -346,11 +346,11 @@ predict.evmBoot <- function(object, M=1000, newdata=NULL, type="return level",
     res <- switch(type,
                   "rl" = , "return level" = rl.evmBoot(object, newdata=newdata, M=M,
                                                        se.fit=se.fit, ci.fit=ci.fit,
-                                                       alpha=alpha, unique.=TRUE,
+                                                       alpha=alpha, unique.=unique.,
                                                        all=all, sumfun=sumfun,...),
                   "lp" = , "link" = linearPredictors.evmBoot(object, newdata=newdata,
                                                          se.fit=se.fit, ci.fit=ci.fit,
-                                                         alpha=alpha, unique.=TRUE,
+                                                         alpha=alpha, unique.=unique.,
                                                          all=all, sumfun=sumfun,...)
                   )
     res
