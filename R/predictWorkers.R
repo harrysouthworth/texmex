@@ -131,15 +131,13 @@ function(params, ses, alpha){
 }
 
 texmexMakeNewdataD <- function(x, newdata){
-    if (is.null(newdata)){
+  if (is.null(newdata)){
         res <- x$data$D
-    }
-    else {
+    } else {
         xl <- function(i, fo, data, xlev){
-                if (length(xlev[[i]]) > 0){
-                  model.matrix(fo[[i]], data, xlev=xlev[[i]])
-                }
-                else {
+          if (length(xlev[[i]]) > 0){
+                  model.matrix(fo[[i]], data, xlev=xlev[[i]][[1]])
+                } else {
                   model.matrix(fo[[i]], data)
                 }
               } # Close function
