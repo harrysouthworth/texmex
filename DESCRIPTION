@@ -56,6 +56,7 @@ Collate:
   mex.R summary.evmSim.R
   mexRangeFit.R summary.evm.R
   mexTransform.R summary.migpd.R
+  mexMonteCarlo.R
   migpdCoefs.R summary.predict.mex.R
   migpd.R
   mrl.R
