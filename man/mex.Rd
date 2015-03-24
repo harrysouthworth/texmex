@@ -4,6 +4,8 @@
 \alias{predict.mex}
 \alias{summary.predict.mex}
 \alias{plot.predict.mex}
+\alias{mexAll}
+\alias{print.mexList}
 \title{Conditional multivariate extreme values modelling}
 \description{Fit the conditional multivariate extreme value model of Heffernan and Tawn}
 \usage{
@@ -14,7 +16,10 @@ mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE,
 \method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
 \method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, ...)
 \method{summary}{predict.mex}(object, mth, probs=c(0.05, 0.5, 0.95), ...)
-\method{plot}{predict.mex}(x, pch=c(1, 3), col=c(2, 8), cex=c(1, 1), ask=TRUE, ...)
+\method{plot}{predict.mex}(x, pch=c(1, 3, 20), col=c(2, 8, 3), cex=c(1, 1, 1), ask=TRUE, ...)
+
+mexAll(data,mqu,dqu)
+\method{print}{mexList}(x, ...)
 }
 
 \arguments{
@@ -75,7 +80,7 @@ mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE,
   \item{col}{In \code{plot} method for objects of class \code{mex}, the colour for
              points on scatterplots of residuals and original data respectively.
              In \code{plot} method for objects of class \code{predict.mex}, the colours
-             of points for observed and simulated data respectively.}
+             of points for observed, and simulated data (conditioning variable not the largest) and simulated data (conditioning variable is the largest) respectively.}
   \item{x, object}{Object of class \code{mex} as returned by function \code{mex}.}
   \item{pqu}{Prediction quantile. Argument to \code{predict} method. The quantile of the conditioning 
             variable above which it will be simulated for importance sampling based prediction.
@@ -125,7 +130,9 @@ The \code{plot} method for class \code{"predict.mex"} displays both the original
 data and the simulated data generated above the threshold for prediction; it 
 shows the threshold for prediction (vertical line) and also the curve joining equal quantiles 
 of the marginal distributions -- this is for reference: variables that 
-are perfectly dependent will lie exactly on this curve.
+are perfectly dependent will lie exactly on this curve.  Original data are shown with one plotting character and simulated data with another; colours of simulated point distinguish those points which have the conditioning variable as the largest (on a quantile scale) or not the largest.
+
+The function \code{mexAll} fits a collection of GPD and conditional dependence models, the same fitteg GPD being used for all of the dependence model fits.  This can be used in turn to generate Monte Carlo samples from the entire sample space usign the collected dependence models.
 }
 
 \value{
@@ -147,7 +154,7 @@ class "predict.mex".
 Harry Southworth, Janet E. Heffernan
 }
 \note{The package \code{texmex} is equipped to fit GPD models to the upper marginal tails only, not the lower tails.  This is appropriate for extrapolating into the tails of any dependent variable when dependence between this variable and the conditioning variable is positive.  In the case of negative dependence between the conditioning variable and any dependent variable, estimation of the conditional distribution of the dependent variable for extreme values of the conditioning variable would naturally visit the lower tail of the dependent variable.  Extrapolation beyond the range of the observed lower tail is not supported in the current version of \code{texmex}. In cases where negative dependence is observed and extrapolation is required into the lower tail of the dependent variable, the situation is trivially resolved by working with a reflection of the dependent variable (Y becomes -Y and so the upper and lower tails are swapped). Results can be calculated for the reflected variable then reflected back to the correct scale.   This is satisfactory when only the pair of variables (the conditioning and single dependent variable) are of interest, but when genuine multivariate (as opposed to simply bivariate) structure is of interest, this approach will destroy the dependence structure between the reflected dependent variable and the remaining dependent variables.}
-\seealso{\code{\link{migpd}}, \code{\link{mexDependence}}, \code{\link{bootmex}}}
+\seealso{\code{\link{migpd}}, \code{\link{mexDependence}}, \code{\link{bootmex}}, \code{\link{mexMonteCarlo}}}
 \examples{
 w <- mex(winter, mqu=.7)
 w
