@@ -1,6 +1,6 @@
 context("evmBoot")
-
 test_that("evmBoot behaves as it should", {
+    Sys.setenv("R_TESTS" = "") # Prevent R CMD check failure with parallel
     tol <- 0.12
   
   for(Family in list(gpd,gev)){

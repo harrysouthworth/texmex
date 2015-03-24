@@ -1,7 +1,7 @@
 context("bootmex")
 
 test_that("bootmex behaves as it should", {
-   # this is a weak test - it tests the structure  # of the output but not the correctness of the bootstrap coefficients; it will
+  # this is a weak test - it tests the structure  # of the output but not the correctness of the bootstrap coefficients; it will
   # also catch ERRORs (as opposed to FAILUREs) if the code breaks.  For strong
   # testing of this function, run test.predict.mex
   
