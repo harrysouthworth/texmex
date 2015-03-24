@@ -63,18 +63,25 @@ R CMD INSTALL --install-tests texmex_2.3.tar.gz
 The test suite depends upon the testthat~\cite{testthat} package, so it is
 necessary to load that package before attempting to run any tests.
 
+<<testthat.package>>=
+library(texmex)
+library(testthat)
+@
+
 The test scripts are located under the package directory in {\tt tests/testthat}.
 To run a specific test script, you can use
 
 <<test_file, echo=TRUE, eval=FALSE>>=
-library(testthat)
-library(texmex)
 test_file("texmex/tests/testthat/test.revTransform.R")
 @
 
 for example. To run all test scripts (which will take a while), the command
 is as follows, and the output consists of the majority of the remainder of this
 document.
+
+<<optionsWarnOff,echo=FALSE>>=
+options(warn=-1)
+@
 
 <<validate, echo=TRUE, fig.cap="Output from running the validation suite.">>=
 test_package("texmex")
