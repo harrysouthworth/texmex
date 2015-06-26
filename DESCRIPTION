@@ -45,7 +45,7 @@ Collate:
   evmSim.R simulate.R
   evm.R print.mexPrediction.R
   extremalIndex.R print.migpd.R
-  gpd.info.R qgpd2.R
+  gpd.info.R gpd.sandwich.R qgpd2.R
   rgpd.R pgpd.R qgpd.R
   rgev.R pgev.R qgev.R dgev.R gev.R
   gpd.R

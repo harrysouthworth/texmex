@@ -19,8 +19,16 @@ addCovariance <- function(o, family, cov){
     else if (cov == "observed") {
       cov <- solve(family$info(o))
     }
+    else if (cov == "sandwich") {
+      if (is.null(family$sandwich)) {
+          stop("sandwich estimator not implemented for this evm family")
+      }
+      I.inv <- solve(family$info(o))
+      Sand <- family$sandwich(o)
+      cov <- I.inv %*% Sand %*% I.inv
+    }
     else {
-      stop("cov must be either 'numeric' or 'observed'")
+      stop("cov must be either 'numeric', 'observed' or 'sandwich'")
     }
 
     cov

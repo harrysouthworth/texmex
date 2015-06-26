@@ -10,6 +10,7 @@
 \alias{mexTransform}
 \alias{evmFit}
 \alias{gpd.info}
+\alias{gpd.sandwich}
 \alias{ConstraintsAreSatisfied}
 \alias{PosGumb.Laplace.negloglik}
 \alias{PosGumb.Laplace.negProfileLogLik}
@@ -39,6 +40,7 @@ revTransform(x, data, qu, th=0, sigma=1, xi=0, method="mixture")
 evmFit(data, family, ..., prior="none", start=NULL,
         priorParameters = NULL, maxit = 10000, trace = 0, hessian = TRUE)
 gpd.info(o, method="observed")
+gpd.sandwich(o)
 ConstraintsAreSatisfied(a,b,z,zpos,zneg,v)
 PosGumb.Laplace.negloglik(yex, ydep, a, b, m, s, constrain, v, aLow)
 PosGumb.Laplace.negProfileLogLik(yex, ydep, a, b, constrain, v, aLow)

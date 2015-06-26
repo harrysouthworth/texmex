@@ -88,9 +88,10 @@ texmexJumpConst(j, map)
   \item{cov}{How to compute the covariance matrix of the parameters. Defaults to
            \code{cov = "observed"} in which case the observed information matrix
            is used, if the \code{info} element of the \code{texmexFamily} object
-           is present. Note that currently, this is not implemented for \code{gev}. The only other
-           option is \code{cov = "numeric"} in which case a numerical approximation
-           of the Hessian is used (see the help for \code{optim}). In some cases,
+           is present. Note that currently, this is not implemented for \code{gev}. Alternatives are \code{cov = "numeric"} in which case a numerical approximation
+           of the Hessian is used (see the help for \code{optim}), or \code{cov = "sandwich"} if the \code{sandwich} element of the \code{texmexFamily} object is implemented.  The \code{cov = "sandwich"} method implements the Huber sandwich correction to the covariance matrix for data which are not independent and in which case the likelihood function no longer has the interpretation of a joint likelihood, but instead should be interpreted as a pseudo-likelihod. 
+           
+           In some cases,
            particularly with small samples, the numerical approximation can be
            quite different from the closed form (\code{cov="observed"})
            result, and the value derived from the observed information

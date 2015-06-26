@@ -14,6 +14,7 @@ gpd <- texmexFamily(name = 'GPD',
                    }, # Close log.lik
                    param = c(phi=0, xi=0),
                    info = gpd.info,
+                   sandwich = gpd.sandwich,
                    start = function(data){
                              y <- data$y
                              X.phi <- data$D[[1]]

@@ -11,7 +11,7 @@
 \description{Create families of distributions for use with extreme value modelling.}
 
 \usage{
-texmexFamily(name, log.lik, param, info = NULL, start = NULL, resid =
+texmexFamily(name, log.lik, param, info = NULL, sandwich = NULL, start = NULL, resid =
 NULL, rl, delta, endpoint, density, rng, prob, quant)
 \method{print}{texmexFamily}(x, ...)
 \method{summary}{texmexFamily}(object, ...)
@@ -24,6 +24,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   \item{info}{Function to compute the information matrix. If not
     provided, the modelling functions will work with a numerical
     approximation.}
+  \item{sandwich}{Function to compute the filling in the Huber sandwich estimator of the covariance matrix of parameter estimates, used for dependent data.}
   \item{start}{Function to compute starting parameters for the
     model. If not provided, the modelling functions will try to
     guess.}
@@ -58,7 +59,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
 \value{
   A object of class "texmexFamily", which is essentially a list
   containing the input arguments. If
-  \code{info}, \code{start}, \code{resid} are not provided, they
+  \code{info}, \code{sandwich}, \code{start}, \code{resid} are not provided, they
   default to \code{NULL}.
 }
 \author{Harry Southworth}
