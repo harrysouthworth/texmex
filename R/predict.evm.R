@@ -207,12 +207,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     if(ModelHasCovs){
       covCols <- apply(X.all, 2, function(x) !all(x==1))
       Xnames <- colnames(X.all)
-      if(sum(covCols) == 1){
-        X.all <- X.all[, covCols, drop=FALSE]
-      }
-      else {
-        X.all <- X.all[, covCols]
-      }
+      X.all <- X.all[, covCols, drop=FALSE]
       colnames(X.all) <- Xnames[covCols]
     }
 
@@ -239,7 +234,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     # res should be a list containing a matrix for each observation.
     # The matrix represents the simulated posterior, one column for each
     # major parameter (i.e. linear predictors)
-
+#browser()
     ############################################################################
     ## Hard part should be done now. Just need to summarize
 
@@ -255,12 +250,12 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
                            })
         res <- t(res)
         colnames(res) <- wh
-    }
-
-    else if (all){ res <- res }
-    else { # Just point estimates
+    } else if (all){
+      res <- res
+    } else { # Just point estimates
         res <- t(sapply(res, function(x){ apply(x, 2, mean) }))
     }
+
     if(!all){
       if(ModelHasCovs){
         for (i in 1:length(D)){

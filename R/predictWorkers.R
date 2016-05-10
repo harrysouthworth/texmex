@@ -133,20 +133,19 @@ function(params, ses, alpha){
 texmexMakeNewdataD <- function(x, newdata){
   if (is.null(newdata)){
         res <- x$data$D
-    } else {
-        xl <- function(i, fo, data, xlev){
-          if (length(xlev[[i]]) > 0){
-                  model.matrix(fo[[i]], data, xlev=xlev[[i]][[1]])
-                } else {
-                  model.matrix(fo[[i]], data)
-                }
-              } # Close function
-        fo <- x$formulae
-        res <- lapply(1:length(fo), xl, fo=fo, data=newdata, xlev=x$xlevels)
-        names(res) <- names(fo)
-    }
-
-    invisible(res)
+  } else {
+    xl <- function(i, fo, data, xlev){
+      if (length(xlev[[i]]) > 0){
+              model.matrix(fo[[i]], data, xlev=xlev[[i]][[1]])
+            } else {
+              model.matrix(fo[[i]], data)
+            }
+          } # Close function
+    fo <- x$formulae
+    res <- lapply(1:length(fo), xl, fo=fo, data=newdata, xlev=x$xlevels)
+    names(res) <- names(fo)
+  }
+  invisible(res)
 }
 
 texmexMakeCISim <- function(x, alpha, object, sumfun, M){
