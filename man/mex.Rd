@@ -85,6 +85,7 @@ mexAll(data,mqu,dqu)
   \item{pqu}{Prediction quantile. Argument to \code{predict} method. The quantile of the conditioning 
             variable above which it will be simulated for importance sampling based prediction.
             Defaults to \code{pqu = .99 }. }
+  \item{smoothZdistribution}{In \code{predict.mex}, whether or not to sample from the smoothed distribution of the underlying residuals.  Defaults to \code{FALSE}, in which case no smoothing is carried out.  If \code{TRUE} then each margin of the underlying multivariate residual is smoothed independently, by using kernel smoothing with a normal kernel, and bandwith chosen using the \code{\link{bw.nrd}} function.  This can be useful for removing "stripeyness" in importance samples which have few values in the conditional tails.}
   \item{nsim}{Argument to \code{predict} method. The number of simulated observations 
             to be generated for prediction. }
   \item{probs}{In \code{summary} method for objects of class \code{predict.mex}: the quantiles of the conditional 

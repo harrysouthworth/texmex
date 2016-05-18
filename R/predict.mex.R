@@ -1,5 +1,5 @@
 `predict.mex` <-
-function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
+function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FALSE, ...){
 	theCall <- match.call()
 
   # Class can be either mex or bootmex
@@ -29,6 +29,9 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, ...){
     distFun <- margins$q2p
 
     z <- as.matrix(z[ sample( 1:( dim( z )[ 1 ] ), size=nsim, replace=TRUE ) ,])
+    if(smoothZdistribution){
+        z <- apply(z,2,function(x)x + rnorm(length(x),0,bw.nrd(x)))
+    }
     ymi <- sapply( 1:( dim( z )[[ 2 ]] ) , makeYsubMinusI, z=z, v=dco , y=y )
 
     xmi <- apply( ymi, 2, distFun )

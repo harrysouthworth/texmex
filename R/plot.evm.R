@@ -12,7 +12,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
         
     if (all(sapply(x$data$D,ncol) == 1)){
         plotrl.evmOpt(x, main=main[3], xlab=xlab[3], smooth=FALSE, ...)
-        plot(hist.evmOpt(x, main=main[4], xlab=xlab[4]))
+        plot(hist.evmOpt(x), main=main[4], xlab=xlab[4])
     }
     else { # Covariates in the model
         np <- length(x$data$D)
