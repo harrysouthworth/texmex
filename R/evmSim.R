@@ -49,7 +49,7 @@ evmSim <- function(o, priorParameters, prop.dist,
 
 
 texmexMetropolis <-
-    # Metropolis algorithm. 
+    # Metropolis algorithm.
     # x is a matrix, initialized to hold the chain. It's first row should be the
     #    starting point of the chain.
     # proposals is a matrix of proposals
@@ -62,7 +62,7 @@ function(x, log.lik, proposals, verbose, trace){
     acc <- 0
     for(i in 2:nrow(x)){
       if( verbose){
-        if(i %% trace == 0) cat(i, " steps taken\n" )
+        if(i %% trace == 0) message(i, " steps taken\n" )
       }
       prop <- proposals[i - 1,] + x[i - 1,]
       top <- log.lik(prop)
