@@ -15,6 +15,9 @@ mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100, alpha=.050)
 \method{print}{mrl}(x, ...)
 \method{summary}{mrl}(object, ...)
 \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
+\method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess", main=NULL,
+                        fill="light blue", col="blue", addNexcesses = TRUE,
+                        textsize=4,  ..., environment)
 }
 
 \arguments{
@@ -27,7 +30,8 @@ mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100, alpha=.050)
   \item{x, object}{Arguments to print, summary and plot functions.}
   \item{xlab}{Label for the x-axis. Defaults to \code{xlab="Threshold"}.}
   \item{ylab}{Label for the y-axis. Defaults to \code{ylab="Mean excess"}.}
-  \item{\dots}{ Optional arguments to \code{plot} }
+  \item{\dots}{ Optional arguments to \code{plot}.}
+  \item{mapping, environment}{Not used.}
 }
 \details{
   Threshold choice for the fitting of the GPD is guided by the shape of the Mean Residual Life plot.  A threshold which is suitably high will have a corresponding mrl plot which is approximately linear in shape above the threshold (up to sampling variation).

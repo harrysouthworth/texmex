@@ -1,8 +1,8 @@
 #' @method ggplot mrl
 #' @export
-ggplot.mrl <- function(data, xlab = "Threshold", ylab = "Mean excess", main=NULL,
+ggplot.mrl <- function(data, mapping, xlab = "Threshold", ylab = "Mean excess", main=NULL,
                        fill="light blue", col="blue",
-                       addNexcesses=TRUE, textsize=4, ...){
+                       addNexcesses=TRUE, textsize=4, ..., environment){
   x <- data
   data <- x$data
   x <- x$mrl
@@ -31,9 +31,9 @@ ggplot.mrl <- function(data, xlab = "Threshold", ylab = "Mean excess", main=NULL
 
 #' @method ggplot gpdRangeFit
 #' @export
-ggplot.gpdRangeFit <- function(data, xlab = "Threshold", ylab = NULL, main = NULL,
+ggplot.gpdRangeFit <- function(data, mapping, xlab = "Threshold", ylab = NULL, main = NULL,
                                fill="orange", col="blue",
-                               addNexcesses = TRUE, textsize=4, ...){
+                               addNexcesses = TRUE, textsize=4, ..., environment){
   if (missing(ylab)) {
     ylab <- c(expression(hat(phi)[m]), expression(hat(xi)))
   }  else if (length(ylab) != 2) {

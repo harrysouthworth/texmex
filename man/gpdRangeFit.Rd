@@ -16,6 +16,9 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
 \method{print}{gpdRangeFit}(x, ...)
 \method{summary}{gpdRangeFit}(object, ...)
 \method{plot}{gpdRangeFit}(x, xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
+\method{ggplot}{gpdRangeFit}(data, mapping, xlab="Threshold", ylab="Mean excess", main=NULL,
+                        fill="orange", col="blue", addNexcesses = TRUE,
+                        textsize=4,  ..., environment)
 }
 
 \arguments{
@@ -41,7 +44,8 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
   \item{addNexcesses}{ Annotate top axis with numbers of threshold excesses
                        arising with the corresponding values of threshold on the
                        bottom axis.}
-  \item{\dots}{ Arguments to \code{plot} }
+  \item{\dots}{ Arguments to \code{plot}.}
+  \item{mapping, environment}{Not used.}
 }
 \details{
   This is Stuart Coles' \code{gpd.fitrange}, as it appears in the

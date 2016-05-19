@@ -21,7 +21,7 @@ ggacfplots <- function(x, fill="orange"){
     n <- length(v)
     p <- vector("list", length=n)
     thin <- x$thin
-    
+
     for (i in 1:n){
         acz <- acf(x$param[, i], plot=FALSE)
         acd <- data.frame(lag=acz$lag, acf=acz$acf, xend=acz$lag, yend=rep(0, length(acz$lag)))
@@ -56,7 +56,7 @@ ggtraceplots <- function(x, trace="light blue", mean="blue", burn="orange"){
                                                 fill=c(burn, "grey90"), alpha=.2) +
                       scale_x_continuous("Step number") +
                       scale_y_continuous(paste(v[i], "\n& cumulative mean"))
-    
+
     }
     p
 }
@@ -76,7 +76,8 @@ ggtraceplots <- function(x, trace="light blue", mean="blue", burn="orange"){
 #' @keywords hplot
 #' @method ggplot evmSim
 #' @export
-ggplot.evmSim <- function(data=NULL, which.plots=1:3, denscol="blue", acfcol="light blue", plot.it=TRUE, ...){
+ggplot.evmSim <- function(data=NULL, mapping, which.plots=1:3, denscol="blue", acfcol="light blue", plot.it=TRUE,
+                          ..., environment){
     d <- if (1 %in% which.plots) ggdensplots(data, fill=denscol)
          else NULL
     tr <- if (2 %in% which.plots) ggtraceplots(data)

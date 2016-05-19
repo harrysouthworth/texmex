@@ -4,3 +4,5 @@ globalVariables(c("theCall", "ALT.M", "ALT.B", "y",
                   "makeCluster", "detectCores", "stopCluster"))
 
 globalVariables(c("rainfall", "Y", "ALT.B"))
+
+globalVariables(c("xend", "yend", "th", "u", "x", "..density..", "r"))

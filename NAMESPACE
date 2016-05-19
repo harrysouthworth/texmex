@@ -1,8 +1,32 @@
 # Just import the dmvnorm and rmvnorm names from mvtnorm
 importFrom(mvtnorm, dmvnorm, rmvnorm)
 
+ importFrom("grDevices", "dev.interactive", "nclass.Sturges",
+             "terrain.colors")
+  importFrom("graphics", "abline", "axTicks", "axis", "box",
+             "filled.contour", "hist", "lines", "matplot", "mtext",
+             "pairs", "panel.smooth", "par", "plot", "points", "polygon",
+             "rug", "segments", "title")
+  importFrom("stats", "AIC", "D", "acf", "coef", "cov2cor", "density",
+             "formula", "lag", "lowess", "mahalanobis", "median",
+             "model.frame", "model.matrix", "model.response", "na.omit",
+             "optim", "pexp", "ppoints", "predict", "qexp", "qnorm",
+             "quantile", "rcauchy", "resid", "rexp", "runif", "sd",
+             "simulate", "spline", "uniroot", "update", "var")
+  importFrom("utils", "tail")
+
+importFrom(ggplot2, ggplot, scale_x_continuous, scale_x_discrete, scale_y_continuous,
+           ggtitle, aes, geom_area, geom_segment, stat_density, geom_point,
+           position_jitter, stat_smooth, theme, geom_line, geom_polygon,
+           element_text, geom_rug, geom_abline, geom_rect, geom_histogram)
+
 # Export all names that don't start with "." or are just workers
 useDynLib(texmex, .c.exprel, .c.log1prel, .c.log1mexp)
+
+export(ggplot.evmOpt)
+export(ggplot.evmSim)
+export(ggplot.mrl)
+export(ggplot.gpdRangeFit)
 
 export(AIC.evmOpt)
 export(logLik.evmOpt)

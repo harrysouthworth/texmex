@@ -41,6 +41,7 @@ evm(y, data, family, ...)
            nsim=1000, alpha=0.05, ...)
 \method{AIC}{evmOpt}(object, penalized=FALSE, ..., k=2)
 \method{logLik}{evmOpt}(object, ...)
+\method{ggplot}{evmOpt}(data, mapping, ..., environment)
 
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
@@ -180,6 +181,8 @@ texmexJumpConst(j, map)
   \item{cores}{The number of cores to use when bootstrapping. Defaults to
            \code{cores=NULL} and the function guesses how many cores are available
            and uses them all.}
+  \item{mapping}{Not used.}
+  \item{environment}{Not used.}
 }
 \details{
   In previous versions of \code{texmex}, the main modelling

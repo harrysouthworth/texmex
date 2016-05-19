@@ -1,10 +1,10 @@
 #' @method ggplot qqevm
-ggplot.qqevm <- function(data=NULL, xlab, ylab, main,
+ggplot.qqevm <- function(data=NULL, mapping, xlab, ylab, main,
                        ylim = "auto",
                        ptcol="blue",
                        col="light blue",
                        fill="orange",
-                       ...){
+                       ..., environment){
 
     if (missing(xlab) || is.null(xlab)) { xlab <- "Model" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Empirical" }
@@ -28,13 +28,13 @@ ggplot.qqevm <- function(data=NULL, xlab, ylab, main,
 }
 
 #' @method ggplot ppevm
-ggplot.ppevm <- function(data=NULL, xlab, ylab,  main,
-                         ptcol="blue", col="light blue", fill="orange", ...){
+ggplot.ppevm <- function(data=NULL, mapping, xlab, ylab,  main,
+                         ptcol="blue", col="light blue", fill="orange", ..., environment){
 
     if (missing(xlab) || is.null(xlab) ) { xlab <- "Model" }
     if (missing(ylab) || is.null(ylab) ) { ylab <- "Empirical" }
     if (missing(main) || is.null(main) ) { main <- "Probability Plot" }
-  
+
     d <- data.frame(x=data$ModPoints, y=data$pfun(sort(data$dat), data$a, data$model))
     poly <- data.frame(x = c(data$ModPoints, rev(data$ModPoints)),
                        y = c(data$sim[1, ], rev(data$sim[2, ])))
@@ -51,8 +51,8 @@ ggplot.ppevm <- function(data=NULL, xlab, ylab,  main,
 }
 
 #' @export
-ggplot.hist.evmOpt <- function(data, xlab=NULL, ylab=NULL, main=NULL,
-                               ptcol="orange", col="dark blue", fill="light blue", ...){
+ggplot.hist.evmOpt <- function(data, mapping, xlab=NULL, ylab=NULL, main=NULL,
+                               ptcol="orange", col="dark blue", fill="light blue", ..., environment){
 
     if (missing(xlab) || is.null(xlab)) { xlab <- "Data" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "" }
@@ -74,10 +74,10 @@ ggplot.hist.evmOpt <- function(data, xlab=NULL, ylab=NULL, main=NULL,
 
 #' @export
 ggplotrl <-
-function(data, alpha = .050,
+function(data, mapping, alpha = .050,
          xlab, ylab, main,
          ptcol = "blue", col = "light blue", fill = "orange",
-         ...){
+         ..., environment){
 
     wh <- sapply(data$data$D, ncol)
     if (any(wh > 1)){
@@ -142,8 +142,8 @@ function(data, alpha = .050,
 #' @method ggplot evmOpt
 #' @export
 ggplot.evmOpt <-
-function(data, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, jitter.width=0,
-         ptcol="blue", col="light blue", fill="orange", plot.=TRUE, ncol=2, nrow=2, ...){
+function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, jitter.width=0,
+         ptcol="blue", col="light blue", fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment){
     if (!missing(main)){
         if (length(main) != 1 & length(main) != 4){
             stop("main should have length 1 or 4")
@@ -171,7 +171,7 @@ function(data, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.
         res <- list(pp, qq, rl, h)[which]
     } else { # Covariates in the model
         if (missing(which)){ which <- 1:3 }
-    
+
         np <- length(data$data$D)
         lp <- predict(data,type="lp", unique.=FALSE)[[1]]
         Which <- as.logical(apply(lp[,1:np],2,var)) # identifies which cols have covariates
@@ -203,7 +203,7 @@ function(data, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.
                          scale_y_continuous("Residuals")
         }
         co <- co[!sapply(co, is.null)] # modifyList will do this
-        
+
         res <- c(list(pp, qq), co)
         names(res) <- letters[1:length(res)] # stop grid.arrange getting confused
 
@@ -214,7 +214,7 @@ function(data, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.
     #    blankPanel <- grid.rect(gp=gpar(col="white"))
     #    res <- c(res, list(blankPanel))
     #}
-    
+
     # The loess smoother can tend to throw warnings, so suppress
     if (plot.) suppressWarnings(do.call("grid.arrange", c(res, list(ncol=ncol, nrow=nrow))))
 
