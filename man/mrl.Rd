@@ -3,7 +3,8 @@
 \alias{print.mrl}
 \alias{summary.mrl}
 \alias{plot.mrl}
-\title{ Mean residual life plot }
+\alias{ggplot.mrl}
+\title{Mean residual life plot}
 \description{
   Calculate mean residual life and plot it to aid the
   identification of a threshold over which to fit a

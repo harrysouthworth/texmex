@@ -3,6 +3,7 @@
 \alias{print.gpdRangeFit}
 \alias{summary.gpdRangeFit}
 \alias{plot.gpdRangeFit}
+\alias{ggplot.gpdRangeFit}
 
 \title{ Estimate generalized Pareto distribution parameters over a range of values }
 \description{
@@ -10,7 +11,7 @@
   maximum (penalized) likelihood.
 }
 \usage{
-gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10, 
+gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
             penalty = "gaussian", priorParameters = NULL, alpha=0.05, cov="observed")
 \method{print}{gpdRangeFit}(x, ...)
 \method{summary}{gpdRangeFit}(object, ...)
@@ -23,11 +24,11 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
   \item{umax}{ The maximum threshold above which to estimate the parameters. }
   \item{nint}{ The number of thresholds at which to perform the estimation. }
   \item{penalty}{The type of penalty to be used in the maximum penalized
-               likelihood estimation. Should be either "gaussian" or 
+               likelihood estimation. Should be either "gaussian" or
                "none". Defaults to "gaussian".}
   \item{priorParameters}{Parameters to be used for the penalty function.
                  See the help for \code{\link{evm}} for more informaiton.}
-  \item{alpha}{100(1 - alpha)\% confidence intervals will be plotted with the 
+  \item{alpha}{100(1 - alpha)\% confidence intervals will be plotted with the
                point estimates. Defaults to \code{alpha = 0.05}.}
   \item{cov}{How to compute the covariance matrix of the parameters. Defaults to
            \code{cov = "observed"} in which case the observed information matrix
@@ -47,7 +48,7 @@ gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95), nint = 10,
   \code{ismev} package, refactored into a function that does the computations,
   and method functions. The function uses
   \code{evm} internally and uses the default options for that function.
-  
+
   Note this function does not extend to assessing model fit when there are
   covariates included in the model.
 }

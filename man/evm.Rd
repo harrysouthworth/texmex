@@ -10,12 +10,14 @@
 \alias{print.evmOpt}
 \alias{summary.evmOpt}
 \alias{plot.evmOpt}
+\alias{ggplot.evmOpt}
 \alias{coef.evmOpt}
 \alias{AIC.evmOpt}
 \alias{logLik.evmOpt}
 \alias{print.evmSim}
 \alias{summary.evmSim}
 \alias{plot.evmSim}
+\alias{ggplot.evmSim}
 \alias{print.evmBoot}
 \alias{summary.evmBoot}
 \alias{plot.evmBoot}
@@ -89,8 +91,8 @@ texmexJumpConst(j, map)
            \code{cov = "observed"} in which case the observed information matrix
            is used, if the \code{info} element of the \code{texmexFamily} object
            is present. Note that currently, this is not implemented for \code{gev}. Alternatives are \code{cov = "numeric"} in which case a numerical approximation
-           of the Hessian is used (see the help for \code{optim}), or \code{cov = "sandwich"} if the \code{sandwich} element of the \code{texmexFamily} object is implemented.  The \code{cov = "sandwich"} method implements the Huber sandwich correction to the covariance matrix for data which are not independent and in which case the likelihood function no longer has the interpretation of a joint likelihood, but instead should be interpreted as a pseudo-likelihod. 
-           
+           of the Hessian is used (see the help for \code{optim}), or \code{cov = "sandwich"} if the \code{sandwich} element of the \code{texmexFamily} object is implemented.  The \code{cov = "sandwich"} method implements the Huber sandwich correction to the covariance matrix for data which are not independent and in which case the likelihood function no longer has the interpretation of a joint likelihood, but instead should be interpreted as a pseudo-likelihod.
+
            In some cases,
            particularly with small samples, the numerical approximation can be
            quite different from the closed form (\code{cov="observed"})
@@ -202,7 +204,7 @@ texmexJumpConst(j, map)
   for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
 
   For the GEV model, we use:
-  
+
   \deqn{P(Y \le y) = \exp \left\{ -\left[ 1 + \xi \left( \frac{y - \mu}{\sigma}\right) \right] ^{-1/\xi} \right\} }{%
         P(Y \le y) = exp{-[1 + \xi(y - \mu)/\sigma]^{1/\xi}}}
 
@@ -322,7 +324,7 @@ texmexJumpConst(j, map)
                  and applying any thinning.}
 
     If \code{method = "bootstrap"}, an object of class \code{evmBoot}:
-    
+
     \item{call}{The call to \code{evmBoot} that produced the object.}
     \item{replicates}{The parameter estimates from the bootstrap fits.}
     \item{map}{The fit by by maximum penalized likelihood to the orginal data.
