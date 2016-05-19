@@ -5,4 +5,4 @@ globalVariables(c("theCall", "ALT.M", "ALT.B", "y",
 
 globalVariables(c("rainfall", "Y", "ALT.B"))
 
-globalVariables(c("xend", "yend", "th", "u", "x", "..density..", "r"))
+globalVariables(c("xend", "yend", "th", "u", "x", "..density..", "r", "ex"))

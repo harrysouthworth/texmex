@@ -41,7 +41,9 @@ evm(y, data, family, ...)
            nsim=1000, alpha=0.05, ...)
 \method{AIC}{evmOpt}(object, penalized=FALSE, ..., k=2)
 \method{logLik}{evmOpt}(object, ...)
-\method{ggplot}{evmOpt}(data, mapping, ..., environment)
+\method{ggplot}{evmOpt}(data, mapping, which=1:4, main=rep(NULL, 4), xlab=rep(NULL, 4),
+                        nsim=1000, alpha=0.05, jitter.width=0, ptcol="blue", col="light blue",
+                        fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment)
 
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
@@ -181,6 +183,15 @@ texmexJumpConst(j, map)
   \item{cores}{The number of cores to use when bootstrapping. Defaults to
            \code{cores=NULL} and the function guesses how many cores are available
            and uses them all.}
+  \item{which}{Which diagnostic plots to produce (ggplot). Defaults to \code{which=1:4}.}
+  \item{jitter.width}{How much to horizontally jitter points on diagnostic plots (ggplot).
+    Defaults to \code{jitter.width=0}.}
+  \item{ptcol}{Colour of points on diagnostic plots (ggplot).}
+  \item{col}{Colour of lines on diagnostic plots (ggplot).}
+  \item{fill}{Colour of shaded regions on diagnostic plots (ggplot).}
+  \item{ncol}{The number of columns to arrange diagnostic plots in (ggplot).}
+  \item{nrow}{The number of rows to arrange diagnostic plots in (ggplot).}
+  \item{plot.}{Whether to actually print the diagnostic plots (ggplot). Defaults to \code{plot.=TRUE}.}
   \item{mapping}{Not used.}
   \item{environment}{Not used.}
 }

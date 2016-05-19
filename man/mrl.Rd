@@ -31,6 +31,12 @@ mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100, alpha=.050)
   \item{xlab}{Label for the x-axis. Defaults to \code{xlab="Threshold"}.}
   \item{ylab}{Label for the y-axis. Defaults to \code{ylab="Mean excess"}.}
   \item{\dots}{ Optional arguments to \code{plot}.}
+  \item{col}{Colour of the line on the MRL plot.}
+  \item{fill}{Colour of the pointwise confidence region on the MRL plot.}
+  \item{main}{Main title.}
+  \item{addNexcesses}{Whether to annotate the plot with the numbers of excesses over
+     increasing thresholds. Defaults to \code{addNexcesses=TRUE}.}
+  \item{textsize}{Size of text on the plot (ggplot). Defaults to \code{textsize=4}.}
   \item{mapping, environment}{Not used.}
 }
 \details{
