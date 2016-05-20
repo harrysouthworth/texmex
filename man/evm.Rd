@@ -10,12 +10,14 @@
 \alias{print.evmOpt}
 \alias{summary.evmOpt}
 \alias{plot.evmOpt}
+\alias{ggplot.evmOpt}
 \alias{coef.evmOpt}
 \alias{AIC.evmOpt}
 \alias{logLik.evmOpt}
 \alias{print.evmSim}
 \alias{summary.evmSim}
 \alias{plot.evmSim}
+\alias{ggplot.evmSim}
 \alias{print.evmBoot}
 \alias{summary.evmBoot}
 \alias{plot.evmBoot}
@@ -39,6 +41,9 @@ evm(y, data, family, ...)
            nsim=1000, alpha=0.05, ...)
 \method{AIC}{evmOpt}(object, penalized=FALSE, ..., k=2)
 \method{logLik}{evmOpt}(object, ...)
+\method{ggplot}{evmOpt}(data, mapping, which=1:4, main=rep(NULL, 4), xlab=rep(NULL, 4),
+                        nsim=1000, alpha=0.05, jitter.width=0, ptcol="blue", col="light blue",
+                        fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment)
 
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
 \method{plot}{evmSim}(x, which.plots=1:3, density.adjust=2, print.seed=FALSE, ...)
@@ -89,8 +94,8 @@ texmexJumpConst(j, map)
            \code{cov = "observed"} in which case the observed information matrix
            is used, if the \code{info} element of the \code{texmexFamily} object
            is present. Note that currently, this is not implemented for \code{gev}. Alternatives are \code{cov = "numeric"} in which case a numerical approximation
-           of the Hessian is used (see the help for \code{optim}), or \code{cov = "sandwich"} if the \code{sandwich} element of the \code{texmexFamily} object is implemented.  The \code{cov = "sandwich"} method implements the Huber sandwich correction to the covariance matrix for data which are not independent and in which case the likelihood function no longer has the interpretation of a joint likelihood, but instead should be interpreted as a pseudo-likelihod. 
-           
+           of the Hessian is used (see the help for \code{optim}), or \code{cov = "sandwich"} if the \code{sandwich} element of the \code{texmexFamily} object is implemented.  The \code{cov = "sandwich"} method implements the Huber sandwich correction to the covariance matrix for data which are not independent and in which case the likelihood function no longer has the interpretation of a joint likelihood, but instead should be interpreted as a pseudo-likelihod.
+
            In some cases,
            particularly with small samples, the numerical approximation can be
            quite different from the closed form (\code{cov="observed"})
@@ -178,6 +183,17 @@ texmexJumpConst(j, map)
   \item{cores}{The number of cores to use when bootstrapping. Defaults to
            \code{cores=NULL} and the function guesses how many cores are available
            and uses them all.}
+  \item{which}{Which diagnostic plots to produce (ggplot). Defaults to \code{which=1:4}.}
+  \item{jitter.width}{How much to horizontally jitter points on diagnostic plots (ggplot).
+    Defaults to \code{jitter.width=0}.}
+  \item{ptcol}{Colour of points on diagnostic plots (ggplot).}
+  \item{col}{Colour of lines on diagnostic plots (ggplot).}
+  \item{fill}{Colour of shaded regions on diagnostic plots (ggplot).}
+  \item{ncol}{The number of columns to arrange diagnostic plots in (ggplot).}
+  \item{nrow}{The number of rows to arrange diagnostic plots in (ggplot).}
+  \item{plot.}{Whether to actually print the diagnostic plots (ggplot). Defaults to \code{plot.=TRUE}.}
+  \item{mapping}{Not used.}
+  \item{environment}{Not used.}
 }
 \details{
   In previous versions of \code{texmex}, the main modelling
@@ -202,7 +218,7 @@ texmexJumpConst(j, map)
   for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
 
   For the GEV model, we use:
-  
+
   \deqn{P(Y \le y) = \exp \left\{ -\left[ 1 + \xi \left( \frac{y - \mu}{\sigma}\right) \right] ^{-1/\xi} \right\} }{%
         P(Y \le y) = exp{-[1 + \xi(y - \mu)/\sigma]^{1/\xi}}}
 
@@ -322,7 +338,7 @@ texmexJumpConst(j, map)
                  and applying any thinning.}
 
     If \code{method = "bootstrap"}, an object of class \code{evmBoot}:
-    
+
     \item{call}{The call to \code{evmBoot} that produced the object.}
     \item{replicates}{The parameter estimates from the bootstrap fits.}
     \item{map}{The fit by by maximum penalized likelihood to the orginal data.

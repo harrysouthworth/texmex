@@ -10,22 +10,22 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     rng <- o$family$rng
 
     getCluster <- function(n){
-      wh <- try(library(parallel))
+      wh <- try(requireNamespace("parallel"))
       if (class(wh) != "try-error"){
-        if (is.null(n)) n <- detectCores()
+        if (is.null(n)) n <- parallel::detectCores()
         if (n == 1) { NULL }
-        else makeCluster(n)
+        else parallel::makeCluster(n)
       }
       else NULL
     }
     cluster <- getCluster(cores)
-    on.exit(if (!is.null(cluster)){ stopCluster(cluster) })
-    
+    on.exit(if (!is.null(cluster)){ parallel::stopCluster(cluster) })
+
     bfun <- function(X){
         if (X %% trace == 0){ cat("Replicate", X, "\n") }
 
         s <- set.seed(seeds[[X]])
-        
+
         d$y <- rng(length(d$y), param, o)
 
         evmFit(d, o$family, th=o$threshold, prior=o$penalty,
@@ -34,7 +34,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
                hessian=FALSE)$par
     }
     seeds <- as.integer(runif(R, -(2^31 - 1), 2^31))
-    
+
     if (!is.null(cluster)){
       res <- t(parallel::parSapply(cluster, X=1:R, bfun))
     }
@@ -45,7 +45,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     if (R > 1){
       se <- apply(res, 2, sd)
       b <- apply(res, 2, mean) - coef(o)
-      
+
       if (any(abs(b/se) > .25)){
         message("Ratio of bias to standard error is high")
       }

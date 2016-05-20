@@ -1,9 +1,9 @@
 context("qgpd")
 
 test_that("qgpd behaves as it should", {
-    
+
   set.seed(201110101)
-  evd.qgpd <- .evd.qgpd
+  evd.qgpd <- texmex:::.evd.qgpd
   myTest <- function(sig, xi, thresh, msg){
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))
@@ -11,7 +11,7 @@ test_that("qgpd behaves as it should", {
     expect_that(eq, equals(myq), label=paste(msg,"testusing.evd.qgpd"))
     expect_that(x, equals(myp), label=paste(msg,"testusingqgpd"))
   }
-  
+
   #*************************************************************
   # 6.4.0 Test exception for out of range probabilties
   op <- options()
@@ -19,27 +19,27 @@ test_that("qgpd behaves as it should", {
   expect_error(qgpd(1.5, 1, 0, 2), label="qgpd:exceptionforoutofrangeprob")
   expect_error(qgpd(-1, 1, 0, 2), label="qgpd:exceptionforoutofrangeprob")
   options(op)
-  
+
   #*************************************************************
   # 6.4. Test qgpd. Note that .evd.qgpd is NOT vectorized.
-  
+
   nreps <- 100
   nsim <- 1000
-  p <- matrix(runif(2*nreps, -1, 1),ncol=2) 
+  p <- matrix(runif(2*nreps, -1, 1),ncol=2)
   p[, 1] <- p[, 1] + 1
-  thresh <- rep(0,nreps) 
+  thresh <- rep(0,nreps)
   x <- matrix(runif(nreps*nsim), nrow=nsim)
-  
+
   myTest(sig=p[,1], xi=p[,2],thresh=thresh, msg="qgpd: random xi")
-  
+
   #*************************************************************
   # 6.5. Test qgpd when some or all of xi == 0. Note that .evd.qgpd is NOT vectorized.
-  
+
   p[sample(1:nreps,nreps/2),2] <- 0
   myTest(sig=p[,1], xi = p[,2], thresh=thresh, msg="qgpd: some zero xi")
   p[,2] <-  0
   myTest(sig=p[,1], xi = p[,2], thresh=thresh, msg="qgpd: all zero xi")
-  
+
   #*************************************************************
   # 6.6. Test vectorization of qgpd. Note that .evd.qgpd is NOT vectorized.
 
