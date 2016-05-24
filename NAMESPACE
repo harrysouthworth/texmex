@@ -26,6 +26,9 @@ importFrom(ggplot2, ggplot, scale_x_continuous, scale_x_discrete, scale_y_contin
 # Export all names that don't start with "." or are just workers
 useDynLib(texmex, .c.exprel, .c.log1prel, .c.log1mexp)
 
+export(ggplot.declustered)
+export(ggplot.extremalIndex)
+
 export(ggplot.evmOpt)
 export(ggplot.evmSim)
 export(ggplot.mrl)

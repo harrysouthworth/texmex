@@ -5,6 +5,8 @@
 \alias{declust.default}
 \alias{declust.extremalIndex}
 \alias{plot.declustered}
+\alias{ggplot.declustered}
+\alias{ggplot.extremalIndex}
 \alias{bootExtremalIndex}
 \alias{evm.declustered}
 \title{
@@ -27,9 +29,21 @@ declust(y, r=NULL, data = NULL, ...)
 
 \method{declust}{extremalIndex}(y, r=NULL,...)
 
+\method{ggplot}{extremalIndex}(data=NULL, mapping, xlab, ylab, main,
+                                 ptcol="blue",
+                                 col="light blue",
+                                 plot.=TRUE,
+                                 ..., environment)
+                                 
 \method{plot}{declustered}(x, ylab = "Data",...)
 
+\method{ggplot}{declustered}(data=NULL, mapping, xlab, ylab, main,ptcol=c("blue","orange"),
+                         col="light blue",
+                         plot.=TRUE,
+                         ..., environment)
+
 \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
+
 }
 \arguments{
   \item{y}{ Argument to function \code{extremalIndex}: either a numeric vector or the name of a variable in \code{data}.}
@@ -47,12 +61,18 @@ declust(y, r=NULL, data = NULL, ...)
   \item{nboot}{ Number of bootstrap samples to simulate at each threshold for estimation.}
   \item{alpha}{ 100(1 - alpha)\% confidence intervals will be plotted with the
                point estimates. Defaults to \code{alpha = 0.05}.}
-  \item{xlab}{ Label for the x-axis. }
-  \item{ylab}{ Label for the y-axis. }
+  \item{xlab}{ Label for the x-axis (ggplot). }
+  \item{ylab}{ Label for the y-axis (ggplot). }
+  \item{main}{ Plot title (ggplot). }
+  \item{ptcol}{Colour of points on diagnostic plots (ggplot).}
+  \item{col}{Colour of lines on diagnostic plots (ggplot).}
   \item{addNexcesses}{ Whether to annotate the top axis of plots with the number of excesses above the corresponding threhsold. Defaults to \code{TRUE}. }
   \item{estGPD}{ Whether to estimate GPD parameters at each choice of thereshold -- defaults to \code{TRUE} in which case the GPD parameters are estimated.}
   \item{verbose}{Whether to report on progress in RangeFit calculations. Defaults to \code{TRUE}.}
   \item{trace}{How frequently to report bootstrap progress in RangeFit calculations.  Defaults to 10.}
+  \item{plot.}{Whether to actually print the diagnostic plots (ggplot). Defaults to \code{plot.=TRUE}.}
+  \item{mapping}{Not used.}
+  \item{environment}{Not used.}
   \item{...}{Further arguments to methods.}
 }
 \details{

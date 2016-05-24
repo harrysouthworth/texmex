@@ -38,11 +38,14 @@ ggplot.mrl <- function(data, mapping, xlab = "Threshold", ylab = "Mean excess", 
   poly <- data.frame(x=c(d$th, rev(d$th)), y=c(d$xl, rev(d$xu)))
   poly <- poly[c(k, rev(k)), ]
 
+  d2 <- data.frame(x = data,y=rep(0,length(data)))
+  
   p <- ggplot(poly, aes(x, y)) +
     geom_polygon(fill=fill, alpha=.5) +
     geom_line(data=d, aes(th, mrl), color=col) +
     scale_x_continuous(xlab) +
     scale_y_continuous(ylab) +
+    geom_rug(data=d2,mapping=aes(x,y),sides="b") +
     ggtitle(main)
 
   if (addNexcesses)

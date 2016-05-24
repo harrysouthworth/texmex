@@ -27,6 +27,7 @@ LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
 VignetteBuilder: knitr
 Collate:
+  ggplot.cluster.R
   ggplot.bayes.R
   ggplot.evm.R
   ggplot.thresh.R
