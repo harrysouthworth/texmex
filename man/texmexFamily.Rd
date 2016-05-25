@@ -24,7 +24,7 @@ NULL, rl, delta, endpoint, density, rng, prob, quant)
   \item{info}{Function to compute the information matrix. If not
     provided, the modelling functions will work with a numerical
     approximation.}
-  \item{sandwich}{Function to compute the filling in the Huber sandwich estimator of the covariance matrix of parameter estimates, used for dependent data.}
+  \item{sandwich}{Function to compute the filling in the Huber sandwich estimator of the covariance matrix of parameter estimates, used for dependent data. Only implemented in family \code{gpd}.}
   \item{start}{Function to compute starting parameters for the
     model. If not provided, the modelling functions will try to
     guess.}

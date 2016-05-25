@@ -196,17 +196,16 @@ texmexJumpConst(j, map)
   \item{environment}{Not used.}
 }
 \details{
-  In previous versions of \code{texmex}, the main modelling
-  function was \code{gpd} and models using the generalized
-  Pareto distribution (GPD) were used. In this version, the main
-  modelling function is now \code{evm} (extreme value model)
-  and the distribution to be used is specified through the
-  \code{family} argument.
+  The main modelling function is \code{evm} (extreme value model)
+  and the distribution to be used is specified by passing an object of
+  class \code{texmexFamily} to the \code{family} argument.
 
-  Object \code{gpd} is now an object of class \code{texmexFamily}.
-  Currently, the only other \code{texmexFamily} object available
-  is \code{gev} which results in fitting a generalized extreme
-  value (GEV) distribution to the data.
+  The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
+  Currently, the other \code{texmexFamily} objects available
+  are \code{gev} which results in fitting a generalized extreme
+  value (GEV) distribution to the data, and \code{egp3} which fits
+  the extended generalized Pareto distribution version 3 of
+  Papastathopoulos and Tawn (2013).
 
   See Coles (2001) for an introduction to extreme value modelling and
   the GPD and GEV models.
@@ -224,7 +223,8 @@ texmexJumpConst(j, map)
 
   In each case, the scale parameter is sigma (\eqn{\sigma}) and the
   shape parameter is xi (\eqn{\xi}). The GEV distribution also has
-  location parameter mu (\eqn{\mu}).
+  location parameter mu (\eqn{\mu}). See Papastathopoulos and
+  Tawn (2013) for specification of the EGP3 model.
 
   Working with the log of the scale parameter improves the
   stability of computations, makes  a quadratic penalty more
@@ -365,8 +365,13 @@ texmexJumpConst(j, map)
 \author{Janet E. Heffernan, Harry Southworth. Some of the internal code is based on
   the \code{gpd.fit} function in the \code{ismev} package and is due to Stuart Coles.}
 
-\references{S. Coles. An Introduction to Statistical Modelling of Extreme
-            Values. Springer, 2001.}
+\references{
+  S. Coles. An Introduction to Statistical Modelling of Extreme Values. Springer, 2001.
+
+  I. Papastathopoulos and J. A. Tawn, Extended generalised Pareto models for tail estimation,
+  Journal of Statistical Planning and Inference, 143, 131 - 143, 2013.
+  }
+
 
 \examples{
   mod <- evm(rain, th=30)
