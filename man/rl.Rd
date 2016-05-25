@@ -30,11 +30,11 @@ rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
    alpha = 0.050, unique. = TRUE, all = FALSE, sumfun = NULL, ...)
 
 \method{plot}{rl.evmOpt}(x, xlab, ylab, main, pch= 1, ptcol =2 , cex=.75, linecol = 4 , 
-     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ... )
+     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, ... )
 \method{plot}{rl.evmSim}(x, xlab, ylab, main, pch= 1, ptcol =2 , cex=.75, linecol = 4 , 
-     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ... )
+     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, ... )
 \method{plot}{rl.evmBoot}(x, xlab, ylab, main, pch= 1, ptcol =2 , cex=.75, linecol = 4 , 
-     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ... )
+     cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, ... )
 
 \method{print}{rl.evmOpt}(x, digits=3, ...)
 \method{print}{rl.evmSim}(x, digits=3, ...)
@@ -87,7 +87,7 @@ implied by \code{alpha}.
   (\code{type="median"}) estimate of the return levels.}
 \item{x}{Object passed to plot and print methods.}
 \item{xlab, ylab, main, pch, ptcol, cex, linecol, cicol,
-  polycol, smooth, sameAxes}{Further arguments to plot methods.}
+  polycol, smooth, sameAxes, ylim}{Further arguments to plot methods.}
 \item{digits}{Number of digits to show when printing output.}
 \item{...}{Further arguments to be passed to methods.}
 }
