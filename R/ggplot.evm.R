@@ -196,7 +196,7 @@ function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000
           d <- data.frame(lp=lp[, i], r = resid(data))
           co[[i]] <- ggplot(d, aes(lp, r)) +
                          geom_point(color=ptcol, alpha=.7, position=position_jitter(width=jitter.width)) +
-                         stat_smooth(color=col, se=FALSE, span=2/3, family="symmetric", degree=1, method="loess") +
+                         stat_smooth(color=col, se=FALSE, span=2/3, method="loess") +
                          ggtitle(paste("Residuals vs fitted", ParName)) +
                          ggtitle(paste("Residuals vs fitted", ParName)) +
                          scale_x_continuous(paste("Fitted", ParName)) +
