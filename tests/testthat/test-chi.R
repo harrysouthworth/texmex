@@ -1,6 +1,8 @@
 context("chi")
 
 test_that("chi behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     
   # independent implementation of chi and chibar, Janet Heffernan personal code library
   

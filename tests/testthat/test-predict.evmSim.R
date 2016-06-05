@@ -1,6 +1,8 @@
 context("predict.evmSim")
 
 test_that("predict.evmSim behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
 
   for(Family in list(gpd,gev)){
 

@@ -1,6 +1,8 @@
 context("rgev")
 
 test_that("rgev behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
 function() {
   ## so, how do we test an RNG...
   num.simple <- 1000

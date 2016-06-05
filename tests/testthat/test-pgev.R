@@ -1,6 +1,8 @@
 context("pgev")
 
 test_that("pgev behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   probabilities <- runif(10)
   
   xi.values <- c(0, seq(-5, 5, length.out=10))

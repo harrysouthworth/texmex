@@ -1,6 +1,8 @@
 context("plot.predict.mex")
 
 test_that("plot.predict.mex behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     # check reproduce Figure 6 in Heffernan and Tawn
   w <- mex(winter,mqu=0.7,penalty="none", which="NO", dqu=.7, margins="gumbel", constrain=FALSE)
   noMod <- bootmex(w,trace=101)

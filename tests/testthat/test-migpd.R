@@ -1,6 +1,8 @@
 context("migpd")
 
 test_that("migpd behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     
   # values from Heffernan and Tawn (2004) Table 4.
   # Note values in published Table 4 for u_{Xi} in cols NO2 and NO Winter were reversed.

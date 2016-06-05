@@ -1,6 +1,8 @@
 context("evm")
 
 test_that("evm behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   tol <- 0.01
 
   ###################################################################

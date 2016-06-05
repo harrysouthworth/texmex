@@ -1,6 +1,8 @@
 context("mexDependence")
 
 test_that("mexDependence behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   smarmod <- migpd(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none")
   wmarmod <- migpd(winter, mqu=.7,  penalty="none")
 

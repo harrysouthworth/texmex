@@ -1,6 +1,8 @@
 context("predict.evmOpt")
 
 test_that("predict.evmOpt behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
 
   for(Family in list(gpd,gev)){
     set.seed(20130513)

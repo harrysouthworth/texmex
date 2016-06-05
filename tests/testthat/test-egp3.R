@@ -1,6 +1,8 @@
 context("egp3")
 
 test_that("egp3 family behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   library(MASS)
   rmod <- rlm(log(ALT.M) ~ log(ALT.B) + as.numeric(dose), data=liver, method="MM", c=3.44)
   liver$r <- resid(rmod)
@@ -26,6 +28,8 @@ test_that("egp3 family behaves as it should", {
   })
 
 test_that("regp3 behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   regp3_test <- function(n, kappa=1, sigma, xi, u=0){
     # Implement rng via direct cdf inversion and compare to version that uses qegp3
     kappa <- rep(kappa, length.out=n)
@@ -63,6 +67,8 @@ test_that("regp3 behaves as it should", {
 }) # Close test_that
 
 test_that("qegp3 behaves as expected", {
+  skip_on_cran()
+  skip_on_travis()
   # Note that regp3 calls on qegp3, so some implicit testing is performed by the
   # regp3 tests. Also, qegp3 calls on qgpd, so again some implicit testing is done
   # there.
@@ -94,6 +100,8 @@ test_that("qegp3 behaves as expected", {
 })
 
 test_that("pegp3 behaves as expected", {
+  skip_on_cran()
+  skip_on_travis()
   # pegp3 does some /fairly/ simple stuff and calls on pgpd, so the testing of
   # pgpd implicitly does some testing of pegp3. Also the test of qegp3 implicity
   # tests pegp3
@@ -117,6 +125,8 @@ test_that("pegp3 behaves as expected", {
 })
 
 test_that("degp3 behaves as expected", {
+  skip_on_cran()
+  skip_on_travis()
   degp3_test <- function(x, kappa=1, sigma, xi){
     y <- 1 + x * xi/sigma
     res <- log(kappa/sigma) + (kappa - 1) * log(1 - y^(-1/xi)) - (1/xi + 1) * log(y)

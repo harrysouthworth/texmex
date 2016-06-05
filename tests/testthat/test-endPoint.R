@@ -1,6 +1,8 @@
 context("endPoint")
 
 test_that("endPoint behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     
   for(Family in list(gpd,gev)){
     pst <- function(msg) texmexPst(msg,Family=Family)

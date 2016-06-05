@@ -1,6 +1,8 @@
 context("simulate")
 
 test_that("simulate.evm functions behave as expected", {
+  skip_on_cran()
+  skip_on_travis()
   ##############################################################################
   ##################################### GPD ####################################
 

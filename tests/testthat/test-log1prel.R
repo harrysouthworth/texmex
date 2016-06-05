@@ -1,6 +1,8 @@
 context("log1prel")
 
 test_that("log1prel behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   ## pull in from the namespace
 
   log1prel <- texmex:::.log1prel

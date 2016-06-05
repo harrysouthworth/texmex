@@ -1,5 +1,7 @@
 context("evmBoot")
 test_that("evmBoot behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     Sys.setenv("R_TESTS" = "") # Prevent R CMD check failure with parallel
     tol <- 0.12
   

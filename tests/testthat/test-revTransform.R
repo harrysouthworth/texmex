@@ -1,6 +1,8 @@
 context("revTransform")
 
 test_that("revTransform behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   set.seed(20111010)
   n <- 5000
   x <- cbind(rexp(n), rexp(n, 3))

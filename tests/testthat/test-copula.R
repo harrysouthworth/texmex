@@ -1,6 +1,8 @@
 context("copula")
 
 test_that("copula behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     fun <- function(d) apply(d,2,function(x)(1:n)[rank(x)])/(1+n)
   n <- 200
   

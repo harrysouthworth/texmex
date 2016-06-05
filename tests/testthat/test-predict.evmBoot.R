@@ -1,6 +1,8 @@
 context("predict.evmBoot")
 
 test_that("predict.evmBoot behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     # functionality all tested already in test.predict.evm, so just check output of correct format.
   
   n <- 1000

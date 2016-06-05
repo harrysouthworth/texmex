@@ -1,6 +1,8 @@
 context("plot.evmOpt")
 
 test_that("plot.evmOpt behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   par(mfrow=c(2,2))
   mod <- evm(rain, th=30, penalty="none")
   res <- plot(mod,main=paste(rep("Figure 4.5 of Coles (2001)",4),

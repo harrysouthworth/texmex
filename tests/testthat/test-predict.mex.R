@@ -1,6 +1,8 @@
 context("predict.mex")
 
 test_that("predict.mex behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     # reproduce Table 5 in Heffernan and Tawn 2004
   smarmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), which="NO", penalty="none", dqu=.7,margins="gumbel",constrain=FALSE)
   wmarmod <- mex(winter, mqu=.7,  penalty="none", which="NO",margins="gumbel",constrain=FALSE)

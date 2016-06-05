@@ -1,6 +1,8 @@
 context("mexRangeFit")
 
 test_that("mexRangeFit behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     
   which <- 2
   quantiles <- seq(0.5,0.9,length=5)

@@ -1,6 +1,8 @@
 context("specfun.safe.product")
 
 test_that("specfun.safe.product behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
 function() {
   prod <- texmex:::.specfun.safe.product
 

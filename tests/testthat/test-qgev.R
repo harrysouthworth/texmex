@@ -1,6 +1,8 @@
 context("qgev")
 
 test_that("qgev behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
 function() {
   ## get the probabilities that we'll use and sort them
   ## into ascending order for safekeeping

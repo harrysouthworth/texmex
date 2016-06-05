@@ -1,6 +1,8 @@
 context("migpdCoefs")
 
 test_that("migpdCoefs behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   library("MASS")
   liver <- liver
   liver$ndose <- as.numeric(liver$dose)

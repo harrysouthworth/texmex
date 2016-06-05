@@ -1,6 +1,8 @@
 context("thinAndBurn.evmSim")
 
 test_that("thinAndBurn.evmSim behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     
   # generate data to use for checking
   d <- sample(3:10,1)

@@ -1,6 +1,8 @@
 context("plot.predict.evm")
 
 test_that("plot.predict.evm behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     # testing all of: plot.lp.evm* and plot.rl.evm* where * is opt, sim and boot
   
   # first with no covariates

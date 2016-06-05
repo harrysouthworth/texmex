@@ -1,6 +1,8 @@
 context("plotrl.evm")
 
 test_that("plotrl.evm behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     # no covariates
   
   rain.fit <- evm(rain,th=30)

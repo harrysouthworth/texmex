@@ -1,6 +1,8 @@
 context("exprel")
 
 test_that("exprel behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   ## pull in from the namespace because RUnit doesn't give access to
   ## internal functions.
   exprel <- texmex:::.exprel

@@ -1,6 +1,8 @@
 context("MCS")
 
 test_that("MCS behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     myMCS <- function(x,p){
     # First and second args are
     # x (dxn matrix) and p (vector of probabilities).

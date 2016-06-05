@@ -1,6 +1,8 @@
 context("plot.bootmex")
 
 test_that("plot.bootmex behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
     
   set.seed(3141593)
   

@@ -1,6 +1,8 @@
 context("rgpd")
 
 test_that("rgpd behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
   ## testing an RNG...
   num.simple <- 1000
   num.quantile <- 1e6
