@@ -5,5 +5,3 @@ coef.evmSim <- function(object, ...){
     names(res) <- names(object$map$coefficients)
     res
 }
-coefficients.evmSim <- coef.evmSim
-
