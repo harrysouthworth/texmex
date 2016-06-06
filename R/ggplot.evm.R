@@ -1,4 +1,3 @@
-#' @method ggplot qqevm
 ggplot.qqevm <- function(data=NULL, mapping, xlab, ylab, main,
                        ylim = "auto",
                        ptcol="blue",
@@ -27,7 +26,6 @@ ggplot.qqevm <- function(data=NULL, mapping, xlab, ylab, main,
     p
 }
 
-#' @method ggplot ppevm
 ggplot.ppevm <- function(data=NULL, mapping, xlab, ylab,  main,
                          ptcol="blue", col="light blue", fill="orange", ..., environment){
 
@@ -50,7 +48,6 @@ ggplot.ppevm <- function(data=NULL, mapping, xlab, ylab,  main,
     p
 }
 
-#' @export
 ggplot.hist.evmOpt <- function(data, mapping, xlab=NULL, ylab=NULL, main=NULL,
                                ptcol="orange", col="dark blue", fill="light blue", ..., environment){
 
@@ -112,37 +109,48 @@ function(data, mapping, alpha = .050,
 #' Diagnostic plots for an evm object
 #'
 #' Create and display diagnostic plots for an evm object.
-#' @aliases ggplot.ppevm ggplot.qqevm ggplot.hist.evmOpt ggplot.evmOpt, ggplotrl
+#' @aliases ggplot.ppevm ggplot.qqevm ggplot.hist.evmOpt
+#'     ggplot.evmOpt, ggplotrl
 #' @param data An object of class \code{evm}.
 #' @param which Which plots to produce. Defaults to \code{which=1:4}.
 #' @param main Main titles. Should have length 4.
 #' @param xlab Labels for x-axes.
-#' @param nsim Number of simulated datasets to create to form tolerence regions.
-#' @param alpha Used to compute coverage of pointwise confidence intervals.
-#' @param jitter.width Used to control the amount of horizontal jittering of points in
-#'        the plots of the residuals versus covariates (when covariates are in the model).
-#'        Defaults to \code{jitter.width=0}.
-#' @param span Passed to the loess smoother and defaults to \code{span=2/3}. Sometimes
-#'        this choice is poor: if the loess smoother looks wrong, try \code{span=1}.
+#' @param nsim Number of simulated datasets to create to form
+#'     tolerence regions.
+#' @param alpha Used to compute coverage of pointwise confidence
+#'     intervals.
+#' @param jitter.width Used to control the amount of horizontal
+#'     jittering of points in the plots of the residuals versus
+#'     covariates (when covariates are in the model).  Defaults to
+#'     \code{jitter.width=0}.
+#' @param span Passed to the loess smoother and defaults to
+#'     \code{span=2/3}. Sometimes this choice is poor: if the loess
+#'     smoother looks wrong, try \code{span=1}.
 #' @param ptcol Colour for points. Defaults to \code{ptcol="blue"}.
 #' @param col Colour for lines. Defaults to \code{col="light blue"}.
-#' @param fill Colour for confidence regions. Defaults to \code{fill="orange"}
-#' @param plot. Whether or not to display the output. Defaults to \code{plot.=TRUE}.
-#'        If the display doesn't have the desired row and column layout, the
-#'        user should specify \code{plot.=FALSE}, asign the output to an object,
-#'        and use \code{grid.arrange} to display it.
-#' @param ncol The number of columns wanted in the resulting plot. Defaults to
-#'        \code{ncol=2}. This argument is passed into \code{grid.arrange}.
-#' @param nrow The number of rows wanted in the resulting plot. Defaults to
-#'        \code{nrow=2}. This argument is passed into \code{grid.arrange}.
-#' @param ... Other arguments passed through to underlying plot functions.
-#' @details The function attempts to arrange the plots nicely. If the output
-#'          isn't what was wanted, the function returns the graphs to the user
-#'          as a list so that the user can use \code{grid.arrange} directly.
-#'          Also, if you have one or more covariates in the model and the loess
-#'          smoother looks wrong, try setting \code{span=1}.
+#' @param fill Colour for confidence regions. Defaults to
+#'     \code{fill="orange"}
+#' @param plot. Whether or not to display the output. Defaults to
+#'     \code{plot.=TRUE}.  If the display doesn't have the desired row
+#'     and column layout, the user should specify \code{plot.=FALSE},
+#'     asign the output to an object, and use \code{grid.arrange} to
+#'     display it.
+#' @param ncol The number of columns wanted in the resulting
+#'     plot. Defaults to \code{ncol=2}. This argument is passed into
+#'     \code{grid.arrange}.
+#' @param nrow The number of rows wanted in the resulting
+#'     plot. Defaults to \code{nrow=2}. This argument is passed into
+#'     \code{grid.arrange}.
+#' @param ... Other arguments passed through to underlying plot
+#'     functions.
+#' @param mapping,environment ignored
+#' @details The function attempts to arrange the plots nicely. If the
+#'     output isn't what was wanted, the function returns the graphs
+#'     to the user as a list so that the user can use
+#'     \code{grid.arrange} directly.  Also, if you have one or more
+#'     covariates in the model and the loess smoother looks wrong, try
+#'     setting \code{span=1}.
 #' @keywords hplot
-
 #' @method ggplot evmOpt
 #' @export
 ggplot.evmOpt <-

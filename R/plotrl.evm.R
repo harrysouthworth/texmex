@@ -46,7 +46,8 @@ getPlotRLdata <- function(object, alpha, RetPeriodRange){
 }
 
 
-
+#' @rdname rl
+#' @export
 plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
@@ -149,7 +150,13 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
     invisible(list(m=m,xm=Array))
 }
 
-plot.rl.evmBoot <- plot.rl.evmSim <- plot.rl.evmOpt
+#' @rdname rl
+#' @export
+plot.rl.evmSim <- plot.rl.evmOpt
+
+#' @rdname rl
+#' @export
+plot.rl.evmBoot <- plot.rl.evmOpt
 
 plotRLevm <- function(M,xm,polycol,cicol,linecol,ptcol,n,xdat,pch,smooth,xlab,ylab,main,xrange,yrange){
 # worker function - called by plotrl.evmOpt, plot.rl.evmOpt, plot.rl.evmSim, plot.rl.evmBoot

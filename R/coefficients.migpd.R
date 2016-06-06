@@ -1,3 +1,4 @@
+#' @export
 coef.migpd <-
 function(object, ...){
     co <- sapply(object$models, function(x) x$coefficients)

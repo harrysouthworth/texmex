@@ -26,6 +26,7 @@ function(object , nsim = 1000, alpha = .050){
     res
 }
 
+#' @export
 plot.ppevm <- function(x, xlab, ylab,  main,
                        pch=1, col = 2, cex = .75, linecol = 4,
                        intcol = 0, polycol=15, ...){
@@ -56,4 +57,5 @@ plot.ppevm <- function(x, xlab, ylab,  main,
     invisible()
 }
 
+#' @export
 print.ppevm <- plot.ppevm

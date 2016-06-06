@@ -1,3 +1,4 @@
+#' @export
 hist.evmOpt <-
 function(x, xlab, ylab, main, ...){
     # Want parameters as a matrix with one row for passing
@@ -22,6 +23,7 @@ function(x, xlab, ylab, main, ...){
     res
 }
 
+#' @export
 plot.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
 
     if (missing(xlab) || is.null(xlab)) xlab <- "Data"
@@ -35,5 +37,6 @@ plot.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
     invisible()
 }
 
+#' @export
 print.hist.evmOpt <- plot.hist.evmOpt
 

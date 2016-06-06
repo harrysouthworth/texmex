@@ -1,20 +1,22 @@
 #' Diagnostic plots for an declustered object
 #'
 #' Create and display diagnostic plots for a declustered object.
-#' @aliases ggplot.declustered ggplot.extremalIndex
 #' @param data An object of class \code{declustered} or \code{extremalIndex}.
 #' @param ptcol Colour for points. Defaults to \code{ptcol="blue"}.
 #' @param col Colour for lines. Defaults to \code{col="light blue"}.
 #' @param plot. Whether or not to display the output. Defaults to \code{plot.=TRUE}.
 #' @param ... Other arguments passed through to underlying plot functions.
-
-#' @method ggplot declustered
+#' @param mapping Not used.
+#' @param environment Not used.
+#' @param xlab Label for the x-axis.
+#' @param ylab Label for the y-axis.
+#' @param main Plot title.
 #' @export
 ggplot.declustered <- function(data=NULL, mapping, xlab, ylab, main,
-                         ptcol=c("blue","orange"),
-                         col="light blue",
-                         plot.=TRUE,
-                         ..., environment){
+                              ptcol=c("blue","orange"),
+                              col="light blue",
+                              plot.=TRUE,
+                              ..., environment){
     
     if (missing(xlab) || is.null(xlab)) { xlab <- "" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Data" }
@@ -36,7 +38,7 @@ ggplot.declustered <- function(data=NULL, mapping, xlab, ylab, main,
     p
 }
 
-#' @method ggplot extremalIndex
+#' @rdname ggplot.declustered
 #' @export
 ggplot.extremalIndex <- function(data=NULL, mapping, xlab, ylab, main,
                                  ptcol="blue",

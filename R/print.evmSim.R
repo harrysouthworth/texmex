@@ -1,3 +1,4 @@
+#' @export
 print.evmSim <- function(x , print.seed=FALSE, ...){
     print(x$call)
     print(x$map$family, verbose=FALSE)

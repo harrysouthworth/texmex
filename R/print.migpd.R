@@ -1,3 +1,4 @@
+#' @export
 print.migpd <- function( x , ... ){
     cat( "\nA collection of ", dim( x$data )[ 2 ] , "generalized Pareto models.\n" )
     conv <- sapply( x$models , function( x ) x$convergence )

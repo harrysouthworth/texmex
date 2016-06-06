@@ -1,3 +1,7 @@
+#' @include texmexFamily.R
+#' @export gev
+NULL
+
 gev <- texmexFamily(name = 'GEV',
                     param = c(mu=0, phi=0, xi=0),
                     log.lik = function(data, ...) {

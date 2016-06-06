@@ -1,3 +1,5 @@
+#' @rdname dgev
+#' @export
 qgev <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
   ## this code is trickier than it looks.
 

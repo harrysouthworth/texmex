@@ -1,3 +1,5 @@
+#' @rdname degp3
+#' @export
 qegp3 <- function(p, kappa=1, sigma, xi, u=0, lower.tail=TRUE, log.p=FALSE){
   if (lower.tail){
     p <- if(log.p) {p / kappa} else {p^(1/kappa)}

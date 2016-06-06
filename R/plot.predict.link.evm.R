@@ -1,3 +1,5 @@
+#' @rdname predict.evmOpt
+#' @export
 plot.lp.evmOpt <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 1, polycol = 15, ...){
@@ -12,7 +14,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
   if(!any(colnames(x) == "phi.lo") ){
     stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
   }
-
+  
   makelp <- function(x, family){
       p <- names(family$param)
       res <- vector("list", length=length(p))
@@ -63,6 +65,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
   invisible()
 }
 
+#' @export
 plot.lp.evmSim <- function(x, type="median", ...){
   if(dim(x$obj$link)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
@@ -85,5 +88,6 @@ plot.lp.evmSim <- function(x, type="median", ...){
   plot.lp.evmOpt(x,...)
 }
 
+#' @export
 plot.lp.evmBoot <- plot.lp.evmSim
 

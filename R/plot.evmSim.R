@@ -1,3 +1,27 @@
+#' Plots for evmSim objects
+#'
+#' This function produces diagnostic plots for the Markov chains used
+#' to simulate from the posterior distributions for the model
+#' parameters. If the chains have converged on the posterior
+#' distributions, the trace plots should look like
+#' "fat hairy caterpillars" and their cumulative means should converge
+#' rapidly. Moreover, the autocorrelation functions should converge
+#' quickly to zero.
+#' 
+#' @param x an object of class \code{evmSim}
+#' @param which.plots Which plots to produce. Option 1 gives kernel
+#'     density estimates, 2 gives traces of the Markov chains with
+#'     superimposed cumulative means, 3 gives autocorrelation
+#'     functions.
+#' @param density.adjust In \code{plot} method for class
+#'     \code{evmSim}.  Passed into \code{density}. Controls the amount
+#'     of smoothing of the kernel density estimate.
+#' @param print.seed Whether or not to print the seed used in the
+#'     simulations, or to annotate the plots with it.
+#' @param ... ignored
+#' @seealso \code{\link{evm}}
+#' @seealso \code{\link[stats]{density}}
+#' @export
 plot.evmSim <-
 function(x, which.plots=1:3, density.adjust=2, print.seed = FALSE , ...){
 
@@ -46,6 +70,6 @@ function(x, which.plots=1:3, density.adjust=2, print.seed = FALSE , ...){
     			title(sub = paste(c("Seed: ", x$seed) , collapse = " "), adj=0)
         }
     }
-	invisible()
+    invisible()
 }
 

@@ -1,3 +1,5 @@
+#' @rdname mex
+#' @export
 `predict.mex` <-
 function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FALSE, ...){
 	theCall <- match.call()

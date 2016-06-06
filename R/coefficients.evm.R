@@ -1,3 +1,4 @@
+#' @export
 coef.evmOpt <-
 function(object, ...){
     res <- object$coefficients

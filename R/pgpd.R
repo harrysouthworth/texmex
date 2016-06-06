@@ -1,3 +1,5 @@
+#' @rdname dgpd
+#' @export
 pgpd <-
 function(q, sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE ){
   ## first shift, rescale and cut at 0

@@ -1,3 +1,5 @@
+#' @rdname dgev
+#' @export
 pgev <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
   ## first shift and scale
   q <- (q - mu) / sigma

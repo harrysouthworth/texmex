@@ -1,3 +1,5 @@
+#' @rdname mex
+#' @export
 plot.mex <- function(x, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...){
    if (class(x) != "mex") stop("you need to use an object with class 'mex'")
 

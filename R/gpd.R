@@ -1,3 +1,9 @@
+#' @include texmexFamily.R
+#' @include gpd.info.R
+#' @include gpd.sandwich.R
+#' @export gpd
+NULL
+
 gpd <- texmexFamily(name = 'GPD',
                    log.lik = function(data, th, ...) {
                                y <- data$y

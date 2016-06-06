@@ -1,4 +1,3 @@
-#' @export ggdensplots
 ggdensplots <- function(x, fill="blue", col="light blue"){
     v <- names(coef(x))
     n <- length(v)
@@ -15,7 +14,6 @@ ggdensplots <- function(x, fill="blue", col="light blue"){
     p
 }
 
-#' @export ggacfplots
 ggacfplots <- function(x, fill="orange"){
     v <- names(coef(x))
     n <- length(v)
@@ -36,7 +34,6 @@ ggacfplots <- function(x, fill="orange"){
     p
 }
 
-#' @export ggtraceplots
 ggtraceplots <- function(x, trace="light blue", mean="blue", burn="orange"){
     v <- names(coef(x))
     n <- length(v)
@@ -63,14 +60,18 @@ ggtraceplots <- function(x, trace="light blue", mean="blue", burn="orange"){
 
 #' Diagnostic plots for the Markov chains in an evmSim object
 #' @param data An object of class 'evmSim'.
-#' @param which.plots Which plots to produce. Density plots correspond to 1, trace
-#'   plots of the Markov chains to 2 and autocorrelation function plots to 3.
+#' @param which.plots Which plots to produce. Density plots correspond
+#'     to 1, trace plots of the Markov chains to 2 and autocorrelation
+#'     function plots to 3.
 #' @param denscol Colour for the density plots. Defaults to 'blue'.
 #' @param acfcol Colour for the ACF plots. Defaults to 'light blue'.
-#' @param plot.it Whether or not to actually print the plots. Defaults to \code{plot.it=TRUE}.
-#'   If \code{plot.it=FALSE}, you might want to control the layout. Do this with
-#'   \code{do.call("grid.arrange", c(plots, ncol=2))}, for example, where \code{plots}
-#'   is the objected returned by \code{ggplot.evmSim}.
+#' @param plot.it Whether or not to actually print the plots. Defaults
+#'     to \code{plot.it=TRUE}.  If \code{plot.it=FALSE}, you might
+#'     want to control the layout. Do this with
+#'     \code{do.call("grid.arrange", c(plots, ncol=2))}, for example,
+#'     where \code{plots} is the objected returned by
+#'     \code{ggplot.evmSim}.
+#' @param mapping,environment ignored
 #' @param ... Additional arguments to \code{ggplot}, currently unused.
 #' @aliases ggtraceplots ggdensplots ggacfplots
 #' @keywords hplot
