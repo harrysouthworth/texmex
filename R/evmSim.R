@@ -62,7 +62,7 @@ function(x, log.lik, proposals, verbose, trace){
     acc <- 0
     for(i in 2:nrow(x)){
       if( verbose){
-        if(i %% trace == 0) message(i, " steps taken\n" )
+        if(i %% trace == 0) message(i, " steps taken" )
       }
       prop <- proposals[i - 1,] + x[i - 1,]
       top <- log.lik(prop)
