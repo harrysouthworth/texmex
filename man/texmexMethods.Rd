@@ -1,13 +1,8 @@
 \name{methods}
 \alias{coef.evmSim}
 \alias{coef.evmBoot}
-\alias{coefficients.evmBoot}
 \alias{coef.mex}
 \alias{coef.migpd}
-\alias{coefficients.evmSim}
-\alias{coefficients.evmOpt}
-\alias{coefficients.mex}
-\alias{coefficients.migpd}
 
 \alias{plot.extremalIndex}
 \alias{plot.ppevm}
@@ -46,10 +41,6 @@
 \method{coef}{evmSim}(object,...)
 \method{coef}{mex}(object,...)
 \method{coef}{migpd}(object,...)
-\method{coefficients}{evmSim}(object,...)
-\method{coefficients}{evmOpt}(object,...)
-\method{coefficients}{mex}(object,...)
-\method{coefficients}{migpd}(object,...)
 
 \method{plot}{extremalIndex}(x,...)
 \method{plot}{mexRangeFit}(x, col=2, bootcol="grey", addNexcesses=TRUE, ...)

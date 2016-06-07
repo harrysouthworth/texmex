@@ -48,10 +48,8 @@ summary.mex <- function(object, ...){
     invisible(coef(object))
 }
 
-coefficients.mex <- function(object, ...){
+coef.mex <- function(object, ...){
     res1 <- coef(object[[1]])
     res2 <- coef(object[[2]]) # uses native coef method
     list(margins=res1, dependence=res2)
 }
-
-coef.mex <- coefficients.mex

@@ -7,7 +7,7 @@ function(object, verbose = TRUE, ...){
     conv <- (1:d)[conv != 0]
   else conv <- NULL
 
-  co <- coefficients.migpd(object) # <----------------- XXX
+  co <- coef(object) # <----------------- XXX
 
   if(verbose){
     cat("\nA collection of", d, "generalized Pareto models.\n")

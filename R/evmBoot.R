@@ -72,7 +72,7 @@ print.evmBoot <- function(x, ...){
     invisible(res)
 }
 
-coefficients.evmBoot <- coef.evmBoot <- function(object, ...){
+coef.evmBoot <- function(object, ...){
     apply(object$replicates, 2, mean)
 }
 

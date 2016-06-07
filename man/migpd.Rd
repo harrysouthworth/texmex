@@ -87,7 +87,7 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000,
   Threshold selection can be carried out with the help of functions \code{\link{mrl}} and \code{\link{gpdRangeFit}}.
 }
 \value{
-  An object of class "migpd". There are \code{coefficients}, \code{print}, \code{plot}
+  An object of class "migpd". There are \code{coef}, \code{print}, \code{plot}
   and \code{summary} functions available.
 }
 \references{
