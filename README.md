@@ -1,8 +1,9 @@
-texmex
-======
-
 The texmex package for R
 ========================
+
+[![Build Status](https://travis-ci.org/harrysouthworth/texmex.svg?branch=master)](https://travis-ci.org/harrysouthworth/texmex)
+[![CRAN Status Badge](http://www.r-pkg.org/badges/version/texmex)](https://cran.r-project.org/web/packages/texmex/)
+
 
 Extreme value modelling with R. Includes univariate
 modelling using generalized Pareto distributions and
