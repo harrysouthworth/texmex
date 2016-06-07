@@ -34,6 +34,7 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
                   "lp" =,"link" = linearPredictors.evmOpt(object, newdata, se.fit,
                                                    ci.fit, alpha, unique.=unique.)
                   )
+    res$call <- theCall
     res
 }
 
@@ -79,7 +80,7 @@ linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     }
 
     res <- list(link=res,family=object$family)
-    
+
     if (full.cov){
         res$cov <- cov.se
     }
@@ -192,6 +193,7 @@ predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
                                                       alpha=alpha, unique.=unique., all=all,
                                                       sumfun=sumfun,...)
                   )
+    res$call <- theCall
     res
 }
 
@@ -348,6 +350,7 @@ predict.evmBoot <- function(object, M=1000, newdata=NULL, type="return level",
                                                          alpha=alpha, unique.=unique.,
                                                          all=all, sumfun=sumfun,...)
                   )
+    res$call <- theCall
     res
 }
 
