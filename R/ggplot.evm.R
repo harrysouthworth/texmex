@@ -122,6 +122,8 @@ function(data, mapping, alpha = .050,
 #' @param jitter.width Used to control the amount of horizontal jittering of points in
 #'        the plots of the residuals versus covariates (when covariates are in the model).
 #'        Defaults to \code{jitter.width=0}.
+#' @param span Passed to the loess smoother and defaults to \code{span=2/3}. Sometimes
+#'        this choice is poor: if the loess smoother looks wrong, try \code{span=1}.
 #' @param ptcol Colour for points. Defaults to \code{ptcol="blue"}.
 #' @param col Colour for lines. Defaults to \code{col="light blue"}.
 #' @param fill Colour for confidence regions. Defaults to \code{fill="orange"}
@@ -137,13 +139,15 @@ function(data, mapping, alpha = .050,
 #' @details The function attempts to arrange the plots nicely. If the output
 #'          isn't what was wanted, the function returns the graphs to the user
 #'          as a list so that the user can use \code{grid.arrange} directly.
+#'          Also, if you have one or more covariates in the model and the loess
+#'          smoother looks wrong, try setting \code{span=1}.
 #' @keywords hplot
 
 #' @method ggplot evmOpt
 #' @export
 ggplot.evmOpt <-
 function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, jitter.width=0,
-         ptcol="blue", col="light blue", fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment){
+         ptcol="blue", span=2/3, col="light blue", fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment){
     if (!missing(main)){
         if (length(main) != 1 & length(main) != 4){
             stop("main should have length 1 or 4")
@@ -194,10 +198,10 @@ function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000
           ParName <- names(data$data$D[i])
           xlab <- paste("Fitted", ParName)
           d <- data.frame(lp=lp[, i], r = resid(data))
+
           co[[i]] <- ggplot(d, aes(lp, r)) +
                          geom_point(color=ptcol, alpha=.7, position=position_jitter(width=jitter.width)) +
-                         stat_smooth(color=col, se=FALSE, span=2/3, method="loess") +
-                         ggtitle(paste("Residuals vs fitted", ParName)) +
+                         stat_smooth(color=col, se=FALSE, span=span, method="loess") +
                          ggtitle(paste("Residuals vs fitted", ParName)) +
                          scale_x_continuous(paste("Fitted", ParName)) +
                          scale_y_continuous("Residuals")
