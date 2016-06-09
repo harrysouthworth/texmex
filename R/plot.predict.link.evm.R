@@ -1,6 +1,8 @@
 plot.lp.evmOpt <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 1, polycol = 15, ...){
+  x <- x$obj
+  
   family <- x$family
   x <- x$link
   
@@ -62,10 +64,10 @@ plot.lp.evmOpt <- function(x, main=NULL,
 }
 
 plot.lp.evmSim <- function(x, type="median", ...){
-  if(dim(x$link)[1] == 1){
+  if(dim(x$obj$link)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
-  p <- names(x$family$param)
+  p <- names(x$obj$family$param)
   np <- length(p)
 # re-format to same column structure as lp.evmOpt x
   ColIndexMeans <- 1+4*(0:(np-1))
@@ -76,9 +78,9 @@ plot.lp.evmSim <- function(x, type="median", ...){
   } else {
     stop("type must be \"mean\" or \"median\" ")
   }
-  which <- c(ColIndexMeans + offset,rep(1:2,np) + rep(ColIndexMeans+1,each=2), (4*np+1): dim(x$link)[2])
-  x$link <- x$link[,which]
-  colnames(x$link)[1:(3*np)] <-  c(p,paste(rep(p,each=2),rep(c(".lo",".hi"),np),sep=""))
+  which <- c(ColIndexMeans + offset,rep(1:2,np) + rep(ColIndexMeans+1,each=2), (4*np+1): dim(x$obj$link)[2])
+  x$obj$link <- x$obj$link[,which]
+  colnames(x$obj$link)[1:(3*np)] <-  c(p,paste(rep(p,each=2),rep(c(".lo",".hi"),np),sep=""))
 
   plot.lp.evmOpt(x,...)
 }

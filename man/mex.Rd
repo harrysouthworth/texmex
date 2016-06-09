@@ -14,7 +14,7 @@ mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE,
     verbose = FALSE, priorParameters = NULL)
 
 \method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
-\method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, ...)
+\method{predict}{mex}(object, which, pqu=0.99, nsim=1000, trace=10, smoothZdistribution = FALSE, ...)
 \method{summary}{predict.mex}(object, mth, probs=c(0.05, 0.5, 0.95), ...)
 \method{plot}{predict.mex}(x, pch=c(1, 3, 20), col=c(2, 8, 3), cex=c(1, 1, 1), ask=TRUE, ...)
 
@@ -85,7 +85,7 @@ mexAll(data,mqu,dqu)
   \item{pqu}{Prediction quantile. Argument to \code{predict} method. The quantile of the conditioning 
             variable above which it will be simulated for importance sampling based prediction.
             Defaults to \code{pqu = .99 }. }
-  \item{smoothZdistribution}{In \code{predict.mex}, whether or not to sample from the smoothed distribution of the underlying residuals.  Defaults to \code{FALSE}, in which case no smoothing is carried out.  If \code{TRUE} then each margin of the underlying multivariate residual is smoothed independently, by using kernel smoothing with a normal kernel, and bandwith chosen using the \code{\link{bw.nrd}} function.  This can be useful for removing "stripeyness" in importance samples which have few values in the conditional tails.}
+  \item{smoothZdistribution}{In \code{predict.mex}, whether or not to sample from the smoothed distribution of the underlying residuals Z.  Defaults to \code{FALSE}, in which case no smoothing is carried out.  If \code{TRUE} then each margin of the underlying multivariate residual is smoothed independently, by using kernel smoothing with a normal kernel, and bandwith chosen using the \code{\link{bw.nrd}} function.  This can be useful for removing "stripeyness" in importance samples which have few values in the conditional tails.}
   \item{nsim}{Argument to \code{predict} method. The number of simulated observations 
             to be generated for prediction. }
   \item{probs}{In \code{summary} method for objects of class \code{predict.mex}: the quantiles of the conditional 

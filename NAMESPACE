@@ -18,8 +18,8 @@ importFrom("utils", "tail")
 importFrom("grDevices", "axisTicks")
 
 importFrom(ggplot2, ggplot, scale_x_continuous, scale_x_discrete, scale_y_continuous,
-           ggtitle, aes, geom_area, geom_segment, stat_density, geom_point,
-           position_jitter, stat_smooth, theme, geom_line, geom_polygon,
+           ggtitle, aes, geom_area, geom_segment, stat_density, geom_point, geom_vline,
+           position_jitter, stat_smooth, theme, geom_line, geom_polygon, geom_hline,
            element_text, geom_rug, geom_abline, geom_rect, geom_histogram,
            geom_text)
 

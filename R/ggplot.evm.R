@@ -177,7 +177,7 @@ function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000
         if (missing(which)){ which <- 1:3 }
 
         np <- length(data$data$D)
-        lp <- predict(data,type="lp", unique.=FALSE)[[1]]
+        lp <- predict(data,type="lp", unique.=FALSE)$obj[[1]]
         Which <- as.logical(apply(lp[,1:np],2,var)) # identifies which cols have covariates
 
         data$data$y <- resid(data)

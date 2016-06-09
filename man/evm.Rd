@@ -42,7 +42,7 @@ evm(y, data, family, ...)
 \method{AIC}{evmOpt}(object, penalized=FALSE, ..., k=2)
 \method{logLik}{evmOpt}(object, ...)
 \method{ggplot}{evmOpt}(data, mapping, which=1:4, main=rep(NULL, 4), xlab=rep(NULL, 4),
-                        nsim=1000, alpha=0.05, jitter.width=0, ptcol="blue", col="light blue",
+                        nsim=1000, alpha=0.05, jitter.width=0, ptcol="blue", span = 2/3, col="light blue",
                         fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment)
 
 \method{print}{evmSim}(x, print.seed=FALSE, ...)
@@ -187,6 +187,7 @@ texmexJumpConst(j, map)
   \item{jitter.width}{How much to horizontally jitter points on diagnostic plots (ggplot).
     Defaults to \code{jitter.width=0}.}
   \item{ptcol}{Colour of points on diagnostic plots (ggplot).}
+  \item{span}{Passed to the loess smoother and defaults to \code{span=2/3}. Sometimes this choice is poor: if the loess smoother looks wrong, try \code{span=1}. (ggplot).}
   \item{col}{Colour of lines on diagnostic plots (ggplot).}
   \item{fill}{Colour of shaded regions on diagnostic plots (ggplot).}
   \item{ncol}{The number of columns to arrange diagnostic plots in (ggplot).}

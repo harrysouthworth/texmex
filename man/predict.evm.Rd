@@ -145,7 +145,7 @@ sample. The \code{evmBoot}
 method is just a wrapper for the \code{evmSim} method.
 }
 \value{
-A list with one entry for each value of \code{M}.}
+A list with two entries: the first being the call  and the second being a further list with one entry for each value of \code{M}.}
 \author{Harry Southworth and Janet E. Heffernan}
 \note{
 At present, the confidence intervals returned for an object of class

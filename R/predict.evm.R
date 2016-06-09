@@ -5,7 +5,7 @@
 ##          returns parameters, return levels or (maybe) return periods,
 ##          depending on arguments given.
 #
-# predict.evm
+# predict.evmOpt
 # predict.evmSim
 # predict.evmBoot
 # rl
@@ -27,14 +27,15 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
          ci.fit=FALSE, alpha=.050, unique.=TRUE, ...){
     theCall <- match.call()
 
-    res <- switch(type,
-                  "rl"=, "return level" = rl.evmOpt(object, M, newdata,
-                                                 se.fit=se.fit, ci.fit=ci.fit,
-                                                 alpha=alpha, unique.=unique.),
-                  "lp" =,"link" = linearPredictors.evmOpt(object, newdata, se.fit,
-                                                   ci.fit, alpha, unique.=unique.)
-                  )
-    res$call <- theCall
+    res <- list(obj = switch(type,
+                             "rl"=, "return level" = rl.evmOpt(object, M, newdata,
+                                                               se.fit=se.fit, ci.fit=ci.fit,
+                                                               alpha=alpha, unique.=unique.),
+                             "lp" =,"link" = linearPredictors.evmOpt(object, newdata, se.fit,
+                                                                     ci.fit, alpha, unique.=unique.)
+                             ),
+                call = theCall)
+    oldClass(res) <- class(res$obj)
     res
 }
 
@@ -183,24 +184,24 @@ predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
                          all=FALSE, sumfun=NULL, ...){
     theCall <- match.call()
 
-    res <- switch(type,
-                  "rl" = , "return level" = rl.evmSim(object, M=M, newdata=newdata,
-                                                    se.fit=se.fit, ci.fit=ci.fit,
-                                                    alpha=alpha, unique.=unique., all=all,
-                                                    sumfun=sumfun,...),
-                  "lp" = , "link" = linearPredictors.evmSim(object, newdata=newdata,
-                                                      se.fit=se.fit, ci.fit=ci.fit,
-                                                      alpha=alpha, unique.=unique., all=all,
-                                                      sumfun=sumfun,...)
-                  )
-    res$call <- theCall
+    res <- list(obj = switch(type,
+                             "rl" = , "return level" = rl.evmSim(object, M=M, newdata=newdata,
+                                                                 se.fit=se.fit, ci.fit=ci.fit,
+                                                                 alpha=alpha, unique.=unique., all=all,
+                                                                 sumfun=sumfun,...),
+                             "lp" = , "link" = linearPredictors.evmSim(object, newdata=newdata,
+                                                                       se.fit=se.fit, ci.fit=ci.fit,
+                                                                       alpha=alpha, unique.=unique., all=all,
+                                                                       sumfun=sumfun,...)
+                             ),
+                call = theCall)
+    oldClass(res) <- class(res$obj)
     res
 }
 
 linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                                      alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
     if (se.fit){ warning("se.fit not implemented - ignoring") }
-
     D <- texmexMakeNewdataD(object$map, newdata)
 
     X.all <- do.call("cbind", D)
@@ -236,7 +237,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     # res should be a list containing a matrix for each observation.
     # The matrix represents the simulated posterior, one column for each
     # major parameter (i.e. linear predictors)
-#browser()
+
     ############################################################################
     ## Hard part should be done now. Just need to summarize
 
@@ -340,17 +341,18 @@ predict.evmBoot <- function(object, M=1000, newdata=NULL, type="return level",
                             all=FALSE, sumfun=NULL, ...){
     theCall <- match.call()
 
-    res <- switch(type,
-                  "rl" = , "return level" = rl.evmBoot(object, newdata=newdata, M=M,
-                                                       se.fit=se.fit, ci.fit=ci.fit,
-                                                       alpha=alpha, unique.=unique.,
-                                                       all=all, sumfun=sumfun,...),
-                  "lp" = , "link" = linearPredictors.evmBoot(object, newdata=newdata,
-                                                         se.fit=se.fit, ci.fit=ci.fit,
-                                                         alpha=alpha, unique.=unique.,
-                                                         all=all, sumfun=sumfun,...)
-                  )
-    res$call <- theCall
+    res <- list(obj = switch(type,
+                             "rl" = , "return level" = rl.evmBoot(object, newdata=newdata, M=M,
+                                                                  se.fit=se.fit, ci.fit=ci.fit,
+                                                                  alpha=alpha, unique.=unique.,
+                                                                  all=all, sumfun=sumfun,...),
+                             "lp" = , "link" = linearPredictors.evmBoot(object, newdata=newdata,
+                                                                  se.fit=se.fit, ci.fit=ci.fit,
+                                                                  alpha=alpha, unique.=unique.,
+                                                                  all=all, sumfun=sumfun,...)
+                             ),
+                call = theCall)
+    oldClass(res) <- class(res$obj)
     res
 }
 
@@ -382,13 +384,13 @@ rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 ## Method functions
 
 print.rl.evmOpt <- function(x, digits=3, ...){
-    nms <- names(x)
+    nms <- names(x$obj)
     newnms <- paste("M =", substring(nms, 3), "predicted return level:\n")
-    lapply(1:length(x), function(i, o, title){
+    lapply(1:length(x$obj), function(i, o, title){
                                  cat(title[i])
                                  print(o[[i]], digits=digits,...)
                                  cat("\n")
-                                 NULL}, o=x, title=newnms)
+                                 NULL}, o=x$obj, title=newnms)
     invisible(x)
 }
 
@@ -405,7 +407,7 @@ summary.rl.evmBoot <- summary.rl.evmOpt
 
 print.lp.evmOpt <- function(x, digits=3, ...){
     cat("Linear predictors:\n")
-    print(unclass(x$link), digits=3,...)
+    print(unclass(x$obj$link), digits=3,...)
     invisible(x)
 }
 

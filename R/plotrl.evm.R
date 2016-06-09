@@ -52,6 +52,8 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, ...){
 
+    x <- x$obj
+    
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Return level" }
     if (missing(main) || is.null(main)) {
