@@ -40,9 +40,6 @@
 #' \code{\link{mrl}} and \code{\link{gpdRangeFit}}.
 #' 
 #' @aliases migpd plot.migpd
-#' @usage migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000, trace = 0,
-#' verbose = FALSE, priorParameters = NULL)
-#' \method{plot}{migpd}(x, main=c("Probability plot","Quantile plot", "Return level plot","Histogram and density"), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... )
 #' @param data A matrix or data.frame, each column of which is to be modelled.
 #' @param mth Marginal thresholds. Thresholds above which to fit the models.
 #' Only one of \code{mth} and \code{mqu} should be supplied. Length one (in
