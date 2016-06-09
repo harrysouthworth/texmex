@@ -52,6 +52,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, ...){
 
+    Class <- class(x)
     x <- x$obj
     
     if (missing(xlab) || is.null(xlab)) { xlab <- "Return period" }
@@ -84,7 +85,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
       stop("main must be length 1 or number of unique covariates for prediction")
     }
 
-    if(class(x) == "rl.evmOpt"){
+    if(Class == "rl.evmOpt"){
       if(any(colnames(x[[1]]) == "se.fit")){
         which <- colnames(x[[1]]) != "se.fit"
         nd <- nd-1
@@ -93,7 +94,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
       } else {
         Unlist <- unlist(x)
       }
-    } else if(class(x) == "rl.evmSim" | class(x) == "rl.evmBoot"){
+    } else if(Class == "rl.evmSim" |Class == "rl.evmBoot"){
         if(casefold(type) == "median"){
           which <- substring(colnames(x[[1]]), nchar(colnames(x[[1]])) -3) != "Mean"
         } else if(casefold(type) == "mean") {

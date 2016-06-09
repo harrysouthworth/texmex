@@ -36,6 +36,7 @@ function(object, M=1000, newdata=NULL, type="return level", se.fit=FALSE,
                              ),
                 call = theCall)
     oldClass(res) <- class(res$obj)
+    res$obj <- unclass(res$obj)
     res
 }
 
@@ -196,6 +197,7 @@ predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
                              ),
                 call = theCall)
     oldClass(res) <- class(res$obj)
+    res$obj <- unclass(res$obj)
     res
 }
 
@@ -353,6 +355,7 @@ predict.evmBoot <- function(object, M=1000, newdata=NULL, type="return level",
                              ),
                 call = theCall)
     oldClass(res) <- class(res$obj)
+    res$obj <- unclass(res$obj)
     res
 }
 
