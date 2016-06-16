@@ -19,6 +19,59 @@
     return(res4)
   }
 
+
+
+#' Multivariate conditional Spearman's rho
+#' 
+#' Compute multivariate conditional Spearman's rho over a range of quantiles.
+#' 
+#' The method is described in detail by Schmid and Schmidt (2007).  The main
+#' code was written by Yiannis Papastathopoulos, wrappers written by Harry
+#' Southworth.
+#' 
+#' When the result of a call to \code{bootMCS} is plotted, simple quantile
+#' bootstrap confidence intervals are displayed.
+#' 
+#' @param X A matrix of numeric variables.
+#' @param p The quantiles at which to evaluate.
+#' @param R The number of bootstrap samples to run. Defaults to \code{R = 100}.
+#' @param trace How often to inform the user of progress. Defaults to
+#' \code{trace = 10}.
+#' @param x,object An object of class \code{MCS} or \code{bootMCS}.
+#' @param xlab,ylab Axis labels.
+#' @param alpha A 100(1 - alpha)\% pointwise confidence interval will be
+#' produced.  Defaults to \code{alpha = 0.05}.
+#' @param ylim Plotting limits for bootstrap plot.
+#' @param ... Optional arguments to be passed into methods.
+#' @return MCS returns an object of class \code{MCS}.  There are plot and
+#' summary methods available for this class.
+#' 
+#' \item{MCS }{The estimated correlations.} \item{p }{The quantiles at which
+#' the correlations were evaluated at} \item{call}{The function call used.}
+#' 
+#' bootMCS returns an object of class \code{bootMCS}. There are plot and
+#' summary methods available for this class.
+#' 
+#' \item{replicates}{Bootstrap replicates.} \item{p }{The quantiles at which
+#' the correlations were evaluated at} \item{R}{Number of bootstrap samples.}
+#' \item{call}{The function call used.}
+#' 
+#' @author Yiannis Papastathopoulos, Harry Southworth
+#' @seealso \code{\link{chi}}
+#' @references F. Schmid and R. Schmidt, Multivariate conditional versions of
+#' Spearman's rho and related measures of tail dependence, Journal of
+#' Multivariate Analysis, 98, 1123 -- 1140, 2007
+#' @keywords multivariate
+#' @examples
+#' 
+#' D <- liver[liver$dose == "D",]
+#' plot(D)
+#' # Following lines commented out to keep CRAN happy
+#' #Dmcs <- bootMCS(D[, 5:6])
+#' #Dmcs
+#' #plot(Dmcs)
+#' 
+#' @export MCS
 MCS <- function(X,p=seq(.1, .9, by=.1)) {
     theCall <- match.call()
      
@@ -32,11 +85,14 @@ MCS <- function(X,p=seq(.1, .9, by=.1)) {
     res
   }
 
+#' @rdname MCS
+#' @export
 plot.MCS <- function(x, xlab="p", ylab= "MCS", ...){
    plot(x$p, x$mcs, type="l", xlab=xlab, ylab=ylab, ...)
    invisible()
 }
 
+#' @export
 print.MCS <- function(x, ...){
     print(x$call)
     cat("Multivariate conditional Spearman's rho.\n\n", sep = "")
@@ -46,6 +102,7 @@ print.MCS <- function(x, ...){
     invisible(res)
 }
 
+#' @export
 summary.MCS <-  function(object, ...){
     print(object$call)
     cat("Multivariate conditional Spearman's rho.\n\n", sep = "")
@@ -58,7 +115,8 @@ summary.MCS <-  function(object, ...){
 #------------------------------------------------
 #Bootstrap
 #------------------------------------------------
-
+#' @rdname MCS
+#' @export
 bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    theCall <- match.call()
    bfun <- function(i, data, p, trace){
@@ -73,6 +131,8 @@ bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    invisible(res)
 }
 
+#' @rdname MCS
+#' @export
 plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ylim, ...){
    m <- rowMeans(x$replicates)
    ci <- apply(x$replicates, 1, quantile, prob=c(1-alpha/2, alpha/2))
@@ -85,6 +145,7 @@ plot.bootMCS <- function(x, xlab="p", ylab= "MCS",alpha=.05, ylim, ...){
    invisible(ci)
 }
 
+#' @export
 print.bootMCS <- function(x, ...){
     print(x$call)
     cat("Multivariate conditional Spearman's rho.\n", x$R, " bootstrap samples were performed.\n\n",
@@ -96,6 +157,8 @@ print.bootMCS <- function(x, ...){
     invisible(m)
 }
 
+#' @rdname MCS
+#' @export
 summary.bootMCS <- function(object, alpha=.05, ...){
     cat("Multivariate conditional Spearman's rho.\n", object$R, " bootstrap samples were performed.\n\n",
         sep = "")

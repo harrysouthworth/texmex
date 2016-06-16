@@ -1,3 +1,4 @@
+#' @export
 summary.evmSim <- function(object, ...){
    co <- coef(object)
    se <- apply(object$param, 2, sd)
@@ -8,6 +9,7 @@ summary.evmSim <- function(object, ...){
    res
 }
 
+#' @export
 print.summary.evmSim <- function(x, ...){
    print(x[[1]], verbose=FALSE, ...)
    cat("\nPosterior summary:\n")

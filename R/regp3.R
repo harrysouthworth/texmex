@@ -1,3 +1,5 @@
+#' @rdname degp3
+#' @export
 regp3 <- function(n, kappa=1, sigma, xi, u=0){
 
   kappa <- rep(kappa, length.out=n)

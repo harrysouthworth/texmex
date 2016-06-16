@@ -1,3 +1,65 @@
+#' Estimate generalized Pareto distribution parameters over a range of values
+#' 
+#' Estimate generalized Pareto distribution parameters over a range of values,
+#' using maximum (penalized) likelihood.
+#' 
+#' This is Stuart Coles' \code{gpd.fitrange}, as it appears in the \code{ismev}
+#' package, refactored into a function that does the computations, and method
+#' functions. The function uses \code{evm} internally and uses the default
+#' options for that function.
+#' 
+#' Note this function does not extend to assessing model fit when there are
+#' covariates included in the model.
+#' 
+#' @aliases gpdRangeFit print.gpdRangeFit summary.gpdRangeFit plot.gpdRangeFit
+#' ggplot.gpdRangeFit
+#' @usage gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95),
+#' nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05,
+#' cov="observed")
+#' \method{print}{gpdRangeFit}(x, ...)
+#' \method{summary}{gpdRangeFit}(object, ...)
+#' \method{plot}{gpdRangeFit}(x, xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
+#' \method{ggplot}{gpdRangeFit}(data, mapping, xlab="Threshold", ylab=NULL,
+#' main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4, ...,
+#' environment)
+#' @param data The data vector to be modelled.
+#' @param umin The minimum threshold above which to estimate the parameters.
+#' @param umax The maximum threshold above which to estimate the parameters.
+#' @param nint The number of thresholds at which to perform the estimation.
+#' @param penalty The type of penalty to be used in the maximum penalized
+#' likelihood estimation. Should be either "gaussian" or "none". Defaults to
+#' "gaussian".
+#' @param priorParameters Parameters to be used for the penalty function.  See
+#' the help for \code{\link{evm}} for more informaiton.
+#' @param alpha 100(1 - alpha)\% confidence intervals will be plotted with the
+#' point estimates. Defaults to \code{alpha = 0.05}.
+#' @param cov How to compute the covariance matrix of the parameters. Defaults
+#' to \code{cov = "observed"} in which case the observed information matrix is
+#' used, if the \code{info} element of the \code{texmexFamily} object is
+#' present. See more detailed documentation of this argument in
+#' \code{\link{evm}}.
+#' @param x,object Arguments to \code{print} and \code{summary} functions.
+#' @param xlab Label for the x-axis.
+#' @param ylab Label for the y-axis.
+#' @param main The main title.
+#' @param addNexcesses Annotate top axis with numbers of threshold excesses
+#' arising with the corresponding values of threshold on the bottom axis.
+#' @param col Colour of the line on the threshold stability plot.
+#' @param fill Colour of the pointwise confidence region on the threshold
+#' stability plots.
+#' @param textsize Size of text on the plot (ggplot). Defaults to
+#' \code{textsize=4}.
+#' @param \dots Arguments to \code{plot}.
+#' @param mapping,environment Not used.
+#' @author Stuart Coles, Janet E Heffernan, Harry Southworth
+#' @seealso \code{\link{evm}}
+#' @keywords models
+#' @examples
+#' 
+#' par(mfrow=c(1,2))
+#' plot(gpdRangeFit(rain))
+#' 
+#' @export gpdRangeFit
 gpdRangeFit <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
           nint = 10, 
@@ -24,6 +86,7 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     res
 }
 
+#' @export
 print.gpdRangeFit <- function(x, ...){
     sc <- cbind(threshold=x$th, phi=x$par[, 1], lo=x$lo[, 1], hi=x$hi[, 1])
     sh <- cbind(threshold=x$th, xi=x$par[, 2], lo=x$lo[, 2], hi=x$hi[, 2])
@@ -32,6 +95,7 @@ print.gpdRangeFit <- function(x, ...){
     invisible()
 }
 
+#' @export
 summary.gpdRangeFit <- function(object, ...){
     sc <- cbind(threshold=object$th, phi=object$par[, 1], lo=object$lo[, 1], hi=object$hi[, 1])
     sh <- cbind(threshold=object$th, xi=object$par[, 2], lo=object$lo[, 2], hi=object$hi[, 2])
@@ -39,6 +103,7 @@ summary.gpdRangeFit <- function(object, ...){
     list(phi=summary(sc), xi=summary(sh))
 }
 
+#' @export
 plot.gpdRangeFit <- function(x, xlab="Threshold", ylab=NULL,
                              main=NULL, addNexcesses=TRUE, ...){
     #############################################################

@@ -1,3 +1,25 @@
+#' Bootstrap an evmOpt fit
+#'
+#' This runs a parametric bootstrap simulating from an optimized
+#' model.
+#' 
+#' @param o a fit \code{evmOpt} object
+#' @param R the number of parametric bootstrap samples to run
+#' @param trace the frequency of trace messages
+#' @param cores The number of coresto use when bootstrapping. Defaults
+#'     to \code{cores=NULL} and the function guesses how many cores
+#'     are available and uses them all.
+#' @param theCall (for internal use)
+#' @return An object of class \code{evmBoot}; a list with
+#'
+#' \item{call}{The call to \code{evmBoot} that produced the object.}
+#' \item{replicates}{The parameter estimates from the bootstrap fits.}
+#' \item{map}{The fit by by maximum penalized likelihood to the original data.}
+#' 
+#' @note It is not expected that a user will feel the need to call
+#'     this function directly; you are directed to \code{\link{evm}}.
+#' @seealso \code{\link{evm}}
+#' @export
 evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     if (class(o) != "evmOpt"){
         stop("o must be of class 'evmOpt'")
@@ -55,6 +77,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     res
 }
 
+#' @export
 print.evmBoot <- function(x, ...){
     print(x$call)
     means <- apply(x$replicates, 2, mean)
@@ -72,10 +95,17 @@ print.evmBoot <- function(x, ...){
     invisible(res)
 }
 
+#' Extract coefficients from an evmBoot fit
+#'
+#' @param object a \code{\link{evmBoot}} object
+#' @param ... ignored
+#' @return the mean value of each coefficient
+#' @export
 coef.evmBoot <- function(object, ...){
     apply(object$replicates, 2, mean)
 }
 
+#' @export
 summary.evmBoot <- function(object, ...){
     means <- apply(object$replicates, 2, mean)
     medians <- apply(object$replicates, 2, median)
@@ -94,6 +124,7 @@ summary.evmBoot <- function(object, ...){
     res
 }
 
+#' @export
 print.summary.evmBoot <- function(x, ...){
     print(x$call)
     print(x$margins)
@@ -102,7 +133,16 @@ print.summary.evmBoot <- function(x, ...){
     invisible()
 }
 
-plot.evmBoot <- function(x, col=4, border=FALSE, ...){
+#' Plot an evmBoot object
+#'
+#' Plot the bootstrap distribution of the model parameters.
+#' 
+#' @param x an \code{\link{evmBoot}} object
+#' @param col colour used to fill histogram
+#' @param border the colour of the border around the bars
+#' @param ... other arguments passed to \code{\link[graphics]{hist}}
+#' @export
+plot.evmBoot <- function(x, col=4, border=NULL, ...){
     pfun <- function(x, col, border, xlab,...){
         d <- density(x, n=100)
         hist(x, prob=TRUE, col=col, border=border, main="", xlab=xlab, ...)
@@ -111,7 +151,8 @@ plot.evmBoot <- function(x, col=4, border=FALSE, ...){
         invisible()
     }
     for (i in 1:ncol(x$replicates)){
-        pfun(x$replicates[,i], xlab=colnames(x$replicates)[i], col=col, border=border)
+        pfun(x$replicates[,i], xlab=colnames(x$replicates)[i],
+             col=col, border=border)
         abline(v=coef(x$map)[i], col="cyan")
     }
     invisible()

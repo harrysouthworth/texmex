@@ -1,3 +1,5 @@
+#' @rdname dgev
+#' @export
 rgev <- function(n, mu, sigma, xi){
   ## use standard GEV ~ (exp(-xi log E) - 1) / xi
 

@@ -1,3 +1,52 @@
+#' Estimate dependence parameters in a conditional multivariate extreme values
+#' model over a range of thresholds.
+#' 
+#' Diagnostic tool to aid the choice of threshold to be used for the estimation
+#' of the dependence parameters in the conditional multivariate extreme values
+#' model of Heffernan and Tawn, 2004.
+#' 
+#' Dependence model parameters are estimated using a range of threshold values.
+#' The sampling variability of these estimates is characterised using the
+#' bootstrap.  Point estimates and bootstrap estimates are finally plotted over
+#' the range of thresholds.  Choice of threshold should be made such that the
+#' point estimates at the chosen threshold and beyond are constant, up to
+#' sampling variation.
+#' 
+#' @usage mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9),
+#' start=c(.01, .01), R = 10, nPass=3, trace=10, margins = "laplace", constrain
+#' = TRUE, v = 10)
+#' @param x An object of class \code{\link{mex}} or \code{\link{migpd}}.
+#' @param which The variable on which to condition.
+#' @param quantiles A numeric vector specifying the quantiles of the marginal
+#' distribution of the conditioning variable at which to fit the dependence
+#' model.
+#' @param start See documentation for this argument in
+#' \code{\link{mexDependence}}.
+#' @param R The number of bootstrap runs to perform at each threshold. Defaults
+#' to \code{R}=10.
+#' @param nPass Argument passed to function \code{\link{bootmex}}.
+#' @param trace Argument passed to function \code{\link{bootmex}}.
+#' @param margins Argument passed to function \code{\link{mexDependence}}.
+#' @param constrain Argument passed to function \code{\link{mexDependence}}.
+#' @param v Argument passed to function \code{\link{mexDependence}}.
+#' @param \dots Further graphical parameters may be passed, which will be used
+#' for plotting.
+#' @return NULL.
+#' @author Harry Southworth, Janet E. Heffernan
+#' @seealso \code{\link{mexDependence}}, \code{\link{bootmex}}
+#' @references J. E. Heffernan and J. A. Tawn, A conditional approach for
+#' multivariate extreme values, Journal of the Royal Statistical society B, 66,
+#' 497 -- 546, 2004
+#' @keywords models multivariate
+#' @examples
+#' 
+#' # Example commented out to reduce R CMD check time
+#' #  w <- migpd(winter, mqu=.7)
+#' #  w
+#' #  par(mfrow=c(4,2))
+#' #  mexRangeFit(w,which=1,main="Winter data, Heffernan and Tawn 2004",cex=0.5)
+#'   
+#' @export mexRangeFit
 mexRangeFit <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nPass=3, trace=10,
           margins="laplace", constrain=TRUE, v=10){
@@ -41,7 +90,8 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
   oldClass(res) <- "mexRangeFit"
   res
 }
- 
+
+#' @export
 print.mexRangeFit <- function(x, ...){
     out <- list(a = sapply(x$ests,function(x)x$dependence$coefficients[1,]),
                 b = sapply(x$ests,function(x)x$dependence$coefficients[2,]))
@@ -50,10 +100,12 @@ print.mexRangeFit <- function(x, ...){
     invisible()
 }
 
+#' @export
 summary.mexRangeFit <- function(object, ...){
   print(object)
 }
 
+#' @export
 plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE,...){
   ests <- x$ests
   boot <- x$boot

@@ -1,3 +1,7 @@
+#' @include texmexFamily.R
+#' @export egp3
+NULL
+
 egp3 <- texmexFamily(name="EGP3",
                      param = c(lambda=0, phi=0, xi=0), # Standard exponential
                      density = function(n, param, model){

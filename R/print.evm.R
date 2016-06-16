@@ -1,4 +1,9 @@
-print.evmOpt <- function( x , digits=max(3, getOption("digits") - 3), ... ){
+#' Print evmOpt objects
+#' @param x a fit evmOpt object
+#' @param digits number of digits used for printing
+#' @param ... further arguments passed to \code{\link{format}}
+#' @export
+print.evmOpt <- function(x , digits=max(3, getOption("digits") - 3), ... ){
     cat( "Call: " )
     print( x$call, ... )
     print(x$family, verbose=FALSE)

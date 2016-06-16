@@ -1,3 +1,5 @@
+#' @rdname dgpd
+#' @export
 rgpd <- function(n, sigma, xi, u = 0) {
   ## a standard GPD is (exp(xi * Exp(1)) - 1) / xi
   ## and the rest follows

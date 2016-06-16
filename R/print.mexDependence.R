@@ -1,3 +1,4 @@
+#' @export
 `print.mexDependence` <-
 function(x, ...){
     cat("Conditioning on ", x$conditioningVariable, " variable.", sep="")

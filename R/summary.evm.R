@@ -1,3 +1,4 @@
+#' @export
 summary.evmOpt <- function(object, nsim = 1000, alpha = .050, ...){
     if (ncol(object$data$D$phi) == 1 && ncol(object$data$D$xi) == 1){
         env <- unclass(qqevm(object, nsim = nsim, alpha = alpha))
@@ -23,6 +24,7 @@ summary.evmOpt <- function(object, nsim = 1000, alpha = .050, ...){
     res
 }
 
+#' @export
 print.summary.evmOpt <- function(x, digits = 3 , ...){
     co <- coef(x)
     env <- x$envelope

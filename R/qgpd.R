@@ -1,3 +1,5 @@
+#' @rdname dgpd
+#' @export
 qgpd <-
 function(p , sigma, xi, u = 0, lower.tail=TRUE, log.p=FALSE){
   ## this code is trickier than it looks.

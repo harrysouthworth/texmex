@@ -1,3 +1,4 @@
+#' @export
 print.predict.mex <- function( x, ... ){
     if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
 

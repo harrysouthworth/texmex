@@ -1,3 +1,5 @@
+#' @rdname mex
+#' @export
 `plot.predict.mex` <-
 function( x, pch=c( 1, 3, 20 ), col=c( 2, 8, 3), cex=c( 1, 1, 1 ), ask = TRUE, ... ){
 

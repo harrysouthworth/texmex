@@ -1,3 +1,4 @@
+#' @export
 summary.migpd <-
 function(object, verbose = TRUE, ...){
   d <- dim(object$data)[2]

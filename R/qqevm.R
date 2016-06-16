@@ -32,6 +32,7 @@ qqevm <- function(object, nsim=1000, alpha=.050){
     res
 }
 
+#' @export
 plot.qqevm <- function(x, xlab, ylab, main , plot = TRUE,
                        ylim = "auto", 
                        pch= 1, col =2 , cex=.75, linecol = 4 ,
