@@ -70,6 +70,7 @@ Collate:
     'ggplot.bayes.R'
     'ggplot.cluster.R'
     'ggplot.evm.R'
+    'ggplot.predict.R'
     'ggplot.thresh.R'
     'globalVariables.R'
     'gpd.sandwich.R'

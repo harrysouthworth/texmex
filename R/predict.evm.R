@@ -81,7 +81,7 @@
 #' implied by \code{alpha}.
 #' @param x An object of class \code{lp.evmOpt}, \code{lp.evmSim} or
 #' \code{lp.evmBoot}, to be passed to methods for these classes.
-#' @param main,pch,ptcol,cex,linecol,cicol,polycol Further arguments to plot
+#' @param main,pch,ptcol,cex,linecol,cicol,polycol,doPlot Further arguments to plot
 #' methods.
 #' @param digits Number of digits to show when printing objects.
 #' @param ... Further arguments to methods.

@@ -16,3 +16,4 @@
 *.aux
 *.o
 *.so
+/src/texmex.dll

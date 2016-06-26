@@ -13,15 +13,15 @@
 \usage{
 \method{plot}{rl.evmOpt}(x, xlab, ylab, main, pch = 1, ptcol = 2,
   cex = 0.75, linecol = 4, cicol = 0, polycol = 15, smooth = FALSE,
-  sameAxes = TRUE, type = "median", ylim = NULL, ...)
+  sameAxes = TRUE, type = "median", ylim = NULL, doPlot = TRUE, ...)
 
 \method{plot}{rl.evmSim}(x, xlab, ylab, main, pch = 1, ptcol = 2,
   cex = 0.75, linecol = 4, cicol = 0, polycol = 15, smooth = FALSE,
-  sameAxes = TRUE, type = "median", ylim = NULL, ...)
+  sameAxes = TRUE, type = "median", ylim = NULL, doPlot = TRUE, ...)
 
 \method{plot}{rl.evmBoot}(x, xlab, ylab, main, pch = 1, ptcol = 2,
   cex = 0.75, linecol = 4, cicol = 0, polycol = 15, smooth = FALSE,
-  sameAxes = TRUE, type = "median", ylim = NULL, ...)
+  sameAxes = TRUE, type = "median", ylim = NULL, doPlot = TRUE, ...)
 
 rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
   alpha = 0.05, unique. = TRUE, ...)
