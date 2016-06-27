@@ -1,7 +1,8 @@
 #' Plotting function for return level estimation
 #'
 #' @aliases ggplot.rl.evmOpt ggplot.rl.evmSim ggplot.rl.evmBoot
-#' @param data An object of class \code{rl.evmOpt}.
+#' @aliases ggplot.lp.evmOpt ggplot.lp.evmSim ggplot.lp.evmBoot
+#' @param data An object of class \code{rl.evmOpt}, \code{rl.evmBoot}, \code{rl.evmSim}, \code{lp.evmOpt}, \code{lp.evmBoot} or \code{lp.evmSim}, .
 #' @param ptcol Colour for points. Defaults to \code{ptcol="blue"}.
 #' @param col Colour for lines. Defaults to \code{col="light blue"}.
 #' @param ylim Plot limits for y-axis.
@@ -19,7 +20,7 @@ ggplot.rl.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
                              ptcol="blue",
                              col="light blue",
                              fill="orange",
-                             alpha=0.2,
+                             alpha=0.5,
                              ..., environment){
     
     p <- plot(data,doPlot=FALSE)
@@ -61,22 +62,54 @@ ggplot.rl.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
         } else {
             Main <- main[i]
         }
-        
+
         Plots[[i]] <- ggplot(d,aes(x=m,y=rl))+
-                             labs(Main)+
+                             labs(title = Main)+
                              geom_line() +
-                             scale_x_continuous(trans="log",breaks=d$m)+
+                             scale_x_continuous(trans="log")+
                              geom_polygon(data= data.frame(x=c(d$m,rev(d$m)),y=c(d$Upper,rev(d$Lower))),
                                           aes(x=x,y=y),fill=fill,alpha=alpha)
             
     }
     
-    Plots
-    
-    }
+    invisible(Plots)
+}
+
 #' @export
 ggplot.rl.evmSim <- ggplot.rl.evmOpt
 
 #' @export
 ggplot.rl.evmBoot <- ggplot.rl.evmOpt
 
+#' @export
+ggplot.lp.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
+                             ylim = "auto",
+                             ptcol="blue",
+                             col="light blue",
+                             fill="orange",
+                             alpha=0.5,
+                             ..., environment){
+    
+    p <- plot(data,plot.=FALSE)
+
+    Plots <- list(NULL)
+    
+    for(i in 1:length(p)){
+        d <- data.frame(x=p[[i]]$x,y=p[[i]]$y[,1],Lower = p[[i]]$y[,2],Upper=p[[i]]$y[,3])
+
+        Plots[[i]] <- ggplot(d,aes(x=x,y=y))+
+            labs(x=p[[i]]$CovName,y=p[[i]]$ParName)+
+            geom_line() +
+            geom_polygon(data= data.frame(x=c(d$x,rev(d$x)),y=c(d$Upper,rev(d$Lower))),
+                         aes(x=x,y=y),fill=fill,alpha=alpha)
+        
+    }
+    
+    invisible(Plots)
+}
+
+#' @export
+ggplot.lp.evmSim <- ggplot.lp.evmOpt
+
+#' @export
+ggplot.lp.evmBoot <- ggplot.lp.evmOpt

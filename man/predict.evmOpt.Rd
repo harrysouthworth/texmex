@@ -14,7 +14,7 @@
 predictors.}
 \usage{
 \method{plot}{lp.evmOpt}(x, main = NULL, pch = 1, ptcol = 2, cex = 0.75,
-  linecol = 4, cicol = 1, polycol = 15, ...)
+  linecol = 4, cicol = 1, polycol = 15, plot. = TRUE, ...)
 
 \method{predict}{evmOpt}(object, M = 1000, newdata = NULL,
   type = "return level", se.fit = FALSE, ci.fit = FALSE, alpha = 0.05,

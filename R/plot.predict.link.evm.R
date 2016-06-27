@@ -2,7 +2,7 @@
 #' @export
 plot.lp.evmOpt <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
-         cicol = 1, polycol = 15, ...){
+         cicol = 1, polycol = 15, plot.=TRUE, ...){
   x <- x$obj
   
   family <- x$family
@@ -11,7 +11,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
   if(dim(x)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
-  if(!any(colnames(x) == "phi.lo") ){
+  if(length(colnames(x)) <= (length(family$param) + 1) ){
     stop("Please use ci.fit=TRUE in call to predict, to calculate confidence intervals")
   }
   
@@ -27,46 +27,48 @@ plot.lp.evmOpt <- function(x, main=NULL,
   Ests <- makelp(data.frame(x), family)
   Names <- names(family$param)
   cn <- colnames(x)
-  which <- cn != "mu" & cn != "phi"    & cn != "xi" &
-           cn != "mu.lo" & cn != "mu.hi" &
-           cn != "phi.lo" & cn != "phi.hi" &
-           cn != "xi.lo"  & cn != "xi.hi" &
-           cn != "mu.se" & cn != "phi.se" & cn != "xi.se"
+  ParNames <- paste(rep(Names,each=4),c("",".lo",".hi",".se"),sep="")
+  which <- ! (cn %in% ParNames)
 
   X <- x[,which]
   if(is.null(dim(X))){
      X <- matrix(X)
      dimnames(X) <- list(dimnames(x)[[1]],dimnames(x)[[2]][which])
   }
-
-  for(i in 1:length(Names)){
-    for(j in 1:dim(X)[2]){
+  nPar <- length(Names)
+  Output <- list(NULL)
+  nPlot <- 0
+  
+  for(i in 1:nPar){
       if(length(unique(Ests[[i]][,1])) > 1){
-        if(length(unique(X[,j])) > 1){
-          ord <- order(X[,j])
-          x <- X[ord,j]
+          if(length(unique(X[,i])) > 1){
+          ord <- order(X[,i])
+          x <- X[ord,i]
           y <- Ests[[i]][ord,]
-          plot(x, y[,1],type="n",ylab=Names[i],xlab=colnames(X)[j],main=main,ylim=range(y))
+          Output[[i]] <- list(x=x,y=y,CovName = colnames(X)[i],ParName = Names[i])
+          
+          if(plot.){
+            plot(x, y[,1],type="n",ylab=Names[i],xlab=colnames(X)[i],main=main,ylim=range(y))
+              
+            if (polycol != 0){
+              polygon(c( x,        rev(x)),
+                      c(y[,2],rev(y[,3])),
+                      col=polycol, border = FALSE) # Close polygon
+            } else {
+              lines(x, y[,2], col = cicol)
+              lines(x, y[,3], col = cicol)
+            }
 
-          if (polycol != 0){
-            polygon(c( x,        rev(x)),
-                    c(y[,2],rev(y[,3])),
-                    col=polycol, border = FALSE) # Close polygon
-          } else {
-            lines(x, y[,2], col = cicol)
-            lines(x, y[,3], col = cicol)
+            lines(x, y[,1], col = linecol[ 1 ] )
           }
-
-          lines(x, y[,1], col = linecol[ 1 ] )
         }
       }
-    }
   }
-  invisible()
+  invisible(Output)
 }
 
 #' @export
-plot.lp.evmSim <- function(x, type="median", ...){
+plot.lp.evmSim <- function(x, type="median", plot.=TRUE,...){
   if(dim(x$obj$link)[1] == 1){
     stop("Need range of covariate values to plot linear predictors")
   }
@@ -85,7 +87,7 @@ plot.lp.evmSim <- function(x, type="median", ...){
   x$obj$link <- x$obj$link[,which]
   colnames(x$obj$link)[1:(3*np)] <-  c(p,paste(rep(p,each=2),rep(c(".lo",".hi"),np),sep=""))
 
-  plot.lp.evmOpt(x,...)
+  plot.lp.evmOpt(x,plot.=plot.,...)
 }
 
 #' @export
