@@ -402,7 +402,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
         # Need to get names by pasting together CI names and parameter names
         wh <- texmexMakeCISim(res[[1]], alpha=alpha, object=object, sumfun=sumfun)
         wh <- colnames(wh)
-        wh <- paste(rep(names(D), ea=length(wh)), wh, sep = ": ")
+        wh <- paste(rep(names(D), ea=length(wh)), wh, sep = ":")
 
         # Need to get order of output correct, so need to faff about with transposing
         res <- sapply(res, function(x){

@@ -122,6 +122,7 @@ Collate:
     'rMaxAR.R'
     'regp3.R'
     'revTransform.R'
+    'residuals.evm.R'
     'rgev.R'
     'rgpd.R'
     'roots.R'
