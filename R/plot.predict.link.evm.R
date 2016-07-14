@@ -4,7 +4,6 @@ plot.lp.evmOpt <- function(x, main=NULL,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
          cicol = 1, polycol = 15, plot.=TRUE, ...){
   x <- x$obj
-  
   family <- x$family
   x <- x$link
   
@@ -38,17 +37,18 @@ plot.lp.evmOpt <- function(x, main=NULL,
   nPar <- length(Names)
   Output <- list(NULL)
   nPlot <- 0
-  
   for(i in 1:nPar){
+    for(j in 1:dim(X)[2]){
       if(length(unique(Ests[[i]][,1])) > 1){
-          if(length(unique(X[,i])) > 1){
-          ord <- order(X[,i])
-          x <- X[ord,i]
+          if(length(unique(X[,j])) > 1){
+          ord <- order(X[,j])
+          x <- X[ord,j]
           y <- Ests[[i]][ord,]
-          Output[[i]] <- list(x=x,y=y,CovName = colnames(X)[i],ParName = Names[i])
+          nPlot <- nPlot + 1
+          Output[[nPlot]] <- list(x=x,y=y,CovName = colnames(X)[i],ParName = Names[i])
           
           if(plot.){
-            plot(x, y[,1],type="n",ylab=Names[i],xlab=colnames(X)[i],main=main,ylim=range(y))
+            plot(x, y[,1],type="n",ylab=Names[i],xlab=colnames(X)[j],main=main,ylim=range(y))
               
             if (polycol != 0){
               polygon(c( x,        rev(x)),
@@ -63,6 +63,7 @@ plot.lp.evmOpt <- function(x, main=NULL,
           }
         }
       }
+    }
   }
   invisible(Output)
 }

@@ -1,9 +1,14 @@
 #' @export
-residuals.evmOpt <- function(object){
+residuals.evmOpt <- function(object,...){
     object$residuals
 }
 
 #' @export
-residuals.evmSim <- residuals.evmBoot <- function(object){
+residuals.evmSim <- function(object,...){
+    object$map$residuals
+}
+
+#' @export
+residuals.evmBoot <- function(object,...){
     object$map$residuals
 }
