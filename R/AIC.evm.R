@@ -12,8 +12,10 @@
 #' @importFrom stats AIC logLik
 #' @export
 AIC.evmOpt <- function(object, penalized=FALSE, ..., k=2){
-  ll <- logLik(object, penalized=penalized)
-  -2*ll + k * attr(ll, 'df')
+  ll <- unclass(logLik(object, penalized=penalized))
+  aic <- -2*ll + k * attr(ll, 'df')
+  attr(aic, "df") <- NULL
+  aic
 }
 
 #' Log-likelihood for evmOpt objects
