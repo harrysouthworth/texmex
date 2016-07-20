@@ -9,6 +9,7 @@
 #' @param data The actual data being considered for GPD modelling.
 #' @param u Thresholds above which we are interested.
 #' @param textsize The size of the text in the annotations.
+#' @export addExcesses
 addExcesses <- function(p, x, y, data, u, textsize){
   x1 <- axisTicks(range(x), log=FALSE)
   yr <- range(y)
