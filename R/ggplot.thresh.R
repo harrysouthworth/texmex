@@ -7,10 +7,9 @@
 #' @param x Horizontal axis data containing the full range.
 #' @param y Verticle axis data containing the full range.
 #' @param data The actual data being considered for GPD modelling.
-#' @param u Thresholds above which we are interested.
 #' @param textsize The size of the text in the annotations.
 #' @export addExcesses
-addExcesses <- function(p, x, y, data, u, textsize){
+addExcesses <- function(p, x, y, data, textsize){
   x1 <- axisTicks(range(x), log=FALSE)
   yr <- range(y)
   delta <- abs(diff(yr)) * .1
@@ -50,8 +49,7 @@ ggplot.mrl <- function(data, mapping, xlab = "Threshold", ylab = "Mean excess", 
     ggtitle(main)
 
   if (addNexcesses)
-    p <- addExcesses(p, poly$x, poly$y, data=data, u=d$th,
-                     textsize=textsize)
+    p <- addExcesses(p, poly$x, poly$y, data=data, textsize=textsize)
 
   p
 }
