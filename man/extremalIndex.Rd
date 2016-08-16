@@ -15,7 +15,7 @@ extremalIndex(y, data = NULL, threshold)
 
 extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
 quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, xlab = "Threshold",
-addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE, trace = 10, ...)
+verbose = TRUE, trace = 10, ...)
 
 bootExtremalIndex(x)
 
@@ -26,6 +26,10 @@ declust(y, r=NULL, data = NULL, ...)
 \method{plot}{declustered}(x, ylab = "Data",...)
 
 \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
+
+\method{plot}{extremalIndexRangeFit}(data,addNexcesses=TRUE,estGPD=TRUE,...)
+
+\method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
 }
 \arguments{
 \item{y}{Argument to function \code{extremalIndex}: either a numeric vector
@@ -153,7 +157,7 @@ optionally estimated for the resulting declustered series.  Uncertainty in
 the estimation of the extremal index and GPD parameters is assessed by using
 a bootstrap scheme which accounts for uncertainty in the extremal index
 estimation, and the corresponding uncertainty in the declustering of the
-series.
+series. There are \code{plot} and \code{ggplot} methods for output of this function, which is of class \code{extremalIndexRangeFit}.
 
 The function \code{declust} returns an object of class "declustered",
 identifying independent clusters in the original series. Print, plot and

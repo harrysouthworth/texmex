@@ -8,7 +8,7 @@
 \title{Diagnostic plots for the Markov chains in an evmSim object}
 \usage{
 \method{ggplot}{evmSim}(data = NULL, mapping, which.plots = 1:3,
-  denscol = "blue", acfcol = "light blue", plot.it = TRUE, ...,
+  denscol = "dark blue", acfcol = "light blue", plot.it = TRUE, ...,
   environment)
 }
 \arguments{
@@ -20,7 +20,7 @@
 to 1, trace plots of the Markov chains to 2 and autocorrelation
 function plots to 3.}
 
-\item{denscol}{Colour for the density plots. Defaults to 'blue'.}
+\item{denscol}{Colour for the density plots. Defaults to 'dark blue'.}
 
 \item{acfcol}{Colour for the ACF plots. Defaults to 'light blue'.}
 

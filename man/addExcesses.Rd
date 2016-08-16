@@ -4,7 +4,7 @@
 \alias{addExcesses}
 \title{Annotate a threshold selection ggplot}
 \usage{
-addExcesses(p, x, y, data, u, textsize)
+addExcesses(p, x, y, data, textsize)
 }
 \arguments{
 \item{p}{An object produced by ggplot}
@@ -14,8 +14,6 @@ addExcesses(p, x, y, data, u, textsize)
 \item{y}{Verticle axis data containing the full range.}
 
 \item{data}{The actual data being considered for GPD modelling.}
-
-\item{u}{Thresholds above which we are interested.}
 
 \item{textsize}{The size of the text in the annotations.}
 }

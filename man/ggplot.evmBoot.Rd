@@ -5,8 +5,8 @@
 \alias{ggplot.evmBoot}
 \title{Diagnostic plots for the replicate estimated parameter values in an evmBoot object}
 \usage{
-\method{ggplot}{evmBoot}(data = NULL, mapping, denscol = "blue",
-  histcol = "light blue", linecol = "cyan", plot.it = TRUE, ...,
+\method{ggplot}{evmBoot}(data = NULL, mapping, denscol = "light blue",
+  histcol = "dark blue", linecol = "orange", plot.it = TRUE, ...,
   environment)
 }
 \arguments{
@@ -14,11 +14,11 @@
 
 \item{mapping, environment}{ignored}
 
-\item{denscol}{Colour for the densities. Defaults to 'blue'.}
+\item{denscol}{Colour for the densities. Defaults to 'light blue'.}
 
-\item{histcol}{Colour for the histograms. Defaults to 'light blue'.}
+\item{histcol}{Colour for the histograms. Defaults to 'dark blue'.}
 
-\item{linecol}{Colour for the point estimate lines. Decaults to 'cyan'.}
+\item{linecol}{Colour for the point estimate lines. Decaults to 'orange'.}
 
 \item{plot.it}{Whether or not to actually print the plots. Defaults
 to \code{plot.it=TRUE}.  If \code{plot.it=FALSE}, you might
