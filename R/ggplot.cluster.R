@@ -25,12 +25,12 @@ ggplot.declustered <- function(data=NULL, mapping, xlab, ylab, main,
     d <- data.frame(x = 1:length(data$y), y = data$y)
 
     p <- ggplot(d, aes(x, y)) +
-        geom_point(data=d, aes(x, y),col=ptcol[1]) +
+        geom_point(data=d, aes(x, y),col=ptcol[1],...) +
         geom_hline(yintercept=data$threshold)
     
     for(i in 1:length(data$sizes)){
         d <- data.frame(x=data$exceedanceTimes[data$clusters == i], y = data$thExceedances[data$clusters == i])
-        p <- p + geom_point(data=d, aes(x, y), color=ptcol[2])
+        p <- p + geom_point(data=d, aes(x, y), color=ptcol[2],...)
     }
     p <- p+ggtitle(main) +
             scale_x_continuous(xlab) +

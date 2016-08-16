@@ -1,6 +1,10 @@
+#' @export
+ 
 rFrechet <- function(n){
   -1/log(runif(n))
 }
+
+#' @export
 
 rMaxAR <- function(n,theta)
 {
