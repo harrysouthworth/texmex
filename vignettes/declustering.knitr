@@ -1,7 +1,5 @@
 %\VignetteEngine{knitr::knitr}
 %\VignetteIndexEntry{extremal index estimation and declustering}
-%\VignetteDepends{lattice}
-
 \documentclass[10pt]{article}
 %*********************************************************************
 \usepackage{amsmath}
@@ -158,7 +156,7 @@ Ferro and Segers propose a quantile-quantile (Q-Q) plot of observed normalised i
 \begin{center}
 <<ARmaxQQplot,echo=FALSE>>=
 AR <- rMaxAR(10000,theta=0.2)
-plot(extremalIndex(AR,threshold=20))
+ggplot(extremalIndex(AR,threshold=20))
 @
 \end{center}
 \caption{Quantile-quantile plot of normalised interexceedance times against standard exponential quantiles.  Vertical line shows the $(1-\hat\theta)$ quantile; sloping line has gradient $1/\hat\theta$.  Data are simulated from a max-autoregressive process with extremal index $\theta=0.2$. \label{fig:ARmaxQQplot}}
@@ -190,9 +188,11 @@ We begin by looking at the {\it threshold stability plot} for the extremal index
 \setkeys{Gin}{width=1.0\textwidth}
 
 <<rainfallData, echo=TRUE>>=
-par(mfrow=c(2,2))
-plot(rain)
-extremalIndexRangeFit(rain,nboot=20,verbose=FALSE)
+ggplot(data=data.frame(rain=rain,index=1:length(rain)),
+       aes(index,rain)) + geom_point(alpha=0.5,col=4)
+erf <- extremalIndexRangeFit(rain,nboot=20,verbose=FALSE)
+p <- ggplot(erf)
+gridExtra::grid.arrange(p[[1]],p[[2]],p[[3]],ncol=1)
 @
 
 We can see from this plot that while the estimated parameters of the GPD are relatively stable to the choice of threshold used for declustering, the estimates of the extremal index $\hat\theta$ are not.  Lower thresholds have smaller values of $\hat\theta$ so that clusters above lower thresholds are larger than those occurring above higher thresholds.  Since we are interested in finding the clustering tendancies of the very highest values, we should choose the value of threshold for which the estimates of all three parameters are approximately constant.  This leads to a threshold choice of 13mm or above .
@@ -200,15 +200,15 @@ We can see from this plot that while the estimated parameters of the GPD are rel
 We check the goodness of fit of our model for cluster occurrance by using the Q-Q plot descibed in Section~\ref{sect:qqplot}.
 
 <<rainfallQQ,echo=TRUE>>=
-par(mfrow=c(2,2))
 ei <- extremalIndex(rain,threshold=13)
-plot(ei)
+g1 <- ggplot(ei)
 ei <- extremalIndex(rain,threshold=15)
-plot(ei)
+g2 <- ggplot(ei)
 ei <- extremalIndex(rain,threshold=17)
-plot(ei)
+g3 <- ggplot(ei)
 ei <- extremalIndex(rain,threshold=19)
-plot(ei)
+g4 <- ggplot(ei)
+gridExtra::grid.arrange(g1,g2,g3,g4,ncol=2)
 @
 
 We can be reassured by these plots that a threshold of 13mm gives a good fit of the model to the rainfall data.  For this choice of threshold, the estimate of the extremal index is about 0.7, so that the average cluster size is $1/0.7 = 1.4$.  This is telling us that rainfall tends to be heavy on consecutive days but very rainy spells tend not to last longer than 1 or 2 days.
@@ -219,9 +219,9 @@ We now proceed to decluster the sequence by using the automatic declustering met
 ei <- extremalIndex(rain, threshold=13)
 ei
 dc <- declust(ei)
-plot(dc)
 dc
 @
+There is a {\tt ggplot} method for this output, although this is not shown here.
 
 Alternatively the above steps can be carried out in a single call to the function {\tt declust}, passing the original data.
 
@@ -251,8 +251,7 @@ dc$nCluster / length(rain)
 We now look a the diagnostic plots to check the fit of the GPD:
 
 <<rainfallGPDplot,echo=TRUE>>=
-par(mfrow=c(2,2))
-plot(rain.gpd)
+ggplot(rain.gpd)
 @
 
 These plots give minor cause for concern: a couple of data points at the top of the Q-Q plot lie sightly outside the tolerance intervals for this plot.  This slight deviation from model fit is not improved particularly by increasing the threshold (not shown).
@@ -279,13 +278,16 @@ Return levels can be computed from the GPD fitted to cluster maxima in the usual
 
 \setkeys{Gin}{width=1.0\textwidth}
 
-<<rainRetLevel>>=
-par(mfrow=c(2,1))
+<<rainRetLevel,message=FALSE>>=
 M <- seq(30,1000)
-plot(predict(rain.gpd,M=M,ci.fit=TRUE),main="Return level plot: cluster max")
-grid(6)
-plot(predict(evm(rain,th=13),M=M,ci.fit=TRUE),main="Return level plot: original series")
-grid(6)
+p1 <- ggplot(predict(rain.gpd,M=M,ci.fit=TRUE),
+             main="Return level plot: cluster max")
+p2 <- ggplot(predict(evm(rain,th=13),M=M,ci.fit=TRUE),
+             main="Return level plot: original series")
+breaks <- c(20,50,100,200,500,1000)
+grid.arrange(p1[[1]] + scale_x_continuous(trans="log",breaks=breaks),
+             p2[[1]] + scale_x_continuous(trans="log",breaks=breaks),
+             ncol=1)
 @ 
 
 The return levels calculated for the cluster maxima and the original series do not differ enormously.  Close to the threhsold, excesses of a given level are rarer under the fitted cluster-max model than under the fitted original series model.  This is is explained by the trivial observation that cluster maxima occur at a lower rate than do threshold exceedances.  Away from the fitting threshold, the two curves give very similar estimates of return levels.  This reflects the relatively weak dependence in the original series so that clusters are of short duration and the declustered series is not so different from the original one.
@@ -322,7 +324,8 @@ We look at the sulphur dioxide component of this series which exhibits temporal 
 \setkeys{Gin}{width=0.8\textwidth}
 
 <<winterSO2plot>>=
-plot(winter$SO2,ylab="SO2")
+ggplot(data=data.frame(Index = 1:length(winter$SO2), SO2 = winter$SO2), 
+       aes(Index,SO2)) + geom_point(colour="dark blue",alpha=0.5)
 @
 
 \setkeys{Gin}{width=1.0\textwidth}
@@ -332,21 +335,23 @@ plot(winter$SO2,ylab="SO2")
 The SO2 variable is declustered whilst retaining the covariate structure of the data frame which holds the data.  First we select a threshold:
 
 <<winterDeclust1>>=
-par(mfrow=c(2,2))
-extremalIndexRangeFit(SO2,data=winter,umin=10,umax=40,verb=FALSE)
+erf <- extremalIndexRangeFit(SO2,data=winter,
+                             umin=10,umax=40,verb=FALSE)
+g <- ggplot(erf)
+grid.arrange(g[[1]],g[[2]],g[[3]],ncol=1)
 @
 
 This suggests that we should not use a threshold of below 15.  We further examine threshold choice by using Q-Q plots:
 
 <<winterDeclust2>>=
-par(mfrow=c(2,2))
-plot(extremalIndex(SO2,data=winter,threshold=15))
-plot(extremalIndex(SO2,data=winter,threshold=20))
-plot(extremalIndex(SO2,data=winter,threshold=25))
-plot(extremalIndex(SO2,data=winter,threshold=30))
+g1 <- ggplot(extremalIndex(SO2,data=winter,threshold=15))
+g2 <- ggplot(extremalIndex(SO2,data=winter,threshold=20))
+g3 <- ggplot(extremalIndex(SO2,data=winter,threshold=25))
+g4 <- ggplot(extremalIndex(SO2,data=winter,threshold=30))
+grid.arrange(g1,g2,g3,g4,ncol=2)
 @
 
-This suggests that a threshold of 20 gives the best fit to the data.  We proceed by using this value.
+This suggests that a threshold of around 20 gives the best fit to the data.  We proceed by using this value.
 
 <<winterDeclust3,fig.keep='none'>>=
 ei <- extremalIndex(SO2,data=winter,threshold=20)
@@ -357,7 +362,7 @@ The extremal index estimate of around 0.5 has the interpretation of cluters occu
 
 <<winterDeclust4>>=
 d <- declust(ei)
-plot(d)
+ggplot(d)
 d
 @
 
@@ -370,22 +375,21 @@ We can now fit the GPD model to the excesses of cluster maxima above our thresho
 <<winterGPD>>=
 so2.gpd <- evm(d)
 so2.gpd
-par(mfrow=c(2,2))
-plot(so2.gpd)
+ggplot(so2.gpd)
 @
 \label{fig:SO2noCovariates}
 
 The diagnostic plots show a small kink in the Q-Q plot.  We now look into whether we can improve upon this slight lack of fit by covariate modelling.  We can examine the suitability of the remaining air quality variables as explanatory variables in linear predictors for the GPD model parameters by using scatter plots:
 
 <<winterScatterPlots>>=
-par(mfrow=c(2,2))
-plot(winter$O3,winter$SO2,xlab="o3",ylab="so2")
-plot(winter$NO2,winter$SO2,xlab="no2",ylab="so2")
-plot(winter$NO,winter$SO2,xlab="no",ylab="so2")
-plot(winter$PM10,winter$SO2,xlab="pm10",ylab="so2")
+p1 <- ggplot(data=winter,aes(O3,SO2)) + geom_point(colour="dark blue",alpha=0.5)
+p2 <- ggplot(data=winter,aes(NO2,SO2)) + geom_point(colour="dark blue",alpha=0.5)
+p3 <- ggplot(data=winter,aes(NO,SO2)) + geom_point(colour="dark blue",alpha=0.5)
+p4 <- ggplot(data=winter,aes(PM10,SO2)) + geom_point(colour="dark blue",alpha=0.5)
+grid.arrange(p1,p2,p3,p4,ncol=2)
 @
 
-Here we are not looking for linear regression type relationship but whether the scatter (scale) or tail behaviour (shape) of the SO2 variable depend on the candidate explanatory variable. The Ozone variabe looks like a possible candidate since the largest values of {\tt SO2} are much more scattered for small values of Ozone than for large.  We will look at the fitted models for each of the candidate explanatory variables, and examine the AIC (Akaike Information Criterion) for each in turn.  A model that gives a better fit to the data -- beyond that which we would expect to see simply due to the addition of more model parameters -- will have a reduced values of AIC.  We favour models with lower AIC.  The absolute value of AIC is not of interest in itself as this is a function of the exact choice of data used to fit the model.  The values of AIC for models fit to different sets of data (for instance to threshold excesses defined by different choices of threshold) are not comparable.
+Here we are not looking for linear regression type relationship but instead whether the scatter (scale) or tail behaviour (shape) of the SO2 variable depend on the candidate explanatory variable. The Ozone variabe looks like a possible candidate since the largest values of {\tt SO2} are much more scattered for small values of Ozone than for large.  We will look at the fitted models for each of the candidate explanatory variables, and examine the AIC (Akaike Information Criterion) for each in turn.  A model that gives a better fit to the data -- beyond that which we would expect to see simply due to the addition of more model parameters -- will have a reduced values of AIC.  We favour models with lower AIC.  The absolute value of AIC is not of interest in itself as this is a function of the exact choice of data used to fit the model.  The values of AIC for models fit to different sets of data (for instance to threshold excesses defined by different choices of threshold) are not comparable.
 
 Covariate models are fitted to the declustered data object by using the {\it model formula} syntax, specifying the name of the parameter to be modelled with a covariate and also the name of the column of the original data frame containing the covariate.  For example, to include the covariate {\tt NO} in the linear predictor for the log scale parameter, {\tt phi}, we do:
 
@@ -419,8 +423,7 @@ Finally we look at the model diagnostics for our preferred covariate model:
 
 <<winterCovariatePlot>>=
 so2.o3.gpd <- evm(d,phi=~O3)
-par(mfrow=c(2,2))
-plot(so2.o3.gpd)
+ggplot(so2.o3.gpd)
 @
 
 So we have managed to get rid of the previous kink in the Q-Q plot (Page~\pageref{fig:SO2noCovariates}) which appeared for the model when fitted with no covariates. We can also plot the residuals from each of our models against the {\tt O3} covariate:
@@ -428,12 +431,18 @@ So we have managed to get rid of the previous kink in the Q-Q plot (Page~\pagere
 \setkeys{Gin}{width=1.0\textwidth}
 
 <<winterCovariateResidualsPlot>>=
-par(mfrow=c(1,2))
 O3 <- winter[winter$SO2>d$threshold,"O3"][d$isClusterMax]
-plot(O3, resid(so2.gpd),xlab="O3",ylab="Residuals",main="No covariate model")
-panel.smooth(O3, resid(so2.gpd),col.smooth=3)
-plot(O3, resid(so2.o3.gpd),xlab="O3",ylab="Residuals",main="O3 covariate model")
-panel.smooth(O3, resid(so2.o3.gpd),col.smooth=3)
+
+p1 <- ggplot(data=data.frame(O3=O3, Residuals = resid(so2.gpd)),
+             aes(O3,Residuals)) + 
+    geom_point(colour="dark blue",alpha=0.5) + 
+    labs(title="No covariate model") + geom_smooth()
+
+p2 <- ggplot(data=data.frame(O3=O3, Residuals = resid(so2.o3.gpd)),
+             aes(O3,Residuals)) + 
+    geom_point(colour="dark blue",alpha=0.5) + 
+    labs(title="O3 covariate model") + geom_smooth()
+grid.arrange(p1,p2,ncol=1)
 @
 These plots show the covariate model captures the dependence of the no covariate model residual scatter on the Ozone variable.
 
@@ -444,11 +453,18 @@ Now that our preferred model for SO2 has model parameters that are specified as 
 
 For instance, to look at {\tt O3} values of 10, 15 and 20 and predicted return levels for each of these environmental conditions, we can do:
 
-<<winterCovariateReturnLevels>>=
+<<winterCovariateReturnLevels,message=FALSE>>=
 newdata <- data.frame(O3=c(10,15,20))
-so2.o3.rl <- predict(so2.o3.gpd,M=seq(100,1000,len=100),ci.fit=TRUE,newdata=newdata)
-par(mfrow=c(1,3))
-plot(so2.o3.rl)
+so2.o3.rl <- predict(so2.o3.gpd,M=seq(100,1000,len=100),ci.fit=TRUE,
+                     newdata=newdata)
+g <- ggplot(so2.o3.rl)
+breaks <- c(100,200,500,1000)
+grid.arrange(g[[1]] + scale_x_continuous(trans="log",breaks=breaks) + 
+                 scale_y_continuous(limits=c(0,350)),
+             g[[2]] + scale_x_continuous(trans="log",breaks=breaks) + 
+                 scale_y_continuous(limits=c(0,350)),
+             g[[3]] + scale_x_continuous(trans="log",breaks=breaks) + 
+                 scale_y_continuous(limits=c(0,350)),ncol=3)
 @
 The unit of time to which the {\it return period} now refers is the {\it cluster}, since the GPD model has been fitted to cluster maxima.
 %
