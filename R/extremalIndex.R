@@ -26,7 +26,7 @@
 #' the estimation of the extremal index and GPD parameters is assessed by using
 #' a bootstrap scheme which accounts for uncertainty in the extremal index
 #' estimation, and the corresponding uncertainty in the declustering of the
-#' series.
+#' series. There are \code{plot} and \code{ggplot} methods for output of this function, which is of class \code{extremalIndexRangeFit}.
 #' 
 #' The function \code{declust} returns an object of class "declustered",
 #' identifying independent clusters in the original series. Print, plot and
@@ -40,7 +40,7 @@
 #' 
 #' extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
 #' quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, xlab = "Threshold",
-#' addNexcesses = TRUE, estGPD=TRUE, verbose = TRUE, trace = 10, ...)
+#' verbose = TRUE, trace = 10, ...)
 #' 
 #' bootExtremalIndex(x)
 #' 
@@ -51,6 +51,11 @@
 #' \method{plot}{declustered}(x, ylab = "Data",...)
 #' 
 #' \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
+#' 
+#' \method{plot}{extremalIndexRangeFit}(data,addNexcesses=TRUE,estGPD=TRUE,...)
+#' 
+#' \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
+#' 
 #' @param y Argument to function \code{extremalIndex}: either a numeric vector
 #' or the name of a variable in \code{data}.
 #' @param data A data frame containing \code{y} and any covariates. In
@@ -345,7 +350,7 @@ bootExtremalIndex <- function(x){
 }
 
 #' @export
-extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(y,0.95),nint=10,nboot=100,alpha=.05,xlab="Threshold",addNexcesses=TRUE, estGPD=TRUE, verbose=TRUE, trace=10, ...){
+extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(y,0.95),nint=10,nboot=100,alpha=.05, estGPD=TRUE, verbose=TRUE, trace=10, ...){
 
   if (!missing(data)) {
      y <- deparse(substitute(y))
@@ -400,22 +405,60 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
     SH$up <- apply(SH$boot,1,quantile,1-alpha/2,na.rm=TRUE)
   }
 
-  plots <- function(l,...){
-    plot(u, l$m, ylim=c(min(l$ul),max(l$up)),type = "b", xlab=xlab, ...)
-    for (i in 1:nint) lines(c(u[i], u[i]), c(l$ul[i], l$up[i]))
-    if(addNexcesses){
-      axis(3,at=axTicks(1),labels=sapply(axTicks(1),function(u)max(declust(extremalIndex(y,threshold=u))$clusters)))
-      mtext("# threshold excesses")
+  EI$u <- SC$u <- SH$u <- u
+  res <- list(EI=EI,SC=SC,SH=SH,y=y)
+  oldClass(res) <- "extremalIndexRangeFit"
+  invisible(res)
+}
+
+#' @export 
+ggplot.extremalIndexRangeFit <- function(data=NULL, mapping, xlab, ylab, main,
+                                         ylim = "auto",
+                                         ptcol="dark blue",
+                                         col="dark blue",
+                                         fill="orange", textsize=4,
+                                         addNexcesses=TRUE,estGPD=TRUE,
+                                         ..., environment){
+    plots <- function(l,y,main,xlab,ylab,...){
+        data <- data.frame(u=l$u,m=l$m,ul=l$ul,u=l$up)
+        p <- ggplot(data,aes(u,m)) + geom_point(colour=ptcol) + labs(x=xlab,y=ylab,title=main) 
+            
+        for (i in 1:dim(data)[1]){
+            d <- data.frame(x=rep(l$u[i],2),y=c(l$ul[i],l$up[i]))
+            p <- p + geom_line(data=d,aes(x,y),colour=col)
+        }
+        if (addNexcesses){
+            p <- addExcesses(p, l$u, c(l$ul,l$up), data=y, textsize=textsize)
+        }
     }
-  }
+    
+    
+    res <- list(p1 = plots(data$EI,data$y,main="Extremal Index",xlab="Threshold",ylab=expression(theta),...))
+    if(estGPD){
+        res$p2 <- plots(data$SC,data$y,main="Scale parameter",xlab="Threshold",ylab=expression(sigma),...)
+        res$p3 <- plots(data$SH,data$y,main="Shape parameter",xlab="Threshold",ylab=expression(xi),...)
+    }
+    
+    invisible(res)
+}
 
-  plots(EI,main="Extremal Index",ylab=expression(theta),...)
-  if(estGPD){
-    plots(SC,main="Scale parameter",ylab=expression(sigma),...)
-    plots(SH,main="Shape parameter",ylab=expression(xi),...)
-  }
-
-  invisible()
+#' @export 
+plot.extremalIndexRangeFit <- function(data,addNexcesses=TRUE,estGPD=TRUE,...){
+    plots <- function(l,y,...){
+        plot(l$u, l$m, ylim=c(min(l$ul),max(l$up)),type = "b", ...)
+        for (i in 1:length(l$u)) lines(c(l$u[i], l$u[i]), c(l$ul[i], l$up[i]))
+        if(addNexcesses){
+            axis(3,at=axTicks(1),labels=sapply(axTicks(1),function(u)max(declust(extremalIndex(y,threshold=u))$clusters)))
+            mtext("# threshold excesses")
+        }
+    }
+    
+    plots(l=data$EI,y=data$y,main="Extremal Index",xlab="Threshold",ylab=expression(theta),...)
+    if(estGPD){
+        plots(l=data$SC,y=data$y,main="Scale parameter",xlab="Threshold",ylab=expression(sigma),...)
+        plots(l=data$SH,y=data$y,main="Shape parameter",xlab="Threshold",ylab=expression(xi),...)
+    }
+    
 }
 
 #' @export
