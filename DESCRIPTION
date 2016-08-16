@@ -2,7 +2,7 @@ Package: texmex
 Type: Package
 Title: Statistical Modelling of Extreme Values
 Version: 2.3
-Date: 2014-03-03
+Date: 2016-08-15
 Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),
@@ -68,6 +68,7 @@ Collate:
     'extremalIndex.R'
     'gev.R'
     'ggplot.bayes.R'
+    'ggplot.boot.R'
     'ggplot.cluster.R'
     'ggplot.evm.R'
     'ggplot.predict.R'
@@ -121,8 +122,8 @@ Collate:
     'qqevm.R'
     'rMaxAR.R'
     'regp3.R'
-    'revTransform.R'
     'residuals.evm.R'
+    'revTransform.R'
     'rgev.R'
     'rgpd.R'
     'roots.R'

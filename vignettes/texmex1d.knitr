@@ -4,7 +4,6 @@
 \usepackage{amscd}
 \usepackage{bbm}
 \usepackage{cite}
-
 %*********************************************************************
 
 <<include=FALSE>>=
@@ -334,7 +333,7 @@ has the lowest AIC we prefer that model.
 
 We now examine more detailed model diagnostics for our preferred model, {\tt airpoll2}:
 <<airpoll2diag>>=
-g3 <- ggplot(airpoll2)
+g3 <- ggplot(airpoll2,plot.=FALSE)
 g4 <- ggplot(predict(airpoll2,type="lp",ci.fit=TRUE))[[1]] + 
     ggtitle("Fitted (log)scale parameter")
 
@@ -344,8 +343,7 @@ summary(airpoll2)
 The {\tt summary} command reveals an alarming number of points to lie outside of the 95\% tolerance interval constructed for the Q-Q plot; the corresponding plot shows these points to be among those lying closest to the fitting threshold.  This suggests that we should re-visit the whole model selection procedure again at a higher threshold (details not shown here).  We eventually settle on the following model, fit at a threshold corresponding to the 90\% quantile:
 <<airpoll4diag>>=
 airpoll4 <- update(airpoll2,qu=0.9)
-par(mfrow=c(2, 2), pty="s")
-g5 <- ggplot(airpoll4)
+g5 <- ggplot(airpoll4,plot.=FALSE)
 g6 <- ggplot(predict(airpoll4,type="lp",ci.fit=TRUE))[[1]] + 
     ggtitle("Fitted (log)scale parameter")
 
@@ -377,7 +375,7 @@ An alternative approach to uncertainty estimation is to use a parametric bootstr
 <<optionsWarningOff,eval=TRUE,echo=FALSE,tidy=TRUE>>=
 o <- options(warn=-1)
 @
-<<bootstrap>>=
+<<bootstrap,message=FALSE>>=
 boot <- evmBoot(airpoll2, trace=1001)
 summary(boot)
 @
@@ -386,7 +384,7 @@ We can compare these reported standard deviations with the correponding estimate
 sqrt(diag(airpoll2$cov))
 @
 We can also compare the bootstrap based estimate of the parameter correlation matrix with that derived from the Observed Information matrix:
-<<InfoMatCorr>>=
+<<InfoMatCorr,message=FALSE>>=
 cov2cor(airpoll2$cov)
 cov2cor(summary(boot)$covariance)
 @
@@ -505,7 +503,6 @@ We can see that the underlying shapes of the four curves are identical, the main
 The default method for estimating these confidence intervals is to use the Information Matrix and quadratic approximation, however this can lead to poor estimates as this approach gives symmetric intervals centered on the point estimates.
 If we are to extrapolate far beyond the range of the data, then it can be preferable to recognise the inherent reduction in certainty that occurs as we move away from the data where the information dwells.  This is better reflected in the asymmetric confidence/credible intervals obtained by using either the bootstrap or Bayesian simuation based approach:
 <<bootstrapRetLevelConfIntsLPplot,message=FALSE>>=
-par(mfrow=c(3,2))
 O3 <- data.frame(O3=c(20,50))
 M <- seq(5,1000,len=40)
 g11 <- ggplot(predict(airpoll2,newdata=O3,M=M,ci.fit=TRUE),main="Obs Info")
@@ -594,7 +591,7 @@ Uncertainty estimation via the parametric bootstrap is carried out for our fitte
 <<bootstrapGEV>>=
 boot <- evmBoot(port, trace=1001)
 summary(boot)
-ggplot(boot,denscol=4,linecol=2)
+ggplot(boot)
 @
 This plot shows the bootstrap distributions of the model parameter estimates, for the GEV fitted to the {\tt portpirie} dataset.
 %

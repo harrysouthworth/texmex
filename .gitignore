@@ -17,3 +17,6 @@
 *.o
 *.so
 /src/texmex.dll
+.Rproj.user
+/.RData
+/texmex.Rproj

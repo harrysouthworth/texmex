@@ -1,4 +1,4 @@
-ggdensplots <- function(x, fill="blue", col="light blue"){
+ggdensplots <- function(x, fill="dark blue", col="light blue"){
     v <- names(coef(x))
     n <- length(v)
     p <- vector("list", length=n)
@@ -7,7 +7,7 @@ ggdensplots <- function(x, fill="blue", col="light blue"){
         d <- data.frame(x$param[, i])
         names(d) <- "x"
         p[[i]] <- ggplot(data=d, aes(x=x)) +
-                     stat_density(fill=fill) +
+                     stat_density(fill=fill,alpha=0.5) +
                      scale_x_continuous(v[i]) +
                      scale_y_continuous("")
     }
@@ -26,7 +26,7 @@ ggacfplots <- function(x, fill="orange"){
 
         p[[i]] <- ggplot(acd, aes(lag, acf)) +
                       geom_area(fill=fill) +
-                      geom_segment(color="blue", aes(x=lag, y=acf, xend=xend, yend=yend)) +
+                      geom_segment(color="dark blue", aes(x=lag, y=acf, xend=xend, yend=yend), alpha=0.5) +
                       scale_x_continuous("Lag") +
                       scale_y_continuous("ACF") +
                       ggtitle(paste0("ACF for ", v[i], "\n(thin = ", thin, ")"))
@@ -63,7 +63,7 @@ ggtraceplots <- function(x, trace="light blue", mean="blue", burn="orange"){
 #' @param which.plots Which plots to produce. Density plots correspond
 #'     to 1, trace plots of the Markov chains to 2 and autocorrelation
 #'     function plots to 3.
-#' @param denscol Colour for the density plots. Defaults to 'blue'.
+#' @param denscol Colour for the density plots. Defaults to 'dark blue'.
 #' @param acfcol Colour for the ACF plots. Defaults to 'light blue'.
 #' @param plot.it Whether or not to actually print the plots. Defaults
 #'     to \code{plot.it=TRUE}.  If \code{plot.it=FALSE}, you might
@@ -77,7 +77,7 @@ ggtraceplots <- function(x, trace="light blue", mean="blue", burn="orange"){
 #' @keywords hplot
 #' @method ggplot evmSim
 #' @export
-ggplot.evmSim <- function(data=NULL, mapping, which.plots=1:3, denscol="blue", acfcol="light blue", plot.it=TRUE,
+ggplot.evmSim <- function(data=NULL, mapping, which.plots=1:3, denscol="dark blue", acfcol="light blue", plot.it=TRUE,
                           ..., environment){
     d <- if (1 %in% which.plots) ggdensplots(data, fill=denscol)
          else NULL

@@ -6,11 +6,12 @@ vers <- paste("R package version", meta$Version)
 citEntry(entry = "Manual",
          title = "texmex: Statistical modelling of extreme values",
          author = personList(as.person("Harry Southworth"),
-                             as.person("Janet E. Heffernan")),
+                             as.person("Janet E. Heffernan"), 
+                             as.person("Paul D. Metcalfe")),
          year = year,
          note = vers,
 
          textVersion =
-         paste0("Harry Southworth and Janet E. Heffernan (",year,"). ",
+         paste0("Harry Southworth, Janet E. Heffernan and Paul D. Metcalfe (",year,"). ",
                 "texmex: Statistical modelling of extreme values. ",
                 vers, "."))

@@ -180,7 +180,7 @@ If \code{method = "bootstrap"}, an object of class \code{evmBoot}:
 This is of class \code{evmOpt} and methods for this class (such as resid and
 plot) may be useful.}
 
-There are summary, plot, print and coefficients methods available for these
+There are summary, plot, print, residuals and coefficients methods available for these
 classes.
 }
 \description{
