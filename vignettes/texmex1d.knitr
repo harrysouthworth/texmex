@@ -1,4 +1,3 @@
-
 \documentclass[10pt]{article}
 %*********************************************************************
 \usepackage{amsmath}
@@ -60,9 +59,11 @@ This is not a tutorial in Extreme Value Theory, for which we refer the reader to
 With {\tt texmex} installed, use the {\tt library} command to make the package available to the current session, set the colours used for graphics, and set the random seed so that results are reproducible on a given machine:
 <<setstuff>>=
 library(texmex)
+library(gridExtra)
 palette(c("black","purple","cyan","orange"))
 set.seed(20130618)
 @
+The {\tt gridExtra} package is used for laying out plots produced by {\tt ggplot2}.
 %
 \subsection{Data}
 %
@@ -73,7 +74,10 @@ package. We give a detailed exposition of the fitting of the GPD without covaria
 head(rain)
 summary(rain)
 length(rain)
-plot(rain)
+d1 <- ggplot(data=data.frame(rain=rain,index=1:length(rain)),
+             aes(index,rain)) + 
+    geom_point(alpha=0.5,col=4)
+d1
 @
 \subsubsection{Winter air pollution data}
 \label{section:winterData}
@@ -84,22 +88,21 @@ dim(winter)
 @
 We focus on the two variables Nitrogen Dioxide, {\tt NO2} and ozone {\tt O3} in the examples of covariate modelling that follow.  A scatter plot of these two variables suggests a negative association:
 <<data.winter2d>>=
-plot(winter[,c("O3","NO2")])
+d2 <- ggplot(winter,aes(O3,NO2)) + geom_point(alpha=0.5,col=4)
+d2
 @
 \subsubsection{Portpirie data}
 <<data.portpirie>>=
 head(portpirie)
 summary(portpirie)
 dim(portpirie)
-plot(portpirie)
-@
-<<dataPlots,echo=FALSE>>=
-par(mfrow=c(2,2))
-plot(rain,main="Rainfall data",xlab="")
-plot(winter[,c("O3","NO2")],main="Winter air pollution data")
-plot(portpirie,main="Portpirie data")
+d3 <- ggplot(portpirie,aes(Year,SeaLevel)) + geom_point(col=4)
+d3
 @
 
+<<dataPlots>>=
+grid.arrange(d1,d2,d3,ncol=2)
+@
 %****************************************************************
 %****************************************************************
 %
@@ -183,11 +186,15 @@ constant above the chosen threshold (both of these requirements are assessed by 
 
 We illustrate the use of these diagnostics now for the {\tt rain} data:
 <<threshold>>=
-par(mfrow=c(2, 2))
-grfRain <- gpdRangeFit(rain,umax=30)
-plot(grfRain)
+grfRain <- gpdRangeFit(rain,umax=35)
 mrlRain <- mrl(rain)
-plot(mrlRain,main="MRL plot, rain data")
+
+g1 <- ggplot(grfRain)
+g2 <- ggplot(mrlRain)
+
+grid.arrange(g1[[1]] + ggtitle("Stability plot, scale parameter"),
+             g1[[2]] + ggtitle("Stability plot, shape parameter"),
+             g2 + ggtitle("MRL plot"),ncol=2)
 @
 The threshold stability plots (top) show both (log-)scale and shape parameter estimates to be stable for thresholds of around 20 and above.
 
@@ -222,16 +229,14 @@ The estimated shape parameter shows us that with this threshold, the fitted GPD 
 
 We examine diagnostics plots to see whether these support our initial choice of threshold:
 <<plotGPD>>=
-par(mfrow=c(2,2))
-plot(rain.fit)
+ggplot(rain.fit)
 @
 The shaded regions in the P-P and Q-Q plots indicate pointwise 95\% tolerance
 intervals, based on 1000 simulated datasets. The shaded region in the return level plot shows 95\% pointwise confidence intervals, based on a normal approximation.
 
 The fit shown in these plots is good, with data and model agreeing well over the range of threshold exceedances.  We can see how a lower threshold (perhaps that suggested by the MRL plot but not the threshold stability plot) gives an estimated slightly less heavy tail and a poorer fit:
 <<plotGPDpoorFit>>=
-par(mfrow=c(2,2))
-plot(evm(rain,th=10))
+ggplot(evm(rain,th=10))
 @
 %
 \subsection{Maximum penalized likelihood estimation}
@@ -297,12 +302,10 @@ in $\xi$, in neither, or in both. We use the {\tt winter} air pollution dataset 
 <<simplegpd>>=
 airpoll <- evm(NO2, data=winter, qu=.7, penalty="none", family=gpd)
 airpoll
-par(mfrow=c(2, 2))
-plot(airpoll)
+ggplot(airpoll)
 @
 
- The plots
-show no systematic departure of the data from the model at this choice of threshold, so
+ The plots show no systematic departure of the data from the model at this choice of threshold, so
 we proceed to fit various models with covariates:
 
 <<gpdmods1>>==
@@ -313,8 +316,7 @@ airpoll3 <- update(airpoll, xi= ~O3)
 
 The default model diagnostic plots for the model are different when there are covariates included in the model.  Here we look at diagnostics for the model with O3 included in the linear predictors for both $\phi$ and $\xi$:
 <<gpdCovDiagnostics>>=
-par(mfrow=c(2,2))
-plot(airpoll1)
+ggplot(airpoll1)
 @
 
 Since there is a covariate in the model the probability and quantile plots are constructed using the model residuals, which are exponential under the fitted model. We also have a plot of the residuals against the fitted parameters for any parameter that is modelled using a covariate (in this case the scale parameter $\phi$ and shape parameter $\xi$). A well fitting model should have homogeneity of residuals across different values of the fitted parameter.  These diagnostic plots give no cause for concern.  There are no return level or histogram/density plots produced since the estimates of these quantities depend on the precise values taken by the covariates in the model.
@@ -332,19 +334,23 @@ has the lowest AIC we prefer that model.
 
 We now examine more detailed model diagnostics for our preferred model, {\tt airpoll2}:
 <<airpoll2diag>>=
-par(mfrow=c(2, 2), pty="s")
-plot(airpoll2)
-plot(predict(airpoll2,type="lp",ci.fit=TRUE),
-     main="Fitted (log)scale parameter")
+g3 <- ggplot(airpoll2)
+g4 <- ggplot(predict(airpoll2,type="lp",ci.fit=TRUE))[[1]] + 
+    ggtitle("Fitted (log)scale parameter")
+
+grid.arrange(g3[[1]],g3[[2]],g3[[3]],g4,ncol=2)
 summary(airpoll2)
 @
 The {\tt summary} command reveals an alarming number of points to lie outside of the 95\% tolerance interval constructed for the Q-Q plot; the corresponding plot shows these points to be among those lying closest to the fitting threshold.  This suggests that we should re-visit the whole model selection procedure again at a higher threshold (details not shown here).  We eventually settle on the following model, fit at a threshold corresponding to the 90\% quantile:
 <<airpoll4diag>>=
 airpoll4 <- update(airpoll2,qu=0.9)
 par(mfrow=c(2, 2), pty="s")
-plot(airpoll4)
-plot(predict(airpoll4,type="lp",ci.fit=TRUE),
-     main="Fitted (log)scale parameter")
+g5 <- ggplot(airpoll4)
+g6 <- ggplot(predict(airpoll4,type="lp",ci.fit=TRUE))[[1]] + 
+    ggtitle("Fitted (log)scale parameter")
+
+grid.arrange(g5[[1]],g5[[2]],g5[[3]],g6,ncol=2)
+
 summary(airpoll4)
 @
 The fit of this model is adequate, having apparently captured the dependence of the scale parameter on O3.  The final plot shows the nature of this relationship, with larger values of O3 giving lower values of $\phi$.  This concurs with the observed negative relationship between the variables shown in the original scatter plot, Section~\ref{section:winterData}.
@@ -391,14 +397,16 @@ Estimates of this correlation matrix are similar although not identical, as anti
 
 Focussing on the covariance matrix of the parameter estimates is misleading and does not let us explore the asymmetric nature of the uncertainty about the parameter estimates.  This can often be better seen in the bootstrap based confidence intervals for the model parameters shown in the following plots, although the asymmetry is not pronounced in this example:
 <<bootstrapLinPredConfIntsLPplot>>=
-par(mfrow=c(1,2))
 O3 <- data.frame(O3=seq(10,60,len=6))
-plot(predict(boot,newdata=O3,type="lp",
-             ci.fit=TRUE),main="Bootstrap")
-grid()
-plot(predict(airpoll2,newdata=O3,type="lp",
-             ci.fit=TRUE),main="Obs Info")
-grid()
+
+g7 <- ggplot(predict(boot,    newdata=O3,type="lp",
+                     ci.fit=TRUE))[[1]] + 
+    ggtitle("Bootstrap")
+g8 <- ggplot(predict(airpoll2,newdata=O3,type="lp",
+                     ci.fit=TRUE))[[1]] + 
+    ggtitle("Obs Info")
+
+grid.arrange(g7,g8,ncol=2)
 @
 
 \subsection{Bayesian estimation}
@@ -407,16 +415,16 @@ A further alternative approach to uncertainty estimation which accurately reflec
 
 <<gpdmcmc, eval=FALSE>>=
 airpollSim <- evm(NO2, data=winter, qu=.7, 
-                  phi=~O3, method="simulate")
+                  phi=~O3, method="simulate",
+                  verbose=FALSE)
 @
 
 Equivalently, the Bayesian estimation based on MCMC can also be instigated by the use of the function {\tt update} on the previously chosen model.  The method of estimation is changed from {\tt "optimize"} -- under which estimation is carried out using (penalized) maximum likelihood -- to {\tt "simulate"} -- under which a Metropolis algorithm is used to simulate from the joint posterior distribution of the parameters.  For our preferred model, {\tt airpoll2}, this is implemented as follows:
 
 <<update, eval=TRUE>>=
-airpollSim <- update(airpoll2,method="simulate",
-                     trace=40001,penalty="gaussian")
-par(mfrow=c(3, 3))
-plot(airpollSim)
+airpollSim <- update(airpoll2,method="simulate",penalty="gaussian",
+                     verbose=FALSE)
+ggplot(airpollSim)
 airpollSim
 @
 
@@ -452,7 +460,7 @@ airpollParams <- predict(airpollSim, newdata=O3, type="lp", all=TRUE)
 @
  The returned object contains a list called {\tt link} with one item for each unique value of the covariate(s).  The following shows the first five simulated values of $(\phi,\xi)$ for covariate {\tt O3 = 20}:
 <<airpollSimParamsO3.10>>=
-airpollParams$link[[1]][1:5,]
+airpollParams$obj$link[[1]][1:5,]
 @
 %
 %
@@ -470,12 +478,18 @@ value of $x$ expected to be seen in $m$ observations.
 
 The effect of the O3 variable on the fitted GPD is seen clearly when we look at return levels and associated plots for different levels of this variable:
 
-<<retLevelO3>>=
-par(mfrow=c(2, 2))
+<<retLevelO3,message=FALSE>>=
 O3 <- data.frame(O3=seq(20,50,by=10))
 pred <- predict(airpoll2,newdata=O3,M=5:1000,ci.fit=TRUE)
-pred[c(1,496,996)]
-plot(pred)
+pred$obj[c(1,496,996)]
+pred$call
+g9 <- ggplot(pred)
+xAxis <- scale_x_continuous(breaks=c(5,20,50,200,500,1000),trans="log")
+yAxis <- scale_y_continuous(limits=c(50,105))
+grid.arrange(g9[[1]] + xAxis + yAxis,
+             g9[[2]] + xAxis + yAxis,
+             g9[[3]] + xAxis + yAxis,
+             g9[[4]] + xAxis + yAxis,ncol=2)
 @
 
 The {\it Return period} is in units of {\it numbers of observations}, in this case, number of winter days. {\it Return level} is in the same units as NO2 variable to which the GPD model has been fit.
@@ -483,20 +497,23 @@ The {\it Return period} is in units of {\it numbers of observations}, in this ca
 This plot shows how the different values of scale parameter affect the size of return levels associated with different return periods but not the shape of this function.  The shape parameter $\xi$ is common to each of the four models used for prediction here -- this is emphasised if we allow the axes for plotting to differ for the four levels of O3:
 
 <<retLevelO3sameAxesFALSE>>=
-par(mfrow=c(2, 2))
-plot(predict(airpoll2,newdata=O3,M=5:1000,ci.fit=TRUE),sameAxes=FALSE)
+grid.arrange(g9[[1]],g9[[2]],g9[[3]],g9[[4]],ncol=2)
 @
+
 We can see that the underlying shapes of the four curves are identical, the main differences emphasised here is the greater uncertainty associated with the highest value of O3 examined here, which is beyond the range observed in the dataset.  
 
 The default method for estimating these confidence intervals is to use the Information Matrix and quadratic approximation, however this can lead to poor estimates as this approach gives symmetric intervals centered on the point estimates.
 If we are to extrapolate far beyond the range of the data, then it can be preferable to recognise the inherent reduction in certainty that occurs as we move away from the data where the information dwells.  This is better reflected in the asymmetric confidence/credible intervals obtained by using either the bootstrap or Bayesian simuation based approach:
-<<bootstrapRetLevelConfIntsLPplot>>=
+<<bootstrapRetLevelConfIntsLPplot,message=FALSE>>=
 par(mfrow=c(3,2))
 O3 <- data.frame(O3=c(20,50))
 M <- seq(5,1000,len=40)
-plot(predict(airpoll2,newdata=O3,M=M,ci.fit=TRUE),main="Obs Info")
-plot(predict(boot,newdata=O3,M=M,ci.fit=TRUE),main="Bootstrap")
-plot(predict(airpollSim,newdata=O3,M=M,ci.fit=TRUE),main="Simulated")
+g11 <- ggplot(predict(airpoll2,newdata=O3,M=M,ci.fit=TRUE),main="Obs Info")
+g12 <- ggplot(predict(boot,newdata=O3,M=M,ci.fit=TRUE),main="Bootstrap")
+g13 <- ggplot(predict(airpollSim,newdata=O3,M=M,ci.fit=TRUE),main="Simulated")
+grid.arrange(g11[[1]] + xAxis+yAxis,g11[[2]] + xAxis+yAxis,
+             g12[[1]] + xAxis+yAxis,g12[[2]] + xAxis+yAxis,
+             g13[[1]] + xAxis+yAxis,g13[[2]] + xAxis+yAxis,ncol=2)
 @
 The asymmetry in the bootstrap based confidence intervals and the Bayesian simulation based credible intervals for high return levels at large values of the covariate is marked here.
 %*********************************************************************
@@ -539,8 +556,7 @@ location, scale and shape parameters $\mu$, $\sigma$ and $\xi$ respectively. For
 We use the annual maxima sea-level observations in the dataset {\tt portpirie} to illustrate the fitting of the GEV in {\tt texmex}.  The function {\tt evm} (Extreme Value Model) is called, this time with the argument {\tt family=gev}, which fits the GEV model rather than the default family, GPD.  Diagnostic plots are constructed in the usual way:
 <<portpirieFit>>=
 port <- evm(SeaLevel,data=portpirie,family=gev)
-par(mfrow=c(2,2))
-plot(port)
+ggplot(port)
 port
 @
 The fit of the GEV to the portpirie sea-level annual maxima appears to be good.
@@ -552,8 +568,7 @@ Covariates may be included in the GEV models in the same manner as illulstrated 
 port1 <- update(port,mu=~Year)
 port2 <- update(port,phi=~Year)
 port3 <- update(port,xi=~I((Year-1955)/1955),start=c(coef(port),0.001))
-par(mfrow=c(2,2))
-plot(port3)
+ggplot(port3)
 @
 An examination of the AIC for each of these fitted models ({\tt AIC(port)} etc.) reveals there to be no evidence of an effect of Year on any of the GEV model parameters.
 %
@@ -579,8 +594,7 @@ Uncertainty estimation via the parametric bootstrap is carried out for our fitte
 <<bootstrapGEV>>=
 boot <- evmBoot(port, trace=1001)
 summary(boot)
-par(mfrow=c(2,2))
-plot(boot)
+ggplot(boot,denscol=4,linecol=2)
 @
 This plot shows the bootstrap distributions of the model parameter estimates, for the GEV fitted to the {\tt portpirie} dataset.
 %
@@ -599,10 +613,11 @@ x_p = \left\{
 Here $p$ is the probability satisfying $G(x_p)=1-p$ (where $G(x)$ is defined in equation~(\ref{eqn:GEVDistnFun})).  This has the interpretation of $x_p$ being the {\it return level} associated with return period $1/p$. For example, for annual maxima data, it is the level which is expected to be exceeded on average once every $1/p$ years.
 
 In {\tt texmex}, return levels are estimated for the GEV as we showed for the GPD:
-<<GEVretLevel>>=
+<<GEVretLevel,message=FALSE>>=
 portRL <- predict(port,M=seq(50,1000,by=50),ci.fit=TRUE)
-plot(portRL)
-portRL[c(1,10,20)]
+g14 <- ggplot(portRL)
+g14[[1]] + scale_x_continuous(trans="log",breaks=c(50,100,200,500,1000))
+portRL$obj[c(1,10,20)]
 @
 
 
