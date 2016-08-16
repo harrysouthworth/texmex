@@ -26,6 +26,8 @@ License: GPL (>=2)
 Depends:
     mvtnorm,
     ggplot2,
+    gridExtra,
+    parallel,
     stats
 Suggests:
     MASS,
