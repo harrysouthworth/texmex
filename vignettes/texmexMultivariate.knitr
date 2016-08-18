@@ -61,7 +61,7 @@ citation("texmex")
 With {\tt texmex} installed, use the {\tt library} command to make the package
 available to the current session, set the colours used for graphics, and set the
 random seed so that results are reproducible on a given machine:
-<<setstuff>>=
+<<setstuff,warning=FALSE,message=FALSE>>=
 library(texmex)
 palette(c("black","purple","cyan","orange"))
 set.seed(20130618)
@@ -109,18 +109,18 @@ the variables, the nature of which varies considerably between the pairs.
 
 \label{pairsWinter}
 <<rawData>>=
-  pairs(winter)
+GGally::ggpairs(winter)
 @
 
 Next, we plot each of the other variables against NO; a full analysis would consider
 all pairs of variables.
 
 <<mvdataplots1>>=
-par(mfrow=c(2,2))
-plot(O3 ~ NO, data=winter)
-plot(NO2 ~ NO, data=winter)
-plot(SO2 ~ NO, data=winter)
-plot(PM10 ~ NO, data=winter)
+p1 <- ggplot(winter,aes(NO,O3)) + geom_point(colour="darkblue",alpha=0.5)
+p2 <- ggplot(winter,aes(NO,NO2)) + geom_point(colour="darkblue",alpha=0.5)
+p3 <- ggplot(winter,aes(NO,SO2)) + geom_point(colour="darkblue",alpha=0.5)
+p4 <- ggplot(winter,aes(NO,PM10)) + geom_point(colour="darkblue",alpha=0.5)
+grid.arrange(p1,p2,p3,p4,ncol=2)
 @
 \label{fig:NO.Data}
 
@@ -139,9 +139,8 @@ O3 and NO, and between O3 and NO2.
 <<chi>>=
 chiO3 <- chi(winter[, c("O3", "NO")])
 chiNO2 <- chi(winter[, c("NO2", "NO")])
-par(mfrow=c(2, 2))
-plot(chiO3, mainChi="Chi: O3 and NO", mainChiBar="Chi-bar: O3 and NO")
-plot(chiNO2, mainChi="Chi: NO2 and NO", mainChiBar="Chi-bar: NO2 and NO")
+ggplot(chiO3, main=c("Chi"="Chi: O3 and NO", "ChiBar"="Chi-bar: O3 and NO"))
+ggplot(chiNO2, main=c("Chi"="Chi: NO2 and NO", "ChiBar"="Chi-bar: NO2 and NO"))
 @
 
 The plots are interpreted as follows:
@@ -185,21 +184,34 @@ and Schmitt~\cite{schmidtSchmitt}.
 <<mcs>>=
 mcsO3 <- MCS(winter[, c("O3", "NO")])
 mcsNO2 <- MCS(winter[, c("NO2", "NO")])
-par(mfrow=c(1, 2))
-plot(mcsO3, main="MCS: O3 and NO")
-plot(mcsNO2, main="MCS: NO2 and NO")
+g1 <- ggplot(mcsO3, main="MCS: O3 and NO")
+g2 <- ggplot(mcsNO2, main="MCS: NO2 and NO")
+gridExtra::grid.arrange(g1,g2,ncol=1)
 @
 
 The plots of the multivariate conditional Spearman's $\rho$
   do not have the same vertical axes, and tell a similar story
 to the plots of $\chi$ and $\bar\chi$. Confidence intervals can be added to the MCS plots by using
-{\tt bootMCS} and its associated plot method, see documentation for more details.
+{\tt bootMCS} and its associated plot method as follows:
+
+<<mcsBoot>>=
+bootmcsO3 <- bootMCS(winter[, c("O3", "NO")],trace=1000)
+bootmcsNO2 <- bootMCS(winter[, c("NO2", "NO")],trace=1000)
+g1 <- ggplot(bootmcsO3, main="MCS: O3 and NO")
+g2 <- ggplot(bootmcsNO2, main="MCS: NO2 and NO")
+gridExtra::grid.arrange(g1,g2,ncol=1)
+@
 
 The exploratory summaries of this section suggest that when we come
 to the conditional multivariate extreme value modelling, we should
 expect to find a negative association between extreme O3 and extreme
 NO, and a possibly stronger positive association between NO2 and NO. The reader is
 left to check the other pairs of variables and to look at the analogous dependence in the {\tt summer} dataset, which is not the same.
+
+\pagebreak
+\newpage
+\clearpage
+
 %
 \section{Conditional multivariate extreme value modelling}
 %
@@ -271,7 +283,7 @@ the five marginal variables in turn.  Here, {\tt mqu} specifies the marginal
 quantile which defines the threshold above which the marginal GPD models will be
 fitted.
          
-<<mex>>=
+<<mex,warning=FALSE>>=
 mex.O3  <- mex(winter, mqu=.7, penalty="none", which="O3")
 mex.NO2 <- mex(winter, mqu=.7, penalty="none", which="NO2")
 mex.NO  <- mex(winter, mqu=.7, penalty="none", which="NO")
@@ -281,7 +293,7 @@ mex.PM10 <- mex(winter, mqu=.7, penalty="none", which="PM10")
          
 The function {\tt mex} is a wrapper for the functions {\tt migpd} and {\tt mexDependence} which carry out the marginal and dependence modelling stages respectively.  An equivalent way of carrying out the above, conditioning on O3 would be to use:
            
-<<migpd.mexDependence>>=
+<<migpd.mexDependence,warning=FALSE>>=
 marg <- migpd(winter, mqu=0.7, penalty="none")
 mex.O3 <- mexDependence(marg, which = "O3")
 @
@@ -309,9 +321,13 @@ Use of {\tt mrlPlot} and {\tt gpdRangeFit} can also be informative at this stage
 output is suppressed since it is lengthy!).
 
 <<plot.migpd, eval=FALSE>>=
-plot(marg)
-plot(gpdRangeFit(winter$O3))  # ... etc
-plot(mrl(winter$O3))          # ... etc
+g <- ggplot(marg)
+
+do.call("grid.arrange", c(g[[1]], list(ncol=2, nrow=2)))  # ... etc
+do.call("grid.arrange", c(g[[2]], list(ncol=2, nrow=2)))  # ... etc
+
+ggplot(gpdRangeFit(winter$O3))  # ... etc
+ggplot(mrl(winter$O3))          # ... etc
 @
 %
 \subsection{Dependence model diagnostics}
@@ -320,8 +336,7 @@ Plotting model diagnostics for the dependence component of the model is carried
 out as follows - first, for the model fitted by conditioning on the O3 variable:
 
 <<mexO3>>=
-par(mfcol=c(3, 4))
-plot(mex.O3)
+ggplot(mex.O3)
 @
 
 The plots show (top to bottom): centred and scaled values of the 
@@ -339,11 +354,10 @@ note that the one dimensional conditional distribution of $(X_j \,|\, X_i)$
 $(X_i,X_j)$, estimated by the scatterplot of the data points.
 
 For the models fitted by conditioning on the NO variable, we do:
-<<mexNO>>=
-par(mfcol=c(3, 4))
-plot(mex.NO)
-@
 
+<<mexNO>>=
+ggplot(mex.NO)
+@
 
 Most of the plots support the choice of threshold, however the top plot for SO2
 given NO shows a decrease in location with increase in conditioning NO.
@@ -357,14 +371,24 @@ we perform 10 (by default) bootstrap samples.  We set {\tt trace=11}
 to suppress printing of progress reports in this document (the 
 default is to report every ten replicates).
 
-<<mexRangeFitPlot>>=
-par(mfrow=c(4, 2), mar=par("mar")/2)
+<<mexRangeFitPlot,message=FALSE,warning=FALSE>>=
 mrf <- mexRangeFit(marg, "NO", trace=11)
-plot(mrf, addNexcesses=FALSE)
+ggplot(mrf)
 @
 
+These plots suggest that there is an issue with the starting values in the NO2 model fit.  We try using different starting values.  There is an option for using a previously fitted dependence model as a starting point, see the documentation for {\tt mexDependence}. 
+
+<<mexRangeFitPlot2,message=FALSE,warning=FALSE>>=
+start <- coef(mex.NO$dependence)[1:2,] # alternative starting value
+
+mrf <- mexRangeFit(marg, "NO", trace=11,start=c(0.1,0.1))
+ggplot(mrf)
+@
+
+This does appear to have resolved the issue about the starting value which we had identified. We would need to take care in other fitting that the fitted model for NO2 given NO does not suffer from this issue.
+
 The stability of the parameter estimates in the resulting plot provides some
-reassurance that the $70^{th}$ percentile is a suitable threshold.
+reassurance that the $70^{th}$ percentile is a suitable threshold.  
 %
 \subsection{Constrained parameter space}
 \label{section:parSpaceConstraints}
@@ -425,6 +449,10 @@ It is clear from the values of the dependence parameters, that SO2 is the most
 strongly (negatively) dependent on large values of O3, with the other variables
 having only weak extremal dependence on ozone.
 
+<<mexParsNO.newStart,echo=FALSE>>=
+mex.NO  <- mexDependence(marg, dqu=.7, which="NO",start=c(0.1,0.1))
+@
+
 <<mexParsNO>>=
 mex.NO
 @
@@ -479,12 +507,11 @@ summary(pO3,mth=c(39,40,100,10,40))
 The plot method can be used to visualise the fitted conditional models using the
 importance samples as follows:
 <<plotPredictO3>>=
-par(mfrow=c(2, 2))
-plot(pO3)
+ggplot(pO3)
 @
 
-Plots show the original data (purple circles) and data importance sampled under
-the fitted model above the threshold for prediction (orange crosses and blue dots).  Sampled represented by a blue dot are largest (on the common quantile scale) in the conditioning variable, orange crosses are largest in a different variable.  The solid curve in each plot is for reference and joins equal quantiles of the marginal
+Plots show the original data (grey circles) and data importance sampled under
+the fitted model above the threshold for prediction (orange triangles  and blue diamonds).  Samples represented by a blue diamonds are largest (on the common quantile scale) in the conditioning variable, orange diamonds are largest in a different variable.  The solid curve in each plot is for reference and joins equal quantiles of the marginal
 distributions -- perfectly dependent variables would lie exactly on this line
 (this line is analogous to the diagnonal line on a QQ plot, but here since the
 two marginal distributions are not equal, the curve is not a straight line). We
@@ -493,11 +520,10 @@ dependence) with that obtained when we condition on NO where the dependence is
 stronger:
 
 <<plotPredictNO>>=
-par(mfrow=c(2, 2))
-plot(pNO)
+ggplot(pNO)
 @
 The strong extremal dependence of winter PM10 on NO is evident here, with the
-sampled data following closely the curve of equal marginal quantiles.  These plots show that the sampled points are a greater mixture of points that are largest in the conditioning variable and points that are not (there are many orange crosses below the solid blue line).
+sampled data following closely the curve of equal marginal quantiles.  These plots show that the sampled points are a greater mixture of points that are largest in the conditioning variable and points that are not (there are many orange diamonds below the solid orange "diagonal" line).
 
 The importance samples generated by the {\tt predict} method can also be used to
 estimate probabilities of arbitrary tail regions falling above the threshold for
@@ -534,15 +560,15 @@ The following plots highlight the selection of points in step~\ref{Step4}. Point
 
 <<examplePartition,echo=FALSE>>=
 n <- winter[,c(2,3,4)]
-nAll <- mexAll(n,mqu=0.7,dqu=rep(0.7,23))
-plot(predict(nAll$NO2))
+nAll <- mexAll(n,mqu=0.7,dqu=rep(0.7,3))
+ggplot(predict(nAll$NO2))
 @
 
-The second of these plots shows the NO2 and SO2 values of all Monte Carlo samples above the conditional dependence threshold, conditioning on NO2.   All of the orange crosses and blue points are large in NO2, but only those shown by the blue points are largest in NO2 (assessed on a common quantile scale).  Clearly the crosses which lie above the solid blue line are larger in SO2 than in NO2.  Those samples shown by orange crosses {\it below} the solid blue line are largest in a different variable -- neither NO2 nor SO2, but another variable not shown on the plot.
+The second of these plots shows the NO2 and SO2 values of all Monte Carlo samples above the conditional dependence threshold, conditioning on NO2.   All of the orange diamonds and blue triangels are large in NO2, but only those shown by the blue triangles are largest in NO2 (assessed on a common quantile scale).  Clearly the crosses which lie above the solid blue line are larger in SO2 than in NO2.  Those samples shown by orange crosses {\it below} the solid blue line are largest in a different variable -- neither NO2 nor SO2, but another variable not shown on the plot.
 
 All the steps required for the simulation are carried out in the {\tt texmex} function {\tt mexMonteCarlo}.  Here, we generate 5000 points from the original dataset (below the dependence thresholds) and the collection of conditional models above each of the dependence thresholds:
 
-<<mexMonteCarlo>>=
+<<mexMonteCarlo,warning=FALSE>>=
 mexMC <- mexMonteCarlo(5000, mAll)
 @
 
