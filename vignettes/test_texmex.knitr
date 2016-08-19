@@ -32,23 +32,21 @@ usage.
 Many graphs are produced by the test suite and these can be visually compared
 with published versions, or evaluated against known plausible output.
 
-The testthat~\cite{testthat} package is used to provide the testing environment.
+The {\tt testthat}~\cite{testthat} package is used to provide the testing environment.
 
 In total, over 1000 tests are performed providing a reasonable degree of
-confidence that texmex produces the output expected of it.
+confidence that {\tt texmex} produces the output expected of it.
 
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} was used in the construction of this
-vignette. Versions of texmex, sombrero, test that and other packages can be
-found in the Appendix.
+vignette. Versions of {\tt texmex}, {\tt sombrero}, {\tt testthat} and other packages can be found in the Appendix.
 
 \subsection{Acknowledgements}
 Some of the independently written code that is used for validation is borrowed
-from the ismev~\cite{coles} and evd~\cite{evd} packages. Other code has been
-provided by Yiannis Papastathopoulos~\cite{yiannis} and by Paul Metcalfe of
+from the {\tt ismev}~\cite{coles} and {\tt evd}~\cite{evd} packages. Other code has been provided by Yiannis Papastathopoulos~\cite{yiannis} and by Paul Metcalfe of
 AstraZeneca.
 
-The development of the the texmex package, including its test suite, was
+The development of the {\tt texmex} package, including its test suite, was
 partially funded by AstraZeneca.
 
 \section{Using the validation suite}
@@ -60,10 +58,10 @@ line from the package source (the .tar.gz file), the command would be
 R CMD INSTALL --install-tests texmex_2.3.tar.gz
 \end{verbatim}
 
-The test suite depends upon the testthat~\cite{testthat} package, so it is
+The test suite depends upon the {\tt testthat}~\cite{testthat} package, so it is
 necessary to load that package before attempting to run any tests.
 
-<<testthat.package>>=
+<<testthat.package,message=FALSE,warning=FALSE>>=
 library(texmex)
 library(testthat)
 @
@@ -72,7 +70,7 @@ The test scripts are located under the package directory in {\tt tests/testthat}
 To run a specific test script, you can use
 
 <<test_file, echo=TRUE, eval=FALSE>>=
-test_file("texmex/tests/testthat/test.revTransform.R")
+test_file("texmex/tests/testthat/test-revTransform.R")
 @
 
 for example. To run all test scripts (which will take a while), the command
@@ -83,7 +81,7 @@ document.
 options(warn=-1)
 @
 
-<<validate, echo=TRUE, fig.cap="Output from running the validation suite.">>=
+<<validate, echo=TRUE, fig.cap="Output from running the validation suite.",message=FALSE,warning=FALSE>>=
 test_package("texmex")
 @
 
