@@ -212,7 +212,7 @@ function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000
                          stat_smooth(color=col, se=FALSE, span=span, method="loess") +
                          ggtitle(paste("Residuals vs fitted", ParName)) +
                          scale_x_continuous(paste("Fitted", ParName)) +
-                         scale_y_continuous("Residuals")
+                         scale_y_continuous("Residuals", limits=range(d$r))
         }
         co <- co[!sapply(co, is.null)] # modifyList will do this
 

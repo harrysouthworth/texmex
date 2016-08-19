@@ -58,7 +58,7 @@ mexMonteCarlo <- function(nSample,mexList,mult=10){
 # generate large samples from each of the Conditional models,
   mexKeep <- lapply(1:d,function(i){
       mc <- predict.mex(mexList[[i]],pqu=dqu[i],nsim=nSample*d*mult)
-      mc$data$simulated[mc$data$CondLargest,c(i,c(1:d)[-i])]})
+      mc$data$simulated[mc$data$CondLargest,order(c(i,c(1:d)[-i]))]}) 
 # Replace original sample by samples from conditional models. 
   nR <- rep(0,d)
   names(nR) <- names(data)

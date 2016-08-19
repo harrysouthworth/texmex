@@ -256,12 +256,12 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
 }
 
 #' @export
-print.mex <- function(x, ...){
+print.mex <- function(x, digits=4, ...){
     print(x$call, ...)
     cat("\n\nMarginal models:\n")
-    summary(x[[1]])
+    summary(x[[1]],digits=digits)
     cat("\nDependence model:\n\n")
-    print(x[[2]])
+    print(x[[2]],...)
     invisible()
 }
 

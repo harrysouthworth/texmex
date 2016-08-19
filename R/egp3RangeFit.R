@@ -24,11 +24,12 @@
 #' Note this function does not extend to assessing model fit when there are
 #' covariates included in the model.
 #' 
-#' @aliases egp3RangeFit print.egp3RangeFit plot.egp3RangeFit
+#' @aliases egp3RangeFit print.egp3RangeFit plot.egp3RangeFit ggplot.egp3RangeFit
 #' @usage egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data,
 #' .95), nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 #' \method{print}{egp3RangeFit}(x, ...)
 #' \method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, log.="", ...)
+#' \method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa), main=NULL,fill="orange", col="blue",addNexcesses=TRUE, textsize=4, ..., environment)
 #' @param data The data vector to be modelled.
 #' @param umin The minimum threshold above which to estimate the parameters.
 #' @param umax The maximum threshold above which to estimate the parameters.
@@ -44,6 +45,7 @@
 #' @param xlab Label for the x-axis.
 #' @param ylab Label for the y-axis.
 #' @param main The main title.
+#' @param textsize Size of text for annotation showing number of threshold excesses.
 #' @param addNexcesses Annotate top axis with numbers of threshold excesses
 #' arising with the corresponding values of threshold on the bottom axis.
 #' @param log. Argument passed through to \code{plot}. Can take values "x" for
@@ -59,6 +61,7 @@
 #' @examples
 #' 
 #' plot(egp3RangeFit(rain))
+#' ggplot(egp3RangeFit(rain))
 #' 
 #' @export egp3RangeFit
 egp3RangeFit <-
@@ -111,4 +114,24 @@ plot.egp3RangeFit <- function(x, xlab="Threshold", ylab="kappa",
   abline(h=1, lty=2)
   
   invisible()
+}
+
+#' @export
+ggplot.egp3RangeFit <- function(data, mapping, xlab = "Threshold", ylab = expression(kappa), main=NULL,
+                                fill="orange", col="blue",
+                                addNexcesses=TRUE, textsize=4, ..., environment)
+{
+    d <- data.frame(hi=data$hi,lo=data$lo,th=data$th,par=data$par)
+    poly <- data.frame(x=c(data$th, rev(data$th)), y=c(data$lo, rev(data$hi)))
+    
+    p <- ggplot(data=d,aes(th,par)) + 
+        geom_polygon(data=poly,aes(x,y),fill=fill, alpha=.5) +
+        geom_line(colour=col) + 
+        geom_hline(yintercept=1,linetype=2) +
+        labs(x=xlab,y=ylab,title=main)
+        
+    if (addNexcesses)
+        p <- addExcesses(p, poly$x, poly$y, data=data$data, textsize=textsize)
+
+    invisible(p)
 }

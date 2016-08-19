@@ -17,8 +17,8 @@ plot.mex <- function(x, quantiles=seq(0.1, by=0.2, len=5), col="grey", ...){
    len <- 1001
    
    depThr <- c(quantile(mar$data[, dep$which], dep$dqu))
-   d <- xmax-depThr
-   xlim <- unname(c(depThr - 0.1*d, depThr + 1.5*d))
+   dif <- xmax-depThr
+   xlim <- unname(c(depThr - 0.1*dif, depThr + 1.5*dif))
    
    for(i in 1:ncol(z)){
       p <- seq(dep$dqu, 1-1/n, length=n)

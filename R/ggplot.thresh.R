@@ -24,7 +24,7 @@ addExcesses <- function(p, x, y, data, textsize){
 #' @method ggplot mrl
 #' @export
 ggplot.mrl <- function(data, mapping, xlab = "Threshold", ylab = "Mean excess", main=NULL,
-                       fill="light blue", col="blue",
+                       fill="orange", col="blue",
                        addNexcesses=TRUE, textsize=4, ..., environment){
   x <- data
   data <- x$data
@@ -88,7 +88,7 @@ ggplot.gpdRangeFit <- function(data, mapping, xlab = "Threshold", ylab = NULL, m
       if (!missing(main)) ggtitle(main[i])
 
     if (addNexcesses)
-      p[[i]] <- addExcesses(p[[i]], poly$x, poly$y, data=data, u=u, textsize=textsize)
+      p[[i]] <- addExcesses(p[[i]], poly$x, poly$y, data=data, textsize=textsize)
   } # Close for
   p
 }
