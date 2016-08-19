@@ -3,16 +3,28 @@
 \name{MCS}
 \alias{MCS}
 \alias{bootMCS}
+\alias{ggplot.MCS}
+\alias{ggplot.bootMCS}
 \alias{plot.MCS}
 \alias{plot.bootMCS}
+\alias{print.MCS}
+\alias{print.bootMCS}
+\alias{summary.MCS}
 \alias{summary.bootMCS}
 \title{Multivariate conditional Spearman's rho}
 \usage{
-MCS(X, p = seq(0.1, 0.9, by = 0.1))
+chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
+
+\method{summary}{chi}(object, digits=3, ...)
 
 \method{plot}{MCS}(x, xlab = "p", ylab = "MCS", ...)
 
+\method{ggplot}{MCS}(data, mapping, main = "", ..., environment)
+
 bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
+
+\method{ggplot}{bootMCS}(data, mapping, main = "", alpha = 0.05, ylim, ...,
+  environment)
 
 \method{plot}{bootMCS}(x, xlab = "p", ylab = "MCS", alpha = 0.05, ylim,
   ...)

@@ -38,3 +38,38 @@ function( x, pch=c( 1, 3, 20 ), col=c( 2, 8, 3), cex=c( 1, 1, 1 ), ask = TRUE, .
 	invisible()
 }
 
+#' @rdname mex
+#' @export
+`ggplot.predict.mex` <-
+    function(data=NULL, mapping, xlab, ylab,  main,
+             ptcol=c("grey","dark blue","orange"), col="dark blue", fill="orange", shape=16:18, size=rep(1,3), plot.=TRUE,..., environment){
+        
+        xdat <- data$data$real[, 1 ]
+        upts <- seq(from =0.001,to=1-0.0001,len=100)
+        xpts <- revTransform(upts,data=xdat, qu = mean(xdat < data$mth[1]), th=data$mth[1],
+                             sigma = data$gpd.coef[3,1], xi = data$gpd.coef[4,1])
+        
+        plotfn <- function(i){
+            dat <- data.frame(x=xdat,y=data$data$real[, i])
+            diag <- data.frame(x=xpts, y=revTransform(upts,data=data$data$real[, i ], qu = mean(data$data$real[,i] < data$mth[i]), th=data$mth[i],sigma = data$gpd.coef[3,i], xi = data$gpd.coef[4,i]))
+            cl <- data.frame(x=data$data$simulated[ data$data$CondLargest, 1 ], 
+                             y=data$data$simulated[ data$data$CondLargest, i ])
+            NOTcl <- data.frame(x=data$data$simulated[!data$data$CondLargest, 1 ], 
+                                y=data$data$simulated[!data$data$CondLargest, i ])
+    
+            ggplot(dat,aes(x,y)) +
+                labs(x=names( data$data$simulated )[ 1 ],y=names( data$data$simulated )[ i ]) +
+                geom_point(data=cl,shape=shape[2],size=size[2],colour=ptcol[2],alpha=0.5) + 
+                geom_point(data=NOTcl,shape=shape[3],size=size[3],colour=ptcol[3],alpha=0.5) + 
+                geom_point(shape=shape[1],size=size[1],colour=ptcol[1],alpha=0.5) +
+                geom_vline(xintercept=data$data$pth, lty=2, colour=col) +
+                geom_line(data=diag,colour=fill)
+        }
+        
+        p <- lapply(2:( dim( data$data$real )[[ 2 ]] ), plotfn)
+        rowCol <- n2mfrow(length(p))
+        
+        if (plot.) suppressWarnings(do.call("grid.arrange", c(p, list(nrow=rowCol[1], ncol=rowCol[2]))))
+        invisible(p)
+    }
+

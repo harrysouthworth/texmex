@@ -137,3 +137,50 @@ plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE,...){
   }
 }
 
+
+#' @export
+ggplot.mexRangeFit <- function(data=NULL, mapping, 
+                             ylim = "auto",
+                             ptcol="blue",
+                             col="cornflowerblue",
+                             bootcol="orange",
+                             plot.=TRUE,
+                             addNexcesses=TRUE, 
+                             textsize=4,
+                             ..., environment){
+    ests <- data$ests
+    boot <- data$boot
+    quantiles <- data$quantiles
+    PointEsts <- sapply(ests,function(X) coef(X$dependence))
+    cof <- coef(ests[[1]]$dependence)
+    whichName <- ests[[1]]$dependence$conditioningVariable
+    which <- ests[[1]]$dependence$which
+    dat <- ests[[1]]$margins$data
+    Names <- paste(rep(rownames(cof),dim(dat)[2]-1),
+                   paste(rep(colnames(cof),each=6),whichName,sep=" | "),sep="  ")
+    R <- length(boot[[1]]$boot)
+
+    plotfn <- function(i){
+        if( sum((i %% 6) == 1:4)  &  sum(PointEsts[i,])) { # exclude plots from nuisance parameters m and s for which i mod 6 = 5,0 resp
+            Boot <- sapply(boot, function(x) sapply(x$boot, function(x) x$dependence[i]))
+
+            d <- data.frame(q=quantiles,p=PointEsts[i,])
+            b <- data.frame(q=rep(quantiles,each=R),b=c(Boot))
+            
+            p <- ggplot(d,aes(q,p)) + 
+                    labs(x="Quantiles",y=Names[i]) + 
+                    geom_line(colour=col) + 
+                    geom_point(data=b,aes(q,b),colour=bootcol,alpha=0.5) +
+                    geom_point(colour=col) 
+        } else {
+            p <- NULL
+        }
+        p
+    }
+    p <- lapply(1:dim(PointEsts)[1], plotfn)
+    p <- p[!sapply(p,is.null)]
+
+    # The loess smoother can tend to throw warnings, so suppress
+    if (plot.) suppressWarnings(do.call("grid.arrange", c(p, list(ncol=2))))
+    invisible(p)
+}

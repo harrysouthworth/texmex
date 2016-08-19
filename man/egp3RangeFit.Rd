@@ -2,6 +2,7 @@
 % Please edit documentation in R/egp3RangeFit.R
 \name{egp3RangeFit}
 \alias{egp3RangeFit}
+\alias{ggplot.egp3RangeFit}
 \alias{plot.egp3RangeFit}
 \alias{print.egp3RangeFit}
 \title{Estimate the EGP3 distribution power parameter over a range of thresholds}
@@ -10,6 +11,7 @@ egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data,
 .95), nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 \method{print}{egp3RangeFit}(x, ...)
 \method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, log.="", ...)
+\method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa), main=NULL,fill="orange", col="blue",addNexcesses=TRUE, textsize=4, ..., environment)
 }
 \arguments{
 \item{data}{The data vector to be modelled.}
@@ -37,6 +39,8 @@ point estimates. Defaults to \code{alpha = 0.05}.}
 \item{ylab}{Label for the y-axis.}
 
 \item{main}{The main title.}
+
+\item{textsize}{Size of text for annotation showing number of threshold excesses.}
 
 \item{addNexcesses}{Annotate top axis with numbers of threshold excesses
 arising with the corresponding values of threshold on the bottom axis.}
@@ -76,6 +80,7 @@ covariates included in the model.
 \examples{
 
 plot(egp3RangeFit(rain))
+ggplot(egp3RangeFit(rain))
 
 }
 \author{

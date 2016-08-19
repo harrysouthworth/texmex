@@ -2,6 +2,7 @@
 % Please edit documentation in R/chi.R
 \name{chi}
 \alias{chi}
+\alias{ggplot.chi}
 \alias{plot.chi}
 \alias{summary.chi}
 \title{Measures of extremal dependence}
@@ -16,6 +17,8 @@ c(-1, 1), ylimChiBar = c(-1, 1), mainChi = "Chi", mainChiBar =
 "Chi Bar", xlab = "Quantile", ylabChi =
 expression(chi(u)), ylabChiBar = expression(bar(chi)(u)),
 ask, ...)
+
+\method{ggplot}{chi}(data=NULL, mapping, xlab = "Quantile", ylab=c("ChiBar" = expression(bar(chi)(u)), "Chi" = expression(chi(u))),main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),spcases = TRUE,..., environment)
 }
 \arguments{
 \item{data}{A matrix containing 2 numeric columns.}
@@ -78,7 +81,7 @@ dependence in this class.  A limiting value of ChiBar of less than 1
 indicates Asymptotic Independence in which case Chi is irrelevant and the
 limiting value of ChiBar gives a measure of the strength of dependence.
 
-The plot method shows the ChiBar and Chi functions.  In the case of the
+The plot and ggplot methods show the ChiBar and Chi functions.  In the case of the
 confidence interval for ChiBar excluding the value 1 for all of the largest
 quantiles, the plot of the Chi function is shown in grey.
 }
@@ -99,13 +102,13 @@ function in the \code{evd} package.
 D <- liver[liver$dose == "D",]
 chiD <- chi(D[, 5:6])
 par(mfrow=c(1,2))
-plot(chiD)
+ggplot(chiD)
 
 A <- liver[liver$dose == "A",]
 chiA <- chi(A[, 5:6])
 # here the limiting value of chi bar(u) lies away from one so the chi plot is
 # not relevant and is plotted in grey
-plot(chiA) 
+ggplot(chiA) 
 
 
 

@@ -32,6 +32,12 @@
 #' When the result of a call to \code{bootMCS} is plotted, simple quantile
 #' bootstrap confidence intervals are displayed.
 #' 
+#' @aliases MCS plot.MCS ggplot.MCS print.MCS summary.MCS bootMCS plot.bootMCS print.bootMCS summary.bootMCS 
+#' @usage chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
+#' 
+#' \method{summary}{chi}(object, digits=3, ...)
+#' 
+#' 
 #' @param X A matrix of numeric variables.
 #' @param p The quantiles at which to evaluate.
 #' @param R The number of bootstrap samples to run. Defaults to \code{R = 100}.
@@ -92,6 +98,12 @@ plot.MCS <- function(x, xlab="p", ylab= "MCS", ...){
    invisible()
 }
 
+#' @rdname MCS
+#' @export
+ggplot.MCS <- function(data, mapping, main="", ..., environment){
+   ggplot(data=data.frame(p=data$p, MCS=data$mcs), aes(p,MCS)) + geom_line() + ggtitle(main)
+}
+
 #' @export
 print.MCS <- function(x, ...){
     print(x$call)
@@ -129,6 +141,26 @@ bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    res <- list(replicates=res, p=p, R=R, call=theCall)
    oldClass(res) <- "bootMCS"
    invisible(res)
+}
+
+#' @rdname MCS
+#' @export
+ggplot.bootMCS <- function(data, mapping, main="", alpha=.05, ylim, ..., environment){
+    ci <- apply(data$replicates, 1, quantile, prob=c(1-alpha/2, alpha/2))
+
+    poly <- data.frame(p=c(data$p,rev(data$p)),
+                       ci = c(ci[1,],rev(ci[2,])))
+    dat <- data.frame(p=data$p,MCS = rowMeans(data$replicates))
+
+    if (missing(ylim)) ylim <- range(ci)
+    
+    p <- ggplot(dat,aes(p,MCS)) + geom_line(colour="blue") + 
+        geom_polygon(data=poly,mapping=aes(p,ci),fill="orange",alpha=0.5) + 
+        coord_cartesian(ylim=ylim) +
+        labs(title=main,
+             x=paste("p\n",100*(1-alpha), "% interval. ", data$R, " bootstrap samples were performed", sep=""))
+
+    p
 }
 
 #' @rdname MCS

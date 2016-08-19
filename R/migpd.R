@@ -39,7 +39,7 @@
 #' Threshold selection can be carried out with the help of functions
 #' \code{\link{mrl}} and \code{\link{gpdRangeFit}}.
 #' 
-#' @aliases migpd plot.migpd
+#' @aliases migpd plot.migpd ggplot.migpd
 #' @param data A matrix or data.frame, each column of which is to be modelled.
 #' @param mth Marginal thresholds. Thresholds above which to fit the models.
 #' Only one of \code{mth} and \code{mqu} should be supplied. Length one (in
@@ -67,15 +67,15 @@
 #' for xi. See the details section.
 #' @param x Object of class \code{migpd} as returned by function \code{migpd}.
 #' @param main Character vector of length four: titles for plots produced by
-#' \code{plot} method.
+#' \code{plot} and \code{ggplot} methods.
 #' @param xlab As \code{main} but for x-axes labels.
 #' @param nsim Number of simulations on which to base tolerance envelopes in
-#' \code{plot} method.
+#' \code{plot} and \code{ggplot} methods.
 #' @param alpha Significance level for tolerance and confidence intervals in
-#' \code{plot} method.
+#' \code{plot} and \code{ggplot} methods.
 #' @param ... Further arguments to be passed to methods.
 #' @return An object of class "migpd". There are \code{coef}, \code{print},
-#' \code{plot} and \code{summary} functions available.
+#' \code{plot}, \code{ggplot} and \code{summary} functions available.
 #' @author Harry Southworth
 #' @seealso \code{\link{mex}}, \code{\link{mexDependence}},
 #' \code{\link{bootmex}}, \code{\link{predict.mex}}, \code{\link{gpdRangeFit}},
@@ -93,6 +93,8 @@
 #' mygpd
 #' summary(mygpd)
 #' plot(mygpd)
+#' g <- ggplot(mygpd)
+#' 
 #' 
 #' @export migpd
 migpd <-
