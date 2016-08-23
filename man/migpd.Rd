@@ -20,6 +20,8 @@ migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000, trace = 0,
 \arguments{
 \item{data}{A matrix or data.frame, each column of which is to be modelled.}
 
+\item{mapping, environment}{Further arguments to ggplot method.}
+
 \item{main}{Character vector of length four: titles for plots produced by
 \code{plot} and \code{ggplot} methods.}
 

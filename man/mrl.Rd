@@ -14,7 +14,7 @@ alpha=.050)
 \method{summary}{mrl}(object, ...)
 \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
 \method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess",
-main=NULL, fill="light blue", col="blue", addNexcesses = TRUE, textsize=4,
+main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4,
 ..., environment)
 }
 \arguments{

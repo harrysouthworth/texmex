@@ -33,10 +33,6 @@
 #' bootstrap confidence intervals are displayed.
 #' 
 #' @aliases MCS plot.MCS ggplot.MCS print.MCS summary.MCS bootMCS plot.bootMCS print.bootMCS summary.bootMCS 
-#' @usage chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
-#' 
-#' \method{summary}{chi}(object, digits=3, ...)
-#' 
 #' 
 #' @param X A matrix of numeric variables.
 #' @param p The quantiles at which to evaluate.
@@ -48,6 +44,7 @@
 #' @param alpha A 100(1 - alpha)\% pointwise confidence interval will be
 #' produced.  Defaults to \code{alpha = 0.05}.
 #' @param ylim Plotting limits for bootstrap plot.
+#' @param data,mapping,main,environment Arguments to ggplot method.
 #' @param ... Optional arguments to be passed into methods.
 #' @return MCS returns an object of class \code{MCS}.  There are plot and
 #' summary methods available for this class.

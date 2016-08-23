@@ -18,6 +18,7 @@
 #' quantiles, the plot of the Chi function is shown in grey.
 #' 
 #' @aliases chi summary.chi plot.chi ggplot.chi
+#' 
 #' @usage chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
 #' 
 #' \method{summary}{chi}(object, digits=3, ...)
@@ -29,7 +30,12 @@
 #' expression(chi(u)), ylabChiBar = expression(bar(chi)(u)),
 #' ask, ...)
 #' 
-#' \method{ggplot}{chi}(data=NULL, mapping, xlab = "Quantile", ylab=c("ChiBar" = expression(bar(chi)(u)), "Chi" = expression(chi(u))),main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),spcases = TRUE,..., environment)
+#' \method{ggplot}{chi}(data=NULL, mapping, xlab = "Quantile", 
+#' ylab=c("ChiBar" = expression(bar(chi)(u)), "Chi" = expression(chi(u))),
+#' main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),
+#' xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),
+#' ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),
+#' spcases = TRUE,..., environment)
 #' 
 #' @param data A matrix containing 2 numeric columns.
 #' @param nq The number of quantiles at which to evaluate the dependence
@@ -48,6 +54,7 @@
 #' @param xlim,ylimChi,ylimChiBar Limits for the axes.
 #' @param mainChi,mainChiBar Main titles for the plots.
 #' @param xlab,ylabChi,ylabChiBar Axis labels for the plots.
+#' @param mapping,ylab,main,ylim,ptcol,fill,environment Arguments to ggplot methods.
 #' @param spcases Whether or not to plot special cases of perfect (positive and
 #' negative) dependence and indpenendence. Defaults to \code{FALSE}.
 #' @param ask Whether or not to ask before reusing the graphics device.

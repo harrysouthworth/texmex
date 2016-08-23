@@ -47,11 +47,12 @@ getPlotRLdata <- function(object, alpha, RetPeriodRange){
 
 
 #' @rdname rl
+#' @param plot. Parameter for plot method, whether to produce plots.
 #' @export
 plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) object, which may have covariates.  Plots return level for each unique row in design matrix
          xlab, ylab, main,
          pch= 1, ptcol =2 , cex=.75, linecol = 4 ,
-         cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, doPlot=TRUE, ...){
+         cicol = 0, polycol = 15, smooth = FALSE, sameAxes=TRUE, type="median", ylim = NULL, plot.=TRUE, ...){
 
     Class <- class(x)
     x <- x$obj
@@ -143,7 +144,7 @@ plot.rl.evmOpt <- function(x, # method for rl.(evmBoot or evmSim or evmOpt) obje
       } else {
         Main <- main[i]
       }
-      if(doPlot){
+      if(plot.){
         plotRLevm(m,xm,polycol = polycol,cicol=cicol,linecol=linecol,ptcol=ptcol,pch=pch,
                   smooth=smooth,xlab=xlab,ylab=ylab,main=Main,xrange=range(m),yrange=yrange)
       }

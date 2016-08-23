@@ -13,15 +13,15 @@
 \usage{
 \method{plot}{rl.evmOpt}(x, xlab, ylab, main, pch = 1, ptcol = 2,
   cex = 0.75, linecol = 4, cicol = 0, polycol = 15, smooth = FALSE,
-  sameAxes = TRUE, type = "median", ylim = NULL, doPlot = TRUE, ...)
+  sameAxes = TRUE, type = "median", ylim = NULL, plot. = TRUE, ...)
 
 \method{plot}{rl.evmSim}(x, xlab, ylab, main, pch = 1, ptcol = 2,
   cex = 0.75, linecol = 4, cicol = 0, polycol = 15, smooth = FALSE,
-  sameAxes = TRUE, type = "median", ylim = NULL, doPlot = TRUE, ...)
+  sameAxes = TRUE, type = "median", ylim = NULL, plot. = TRUE, ...)
 
 \method{plot}{rl.evmBoot}(x, xlab, ylab, main, pch = 1, ptcol = 2,
   cex = 0.75, linecol = 4, cicol = 0, polycol = 15, smooth = FALSE,
-  sameAxes = TRUE, type = "median", ylim = NULL, doPlot = TRUE, ...)
+  sameAxes = TRUE, type = "median", ylim = NULL, plot. = TRUE, ...)
 
 rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
   alpha = 0.05, unique. = TRUE, ...)
@@ -48,6 +48,8 @@ rl(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
 \code{rl.evmSim} or \code{rl.evmBoot}, specifies whether to
 use the sample mean (\code{type="mean"}) or median
 (\code{type="median"}) estimate of the return levels.}
+
+\item{plot.}{Parameter for plot method, whether to produce plots.}
 
 \item{...}{Further arguments to be passed to methods.}
 

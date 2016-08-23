@@ -18,7 +18,12 @@ c(-1, 1), ylimChiBar = c(-1, 1), mainChi = "Chi", mainChiBar =
 expression(chi(u)), ylabChiBar = expression(bar(chi)(u)),
 ask, ...)
 
-\method{ggplot}{chi}(data=NULL, mapping, xlab = "Quantile", ylab=c("ChiBar" = expression(bar(chi)(u)), "Chi" = expression(chi(u))),main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),spcases = TRUE,..., environment)
+\method{ggplot}{chi}(data=NULL, mapping, xlab = "Quantile", 
+ylab=c("ChiBar" = expression(bar(chi)(u)), "Chi" = expression(chi(u))),
+main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),
+xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),
+ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),
+spcases = TRUE,..., environment)
 }
 \arguments{
 \item{data}{A matrix containing 2 numeric columns.}
@@ -49,6 +54,8 @@ quantities and their confidence intervals.}
 \item{mainChi, mainChiBar}{Main titles for the plots.}
 
 \item{xlab, ylabChi, ylabChiBar}{Axis labels for the plots.}
+
+\item{mapping, ylab, main, ylim, ptcol, fill, environment}{Arguments to ggplot methods.}
 
 \item{spcases}{Whether or not to plot special cases of perfect (positive and
 negative) dependence and indpenendence. Defaults to \code{FALSE}.}

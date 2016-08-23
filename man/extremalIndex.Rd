@@ -8,13 +8,15 @@
 \alias{evm.declustered}
 \alias{extremalIndex}
 \alias{extremalIndexRangeFit}
+\alias{ggplot.extremalIndexRangeFit}
 \alias{plot.declustered}
+\alias{plot.extremalIndexRangeFit}
 \title{Extremal index estimation and automatic declustering}
 \usage{
 extremalIndex(y, data = NULL, threshold)
 
 extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
-quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, xlab = "Threshold",
+quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, estGPD=TRUE, 
 verbose = TRUE, trace = 10, ...)
 
 bootExtremalIndex(x)
@@ -27,9 +29,11 @@ declust(y, r=NULL, data = NULL, ...)
 
 \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
 
-\method{plot}{extremalIndexRangeFit}(data,addNexcesses=TRUE,estGPD=TRUE,...)
+\method{plot}{extremalIndexRangeFit}(x,addNexcesses=TRUE,estGPD=TRUE,...)
 
-\method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
+\method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,
+ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", 
+textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
 }
 \arguments{
 \item{y}{Argument to function \code{extremalIndex}: either a numeric vector
@@ -81,6 +85,8 @@ Defaults to \code{TRUE}.}
 
 \item{trace}{How frequently to report bootstrap progress in RangeFit
 calculations.  Defaults to 10.}
+
+\item{mapping, main, ylim, ptcol, col, fill, textsize, environment}{Further arguments to ggplot method.}
 
 \item{...}{Further arguments to methods.}
 }

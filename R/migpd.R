@@ -73,6 +73,7 @@
 #' \code{plot} and \code{ggplot} methods.
 #' @param alpha Significance level for tolerance and confidence intervals in
 #' \code{plot} and \code{ggplot} methods.
+#' @param mapping,environment Further arguments to ggplot method.
 #' @param ... Further arguments to be passed to methods.
 #' @return An object of class "migpd". There are \code{coef}, \code{print},
 #' \code{plot}, \code{ggplot} and \code{summary} functions available.

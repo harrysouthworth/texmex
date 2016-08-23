@@ -13,9 +13,7 @@
 \alias{summary.bootMCS}
 \title{Multivariate conditional Spearman's rho}
 \usage{
-chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
-
-\method{summary}{chi}(object, digits=3, ...)
+MCS(X, p = seq(0.1, 0.9, by = 0.1))
 
 \method{plot}{MCS}(x, xlab = "p", ylab = "MCS", ...)
 
@@ -41,6 +39,8 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
 \item{xlab, ylab}{Axis labels.}
 
 \item{...}{Optional arguments to be passed into methods.}
+
+\item{data, mapping, main, environment}{Arguments to ggplot method.}
 
 \item{R}{The number of bootstrap samples to run. Defaults to \code{R = 100}.}
 

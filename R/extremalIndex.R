@@ -35,11 +35,11 @@
 #' predictors for the parameters of the GPD.  See examples below.
 #' 
 #' @aliases extremalIndex extremalIndexRangeFit declust declust.default
-#' declust.extremalIndex plot.declustered bootExtremalIndex evm.declustered
+#' declust.extremalIndex plot.declustered bootExtremalIndex evm.declustered plot.extremalIndexRangeFit ggplot.extremalIndexRangeFit
 #' @usage extremalIndex(y, data = NULL, threshold)
 #' 
 #' extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
-#' quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, xlab = "Threshold",
+#' quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, estGPD=TRUE, 
 #' verbose = TRUE, trace = 10, ...)
 #' 
 #' bootExtremalIndex(x)
@@ -52,9 +52,11 @@
 #' 
 #' \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
 #' 
-#' \method{plot}{extremalIndexRangeFit}(data,addNexcesses=TRUE,estGPD=TRUE,...)
+#' \method{plot}{extremalIndexRangeFit}(x,addNexcesses=TRUE,estGPD=TRUE,...)
 #' 
-#' \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
+#' \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,
+#' ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", 
+#' textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
 #' 
 #' @param y Argument to function \code{extremalIndex}: either a numeric vector
 #' or the name of a variable in \code{data}.
@@ -89,6 +91,7 @@
 #' Defaults to \code{TRUE}.
 #' @param trace How frequently to report bootstrap progress in RangeFit
 #' calculations.  Defaults to 10.
+#' @param  mapping,main,ylim,ptcol,col,fill,textsize,environment Further arguments to ggplot method.
 #' @param ... Further arguments to methods.
 #' @return The function \code{extremalIndex} returns a list of class
 #' "extremalIndex": \item{EIintervals}{Estimate of the extremal index by using
@@ -443,7 +446,7 @@ ggplot.extremalIndexRangeFit <- function(data=NULL, mapping, xlab, ylab, main,
 }
 
 #' @export 
-plot.extremalIndexRangeFit <- function(data,addNexcesses=TRUE,estGPD=TRUE,...){
+plot.extremalIndexRangeFit <- function(x,addNexcesses=TRUE,estGPD=TRUE,...){
     plots <- function(l,y,...){
         plot(l$u, l$m, ylim=c(min(l$ul),max(l$up)),type = "b", ...)
         for (i in 1:length(l$u)) lines(c(l$u[i], l$u[i]), c(l$ul[i], l$up[i]))
@@ -453,10 +456,10 @@ plot.extremalIndexRangeFit <- function(data,addNexcesses=TRUE,estGPD=TRUE,...){
         }
     }
     
-    plots(l=data$EI,y=data$y,main="Extremal Index",xlab="Threshold",ylab=expression(theta),...)
+    plots(l=x$EI,y=x$y,main="Extremal Index",xlab="Threshold",ylab=expression(theta),...)
     if(estGPD){
-        plots(l=data$SC,y=data$y,main="Scale parameter",xlab="Threshold",ylab=expression(sigma),...)
-        plots(l=data$SH,y=data$y,main="Shape parameter",xlab="Threshold",ylab=expression(xi),...)
+        plots(l=x$SC,y=x$y,main="Scale parameter",xlab="Threshold",ylab=expression(sigma),...)
+        plots(l=x$SH,y=x$y,main="Shape parameter",xlab="Threshold",ylab=expression(xi),...)
     }
     
 }

@@ -34,7 +34,7 @@
 #' 
 #' #  mAll <- mexAll(winter,mqu=0.7,dqu=c(0.7,0.7,0.7,0.7,0.7))
 #' #  mexMC <- mexMonteCarlo(5000,mAll)
-#' #  pairs(mexMC)
+#' #  pairs(mexMC$MCsample)
 #'   
 #' @export mexMonteCarlo
 mexMonteCarlo <- function(nSample,mexList,mult=10){

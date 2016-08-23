@@ -66,11 +66,11 @@
 #' scale) or not the largest.
 #' 
 #' The function \code{mexAll} fits a collection of GPD and conditional
-#' dependence models, the same fitteg GPD being used for all of the dependence
+#' dependence models, the same fitted GPD being used for all of the dependence
 #' model fits.  This can be used in turn to generate Monte Carlo samples from
 #' the entire sample space usign the collected dependence models.
 #' 
-#' @aliases mex plot.mex predict.mex summary.predict.mex plot.predict.mex
+#' @aliases mex plot.mex predict.mex summary.predict.mex plot.predict.mex ggplot.mex
 #' mexAll print.mexList
 #' @param data A numeric matrix or data.frame, the columns of which are to be
 #' modelled.
@@ -157,6 +157,7 @@
 #' by these arguments and \code{col}, each of which should be of length 2.
 #' @param ask Whether or not to ask before changing the plot. Defaults to
 #' \code{ask = TRUE}.
+#' @param shape,size,mapping,ptcol,fill,plot.,environment,xlab,ylab,main Further arguments to plot and ggplot methods.
 #' @param ... Further arguments to be passed to methods.
 #' @return A call to \code{mex} returns an list of class \code{mex} containing
 #' the following three items: \item{margins}{An object of class

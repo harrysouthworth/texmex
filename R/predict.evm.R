@@ -81,7 +81,7 @@
 #' implied by \code{alpha}.
 #' @param x An object of class \code{lp.evmOpt}, \code{lp.evmSim} or
 #' \code{lp.evmBoot}, to be passed to methods for these classes.
-#' @param main,pch,ptcol,cex,linecol,cicol,polycol,doPlot Further arguments to plot
+#' @param main,pch,ptcol,cex,linecol,cicol,polycol,plot,plot. Further arguments to plot
 #' methods.
 #' @param digits Number of digits to show when printing objects.
 #' @param ... Further arguments to methods.
@@ -181,84 +181,84 @@ linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 ## rl generic
 
 
-##' Return levels
-##'
-##' Computation of return levels and confidence intervals for extreme
-##' value models.
-##'
-##' @param object An object of class \code{evmOpt}, \code{evmSim} or
-##'     \code{evmBoot}.
-##' @param M The M-observation return level is computed by the
-##'     function. Defaults to \code{M = 1000}.
-##' @param newdata Data from which to calculate the return level. If
-##'     not provided, the original data used to fit the model is used.
-##'     Column names must match those of original data matrix used for
-##'     model fitting.
-##' @param se.fit Whether or not to return the standard error of the
-##'     predicted value. Defaults to \code{se.fit = FALSE}.
-##' @param ci.fit Whether or not to return a confidence interval for
-##'     the predicted value. Defaults to \code{ci.fit = FALSE}. For
-##'     objects of class \code{evmOpt}, if set to \code{TRUE} then the
-##'     confidence interval is a simple symmetric confidence interval
-##'     based on the estimated approximate standard error. For the
-##'     \code{evmSim} and \code{evmBoot} methods, the confidence
-##'     interval represents quantiles of the simulated distribution of
-##'     the parameters.
-##' @param alpha If \code{ci.fit = TRUE}, a 100(1 - alpha)\%
-##'     confidence interval is returned. Defaults to \code{alpha =
-##'     0.050}.
-##' @param unique. If \code{unique. = TRUE}, predictions for only the
-##'     unique values of the linear predictors are returned, rather
-##'     than for every row of the original dataframe or of
-##'     \code{newdata} if this latter is specified. Defaults to
-##'     \code{unique. = TRUE}.
-##' @param all For the \code{evmSim} and \code{evmBoot} methods, if
-##'     \code{all = TRUE}, the predictions are returned for every
-##'     simulated parameter vector. Otherwise, only a summary of the
-##'     posterior/bootstrap distribution is returned. Defaults to
-##'     \code{all = FALSE}.
-##' @param sumfun For the \code{evmSim} and \code{evmBoot} methods, a
-##'     summary function can be passed in. If \code{sumfun = FALSE},
-##'     the default, the summary function used returns the estimated
-##'     mean and median, and quantiles implied by \code{alpha}.
-##' @param type For calls to plot methods for objects of class
-##'     \code{rl.evmSim} or \code{rl.evmBoot}, specifies whether to
-##'     use the sample mean (\code{type="mean"}) or median
-##'     (\code{type="median"}) estimate of the return levels.
-##' @param x Object passed to plot and print methods.
-##' @param
-##'     xlab,ylab,main,pch,ptcol,cex,linecol,cicol,polycol,smooth,sameAxes,ylim Further arguments to plot methods.
-##' @param digits Number of digits to show when printing output.
-##' @param ... Further arguments to be passed to methods.
-##' @details The M-observation return level is defined as the value
-##'     that is expected to be exceeded only once every M
-##'     observations. Thus, it is an estimate of a high quantile of
-##'     the fitted distribution.
-##'
-##' In models fit by the \code{evm} family of functions with
-##' \code{family=gpd}, only a fraction of the data is actually
-##' included in the model; the fitted GPD is a conditional model,
-##' conditioning on the threshold having been exceeded. This
-##' consideration is taken into account by \code{rl} which calculates
-##' unconditional return levels from the entire distribution of
-##' observations above and below the GPD fitting threshold. 
-##' @examples
-##' mod <- evm(rain, qu=.8) # daily rainfall observations
-##' rl(mod, M=100*365) # 100-year return level
-##' @name rl
-##' @export
+#' Return levels
+#'
+#' Computation of return levels and confidence intervals for extreme
+#' value models.
+#'
+#' @param object An object of class \code{evmOpt}, \code{evmSim} or
+#'     \code{evmBoot}.
+#' @param M The M-observation return level is computed by the
+#'     function. Defaults to \code{M = 1000}.
+#' @param newdata Data from which to calculate the return level. If
+#'     not provided, the original data used to fit the model is used.
+#'     Column names must match those of original data matrix used for
+#'     model fitting.
+#' @param se.fit Whether or not to return the standard error of the
+#'     predicted value. Defaults to \code{se.fit = FALSE}.
+#' @param ci.fit Whether or not to return a confidence interval for
+#'     the predicted value. Defaults to \code{ci.fit = FALSE}. For
+#'     objects of class \code{evmOpt}, if set to \code{TRUE} then the
+#'     confidence interval is a simple symmetric confidence interval
+#'     based on the estimated approximate standard error. For the
+#'     \code{evmSim} and \code{evmBoot} methods, the confidence
+#'     interval represents quantiles of the simulated distribution of
+#'     the parameters.
+#' @param alpha If \code{ci.fit = TRUE}, a 100(1 - alpha)\%
+#'     confidence interval is returned. Defaults to \code{alpha =
+#'     0.050}.
+#' @param unique. If \code{unique. = TRUE}, predictions for only the
+#'     unique values of the linear predictors are returned, rather
+#'     than for every row of the original dataframe or of
+#'     \code{newdata} if this latter is specified. Defaults to
+#'     \code{unique. = TRUE}.
+#' @param all For the \code{evmSim} and \code{evmBoot} methods, if
+#'     \code{all = TRUE}, the predictions are returned for every
+#'     simulated parameter vector. Otherwise, only a summary of the
+#'     posterior/bootstrap distribution is returned. Defaults to
+#'     \code{all = FALSE}.
+#' @param sumfun For the \code{evmSim} and \code{evmBoot} methods, a
+#'     summary function can be passed in. If \code{sumfun = FALSE},
+#'     the default, the summary function used returns the estimated
+#'     mean and median, and quantiles implied by \code{alpha}.
+#' @param type For calls to plot methods for objects of class
+#'     \code{rl.evmSim} or \code{rl.evmBoot}, specifies whether to
+#'     use the sample mean (\code{type="mean"}) or median
+#'     (\code{type="median"}) estimate of the return levels.
+#' @param x Object passed to plot and print methods.
+#' @param
+#'     xlab,ylab,main,pch,ptcol,cex,linecol,cicol,polycol,smooth,sameAxes,ylim Further arguments to plot methods.
+#' @param digits Number of digits to show when printing output.
+#' @param ... Further arguments to be passed to methods.
+#' @details The M-observation return level is defined as the value
+#'     that is expected to be exceeded only once every M
+#'     observations. Thus, it is an estimate of a high quantile of
+#'     the fitted distribution.
+#'
+#' In models fit by the \code{evm} family of functions with
+#' \code{family=gpd}, only a fraction of the data is actually
+#' included in the model; the fitted GPD is a conditional model,
+#' conditioning on the threshold having been exceeded. This
+#' consideration is taken into account by \code{rl} which calculates
+#' unconditional return levels from the entire distribution of
+#' observations above and below the GPD fitting threshold. 
+#' @examples
+#' mod <- evm(rain, qu=.8) # daily rainfall observations
+#' rl(mod, M=100*365) # 100-year return level
+#' @name rl
+#' @export
 rl <- function(object, M = 1000, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, ...){
     UseMethod("rl")
 }
 
-##' @rdname predict.evmOpt
-##' @export
+#' @rdname predict.evmOpt
+#' @export
 linearPredictors <- function(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE, alpha = 0.050, unique. = TRUE, ...){
     UseMethod("linearPredictors")
 }
 
-##' @rdname rl
-##' @export
+#' @rdname rl
+#' @export
 rl.evmOpt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                        alpha=.050, unique.=TRUE, ...){
     co <- linearPredictors.evmOpt(object, newdata=newdata, unique.=unique., full.cov=TRUE)
@@ -331,8 +331,8 @@ rl.evmOpt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 ################################################################################
 ## evmSim
 
-##' @rdname predict.evmOpt
-##' @export
+#' @rdname predict.evmOpt
+#' @export
 predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
                          se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
                          all=FALSE, sumfun=NULL, ...){
@@ -354,8 +354,8 @@ predict.evmSim <- function(object, M=1000, newdata=NULL, type="return level",
     res
 }
 
-##' @rdname predict.evmOpt
-##' @export
+#' @rdname predict.evmOpt
+#' @export
 linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
                                      alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL, ...){
     if (se.fit){ warning("se.fit not implemented - ignoring") }
@@ -444,8 +444,8 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 }
 
 
-##' @rdname rl
-##' @export
+#' @rdname rl
+#' @export
 rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
     if (se.fit){ warning("se.fit not implemented") }
 
@@ -494,9 +494,9 @@ rl.evmSim <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, 
 }
 
 ################################################################################
-## evmBoot
-##' @rdname predict.evmOpt
-##' @export
+# evmBoot
+#' @rdname predict.evmOpt
+#' @export
 predict.evmBoot <- function(object, M=1000, newdata=NULL, type="return level",
                             se.fit=FALSE, ci.fit=FALSE, alpha=.050, unique.=TRUE,
                             all=FALSE, sumfun=NULL, ...){
@@ -523,8 +523,8 @@ namesBoot2sim <- function(bootobject){
     bootobject
 }
 
-##' @rdname predict.evmOpt
-##' @export
+#' @rdname predict.evmOpt
+#' @export
 linearPredictors.evmBoot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=.050,
                                  unique.=TRUE, all=FALSE, sumfun=NULL,...){
     # This should just be the same as for an evmSim object, but some
@@ -547,10 +547,10 @@ rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 }
 
 ################################################################################
-## Method functions
+# Method functions
 
-##' @export
-##' @rdname rl
+#' @export
+#' @rdname rl
 print.rl.evmOpt <- function(x, digits=3, ...){
     nms <- names(x$obj)
     newnms <- paste("M =", substring(nms, 3), "predicted return level:\n")
@@ -562,23 +562,23 @@ print.rl.evmOpt <- function(x, digits=3, ...){
     invisible(x)
 }
 
-##' @export
+#' @export
 print.rl.evmSim    <- print.rl.evmOpt
-##' @export
+#' @export
 print.rl.evmBoot <- print.rl.evmOpt
 
 
 
-##' @export
-##' @rdname predict.evmOpt
+#' @export
+#' @rdname predict.evmOpt
 print.lp.evmOpt <- function(x, digits=3, ...){
     cat("Linear predictors:\n")
     print(unclass(x$obj$link), digits=3,...)
     invisible(x)
 }
 
-##' @export
+#' @export
 print.lp.evmSim <- print.lp.evmOpt
-##' @export
+#' @export
 print.lp.evmBoot <- print.lp.evmOpt
 

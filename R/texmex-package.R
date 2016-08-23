@@ -245,9 +245,9 @@ NULL
 #'     scale_y_continuous ggtitle aes geom_area geom_segment
 #'     stat_density geom_point position_jitter stat_smooth theme
 #'     geom_line geom_polygon element_text geom_rug geom_abline
-#'     geom_rect geom_histogram geom_text geom_hline geom_vline
+#'     geom_rect geom_histogram geom_text geom_hline geom_vline 
+#'     geom_density labs coord_cartesian geom_smooth
 NULL
-
 
 
 

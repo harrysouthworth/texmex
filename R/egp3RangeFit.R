@@ -29,7 +29,8 @@
 #' .95), nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 #' \method{print}{egp3RangeFit}(x, ...)
 #' \method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, log.="", ...)
-#' \method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa), main=NULL,fill="orange", col="blue",addNexcesses=TRUE, textsize=4, ..., environment)
+#' \method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa), 
+#' main=NULL,fill="orange", col="blue",addNexcesses=TRUE, textsize=4, ..., environment)
 #' @param data The data vector to be modelled.
 #' @param umin The minimum threshold above which to estimate the parameters.
 #' @param umax The maximum threshold above which to estimate the parameters.
@@ -51,6 +52,7 @@
 #' @param log. Argument passed through to \code{plot}. Can take values "x" for
 #' plotting the x-axis on the log scale, "y" for plotting the y-axis on the log
 #' scale, "xy" for both, or "" (the default) for neither.
+#' @param mapping,fill,col,environment Arguments to ggplot method.
 #' @param \dots Arguments to \code{plot}.
 #' @author Harry Southworth
 #' @seealso \code{\link{evm}}, \code{\link{gpdRangeFit}}, \code{\link{mrl}}
@@ -60,8 +62,9 @@
 #' @keywords models
 #' @examples
 #' 
-#' plot(egp3RangeFit(rain))
-#' ggplot(egp3RangeFit(rain))
+#' erf <- egp3RangeFit(rain)
+#' plot(erf)
+#' ggplot(erf)
 #' 
 #' @export egp3RangeFit
 egp3RangeFit <-

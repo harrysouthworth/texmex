@@ -130,6 +130,8 @@ by these arguments and \code{col}, each of which should be of length 2.}
 \item{ask}{Whether or not to ask before changing the plot. Defaults to
 \code{ask = TRUE}.}
 
+\item{shape, size, mapping, ptcol, fill, plot., environment, xlab, ylab, main}{Further arguments to plot and ggplot methods.}
+
 \item{pqu}{Prediction quantile. Argument to \code{predict} method. The
 quantile of the conditioning variable above which it will be simulated for
 importance sampling based prediction.  Defaults to \code{pqu = .99 }.}
@@ -237,7 +239,7 @@ points which have the conditioning variable as the largest (on a quantile
 scale) or not the largest.
 
 The function \code{mexAll} fits a collection of GPD and conditional
-dependence models, the same fitteg GPD being used for all of the dependence
+dependence models, the same fitted GPD being used for all of the dependence
 model fits.  This can be used in turn to generate Monte Carlo samples from
 the entire sample space usign the collected dependence models.
 }

@@ -23,7 +23,7 @@ ggplot.rl.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
                              alpha=0.5,
                              ..., environment){
     
-    p <- plot(data,doPlot=FALSE)
+    p <- plot(data,plot.=FALSE)
     
     nm <- length(names(data$obj))
     nd <- dim(data$obj[[1]])[2]

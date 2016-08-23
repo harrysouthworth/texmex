@@ -48,7 +48,7 @@ linearPredictors(object, newdata = NULL, se.fit = FALSE, ci.fit = FALSE,
 \item{x}{An object of class \code{lp.evmOpt}, \code{lp.evmSim} or
 \code{lp.evmBoot}, to be passed to methods for these classes.}
 
-\item{main, pch, ptcol, cex, linecol, cicol, polycol, doPlot}{Further arguments to plot
+\item{main, pch, ptcol, cex, linecol, cicol, polycol, plot, plot.}{Further arguments to plot
 methods.}
 
 \item{...}{Further arguments to methods.}
