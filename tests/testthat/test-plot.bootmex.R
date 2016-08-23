@@ -8,7 +8,7 @@ test_that("plot.bootmex behaves as it should", {
   
   # 2-d wavesurge data
   
-  wavesurge.fit <- mex(wavesurge,which=1,mqu=0.7) 
+  wavesurge.fit <- mex(wavesurge,which=1,mqu=0.7,dqu=0.7) 
   wavesurge.boot <- bootmex(wavesurge.fit,R=50,trace=51)
   par(mfrow=c(3,2),pty="m")
   check1 <- plot(wavesurge.boot,main="Marginal parameters\nWave surge data of Coles 2001")

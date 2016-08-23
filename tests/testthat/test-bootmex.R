@@ -38,7 +38,7 @@ test_that("bootmex behaves as it should", {
   expect_that(dim(winter), equals(dim(myWboot$boot[[5]]$Y)), label="bootmex:sizeofbootstrapdataset")
   
   smexmod <- mex(summer, mqu=c(.9, .7, .7, .85, .7), penalty="none", dqu=.7, margins="gumbel",constrain=FALSE, which=1)
-  wmexmod <- mex(winter, mqu=.7,  penalty="none", margins="gumbel",constrain=FALSE, which=1)
+  wmexmod <- mex(winter, mqu=.7,  dqu=.7, penalty="none", margins="gumbel",constrain=FALSE, which=1)
   
   mySboot <- bootmex(smexmod, R=R,trace=R+1)
   myWboot <- bootmex(wmexmod, R=R,trace=R+1)

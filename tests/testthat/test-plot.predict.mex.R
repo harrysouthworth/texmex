@@ -14,7 +14,7 @@ test_that("plot.predict.mex behaves as it should", {
   # check for 2-d data
   R <- 20
   nsim <- 100
-  wavesurge.mex <- mex(wavesurge,mqu=.7,which=1, margins="laplace")
+  wavesurge.mex <- mex(wavesurge,mqu=.7,,dqu=0.7,which=1, margins="laplace")
   wavesurge.boot <- bootmex(wavesurge.mex,R=R,trace=R+1)
   wavesurge.pred <- predict(wavesurge.boot,nsim=nsim,trace=R+1)
   par(mfrow=c(1,1))

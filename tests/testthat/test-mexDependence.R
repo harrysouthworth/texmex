@@ -126,7 +126,7 @@ test_that("mexDependence behaves as it should", {
   dqu <- 0.8
   which <- 1
   wavesurge.mex <- mexDependence(wavesurge.fit,which=which,dqu=dqu)
-  op <- options(warn=-1)
+  op <- options(warn=-1) # since want it to throw a warning but still executre correctly, which is what is tested
   wavesurge.dep <- mexDependence(wavesurge.fit,which=which)
   options(op)
 
