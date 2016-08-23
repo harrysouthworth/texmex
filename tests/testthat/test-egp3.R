@@ -17,8 +17,8 @@ test_that("egp3 family behaves as it should", {
 
   # Check SEs on return levels - derivatives were worked out manually (by Paul),
   # also by Sage and (I think) by Wolfram
-  rgp <- do.call("rbind", predict(gpmod, M=seq(100, 2000, by=100), se.fit=TRUE))
-  re3 <- do.call("rbind", predict(e3mod,  M=seq(100, 2000, by=100), se.fit=TRUE))
+  rgp <- do.call("rbind", predict(gpmod, M=seq(100, 2000, by=100), se.fit=TRUE)$obj)
+  re3 <- do.call("rbind", predict(e3mod,  M=seq(100, 2000, by=100), se.fit=TRUE)$obj)
   expect_that(rgp, equals(re3, tol=.0001), label="egp3: return levels")
 
   # Check that the plot for the Nidd data has generally similar shape to that in
@@ -60,7 +60,7 @@ test_that("regp3 behaves as it should", {
     kappa <- runif(1); sigma <- runif(1, .1, 6); xi <- runif(1); u <- runif(1, -10, 10)
     x1 <- sort(regp3_test(1000, kappa=.5, sigma=2, xi=.2, u=6))
     x2 <- sort(regp3(1000, kappa=.5, sigma=2, xi=.2, u=6))
-    expect_more_than(cor(x1, x2), 0.90)
+    expect_gt(cor(x1, x2), 0.90)
     plot(x1, x2); abline(0, 1)
   }
   title("Comparing 2 implementations of EGP3 rng", outer=TRUE)
