@@ -71,7 +71,9 @@ mexMonteCarlo <- function(nSample,mexList,mult=10){
       }
   }
 
-  list(nR=nR, MCsample=MCsampleOriginal, whichMax=whichMax, whichMaxAboveThresh=whichMaxAboveThresh)
+  res <- list(nR=nR, MCsample=MCsampleOriginal, whichMax=whichMax, whichMaxAboveThresh=whichMaxAboveThresh)
+  oldClass(res) <- "mexMC"
+  res
 }
 
 #' @rdname mex
