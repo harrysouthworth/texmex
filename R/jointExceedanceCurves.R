@@ -2,30 +2,34 @@
 #' 
 #' Calculate bivariate joint exceedance curves
 #' 
-#' Calculates pairs of points (x,y) for which the point exceedance probability P(X>x and Y>y) is constant.  This is available only in two dimensions: for higher dimensional data, the bivariate margin will be used and other variables ignored. Takes as input either two column matrix of observations, or output from \code{mexMonteCarlo} (in which case samples from all fitted models are used to calculate curves) or output from a call to the \code{predict} method for an object of class \code{mex} (in which case just the single fitted model is used for estimation, with the importance sample generated in the call to \code{predict} being used to calculate the joint exceedance curve).
+#' Calculates pairs of points (x,y) for which the point exceedance probability P(X>x and Y>y) is constant.  This is available only in two dimensions: for higher dimensional data, the bivariate margin will be used and other variables ignored. Takes as input either a two column matrix of observations, or output from \code{mexMonteCarlo} (in which case samples from all fitted models are used to calculate curves) or output from a call to the \code{predict} method for an object of class \code{mex} (in which case just the single fitted model is used for estimation, with the importance sample generated in the call to \code{predict} being used to calculate the joint exceedance curve).
 #' @export JointExceedanceCurve
 #' 
-JointExceedanceCurve <- function(Sample, ExceedanceProb) {
+JointExceedanceCurve <- function(Sample, ExceedanceProb,...) {
     theCall <- match.call()
     UseMethod("JointExceedanceCurve", Sample)
 }
 
 #' @rdname JointExceedanceCurve
 #' @export
-JointExceedanceCurve.default <- function(Sample, ExceedanceProb,n=50,x=NULL) {
+JointExceedanceCurve.default <- function(Sample, ExceedanceProb,n=50,x=NULL,...) {
     calcJointExceedanceCurve(Sample,ExceedanceProb,n,x)
 }
 
 #' @rdname JointExceedanceCurve
 #' @export
 #' @method JointExceedanceCurve mexList
-#' @param which Vector length two identifying which margins to use for joint exceedance curve estimation. Can be integer identifying columns of original data frame, or character vector identifying variables by name (these must match column names in original data).
+#' @param which Vector length two identifying which margins to use for joint exceedance curve estimation. Can be integer vector, giving column numbers of original data matrix, or character vector identifying variables by name (these must match column names in original data).
 JointExceedanceCurve.mexMC <- function(Sample, ExceedanceProb,n=50,x=NULL,which=1:2) {
-    Sample <- as.matrix(Sample$MCsample[,which])
+    S <- Sample$MCsample[,which]
+    Names <- names(S)
+    Sample <- as.matrix(S)
     Sample <- Sample[!is.na(Sample[,1]),]
     Sample <- Sample[!is.na(Sample[,2]),]
 
-    calcJointExceedanceCurve(Sample,ExceedanceProb,n,x)
+    s <- calcJointExceedanceCurve(Sample,ExceedanceProb,n,x)
+    names(s) <- Names
+    s
 }
 
 #' @rdname JointExceedanceCurve
@@ -33,10 +37,19 @@ JointExceedanceCurve.mexMC <- function(Sample, ExceedanceProb,n=50,x=NULL,which=
 #' @method JointExceedanceCurve predict.mex
 JointExceedanceCurve.predict.mex <- function(Sample, ExceedanceProb,n=50,x=NULL,which=1:2) {
     CondExceedanceProb <- 1-Sample$pqu
-    Sample <- as.matrix(Sample$data$simulated[,which])
+    if(is.numeric(which)){ # since column order of predict order sample is not original data column order
+        d <- dim(Sample$data$simulated)[2]
+        w <- Sample$which
+        which <- order(c(w,c(1:d)[-w]))[which]
+    }
+    S <- Sample$data$simulated[,which]
+    Names <- names(S)
+    Sample <- as.matrix(S)
     if(ExceedanceProb > CondExceedanceProb) stop("ExceedanceProb must be less than the probability of exceeding the threshold used for importance sampling in the call to predict")
     
-    calcJointExceedanceCurve(Sample,ExceedanceProb/CondExceedanceProb,n,x)
+    s <- calcJointExceedanceCurve(Sample,ExceedanceProb/CondExceedanceProb,n,x)
+    names(s) <- Names
+    s
 }
 
 #' @rdname JointExceedanceCurve
@@ -75,12 +88,12 @@ calcJointExceedanceCurve  <- function(Sample,ExceedanceProb,n=50,x=NULL) {
     if(is.null(x)){
         cy <- f(py,Sample[,2],Sample[,1])
         res <- data.frame(x=c(px,cy),y=c(cx,py))
+        # sort results
+        res <- res[order(res[,1]),]
+        row.names(res) <- NULL
     } else {
         res <- data.frame(x=px,y=cx)
     }
-    # sort results
-    res <- res[order(res[,1]),]
-    row.names(res) <- NULL
     oldClass(res) <- "jointExcCurve"
     res
 }
