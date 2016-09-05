@@ -16,13 +16,14 @@ test_that("JointExceedanceCurve behaves as it should", {
     n <- 10000
     require(mvtnorm)
     Sample <- rmvnorm(n,sigma=Sigma,mean=Mean)
+    colnames(Sample) <- c("x","y")
     
     # check theoretical probabilities at calculated points on curve match input probabilities
     p <- seq(0.5,0.95,by=0.05)
     c1 <- lapply(p, function(p)JointExceedanceCurve(Sample,p))
     c2 <- lapply(c1,function(o){
-        X <- cbind(o$x,o$y)
-        sapply(1:length(o$x), function(i)pmvnorm(lower=as.numeric(X[i,]), 
+        X <- cbind(o[[1]],o[[2]])
+        sapply(1:length(o[[1]]), function(i)pmvnorm(lower=as.numeric(X[i,]), 
                                                  upper=rep(Inf, 2), mean=Mean, corr=Sigma))
     })
     res <- sapply(c2,mean)
@@ -32,9 +33,9 @@ test_that("JointExceedanceCurve behaves as it should", {
     # check points on diagonal match theoretical quantile
     tq <- sapply(p,function(p)qmvnorm(p, sigma = Sigma,mean=Mean, tail="upper")$quantile)
     sq <- sapply(c1,function(o){
-        D <- (o$x-o$y)^2
+        D <- (o[[1]]-o[[2]])^2
         Min <- which.min(D)
-        o$x[Min]
+        o[[1]][Min]
     })
     expect_equal(sq, expected = tq, tolerance=0.01, 
                  label="JointExceedanceCurve: calculated points on diagonal match theoretical quantile")
@@ -43,8 +44,8 @@ test_that("JointExceedanceCurve behaves as it should", {
     p <- seq(0.05,0.01,by=-0.01)
     x <- quantile(Sample[,1],seq(0.7,0.95,by=0.05))
     names(x) <- NULL
-    y <- lapply(p, function(p)JointExceedanceCurve(Sample,p,x=x)$y)
-    z <- sapply(1:length(p), function(i)JointExceedanceCurve(Sample[,2:1],p[i],x=y[[i]])$y)
+    y <- lapply(p, function(p)JointExceedanceCurve(Sample,p,x=x)[[2]])
+    z <- sapply(1:length(p), function(i)JointExceedanceCurve(Sample[,2:1],p[i],x=y[[i]])[[2]])
     for(i in 1:length(p)){
         expect_equal(z[,i],x,tol=0.01,label="JointExceedanceCurve: user specified points of x for curve calculation")
     }
@@ -67,16 +68,22 @@ test_that("JointExceedanceCurve behaves as it should", {
     expect_equal(j2f$O3,O3vals,tol=0.01,label="JointExceedanceCurve: user specified values of points at which to calc curve")
     
     NO2vals <- 55:65 # these need to be chosen with care so that the two curves are actually estimable from the two different importance samples!
-    j2g <- JointExceedanceCurve(m2,0.02, which=c("NO2","NO"),x=NO2vals)
-    j2h <- JointExceedanceCurve(m3,0.02, which=c("NO2","NO"),x=NO2vals)
+    p <- 0.02
+    j2g <- JointExceedanceCurve(m2,p, which=c("NO2","NO"),x=NO2vals)
+    j2h <- JointExceedanceCurve(m3,p, which=c("NO2","NO"),x=NO2vals)
+    expect_equal(attributes(j2g)$ExceedanceProb,p,label="JointExceedanceCurve: attribute ExceedanceProb")
+    expect_equal(attributes(j2h)$ExceedanceProb,p,label="JointExceedanceCurve: attribute ExceedanceProb")
     expect_equal(j2g,j2h,tol=0.05,label="JointExceedanceCurve: curves estimated from different importance samples get same answers")
     
     # mexMCMC
     m <- mexAll(winter,mqu=0.7,dqu=rep(0.7,5))
     m4 <- mexMonteCarlo(nSample=5000,mexList=m)
     NOvals <- seq(370,450,by=10)
-    j3a <- JointExceedanceCurve(m2,0.01, which=c("NO","NO2"),x=NOvals)
-    j3b <- JointExceedanceCurve(m4,0.01, which=c("NO","NO2"),x=NOvals)
+    p <- 0.01
+    j3a <- JointExceedanceCurve(m2,p, which=c("NO","NO2"),x=NOvals)
+    j3b <- JointExceedanceCurve(m4,p, which=c("NO","NO2"),x=NOvals)
+    expect_equal(attributes(j3a)$ExceedanceProb,p,label="JointExceedanceCurve: for mexMCMC object attribute ExceedanceProb")
+    expect_equal(attributes(j3a)$ExceedanceProb,p,label="JointExceedanceCurve: for mexMCMC object attribute ExceedanceProb")
     expect_equal(j3a,j3b,tol=0.05,
                  label="JointExceedanceCurve: curves estimated from mexMCMC object and predict.mex object give same answers (up to fitted model accuracy and sampling variation")
 
