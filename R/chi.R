@@ -35,7 +35,7 @@
 #' main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),
 #' xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),
 #' ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),
-#' spcases = TRUE,..., environment)
+#' spcases = TRUE,plot., ..., environment)
 #' 
 #' @param data A matrix containing 2 numeric columns.
 #' @param nq The number of quantiles at which to evaluate the dependence
@@ -57,6 +57,7 @@
 #' @param mapping,ylab,main,ylim,ptcol,fill,environment Arguments to ggplot methods.
 #' @param spcases Whether or not to plot special cases of perfect (positive and
 #' negative) dependence and indpenendence. Defaults to \code{FALSE}.
+#' @param plot. whether to plot to active graphics device.
 #' @param ask Whether or not to ask before reusing the graphics device.
 #' @param ... Further arguments to be passed to methods.
 #' @return An object of class \code{chi} containing the following.
@@ -287,6 +288,7 @@ ggplot.chi <- function(data=NULL, mapping,
                        show=c("ChiBar"=TRUE,
                               "Chi"=TRUE),
                        spcases = TRUE,
+                       plot.=TRUE,
                        ..., environment){
     
     ChiBarAsympIndep <- prod(tail(data$chibar[,3]) < 1)
@@ -332,6 +334,6 @@ ggplot.chi <- function(data=NULL, mapping,
         }
     }
     
-    gridExtra::grid.arrange(p1,p2,ncol=2)
+    if(plot.)gridExtra::grid.arrange(p1,p2,ncol=2)
     invisible(list(p1,p2))
 }
