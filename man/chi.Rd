@@ -23,7 +23,7 @@ ylab=c("ChiBar" = expression(bar(chi)(u)), "Chi" = expression(chi(u))),
 main=c("ChiBar" = "Chi Bar",       "Chi" = "Chi"),
 xlim = c(0, 1), ylim =list("Chi" = c(-1, 1),"ChiBar" = c(-1, 1)),
 ptcol="blue",fill="orange",show=c("ChiBar"=TRUE,"Chi"=TRUE),
-spcases = TRUE,..., environment)
+spcases = TRUE,plot., ..., environment)
 }
 \arguments{
 \item{data}{A matrix containing 2 numeric columns.}
@@ -59,6 +59,8 @@ quantities and their confidence intervals.}
 
 \item{spcases}{Whether or not to plot special cases of perfect (positive and
 negative) dependence and indpenendence. Defaults to \code{FALSE}.}
+
+\item{plot.}{whether to plot to active graphics device.}
 
 \item{ask}{Whether or not to ask before reusing the graphics device.}
 
