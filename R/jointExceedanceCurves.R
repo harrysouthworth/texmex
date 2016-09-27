@@ -89,7 +89,8 @@ JointExceedanceCurve.default <- function(Sample, ExceedanceProb,n=50,x=NULL,...)
 #' @export
 #' @method JointExceedanceCurve mexMC
 #' @param which Vector length two identifying which margins to use for joint exceedance curve estimation. Can be integer vector, giving column numbers of original data matrix, or character vector identifying variables by name (these must match column names in original data).
-JointExceedanceCurve.mexMC <- function(Sample, ExceedanceProb,n=50,x=NULL,which=1:2) {
+#' @param ... Further aguments to be passed to methods
+JointExceedanceCurve.mexMC <- function(Sample, ExceedanceProb,n=50,x=NULL,which=1:2,...) {
     S <- Sample$MCsample[,which]
     Sample <- as.matrix(S)
     Sample <- Sample[!is.na(Sample[,1]),]
@@ -104,7 +105,7 @@ JointExceedanceCurve.mexMC <- function(Sample, ExceedanceProb,n=50,x=NULL,which=
 #' @rdname JointExceedanceCurve
 #' @export
 #' @method JointExceedanceCurve predict.mex
-JointExceedanceCurve.predict.mex <- function(Sample, ExceedanceProb,n=50,x=NULL,which=1:2) {
+JointExceedanceCurve.predict.mex <- function(Sample, ExceedanceProb,n=50,x=NULL,which=1:2,...) {
     CondExceedanceProb <- 1-Sample$pqu
     if(is.numeric(which)){ # since column order of predict order sample is not original data column order
         d <- dim(Sample$data$simulated)[2]

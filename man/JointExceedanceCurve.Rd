@@ -16,10 +16,10 @@ JointExceedanceCurve(Sample, ExceedanceProb, ...)
   x = NULL, ...)
 
 \method{JointExceedanceCurve}{mexMC}(Sample, ExceedanceProb, n = 50,
-  x = NULL, which = 1:2)
+  x = NULL, which = 1:2, ...)
 
 \method{JointExceedanceCurve}{predict.mex}(Sample, ExceedanceProb, n = 50,
-  x = NULL, which = 1:2)
+  x = NULL, which = 1:2, ...)
 
 calcJointExceedanceCurve(Sample, ExceedanceProb, n = 50, x = NULL)
 
@@ -31,6 +31,8 @@ geom_jointExcCurve(x, ...)
 \item{Sample}{Monte Carlo (or other) sample from which to calculate joint exceedance curve}
 
 \item{ExceedanceProb}{Takes values between 0 and 1, constant value of joint exceedance probability for which the curve will be calculated}
+
+\item{...}{Further aguments to be passed to methods}
 
 \item{n}{If \code{x=NULL} then this is HALF the number of points at which the curve will be estimated (ie the curve is calculated at 2n locations)}
 

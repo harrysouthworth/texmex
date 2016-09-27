@@ -67,7 +67,7 @@ function( x, pch=c( 1, 3, 20 ), col=c( 2, 8, 3), cex=c( 1, 1, 1 ), ask = TRUE, .
         }
         
         p <- lapply(2:( dim( data$data$real )[[ 2 ]] ), plotfn)
-        rowCol <- n2mfrow(length(p))
+        rowCol <- grDevices::n2mfrow(length(p))
         
         if (plot.) suppressWarnings(do.call("grid.arrange", c(p, list(nrow=rowCol[1], ncol=rowCol[2]))))
         invisible(p)
