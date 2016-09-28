@@ -33,7 +33,9 @@ Suggests:
     parallel,
     lattice,
     knitr,
-    testthat
+    testthat,
+	devtools,
+	GGally
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
