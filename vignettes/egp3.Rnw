@@ -71,6 +71,7 @@ the standard threshold selection plots and the new plot based on EGP3.
 
 <<nidd, echo=TRUE, fig.cap="Threshold selection plots for the River Nidd data. The bottom right panel displays the $\\hat\\kappa$ with an approximate 95\\% confidence interval. The lowest value of $\\hat\\kappa$ for which the confidence interval contains 1 is approximately 75, suggesting this as a threshold above which GPD modelling can be performed.",message=FALSE>>=
 library(texmex)
+library(gridExtra)
 g1 <- ggplot(gpdRangeFit(nidd, cov="numeric", umax=90, umin=65, nint=20))
 g2 <- ggplot(mrl(nidd))
 g3 <- ggplot(egp3RangeFit(nidd, umax=90, umin=65, nint=20),)

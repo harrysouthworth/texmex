@@ -174,7 +174,7 @@ calcJointExceedanceCurve  <- function(Sample,ExceedanceProb,n=50,x=NULL) {
 #' 
 print.jointExcCurve <- function(x, ...){
     P <- attributes(x)$ExceedanceProb
-    cat("\n Extimated curve with constant joint exceedance probability equal to",P,"\n")
+    cat("\n Estimated curve with constant joint exceedance probability equal to",P,"\n")
     res <- as.data.frame(cbind(x[[1]],x[[2]]))
     colnames(res) <- attributes(x)$names
     print(res)

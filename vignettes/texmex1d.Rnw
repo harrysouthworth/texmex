@@ -75,6 +75,10 @@ package. We give a detailed exposition of the fitting of the GPD without covaria
 head(rain)
 summary(rain)
 length(rain)
+@
+
+To plot the data (not shown here):
+<<data.rain.plot,eval=FALSE,echo=TRUE>>=
 d1 <- ggplot(data=data.frame(rain=rain,index=1:length(rain)),
              aes(index,rain)) + 
     geom_point(alpha=0.5,col=4)
@@ -101,9 +105,6 @@ d3 <- ggplot(portpirie,aes(Year,SeaLevel)) + geom_point(col=4)
 d3
 @
 
-<<dataPlots>>=
-grid.arrange(d1,d2,d3,ncol=2)
-@
 %****************************************************************
 %****************************************************************
 %

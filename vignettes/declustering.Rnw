@@ -183,15 +183,19 @@ We now demonstrate how to carry out the above analysis in R using the implementa
 %
 We work here with the {\tt rain} data available in the {\tt texmex} package.  This is a series of daily rainfall observations collected at a location in the the south-west of England over 1914 -- 1962.  
 
+\setkeys{Gin}{width=0.8\textwidth}
+
+To plot the raw rainfall  data (not shown):
+<<rainfallDataPlot, echo=TRUE,eval=FALSE>>=
+ggplot(data=data.frame(rain=rain,index=1:length(rain)),
+       aes(index,rain)) + geom_point(alpha=0.5,col=4)
+@
+
 \subsubsection*{Extremal index estimation and declustering}
 
 We begin by looking at the {\it threshold stability plot} for the extremal index and (by default) also the parameters of the GPD fitted to cluster maxima.
 
-\setkeys{Gin}{width=1.0\textwidth}
-
 <<rainfallData, echo=TRUE>>=
-ggplot(data=data.frame(rain=rain,index=1:length(rain)),
-       aes(index,rain)) + geom_point(alpha=0.5,col=4)
 erf <- extremalIndexRangeFit(rain,nboot=20,verbose=FALSE)
 p <- ggplot(erf)
 gridExtra::grid.arrange(p[[1]],p[[2]],p[[3]],ncol=1)

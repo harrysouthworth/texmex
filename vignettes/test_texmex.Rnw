@@ -69,13 +69,19 @@ library(devtools)
 @
 
 The test scripts are located under the package directory in {\tt tests/testthat}.
-To run a specific test script, for example the test for {\tt egp3} functions, you can use
+To run a specific test script, for example the test for plotting of return levels from evm fitting, you can use
 
 <<test_file, echo=TRUE, eval=TRUE>>=
-devtools::test("../../texmex",filter="egp3")
+devtools::test("../../texmex",filter="plotrl.evm")
 @
 
-inserting your own path to the package.
+inserting your own path to the package.  The plots produced can be checked against the published figures which are indicated in the plot titles.  Most tests carry out numerical tests rather than graphical ones, as in the following set of tests for calculations of the GPD distribution function in a range of contexts:
+
+<<test_file2, echo=TRUE, eval=TRUE>>=
+devtools::test("../../texmex",filter="pgpd")
+@
+
+
 To run all test scripts (which will take a while), the command
 is as follows.  The output is not shown here.
 
