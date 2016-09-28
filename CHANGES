@@ -91,4 +91,8 @@ Changes from version 2.1
 6. Available vignettes should now be listed from the package Index page.
 7. Some instances of 'cat' and 'warning' have been changed to 'message' to allow
    for easier suppression and less annoyance.
-8. Added Huber sandwich estimator of parameter estimate covariance matrix for dependent data, for gpd model only at this stage.
+8. Added Huber sandwich estimator of parameter estimate covariance matrix for 
+   dependent data, for gpd model only at this stage.
+9. Added functionality to carry out estimation of Joint Exceedance Curves, from 
+   fitted Heffernan and Tawn model, documented in multivariate vignette.
+10.Plotting now available using ggplot2 methods.
