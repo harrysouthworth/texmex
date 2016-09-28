@@ -1,5 +1,5 @@
 %\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{extremal index estimation and declustering}
+%\VignetteIndexEntry{texmex: Temporal dependence and declustering}
 \documentclass[10pt]{article}
 %*********************************************************************
 \usepackage{amsmath}
