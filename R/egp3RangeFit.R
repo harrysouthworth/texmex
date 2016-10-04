@@ -97,7 +97,7 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
 #' @export
 print.egp3RangeFit <- function(x, ...){
   print(cbind(threshold=x$th, kappa=x$par, lo=x$lo, hi=x$hi))
-  invisible()
+  invisible(x)
 }
 
 #' @export

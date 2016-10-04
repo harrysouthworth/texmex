@@ -8,10 +8,11 @@
 #' corresponding mrl plot which is approximately linear in shape above the
 #' threshold (up to sampling variation).
 #' 
-#' @aliases mrl print.mrl summary.mrl plot.mrl ggplot.mrl
+#' @aliases mrl print.mrl summary.mrl print.summary.mrl plot.mrl ggplot.mrl
 #' @usage mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100,
 #' alpha=.050)
 #' \method{print}{mrl}(x, ...)
+#' \method{print}{summary.mrl}(x, ...)
 #' \method{summary}{mrl}(object, ...)
 #' \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
 #' \method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess",
@@ -71,12 +72,20 @@ function (data, umin = min(data), umax = max(data) - 0.1,
 #' @export
 print.mrl <- function(x, ...){
     print(x$mrl)
-    invisible()
+    invisible(x)
 }
 
 #' @export
 summary.mrl <- function(object, ...){
-    summary(object$mrl)
+    obj <- list(table=summary(object$mrl))
+    oldClass(obj) <- "summary.mrl"
+    obj
+}
+
+#' @export
+print.summary.mrl <- function(x, ...){
+    print(x$table)
+    invisible(x)
 }
 
 #' @export

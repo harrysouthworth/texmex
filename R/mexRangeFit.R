@@ -97,12 +97,7 @@ print.mexRangeFit <- function(x, ...){
                 b = sapply(x$ests,function(x)x$dependence$coefficients[2,]))
     colnames(out$a) <- colnames(out$b) <- x$quantiles
     print(out)
-    invisible()
-}
-
-#' @export
-summary.mexRangeFit <- function(object, ...){
-  print(object)
+    invisible(x)
 }
 
 #' @export

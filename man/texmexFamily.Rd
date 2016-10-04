@@ -4,6 +4,7 @@
 \alias{egp3}
 \alias{gev}
 \alias{gpd}
+\alias{print.summary.texmexFamily}
 \alias{print.texmexFamily}
 \alias{summary.texmexFamily}
 \alias{texmexFamily}
@@ -11,8 +12,9 @@
 \usage{
 texmexFamily(name, log.lik, param, info = NULL, sandwich = NULL,
 start = NULL, resid = NULL, rl, delta, endpoint, density, rng, prob, quant)
-\method{print}{texmexFamily}(x, ...)
-\method{summary}{texmexFamily}(object, ...)
+\method{print}{texmexFamily}(x,...)
+\method{summary}{texmexFamily}(object,...)
+\method{print}{summary.texmexFamily}(x,...)
 }
 \arguments{
 \item{name}{The name of the distribution.}

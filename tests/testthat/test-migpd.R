@@ -17,8 +17,8 @@ test_that("migpd behaves as it should", {
                     sigma = c(6.2, 9.3, 117.4, 19.7, 37.5),
                     xi = c(-.37, -.03, -.09, .11, -.2))
   
-  summer.gpd <- summary(migpd(summer, mqu=htsummer[2,],penalty="none"),verbose=FALSE)
-  winter.gpd <- summary(migpd(winter, mqu=htwinter[2,],penalty="none"),verbose=FALSE)
+  summer.gpd <- coef(migpd(summer, mqu=htsummer[2,],penalty="none"))
+  winter.gpd <- coef(migpd(winter, mqu=htwinter[2,],penalty="none"))
   
   tol <- c(1, 0.05, .5, 0.5)
   for(i in 1:4){

@@ -18,5 +18,5 @@ print.evmSim <- function(x , print.seed=FALSE, ...){
     m <- coef(x)
     print(m , ...)
 
-    invisible()
+    invisible(x)
 }

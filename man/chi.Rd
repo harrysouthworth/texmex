@@ -4,12 +4,18 @@
 \alias{chi}
 \alias{ggplot.chi}
 \alias{plot.chi}
+\alias{print.chi}
+\alias{print.summary.chi}
 \alias{summary.chi}
 \title{Measures of extremal dependence}
 \usage{
 chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
 
-\method{summary}{chi}(object, digits=3, ...)
+\method{summary}{chi}(object, ...)
+
+\method{print}{summary.chi}(x, digits=3, ...)
+
+\method{print}{chi}(x, ...)
 
 \method{plot}{chi}(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty=1,
 cilty=2, col=1, spcases=TRUE, cicol=1, xlim=c(0, 1), ylimChi =

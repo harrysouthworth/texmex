@@ -77,5 +77,5 @@ print.summary.predict.mex <- function( x, ... ){
 
     print( signif(x$thres,3), ... )
 
-    invisible()
+    invisible(x)
 }

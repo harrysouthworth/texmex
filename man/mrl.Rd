@@ -5,12 +5,14 @@
 \alias{mrl}
 \alias{plot.mrl}
 \alias{print.mrl}
+\alias{print.summary.mrl}
 \alias{summary.mrl}
 \title{Mean residual life plot}
 \usage{
 mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100,
 alpha=.050)
 \method{print}{mrl}(x, ...)
+\method{print}{summary.mrl}(x, ...)
 \method{summary}{mrl}(object, ...)
 \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
 \method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess",

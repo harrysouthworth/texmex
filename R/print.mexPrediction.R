@@ -22,4 +22,5 @@ print.predict.mex <- function( x, ... ){
 
     cat( paste( "\nConditioned on ", cv, " being above its ", 100*x$pqu, "th percentile.\n\n", sep = "" ) )
     print(res, ...)
+    invisible(x)
 }

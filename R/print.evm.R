@@ -45,5 +45,5 @@ print.evmOpt <- function(x , digits=max(3, getOption("digits") - 3), ... ){
     cat( "\n\nCoefficients:\n" )
     print.default(format(co, digits=digits, ...), print.gap=2, quote=FALSE)
     cat( "\n" )
-    invisible()
+    invisible(x)
 }

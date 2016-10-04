@@ -3,10 +3,12 @@
 \name{copula}
 \alias{copula}
 \alias{plot.copula}
+\alias{print.copula}
 \title{Calculate the copula of a matrix of variables}
 \usage{
 copula(x, na.last = NA)
 \method{plot}{copula}(x, jitter. = FALSE, jitter.factor=1, ...)
+\method{print}{copula}(x, ...)
 }
 \arguments{
 \item{x}{A matrix or data.frame containing numeric variables.}
@@ -33,7 +35,7 @@ Returns the copula of several random variables.
 The result is obtained by applying \code{\link{edf}} to each column of
 \code{x} in turn.
 
-Print, plot and summary methods are available for the copula class.
+Print and plot methods are available for the copula class.
 }
 \examples{
 

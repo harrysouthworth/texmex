@@ -4,5 +4,5 @@ print.migpd <- function( x , ... ){
     conv <- sapply( x$models , function( x ) x$convergence )
     if ( sum( conv ) == 0 ) cat( "\nAll models converged.\n" )
     else cat( "\nWARNING: Not all models converged.\n" )
-    invisible()
+    invisible(x)
 }

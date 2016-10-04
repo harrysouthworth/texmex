@@ -8,7 +8,10 @@
 \alias{plot.mex}
 \alias{plot.predict.mex}
 \alias{predict.mex}
+\alias{print.mex}
 \alias{print.mexList}
+\alias{print.summary.mex}
+\alias{summary.mex}
 \alias{summary.predict.mex}
 \title{Conditional multivariate extreme values modelling}
 \usage{
@@ -120,8 +123,7 @@ the columns of \code{data}.  If not provided, the default priors are
 independent normal, centred at zero, with variance 10000 for phi=log(sigma)
 and 0.25 for xi. See the details section.}
 
-\item{x, object}{Object of class \code{mex} as returned by function
-\code{mex}.}
+\item{x, object}{Object of class \code{mex} or \code{summary.mex} as returned by these functions respectively.}
 
 \item{pch, cex}{Plotting characters: colours and symbol expansion. The
 observed and simulated data are plotted using different symbols, controlled

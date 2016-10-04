@@ -67,8 +67,11 @@
 #' #     geom_jointExcCurve(j7,col="orange") + 
 #' #     geom_jointExcCurve(j8,col="orange") + 
 #' #     geom_jointExcCurve(j9,col="orange")
-#' @aliases print.jointExcCurve geom_jointExcCurve
-
+#' @aliases geom_jointExcCurve JointExceedanceCurve
+#' 
+#' @usage JointExceedanceCurve(Sample, ExceedanceProb,...)
+#' \method{print}{jointExcCurve}(x,...)
+#' 
 #' @export JointExceedanceCurve
 #' 
 JointExceedanceCurve <- function(Sample, ExceedanceProb,...) {
@@ -170,14 +173,13 @@ calcJointExceedanceCurve  <- function(Sample,ExceedanceProb,n=50,x=NULL) {
 
 #' @rdname JointExceedanceCurve
 #' @export print.jointExcCurve
-#' @method print jointExcCurve
-#' 
 print.jointExcCurve <- function(x, ...){
     P <- attributes(x)$ExceedanceProb
     cat("\n Estimated curve with constant joint exceedance probability equal to",P,"\n")
     res <- as.data.frame(cbind(x[[1]],x[[2]]))
     colnames(res) <- attributes(x)$names
     print(res)
+    invisible(x)
 }
 
 #' @rdname JointExceedanceCurve

@@ -16,7 +16,16 @@
 #' \item{replicates}{The parameter estimates from the bootstrap fits.}
 #' \item{map}{The fit by by maximum penalized likelihood to the original data.}
 #' 
-#' @note It is not expected that a user will feel the need to call
+#' @aliases evmBoot summary.evmBoot plot.evmBoot coef.evmBoot print.summary.evmBoot print.evmBoot
+#' 
+#' @usage evmBoot(o, R=1000, trace=100, cores=NULL, theCall)
+#' \method{summary}{evmBoot}(object,...)
+#' \method{plot}{evmBoot}(x,col=4,border=NULL,...)
+#' \method{coef}{evmBoot}(object,...)
+#' \method{print}{summary.evmBoot}(x,...)
+#' \method{print}{evmBoot}(x,...)
+#' 
+#' @note It is not expected that a user will need to call
 #'     this function directly; you are directed to \code{\link{evm}}.
 #' @seealso \code{\link{evm}}
 #' @export
@@ -92,7 +101,7 @@ print.evmBoot <- function(x, ...){
     if (nrow(x$replicates) > 1 & any(abs(res[3,] / res[4,]) > .25)){
         message("Ratio of bias to standard error is high")
     }
-    invisible(res)
+    invisible(x)
 }
 
 #' Extract coefficients from an evmBoot fit
@@ -130,7 +139,7 @@ print.summary.evmBoot <- function(x, ...){
     print(x$margins)
     cat("\nCorrelation:\n")
     print(cov2cor(x$covariance))
-    invisible()
+    invisible(x)
 }
 
 #' Plot an evmBoot object
@@ -140,7 +149,7 @@ print.summary.evmBoot <- function(x, ...){
 #' @param x an \code{\link{evmBoot}} object
 #' @param col colour used to fill histogram
 #' @param border the colour of the border around the bars
-#' @param ... other arguments passed to \code{\link[graphics]{hist}}
+#' @param ... other arguments passed to internal functions
 #' @export
 plot.evmBoot <- function(x, col=4, border=NULL, ...){
     pfun <- function(x, col, border, xlab,...){

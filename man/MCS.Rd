@@ -9,7 +9,7 @@
 \alias{plot.bootMCS}
 \alias{print.MCS}
 \alias{print.bootMCS}
-\alias{summary.MCS}
+\alias{print.summary.bootMCS}
 \alias{summary.bootMCS}
 \title{Multivariate conditional Spearman's rho}
 \usage{
@@ -28,6 +28,8 @@ bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
   ...)
 
 \method{summary}{bootMCS}(object, alpha = 0.05, ...)
+
+\method{print}{summary.bootMCS}(x, ...)
 }
 \arguments{
 \item{X}{A matrix of numeric variables.}
@@ -54,7 +56,7 @@ produced.  Defaults to \code{alpha = 0.05}.}
 }
 \value{
 MCS returns an object of class \code{MCS}.  There are plot and
-summary methods available for this class.
+print methods available for this class.
 
 \item{MCS }{The estimated correlations.} \item{p }{The quantiles at which
 the correlations were evaluated at} \item{call}{The function call used.}

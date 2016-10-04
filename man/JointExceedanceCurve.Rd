@@ -10,7 +10,8 @@
 \alias{print.jointExcCurve}
 \title{Joint exceedance curves}
 \usage{
-JointExceedanceCurve(Sample, ExceedanceProb, ...)
+JointExceedanceCurve(Sample, ExceedanceProb,...)
+\method{print}{jointExcCurve}(x,...)
 
 \method{JointExceedanceCurve}{default}(Sample, ExceedanceProb, n = 50,
   x = NULL, ...)

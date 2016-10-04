@@ -38,5 +38,8 @@ plot.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
 }
 
 #' @export
-print.hist.evmOpt <- plot.hist.evmOpt
+print.hist.evmOpt <- function(x, xlab=NULL, ylab=NULL, main=NULL, ...){
+    plot.hist.evmOpt(x, xlab=xlab, ylab=ylab, main=main, ...)
+    invisible(x)
+}
 

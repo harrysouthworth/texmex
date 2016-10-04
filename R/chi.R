@@ -17,12 +17,16 @@
 #' confidence interval for ChiBar excluding the value 1 for all of the largest
 #' quantiles, the plot of the Chi function is shown in grey.
 #' 
-#' @aliases chi summary.chi plot.chi ggplot.chi
+#' @aliases chi summary.chi plot.chi print.chi ggplot.chi print.summary.chi
 #' 
 #' @usage chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
 #' 
-#' \method{summary}{chi}(object, digits=3, ...)
+#' \method{summary}{chi}(object, ...)
 #' 
+#' \method{print}{summary.chi}(x, digits=3, ...)
+#' 
+#' \method{print}{chi}(x, ...)
+#'
 #' \method{plot}{chi}(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty=1,
 #' cilty=2, col=1, spcases=TRUE, cicol=1, xlim=c(0, 1), ylimChi =
 #' c(-1, 1), ylimChiBar = c(-1, 1), mainChi = "Chi", mainChiBar =
@@ -189,15 +193,11 @@ print.chi <- function(x, ...){
     print(x$call,...)
     cat("Values of chi and chi-bar obtained and",
          length(x$quantile), "quantiles.\n")
-    invisible()
+    invisible(x)
 }
 
 #' @export
-summary.chi <- function(object, digits=3, ...){
-    print(object$call)
-    cat("Values of chi and chi-bar obtained and",
-         length(object$quantile), "quantiles.\n")
-
+summary.chi <- function(object, ...){
     wh <- quantile(object$quantile, prob=c(.05, .5, .95))
     wh <- sapply(wh, function(i, u){
                         d <- abs(u - i)
@@ -207,12 +207,23 @@ summary.chi <- function(object, digits=3, ...){
     chiQ <- object$chi[object$quantile %in% wh, 2]
     chibarQ <- object$chibar[object$quantile %in% wh, 2]
 
-    res <- rbind(wh, chiQ, chibarQ)
-    dimnames(res) <- list(c("quantile", "chi", "chi-bar"), rep("", 3))
-    print(res, digits=digits, ...)
-    invisible(res)
+    out <- rbind(wh, chiQ, chibarQ)
+    dimnames(out) <- list(c("quantile", "chi", "chi-bar"), rep("", 3))
+    res <- list(out=out,call=object$call,quantile=object$quantile)
+    oldClass(res) <- "summary.chi"
+    res
 }
 
+#' @export
+print.summary.chi <- function(x,digits=3,...){
+    cat("Call: ")
+    print(x$call)
+    cat("Values of chi and chi-bar obtained at",
+        length(x$quantile), "quantiles.\n")
+    
+    print(x$out, digits=digits, ...)
+    invisible(x)
+}
 
 #' @export
 plot.chi <- function(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty = 1, cilty = 2, col = 1, spcases = TRUE, cicol = 1,

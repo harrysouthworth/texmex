@@ -5,6 +5,7 @@
 \alias{gpdRangeFit}
 \alias{plot.gpdRangeFit}
 \alias{print.gpdRangeFit}
+\alias{print.summary.gpdRangeFit}
 \alias{summary.gpdRangeFit}
 \title{Estimate generalized Pareto distribution parameters over a range of values}
 \usage{
@@ -13,6 +14,7 @@ nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05,
 cov="observed")
 \method{print}{gpdRangeFit}(x, ...)
 \method{summary}{gpdRangeFit}(object, ...)
+\method{print}{summary.gpdRangeFit}(x, ...)
 \method{plot}{gpdRangeFit}(x, xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
 \method{ggplot}{gpdRangeFit}(data, mapping, xlab="Threshold", ylab=NULL,
 main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4, ...,

@@ -31,11 +31,12 @@ edf <- function(x, na.last=NA){
 #' The result is obtained by applying \code{\link{edf}} to each column of
 #' \code{x} in turn.
 #' 
-#' Print, plot and summary methods are available for the copula class.
+#' Print and plot methods are available for the copula class.
 #' 
-#' @aliases copula plot.copula
+#' @aliases copula plot.copula print.copula
 #' @usage copula(x, na.last = NA)
 #' \method{plot}{copula}(x, jitter. = FALSE, jitter.factor=1, ...)
+#' \method{print}{copula}(x, ...)
 #' @param x A matrix or data.frame containing numeric variables.
 #' @param na.last How to treat missing values. See \code{rank} for details.
 #' @param jitter. In the call to \code{plot.copula}, if \code{jitter=TRUE}, the
@@ -95,14 +96,7 @@ function (x, na.last = NA) {
 print.copula <- function(x, ...){
     print(x$call)
     cat("A copula of", ncol(x$copula), "variables.\n")
-    invisible()
-}
-
-#' @export
-summary.copula <- function(object, ...){
-    print(object$call)
-    cat("A copula of", ncol(object$copula), "variables.\n")
-    invisible()
+    invisible(x)
 }
 
 #' @export

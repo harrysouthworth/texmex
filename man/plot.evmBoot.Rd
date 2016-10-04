@@ -13,7 +13,7 @@
 
 \item{border}{the colour of the border around the bars}
 
-\item{...}{other arguments passed to \code{\link[graphics]{hist}}}
+\item{...}{other arguments passed to internal functions}
 }
 \description{
 Plot the bootstrap distribution of the model parameters.

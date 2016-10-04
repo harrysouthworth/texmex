@@ -14,11 +14,12 @@
 #' The functions are used by the modelling functions to create diagnostic
 #' plots, predictions, etc..
 #' 
-#' @aliases texmexFamily print.texmexFamily summary.texmexFamily gpd gev egp3
+#' @aliases texmexFamily print.texmexFamily summary.texmexFamily gpd gev egp3 print.summary.texmexFamily
 #' @usage texmexFamily(name, log.lik, param, info = NULL, sandwich = NULL,
 #' start = NULL, resid = NULL, rl, delta, endpoint, density, rng, prob, quant)
-#' \method{print}{texmexFamily}(x, ...)
-#' \method{summary}{texmexFamily}(object, ...)
+#' \method{print}{texmexFamily}(x,...)
+#' \method{summary}{texmexFamily}(object,...)
+#' \method{print}{summary.texmexFamily}(x,...)
 #' @param name The name of the distribution.
 #' @param log.lik The distribution's log-likelihood function.
 #' @param param The names of the parameters in the model.
@@ -68,17 +69,25 @@ function(name, log.lik, param, info=NULL, sandwich = NULL, start=NULL, resid=NUL
 #' @export
 print.texmexFamily <- function(x, ...){
     cat('Family:      ', x$name, '\n')
-
-    invisible()
+    invisible(x)
 }
 
 #' @export
 summary.texmexFamily <- function(object, ...){
-  if (is.null(object$info)){ info <- 'Numerical approximation' }
-  else { info <- 'Closed form' }
+    res <- list(object=object)
+    if (is.null(object$info)){ 
+        res$info <- 'Numerical approximation' 
+    } else { 
+        res$info <- 'Closed form' 
+    }
+    oldClass(res) <- "summary.texmexFamily"
+    res
+}
 
-  print.texmexFamily(object, verbose=FALSE, ...)
-  cat('Parameters:  ', object$param, '\n')
-  cat('Information: ', info, '\n')
-  invisible()
+#' @export
+print.summary.texmexFamily <- function(x, ...){
+    print.texmexFamily(x$object, ...)
+    cat('Parameters:  ', x$object$param, '\n')
+    cat('Information: ', x$info, '\n')
+    invisible(x)
 }

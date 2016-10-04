@@ -5,7 +5,7 @@ summary.evmSim <- function(object, ...){
    res <- cbind(co, se)
    dimnames(res) <- list(names(co), c("Posterior mean", "SD"))
    res <- list(object$map$family, res)
-   oldClass(res) <- "summary.evm.sim"
+   oldClass(res) <- "summary.evmSim"
    res
 }
 
@@ -14,5 +14,5 @@ print.summary.evmSim <- function(x, ...){
    print(x[[1]], verbose=FALSE, ...)
    cat("\nPosterior summary:\n")
    print(unclass(x[[2]]))
-   invisible()
+   invisible(x)
 }

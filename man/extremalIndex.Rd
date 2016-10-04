@@ -11,6 +11,8 @@
 \alias{ggplot.extremalIndexRangeFit}
 \alias{plot.declustered}
 \alias{plot.extremalIndexRangeFit}
+\alias{print.declustered}
+\alias{print.extremalIndex}
 \title{Extremal index estimation and automatic declustering}
 \usage{
 extremalIndex(y, data = NULL, threshold)
@@ -30,6 +32,10 @@ declust(y, r=NULL, data = NULL, ...)
 \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
 
 \method{plot}{extremalIndexRangeFit}(x,addNexcesses=TRUE,estGPD=TRUE,...)
+
+\method{print}{extremalIndex}(x,...)
+
+\method{print}{declustered}(x,...)
 
 \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,
 ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", 
@@ -147,7 +153,7 @@ available.
 The function \code{extremalIndex} estimates the extremal index of a
 dependent series of observations above a given threshold \code{threshold},
 returning an object of class "extremalIndex".  Plot and print methods are
-available for this class. A graphical diagnostic akin to Figure 1 in Ferror
+available for this class. A graphical diagnostic akin to Figure 1 in Ferro
 and Segers (2003) is produced by the \code{plot} method for this class.
 This plot is used to test the model assumption underpinning the estimation,
 with good fit being indicated by interexceedance times which correspond to

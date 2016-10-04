@@ -26,6 +26,7 @@ summary.evmOpt <- function(object, nsim = 1000, alpha = .050, ...){
 
 #' @export
 print.summary.evmOpt <- function(x, digits = 3 , ...){
+    oldX <- x
     co <- coef(x)
     env <- x$envelope
     nsim <- x$nsim
@@ -70,5 +71,5 @@ print.summary.evmOpt <- function(x, digits = 3 , ...){
     perc <- round(out / length( env$data ) * 100, digits=digits, ...)
     perc <- paste(perc, "%", sep = "" )
     cat( paste( out, " observations (", perc, ") outside the ", level, " simulated envelope.\n" , sep=""))
-    invisible()
+    invisible(oldX)
 }

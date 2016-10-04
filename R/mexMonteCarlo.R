@@ -94,4 +94,5 @@ print.mexList <- function(x, ...){
         cat("\n______\n")
         print(x[[i]][[2]])
     }
+    invisible(x)
 }

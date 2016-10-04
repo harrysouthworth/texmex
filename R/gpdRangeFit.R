@@ -11,13 +11,14 @@
 #' Note this function does not extend to assessing model fit when there are
 #' covariates included in the model.
 #' 
-#' @aliases gpdRangeFit print.gpdRangeFit summary.gpdRangeFit plot.gpdRangeFit
+#' @aliases gpdRangeFit print.gpdRangeFit summary.gpdRangeFit print.summary.gpdRangeFit plot.gpdRangeFit
 #' ggplot.gpdRangeFit
 #' @usage gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95),
 #' nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05,
 #' cov="observed")
 #' \method{print}{gpdRangeFit}(x, ...)
 #' \method{summary}{gpdRangeFit}(object, ...)
+#' \method{print}{summary.gpdRangeFit}(x, ...)
 #' \method{plot}{gpdRangeFit}(x, xlab = "Threshold", ylab = NULL, main = NULL, addNexcesses=TRUE, ...)
 #' \method{ggplot}{gpdRangeFit}(data, mapping, xlab="Threshold", ylab=NULL,
 #' main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4, ...,
@@ -91,8 +92,11 @@ print.gpdRangeFit <- function(x, ...){
     sc <- cbind(threshold=x$th, phi=x$par[, 1], lo=x$lo[, 1], hi=x$hi[, 1])
     sh <- cbind(threshold=x$th, xi=x$par[, 2], lo=x$lo[, 2], hi=x$hi[, 2])
 
-    print(sc); print(sh)
-    invisible()
+    cat("\nScale parameter\n---------------\n")
+    print(sc)
+    cat("\nShape parameter\n---------------\n")
+    print(sh)
+    invisible(x)
 }
 
 #' @export
@@ -100,7 +104,15 @@ summary.gpdRangeFit <- function(object, ...){
     sc <- cbind(threshold=object$th, phi=object$par[, 1], lo=object$lo[, 1], hi=object$hi[, 1])
     sh <- cbind(threshold=object$th, xi=object$par[, 2], lo=object$lo[, 2], hi=object$hi[, 2])
 
-    list(phi=summary(sc), xi=summary(sh))
+    res <- list(phi=summary(sc), xi=summary(sh))
+    oldClass(res) <- "summary.gpdRangeFit"
+    res
+}
+
+#' @export
+print.summary.gpdRangeFit <- function(x, ...){
+    list(phi=x$phi, xi=x$xi)
+    invisible(x)
 }
 
 #' @export

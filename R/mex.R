@@ -70,8 +70,8 @@
 #' model fits.  This can be used in turn to generate Monte Carlo samples from
 #' the entire sample space usign the collected dependence models.
 #' 
-#' @aliases mex plot.mex predict.mex summary.predict.mex plot.predict.mex ggplot.mex
-#' mexAll print.mexList
+#' @aliases mex plot.mex print.mex predict.mex summary.predict.mex plot.predict.mex ggplot.mex
+#' mexAll print.mexList print.summary.mex summary.mex
 #' @param data A numeric matrix or data.frame, the columns of which are to be
 #' modelled.
 #' @param which The variable on which to condition.  This can be either scalar,
@@ -134,8 +134,7 @@
 #' points for observed, and simulated data (conditioning variable not the
 #' largest) and simulated data (conditioning variable is the largest)
 #' respectively.
-#' @param x,object Object of class \code{mex} as returned by function
-#' \code{mex}.
+#' @param x,object Object of class \code{mex} or \code{summary.mex} as returned by these functions respectively.
 #' @param pqu Prediction quantile. Argument to \code{predict} method. The
 #' quantile of the conditioning variable above which it will be simulated for
 #' importance sampling based prediction.  Defaults to \code{pqu = .99 }.
@@ -263,13 +262,23 @@ print.mex <- function(x, digits=4, ...){
     summary(x[[1]],digits=digits)
     cat("\nDependence model:\n\n")
     print(x[[2]],...)
-    invisible()
+    invisible(x)
 }
 
 #' @export
 summary.mex <- function(object, ...){
-    print(object, ...)
-    invisible(coef(object))
+    obj <- coef(object)
+    oldClass(obj) <- "summary.mex"
+    obj
+}
+
+#' @export
+print.summary.mex <- function(x, digits=3, ...){
+    cat("\nMarginal models:\n")
+    print(x[[1]],digits=digits)
+    cat("\nDependence model:\n\n")
+    print(x[[2]],digits=digits)
+    invisible(x)
 }
 
 #' @export

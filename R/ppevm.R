@@ -58,4 +58,11 @@ plot.ppevm <- function(x, xlab, ylab,  main,
 }
 
 #' @export
-print.ppevm <- plot.ppevm
+print.ppevm <- function(x, xlab, ylab,  main,
+                        pch=1, col = 2, cex = .75, linecol = 4,
+                        intcol = 0, polycol=15, ...){
+    plot.ppevm(x, xlab, ylab,  main,
+               pch=pch, col = col, cex = cex, linecol = linecol,
+                intcol = intcol, polycol=polycol, ...)
+    invisible(x)
+}

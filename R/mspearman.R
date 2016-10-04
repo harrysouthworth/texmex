@@ -32,7 +32,7 @@
 #' When the result of a call to \code{bootMCS} is plotted, simple quantile
 #' bootstrap confidence intervals are displayed.
 #' 
-#' @aliases MCS plot.MCS ggplot.MCS print.MCS summary.MCS bootMCS plot.bootMCS print.bootMCS summary.bootMCS 
+#' @aliases MCS plot.MCS ggplot.MCS print.MCS bootMCS plot.bootMCS print.bootMCS summary.bootMCS 
 #' 
 #' @param X A matrix of numeric variables.
 #' @param p The quantiles at which to evaluate.
@@ -47,7 +47,7 @@
 #' @param data,mapping,main,environment Arguments to ggplot method.
 #' @param ... Optional arguments to be passed into methods.
 #' @return MCS returns an object of class \code{MCS}.  There are plot and
-#' summary methods available for this class.
+#' print methods available for this class.
 #' 
 #' \item{MCS }{The estimated correlations.} \item{p }{The quantiles at which
 #' the correlations were evaluated at} \item{call}{The function call used.}
@@ -108,17 +108,7 @@ print.MCS <- function(x, ...){
     res <- x$mcs
     names(res) <- x$p
     print(res)
-    invisible(res)
-}
-
-#' @export
-summary.MCS <-  function(object, ...){
-    print(object$call)
-    cat("Multivariate conditional Spearman's rho.\n\n", sep = "")
-    res <- object$mcs
-    names(res) <- object$p
-    print(res)
-    invisible(res)
+    invisible(x)
 }
 
 #------------------------------------------------
@@ -183,18 +173,27 @@ print.bootMCS <- function(x, ...){
     m <- rowMeans(x$replicates)
     names(m) <- x$p
     print(m)
-    invisible(m)
+    invisible(x)
 }
 
 #' @rdname MCS
 #' @export
 summary.bootMCS <- function(object, alpha=.05, ...){
-    cat("Multivariate conditional Spearman's rho.\n", object$R, " bootstrap samples were performed.\n\n",
-        sep = "")
     m <- rowMeans(object$replicates)
     ci <- apply(object$replicates, 1, quantile, prob=c(alpha/2, 1 - alpha/2))
     res <- cbind(m, t(ci))
     dimnames(res) <- list(object$p, c("Mean", rownames(ci)))
+    res <- list(res=res,R=object$R)
+    oldClass(res) <- "summary.bootMCS"
     res
+}
+
+#' @rdname MCS
+#' @export
+print.summary.bootMCS <- function(x, ...){
+    cat("Multivariate conditional Spearman's rho.\n", x$R, " bootstrap samples were performed.\n\n",
+        sep = "")
+    print(x$res)
+    invisible(x)
 }
 

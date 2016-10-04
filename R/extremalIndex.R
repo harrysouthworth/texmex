@@ -10,7 +10,7 @@
 #' The function \code{extremalIndex} estimates the extremal index of a
 #' dependent series of observations above a given threshold \code{threshold},
 #' returning an object of class "extremalIndex".  Plot and print methods are
-#' available for this class. A graphical diagnostic akin to Figure 1 in Ferror
+#' available for this class. A graphical diagnostic akin to Figure 1 in Ferro
 #' and Segers (2003) is produced by the \code{plot} method for this class.
 #' This plot is used to test the model assumption underpinning the estimation,
 #' with good fit being indicated by interexceedance times which correspond to
@@ -35,7 +35,7 @@
 #' predictors for the parameters of the GPD.  See examples below.
 #' 
 #' @aliases extremalIndex extremalIndexRangeFit declust declust.default
-#' declust.extremalIndex plot.declustered bootExtremalIndex evm.declustered plot.extremalIndexRangeFit ggplot.extremalIndexRangeFit
+#' declust.extremalIndex print.extremalIndex plot.declustered print.declustered bootExtremalIndex evm.declustered plot.extremalIndexRangeFit ggplot.extremalIndexRangeFit
 #' @usage extremalIndex(y, data = NULL, threshold)
 #' 
 #' extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
@@ -54,6 +54,10 @@
 #' 
 #' \method{plot}{extremalIndexRangeFit}(x,addNexcesses=TRUE,estGPD=TRUE,...)
 #' 
+#' \method{print}{extremalIndex}(x,...)
+#' 
+#' \method{print}{declustered}(x,...)
+#'
 #' \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,
 #' ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", 
 #' textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
@@ -220,6 +224,7 @@ print.extremalIndex <- function(x,...)
   cat("Threshold", x$threshold,"\n")
   cat("Number of Threshold Exceedances",x$nExceed,"\n")
   cat("Intervals estimator of Extremal Index", x$EIintervals,"\n")
+  invisible(x)
 }
 
 #' @export
@@ -316,6 +321,7 @@ print.declustered <- function(x,...){
   cat("\nThreshold ",x$threshold,"\n")
   cat("Declustering using the",x$method,"method, run length",x$r,"\n")
   cat("Identified",length(x$sizes),"clusters.\n")
+  invisible(x)
 }
 
 #' @export
