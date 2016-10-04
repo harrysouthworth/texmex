@@ -66,12 +66,18 @@ ggplot.rl.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
         Plots[[i]] <- ggplot(d,aes(x=m,y=rl))+
                              labs(title = Main)+
                              geom_line() +
-                             scale_x_continuous(trans="log")+
+                             scale_x_continuous(trans="log",breaks=function(x) signif(exp(seq(from=log(x[1]),to=log(x[2]),len=5)),1))+
                              geom_polygon(data= data.frame(x=c(d$m,rev(d$m)),y=c(d$Upper,rev(d$Lower))),
                                           aes(x=x,y=y),fill=fill,alpha=alpha)
             
     }
     
+    if (ncov < 5) {
+        res <- c(Plots); names(res) <- letters[1:length(res)] # stop grid.arrange getting confused
+        do.call("grid.arrange", c(res, ncol=length(p)))
+    } else {
+        message("ggplot.rl.evmOpt produced more than 4 plots; returning invisibly.\n\nUse gridExtra::grid.arrange for plot layout.\n\n")
+    }
     invisible(Plots)
 }
 
@@ -104,7 +110,12 @@ ggplot.lp.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
                          aes(x=x,y=y),fill=fill,alpha=alpha)
         
     }
-    
+    if (length(p) < 5) {
+        res <- c(Plots); names(res) <- letters[1:length(res)] # stop grid.arrange getting confused
+        do.call("grid.arrange", c(res, ncol=length(p)))
+    } else {
+        message("ggplot.lp.evmOpt produced more than 4 plots; returning invisibly.\n\nUse gridExtra::grid.arrange for plot layout.\n\n")
+    }
     invisible(Plots)
 }
 
