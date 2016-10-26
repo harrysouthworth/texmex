@@ -41,7 +41,7 @@ confidence that {\tt texmex} produces the output expected of it.
 
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} was used in the construction of this
-vignette. 
+vignette.
 
 \subsection{Acknowledgements}
 Some of the independently written code that is used for validation is borrowed
@@ -72,13 +72,15 @@ The test scripts are located under the package directory in {\tt tests/testthat}
 To run a specific test script, for example the test for plotting of return levels from evm fitting, you can use
 
 <<test_file, echo=TRUE, eval=TRUE>>=
-devtools::test("../../texmex",filter="plotrl.evm")
+#devtools::test("../../texmex",filter="plotrl.evm")
+test_dir("../tests/testthat", filter="plotrl.evm")
 @
 
 inserting your own path to the package.  The plots produced can be checked against the published figures which are indicated in the plot titles.  Most tests carry out numerical tests rather than graphical ones, as in the following set of tests for calculations of the GPD distribution function in a range of contexts:
 
 <<test_file2, echo=TRUE, eval=TRUE>>=
-devtools::test("../../texmex",filter="pgpd")
+#devtools::test("../../texmex",filter="pgpd")
+test_dir("../tests/testthat", filter="pgpd")
 @
 
 

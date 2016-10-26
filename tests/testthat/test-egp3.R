@@ -97,6 +97,15 @@ test_that("qegp3 behaves as expected", {
   x <- matrix(runif(nreps*nsim), nrow=nsim)
 
   myTest(sig=p[,1], xi=p[,2], kappa=p[,3], thresh=thresh, msg="qgpd: random xi")
+
+  # Check that qegp3 gives same answer on log scale
+  p <- qegp3(0.95, kappa=0.5, sigma=1, xi=.01)
+  p2 <- qegp3(log(0.95), kappa=0.5, sigma=1, xi=.01, log.p=TRUE)
+  expect_equal(p, p2, label="qegp3 returns same answer on log and untransformed scale, lower tail")
+
+  p <- qegp3(0.95, kappa=0.5, sigma=1, xi=.01, lower.tail=FALSE)
+  p2 <- qegp3(log(0.95), kappa=0.5, sigma=1, xi=.01, log.p=TRUE, lower.tail=FALSE)
+  expect_equal(p, p2, label="qegp3 returns same answer on log and untransformed scale, upper tail")
 })
 
 test_that("pegp3 behaves as expected", {
