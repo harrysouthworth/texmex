@@ -74,7 +74,7 @@ ggplot.rl.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
     
     if (ncov < 5) {
         res <- c(Plots); names(res) <- letters[1:length(res)] # stop grid.arrange getting confused
-        do.call("grid.arrange", c(res, ncol=length(p)))
+        do.call("grid.arrange", c(res, ncol=length(Plots)))
     } else {
         message("ggplot.rl.evmOpt produced more than 4 plots; returning invisibly.\n\nUse gridExtra::grid.arrange for plot layout.\n\n")
     }
@@ -112,7 +112,7 @@ ggplot.lp.evmOpt <- function(data=NULL, mapping, xlab, ylab, main,
     }
     if (length(p) < 5) {
         res <- c(Plots); names(res) <- letters[1:length(res)] # stop grid.arrange getting confused
-        do.call("grid.arrange", c(res, ncol=length(p)))
+        do.call("grid.arrange", c(res, ncol=length(Plots)))
     } else {
         message("ggplot.lp.evmOpt produced more than 4 plots; returning invisibly.\n\nUse gridExtra::grid.arrange for plot layout.\n\n")
     }
