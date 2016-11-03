@@ -25,7 +25,7 @@ addExcesses <- function(p, x, y, data, textsize){
 #' @export
 ggplot.mrl <- function(data, mapping, xlab = "Threshold", ylab = "Mean excess", main=NULL,
                        fill="orange", col="blue",
-                       addNexcesses=TRUE, textsize=4, ..., environment){
+                       rug=TRUE, addNexcesses=TRUE, textsize=4, ..., environment){
   x <- data
   data <- x$data
   x <- x$mrl
@@ -39,17 +39,21 @@ ggplot.mrl <- function(data, mapping, xlab = "Threshold", ylab = "Mean excess", 
   poly <- poly[c(k, rev(k)), ]
 
   d2 <- data.frame(x = data,y=rep(0,length(data)))
-  
+
   p <- ggplot(poly, aes(x, y)) +
     geom_polygon(fill=fill, alpha=.5) +
     geom_line(data=d, aes(th, mrl), color=col) +
     scale_x_continuous(xlab) +
     scale_y_continuous(ylab) +
-    geom_rug(data=d2,mapping=aes(x,y),sides="b") +
     ggtitle(main)
 
-  if (addNexcesses)
+  if (rug){
+    p <- p + geom_rug(data=d2,mapping=aes(x,y),sides="b")
+  }
+
+  if (addNexcesses){
     p <- addExcesses(p, poly$x, poly$y, data=data, textsize=textsize)
+  }
 
   p
 }
