@@ -1,37 +1,37 @@
 #' Extreme value modelling
-#' 
+#'
 #' Likelihood based modelling and inference for extreme value models, possibly
 #' with explanatory variables.
-#' 
+#'
 #' The main modelling function is \code{evm} (extreme value model) and the
 #' distribution to be used is specified by passing an object of class
 #' \code{texmexFamily} to the \code{family} argument.
-#' 
+#'
 #' The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
 #' Currently, the other \code{texmexFamily} objects available are \code{gev}
 #' which results in fitting a generalized extreme value (GEV) distribution to
 #' the data, and \code{egp3} which fits the extended generalized Pareto
 #' distribution version 3 of Papastathopoulos and Tawn (2013).
-#' 
+#'
 #' See Coles (2001) for an introduction to extreme value modelling and the GPD
 #' and GEV models.
-#' 
+#'
 #' For the GPD model, we use the following parameterisation of evm:
-#' 
+#'
 #' \deqn{P(Y \le y) = 1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi}}
 #' for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
-#' 
+#'
 #' For the GEV model, we use:
-#' 
+#'
 #' \deqn{P(Y \le y) = \exp \left\{ -\left[ 1 + \xi \left( \frac{y -
 #' \mu}{\sigma}\right) \right] ^{-1/\xi} \right\} }
-#' 
-#' 
+#'
+#'
 #' In each case, the scale parameter is sigma (\eqn{\sigma}) and the shape
 #' parameter is xi (\eqn{\xi}). The GEV distribution also has location
 #' parameter mu (\eqn{\mu}). See Papastathopoulos and Tawn (2013) for
 #' specification of the EGP3 model.
-#' 
+#'
 #' Working with the log of the scale parameter improves the stability of
 #' computations, makes a quadratic penalty more appropriate and enables the
 #' inclusion of covariates in the model for the scale parameter, which must
@@ -39,27 +39,27 @@
 #' specification of priors or penalty functions refer to \eqn{\phi} rather than
 #' \eqn{\sigma}.  A quadratic penalty can be thought of as a Gaussian prior
 #' distribution, whence the terminology of the function.
-#' 
+#'
 #' Parameters of the evm are estimated by using maximum (penalized) likelihood
 #' (\code{method = "optimize"}), or by simulating from the posterior
 #' distribution of the model parameters using a Metropolis algorithm
 #' (\code{method = "simulate"}).  In the latter case, \code{start} is used as a
 #' starting value for the Metropolis algorithm; in its absence, the maximum
 #' penalized likelhood point estimates are computed and used.
-#' 
+#'
 #' A boostrap approach is also available (\code{method = "bootstrap"}).  This
 #' runs a parametric bootstrap, simulating from the model fit by optimization.
-#' 
+#'
 #' When \code{method = "simulate"} the \code{print} and \code{summary}
 #' functions give posterior means and standard deviations. Posterior means are
 #' also returned by the \code{coef} method. Depending on what you want to do
 #' and what the posterior distributions look like (use \code{plot} method) you
 #' might want to work with quantiles of the posterior distributions instead of
 #' relying on standard errors.
-#' 
+#'
 #' When \code{method = "bootstrap"}, summaries of the bootstrap distribution
 #' and the bootstrap estimate of bias are displayed.
-#' 
+#'
 #' @param y Either a numeric vector or the name of a variable in \code{data}.
 #' @param data A data frame containing \code{y} and any covariates.
 #' @param family An object of class 'texmexFamily'. Defaults to
@@ -103,7 +103,7 @@
 #' data which are not independent and in which case the likelihood function no
 #' longer has the interpretation of a joint likelihood, but instead should be
 #' interpreted as a pseudo-likelihod.
-#' 
+#'
 #' In some cases, particularly with small samples, the numerical approximation
 #' can be quite different from the closed form (\code{cov="observed"}) result,
 #' and the value derived from the observed information should be preferred.
@@ -147,7 +147,7 @@
 #' \code{cores=NULL} and the function guesses how many cores are available and
 #' uses them all.
 #' @return If \code{method = "optimize"}, an object of class \code{evmOpt}:
-#' 
+#'
 #' \item{call}{The call to \code{evmSim} that produced the object.}
 #' \item{data}{The original data (above and below the threshold for fitting if
 #' a distribution for threshold excesses has been used). In detail, \code{data}
@@ -162,9 +162,9 @@
 #' likelihood or maximum penalized likelihood.} \item{rate}{The proportion of
 #' observations above the threshold. If the model is not a threshold exceedance
 #' model (e.g. the GEV model), the rate will be 1.}
-#' 
+#'
 #' \item{priorParameters}{See above.}
-#' 
+#'
 #' \item{residuals}{Residuals computed using the residual function in the
 #' \code{texmexFamily} object, if any.} \item{ploglik}{The value of the
 #' optimized penalized log-likelihood.} \item{loglik}{The value of the
@@ -177,9 +177,9 @@
 #' predictor for the respective design matrix. These are used by the
 #' \code{predict} method to ensure all factor levels are known, even if they
 #' don't appear in \code{newdata}.}
-#' 
+#'
 #' If \code{method = "simulate"}, an object of class \code{evmSim}:
-#' 
+#'
 #' \item{call}{The call to \code{evmSim} that produced the object.}
 #' \item{threshold}{The threshold above which the model was fit.}
 #' \item{map}{The point estimates found by maximum penalized likelihood and
@@ -192,15 +192,15 @@
 #' for fitting.} \item{seed}{The seed used by the random number generator.}
 #' \item{param}{The remainder of the chain after deleting the burn-in and
 #' applying any thinning.}
-#' 
+#'
 #' If \code{method = "bootstrap"}, an object of class \code{evmBoot}:
-#' 
+#'
 #' \item{call}{The call to \code{evmBoot} that produced the object.}
 #' \item{replicates}{The parameter estimates from the bootstrap fits.}
 #' \item{map}{The fit by by maximum penalized likelihood to the orginal data.
 #' This is of class \code{evmOpt} and methods for this class (such as resid and
 #' plot) may be useful.}
-#' 
+#'
 #' There are summary, plot, print, residuals and coefficients methods available for these
 #' classes.
 #' @note For both GPD and GEV models, when there are estimated values of
@@ -218,30 +218,30 @@
 #' \code{\link{evm.declustered}}.
 #' @references S. Coles. An Introduction to Statistical Modelling of Extreme
 #' Values. Springer, 2001.
-#' 
+#'
 #' I. Papastathopoulos and J. A. Tawn, Extended generalised Pareto models for
 #' tail estimation, Journal of Statistical Planning and Inference, 143, 131 -
 #' 143, 2013.
 #' @keywords models
 #' @examples
-#' 
+#'
 #'   mod <- evm(rain, th=30)
 #'   mod
 #'   par(mfrow=c(2, 2))
 #'   plot(mod)
-#' 
+#'
 #' #  mod <- evm(rain, th=30, method="sim")
 #' #  par(mfrow=c(3, 2))
 #' #  plot(mod)
-#' 
+#'
 #'   mod <- evm(SeaLevel, data=portpirie, family=gev)
 #'   mod
 #'   plot(mod)
-#' 
+#'
 #' #  mod <- evm(SeaLevel, data=portpirie, family=gev, method="sim")
 #' #  par(mfrow=c(3, 3))
 #' #  plot(mod)
-#' 
+#'
 #' @export evm
 evm <- function(y, data, family=gpd, ...){
   theCall <- match.call()
@@ -333,4 +333,3 @@ function (y, data, family=gpd, th= -Inf, qu,
 
     o
 }
-

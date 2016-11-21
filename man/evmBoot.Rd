@@ -28,10 +28,19 @@ to \code{cores=NULL} and the function guesses how many cores
 are available and uses them all.}
 
 \item{theCall}{(for internal use)}
+
+\item{...}{Arguments passed to \code{ggplot}. Not used.}
+
+\item{x}{An object of class 'evmBoot'.}
+
+\item{object}{An object of class 'evmBoot'.}
+
+\item{col}{Colour to be used in plotting. Defaults to \code{col=4}.}
+
+\item{border}{Border colour for histogram. Defaults to \code{border=NULL}.}
 }
 \value{
 An object of class \code{evmBoot}; a list with
-
 \item{call}{The call to \code{evmBoot} that produced the object.}
 \item{replicates}{The parameter estimates from the bootstrap fits.}
 \item{map}{The fit by by maximum penalized likelihood to the original data.}

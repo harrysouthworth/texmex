@@ -1,13 +1,13 @@
 #' Mean residual life plot
-#' 
+#'
 #' Calculate mean residual life and plot it to aid the identification of a
 #' threshold over which to fit a generalized Pareto distribution
-#' 
+#'
 #' Threshold choice for the fitting of the GPD is guided by the shape of the
 #' Mean Residual Life plot.  A threshold which is suitably high will have a
 #' corresponding mrl plot which is approximately linear in shape above the
 #' threshold (up to sampling variation).
-#' 
+#'
 #' @aliases mrl print.mrl summary.mrl print.summary.mrl plot.mrl ggplot.mrl
 #' @usage mrl(data, umin = min(data), umax = max(data) - 0.1, nint = 100,
 #' alpha=.050)
@@ -15,8 +15,8 @@
 #' \method{print}{summary.mrl}(x, ...)
 #' \method{summary}{mrl}(object, ...)
 #' \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
-#' \method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess",
-#' main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4,
+#' \method{ggplot}{mrl}(data, mapping, xlab="Threshold", ylab="Mean excess",
+#' main=NULL, fill="orange", col="blue", rug=TRUE, addNexcesses = TRUE, textsize=4,
 #' ..., environment)
 #' @param data A numeric vector.
 #' @param umin The minimum value over which to threshold the data.
@@ -29,6 +29,7 @@
 #' @param ylab Label for the y-axis. Defaults to \code{ylab="Mean excess"}.
 #' @param \dots Optional arguments to \code{plot}.
 #' @param col Colour of the line on the MRL plot.
+#' @param rug Whether to add a rug to the plot. Defaults to \code{rug=TRUE}.
 #' @param fill Colour of the pointwise confidence region on the MRL plot.
 #' @param main Main title.
 #' @param addNexcesses Whether to annotate the plot with the numbers of
@@ -62,7 +63,7 @@ function (data, umin = min(data), umax = max(data) - 0.1,
         lo[i] <- x[i] - z*sdev/sqrt(length(data))
         hi[i] <- x[i] + z*sdev/sqrt(length(data))
     }
-    
+
     res <- cbind(threshold=Threshold, MRL=x, lo=lo, hi=hi)
     res <- list(mrl=res, data=AllData)
     oldClass(res) <- 'mrl'
