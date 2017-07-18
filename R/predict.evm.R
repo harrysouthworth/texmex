@@ -552,6 +552,7 @@ rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 #' @export
 #' @rdname rl
 print.rl.evmOpt <- function(x, digits=3, ...){
+	if(is.null(x$obj)) x <- list(obj=x)
     nms <- names(x$obj)
     newnms <- paste("M =", substring(nms, 3), "predicted return level: ")
     lapply(1:length(x$obj), function(i, o, title){
