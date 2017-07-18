@@ -213,7 +213,10 @@ texmexGetXlevels <- function(fo, data){
   # Get rid of variables not in data, get classes, then get rid of non-factors
   data <- data[, allVars, drop=FALSE]
   classes <- sapply(data, class)
-  data <- data[, classes %in% c("factor", "ordered", "character"), drop=FALSE]
+
+  wh <- classes %in% c("factor", "ordered", "character")
+  data <- data[, wh, drop=FALSE]
+  classes <- classes[wh]
 
   data[classes == "character"] <- lapply(data[classes == "character"], as.factor)
 

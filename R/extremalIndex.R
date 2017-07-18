@@ -1,12 +1,12 @@
 #' Extremal index estimation and automatic declustering
-#' 
+#'
 #' Given a threshold which defines excesses above that threshold, estimate the
 #' extremal index of a dependent sequence by using the method of Ferro and
 #' Segers, 2003.  The extremal index estimate can then be used to carry out
 #' automatic declustering of the sequence to identify independent clusters and
 #' estimate the GPD for cluster maxima.  Graphical diagnostics of model fit are
 #' available.
-#' 
+#'
 #' The function \code{extremalIndex} estimates the extremal index of a
 #' dependent series of observations above a given threshold \code{threshold},
 #' returning an object of class "extremalIndex".  Plot and print methods are
@@ -15,7 +15,7 @@
 #' This plot is used to test the model assumption underpinning the estimation,
 #' with good fit being indicated by interexceedance times which correspond to
 #' inter-cluster times lying close to the diagonal line indicated.
-#' 
+#'
 #' In addition to good model fit, an appropriate choice of threshold is one
 #' above which the estimated extremal index is stable over further, higher
 #' thresholds (up to estimation uncertainty).  This can be assessed by using
@@ -27,41 +27,41 @@
 #' a bootstrap scheme which accounts for uncertainty in the extremal index
 #' estimation, and the corresponding uncertainty in the declustering of the
 #' series. There are \code{plot} and \code{ggplot} methods for output of this function, which is of class \code{extremalIndexRangeFit}.
-#' 
+#'
 #' The function \code{declust} returns an object of class "declustered",
 #' identifying independent clusters in the original series. Print, plot and
 #' show methods are available for this class. The GPD model can be fitted to
 #' objects of this class, including the use of covariates in the linear
 #' predictors for the parameters of the GPD.  See examples below.
-#' 
+#'
 #' @aliases extremalIndex extremalIndexRangeFit declust declust.default
 #' declust.extremalIndex print.extremalIndex plot.declustered print.declustered bootExtremalIndex evm.declustered plot.extremalIndexRangeFit ggplot.extremalIndexRangeFit
 #' @usage extremalIndex(y, data = NULL, threshold)
-#' 
+#'
 #' extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
-#' quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, estGPD=TRUE, 
+#' quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, estGPD=TRUE,
 #' verbose = TRUE, trace = 10, ...)
-#' 
+#'
 #' bootExtremalIndex(x)
-#' 
+#'
 #' declust(y, r=NULL, data = NULL, ...)
-#' 
+#'
 #' \method{declust}{extremalIndex}(y, r=NULL,...)
-#' 
+#'
 #' \method{plot}{declustered}(x, ylab = "Data",...)
-#' 
+#'
 #' \method{evm}{declustered}(y, data=NULL, family=gpd, ...)
-#' 
+#'
 #' \method{plot}{extremalIndexRangeFit}(x,addNexcesses=TRUE,estGPD=TRUE,...)
-#' 
+#'
 #' \method{print}{extremalIndex}(x,...)
-#' 
+#'
 #' \method{print}{declustered}(x,...)
 #'
 #' \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,
-#' ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", 
+#' ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange",
 #' textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
-#' 
+#'
 #' @param y Argument to function \code{extremalIndex}: either a numeric vector
 #' or the name of a variable in \code{data}.
 #' @param data A data frame containing \code{y} and any covariates. In
@@ -109,9 +109,9 @@
 #' \code{threshold}} \item{exceedanceTimes}{times of occurrance of threshold
 #' exceedances} \item{y}{original dependent series} \item{data}{data frame or
 #' NULL}
-#' 
+#'
 #' The function \code{declust} returns a list of type "declustered":
-#' 
+#'
 #' \item{clusters}{integer labels assigning threshold exceedances to clusters}
 #' \item{sizes}{number of exceedances in each cluster}
 #' \item{clusterMaxima}{vector made up of the largest observation from each
@@ -131,12 +131,12 @@
 #' "extremalIndex" above} \item{r}{run length used for declustering}
 #' \item{nClusters}{Number of indenendent clusters identified}
 #' \item{method}{Method used for declustering (either "intervals" or "runs")}
-#' 
+#'
 #' The function \code{bootExtremalIndex} return a single vector corersponding
 #' to a bootstrap sample from the original series: observations are censored at
 #' \code{threshold} so that values below this threshold are indicated by the
 #' value -1.
-#' 
+#'
 #' The method \code{evm} for class "declustered" returns an object of type
 #' "evmOpt" or "evmSim" depending on the precise function call - see
 #' documentation for \code{\link{evm}}.
@@ -145,7 +145,7 @@
 #' @references Ferro, C.A.T. and Segers, J., (2003) "Inference for clusters of
 #' Extreme Values", JRSS B 65, Part 2, pp 545--556.
 #' @examples
-#' 
+#'
 #' par(mfrow=c(2,2));
 #' extremalIndexRangeFit(summer$O3,nboot=10)
 #' ei <- extremalIndex(summer$O3,threshold=45)
@@ -153,27 +153,27 @@
 #' d <- declust(ei)
 #' plot(d)
 #' evm(d)
-#' 
+#'
 #' ## fitting with covariates:
-#' 
+#'
 #' so2 <- extremalIndex(SO2,data=winter,threshold=15)
 #' plot(so2)
 #' so2 <- extremalIndex(SO2,data=winter,threshold=20)
 #' plot(so2) ## fits better
-#' 
+#'
 #' so2.d <- declust(so2)
 #' par(mfrow=c(1,1)); plot(so2.d)
 #' so2.d.gpd <- evm(so2.d) # AIC 661.1
-#' 
+#'
 #' evm(so2.d,phi=~NO)
 #' evm(so2.d,phi=~NO2)
 #' evm(so2.d,phi=~O3) # better AIC 651.9
 #' evm(so2.d,phi=~PM10)
-#' 
+#'
 #' so2.d.gpd.o3 <- evm(so2.d,phi=~O3)
-#' 
+#'
 #' par(mfrow=c(2,2)); plot(so2.d.gpd.o3)
-#' 
+#'
 #' @export extremalIndex
 extremalIndex <- function(y,data=NULL,threshold)
 # intevals estimator of the Extremal Index, Ferro and Segers JRSS B (2003)
@@ -239,6 +239,7 @@ plot.extremalIndex <- function(x,...)
   abline(v=qexp(1-Theta))
   abline(a = -qexp(1-Theta)/Theta, b=1/Theta)
   title(paste("Threshold=",x$threshold))
+  invisible()
 }
 
 #' @export
@@ -249,7 +250,7 @@ declust <- function(y, r=NULL, data=NULL, ...)
      y <- formula(paste(y, "~ 1"))
      y <- model.response(model.frame(y, data=data))
   }
-  UseMethod("declust",y)
+  UseMethod("declust", y)
 }
 
 #' @export
@@ -261,10 +262,12 @@ declust.default <- function(y,r=NULL,data=NULL,verbose=TRUE,...)
     ei <- extremalIndex(substitute(y),data,...)
   }
   if(verbose & is.null(r)){
-    print(ei)
+    message("\nThreshold ",ei$threshold,"\n")
+    message("Declustering using the", ei$method,"method, run length", ei$r,"\n")
+    message("Identified", length(ei$sizes),"clusters.\n")
   }
 
-  declust(ei,r=r)
+  declust(ei, r=r)
 }
 
 #' @export
@@ -420,7 +423,7 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
   invisible(res)
 }
 
-#' @export 
+#' @export
 ggplot.extremalIndexRangeFit <- function(data=NULL, mapping, xlab, ylab, main,
                                          ylim = "auto",
                                          ptcol="dark blue",
@@ -430,8 +433,8 @@ ggplot.extremalIndexRangeFit <- function(data=NULL, mapping, xlab, ylab, main,
                                          ..., environment){
     plots <- function(l,y,main,xlab,ylab,...){
         data <- data.frame(u=l$u,m=l$m,ul=l$ul,u=l$up)
-        p <- ggplot(data,aes(u,m)) + geom_point(colour=ptcol) + labs(x=xlab,y=ylab,title=main) 
-            
+        p <- ggplot(data,aes(u,m)) + geom_point(colour=ptcol) + labs(x=xlab,y=ylab,title=main)
+
         for (i in 1:dim(data)[1]){
             d <- data.frame(x=rep(l$u[i],2),y=c(l$ul[i],l$up[i]))
             p <- p + geom_line(data=d,aes(x,y),colour=col)
@@ -440,18 +443,18 @@ ggplot.extremalIndexRangeFit <- function(data=NULL, mapping, xlab, ylab, main,
             p <- addExcesses(p, l$u, c(l$ul,l$up), data=y, textsize=textsize)
         }
     }
-    
-    
+
+
     res <- list(p1 = plots(data$EI,data$y,main="Extremal Index",xlab="Threshold",ylab=expression(theta),...))
     if(estGPD){
         res$p2 <- plots(data$SC,data$y,main="Scale parameter",xlab="Threshold",ylab=expression(sigma),...)
         res$p3 <- plots(data$SH,data$y,main="Shape parameter",xlab="Threshold",ylab=expression(xi),...)
     }
-    
+
     invisible(res)
 }
 
-#' @export 
+#' @export
 plot.extremalIndexRangeFit <- function(x,addNexcesses=TRUE,estGPD=TRUE,...){
     plots <- function(l,y,...){
         plot(l$u, l$m, ylim=c(min(l$ul),max(l$up)),type = "b", ...)
@@ -461,13 +464,13 @@ plot.extremalIndexRangeFit <- function(x,addNexcesses=TRUE,estGPD=TRUE,...){
             mtext("# threshold excesses")
         }
     }
-    
+
     plots(l=x$EI,y=x$y,main="Extremal Index",xlab="Threshold",ylab=expression(theta),...)
     if(estGPD){
         plots(l=x$SC,y=x$y,main="Scale parameter",xlab="Threshold",ylab=expression(sigma),...)
         plots(l=x$SH,y=x$y,main="Shape parameter",xlab="Threshold",ylab=expression(xi),...)
     }
-    
+
 }
 
 #' @export
