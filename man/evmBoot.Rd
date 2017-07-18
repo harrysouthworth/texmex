@@ -28,6 +28,16 @@ to \code{cores=NULL} and the function guesses how many cores
 are available and uses them all.}
 
 \item{theCall}{(for internal use)}
+
+\item{x}{an \code{\link{evmBoot}} object}
+
+\item{col}{colour used to fill histogram}
+
+\item{border}{the colour of the border around the bars}
+
+\item{object}{a \code{\link{evmBoot}} object}
+
+\item{...}{other arguments passed to internal functions}
 }
 \value{
 An object of class \code{evmBoot}; a list with

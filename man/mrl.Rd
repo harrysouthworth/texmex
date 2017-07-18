@@ -15,9 +15,7 @@ alpha=.050)
 \method{print}{summary.mrl}(x, ...)
 \method{summary}{mrl}(object, ...)
 \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
-\method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess",
-main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4,
-..., environment)
+\method{ggplot}{mrl}(data, mapping, xlab = "Threshold", ylab = "Mean excess", main=NULL,fill="orange", col="blue",rug=TRUE, addNexcesses=TRUE, textsize=4, ..., environment)
 }
 \arguments{
 \item{data}{A numeric vector.}
@@ -40,6 +38,8 @@ Defaults to plotting a 95\% interval.}
 \item{\dots}{Optional arguments to \code{plot}.}
 
 \item{col}{Colour of the line on the MRL plot.}
+
+\item{rug}{Whether to add raw data as a rug along axis of plot.}
 
 \item{fill}{Colour of the pointwise confidence region on the MRL plot.}
 
