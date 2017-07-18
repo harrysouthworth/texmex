@@ -4,10 +4,12 @@
 \alias{egp3}
 \alias{gev}
 \alias{gpd}
+\alias{gumbel}
 \alias{print.summary.texmexFamily}
 \alias{print.texmexFamily}
 \alias{summary.texmexFamily}
 \alias{texmexFamily}
+\alias{weibull}
 \title{Create families of distributions}
 \usage{
 texmexFamily(name, log.lik, param, info = NULL, sandwich = NULL,
@@ -69,7 +71,7 @@ be simple wrappers for the usual d, r, p and q functions. They should take a
 matrix with number of columns equal to the number of parameters, and a
 fitted model object even if the model object is not used by the function.
 
-Examples of "texmexFamily" objects are \code{gpd}, \code{gev} and
+Examples of "texmexFamily" objects are \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and
 \code{egp3}.  Take a look at those objects to see how the functions should
 be constructed.
 
@@ -77,7 +79,7 @@ The functions are used by the modelling functions to create diagnostic
 plots, predictions, etc..
 }
 \note{
-The \code{gpd}, \code{gev} and \code{egp3} families are provided. The
+The \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and \code{egp3} families are provided. The
 \code{\link{evm}} function defaults to using the \code{gpd} family.
 }
 \author{

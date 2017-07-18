@@ -7,14 +7,14 @@
 #' matrix with number of columns equal to the number of parameters, and a
 #' fitted model object even if the model object is not used by the function.
 #' 
-#' Examples of "texmexFamily" objects are \code{gpd}, \code{gev} and
+#' Examples of "texmexFamily" objects are \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and
 #' \code{egp3}.  Take a look at those objects to see how the functions should
 #' be constructed.
 #' 
 #' The functions are used by the modelling functions to create diagnostic
 #' plots, predictions, etc..
 #' 
-#' @aliases texmexFamily print.texmexFamily summary.texmexFamily gpd gev egp3 print.summary.texmexFamily
+#' @aliases texmexFamily print.texmexFamily summary.texmexFamily gpd gev egp3 weibull gumbel print.summary.texmexFamily
 #' @usage texmexFamily(name, log.lik, param, info = NULL, sandwich = NULL,
 #' start = NULL, resid = NULL, rl, delta, endpoint, density, rng, prob, quant)
 #' \method{print}{texmexFamily}(x,...)
@@ -45,7 +45,7 @@
 #' @return A object of class "texmexFamily", which is essentially a list
 #' containing the input arguments. If \code{info}, \code{sandwich},
 #' \code{start}, \code{resid} are not provided, they default to \code{NULL}.
-#' @note The \code{gpd}, \code{gev} and \code{egp3} families are provided. The
+#' @note The \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and \code{egp3} families are provided. The
 #' \code{\link{evm}} function defaults to using the \code{gpd} family.
 #' @author Harry Southworth
 #' @seealso \code{\link{evm}}
