@@ -34,8 +34,10 @@ Suggests:
     lattice,
     knitr,
     testthat,
-	devtools,
-	GGally
+    devtools,
+    GGally,
+    survival,
+    ismev
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
@@ -84,6 +86,7 @@ Collate:
     'gpd.info.R'
     'gpd.R'
     'gpdRangeFit.R'
+    'gumbel.R'
     'hist.evm.R'
     'initial_posneg.R'
     'internal-roxygen.R'
@@ -145,3 +148,5 @@ Collate:
     'texmexWorkers.R'
     'thinAndBurn.evm.sim.R'
     'u2gpd.R'
+    'weibull.info.R'
+    'weibull.R'
