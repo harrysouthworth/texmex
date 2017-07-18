@@ -553,10 +553,12 @@ rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 #' @rdname rl
 print.rl.evmOpt <- function(x, digits=3, ...){
     nms <- names(x$obj)
-    newnms <- paste("M =", substring(nms, 3), "predicted return level:\n")
+    newnms <- paste("M =", substring(nms, 3), "predicted return level: ")
     lapply(1:length(x$obj), function(i, o, title){
                                  cat(title[i])
-                                 print(o[[i]], digits=digits,...)
+    	                         temp <- o[[i]]
+    	                         names(temp) <- NULL
+    	                         cat(signif(temp,digits=digits))
                                  cat("\n")
                                  NULL}, o=x$obj, title=newnms)
     invisible(x)
