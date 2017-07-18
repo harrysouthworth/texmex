@@ -10,6 +10,11 @@
 #'     to \code{cores=NULL} and the function guesses how many cores
 #'     are available and uses them all.
 #' @param theCall (for internal use)
+#' @param x an \code{\link{evmBoot}} object
+#' @param col colour used to fill histogram
+#' @param border the colour of the border around the bars
+#' @param object a \code{\link{evmBoot}} object
+#' @param ... other arguments passed to internal functions
 #' @return An object of class \code{evmBoot}; a list with
 #'
 #' \item{call}{The call to \code{evmBoot} that produced the object.}
@@ -104,11 +109,6 @@ print.evmBoot <- function(x, ...){
     invisible(x)
 }
 
-#' Extract coefficients from an evmBoot fit
-#'
-#' @param object a \code{\link{evmBoot}} object
-#' @param ... ignored
-#' @return the mean value of each coefficient
 #' @export
 coef.evmBoot <- function(object, ...){
     apply(object$replicates, 2, mean)
@@ -142,14 +142,6 @@ print.summary.evmBoot <- function(x, ...){
     invisible(x)
 }
 
-#' Plot an evmBoot object
-#'
-#' Plot the bootstrap distribution of the model parameters.
-#' 
-#' @param x an \code{\link{evmBoot}} object
-#' @param col colour used to fill histogram
-#' @param border the colour of the border around the bars
-#' @param ... other arguments passed to internal functions
 #' @export
 plot.evmBoot <- function(x, col=4, border=NULL, ...){
     pfun <- function(x, col, border, xlab,...){
