@@ -15,9 +15,7 @@
 #' \method{print}{summary.mrl}(x, ...)
 #' \method{summary}{mrl}(object, ...)
 #' \method{plot}{mrl}(x, xlab="Threshold", ylab="Mean excess", ...)
-#' \method{ggplot}{mrl}(data, mapping,xlab="Threshold", ylab="Mean excess",
-#' main=NULL, fill="orange", col="blue", addNexcesses = TRUE, textsize=4,
-#' ..., environment)
+#' \method{ggplot}{mrl}(data, mapping, xlab = "Threshold", ylab = "Mean excess", main=NULL,fill="orange", col="blue",rug=TRUE, addNexcesses=TRUE, textsize=4, ..., environment)
 #' @param data A numeric vector.
 #' @param umin The minimum value over which to threshold the data.
 #' @param umax The maximum value over which to threshold the data.
@@ -29,6 +27,7 @@
 #' @param ylab Label for the y-axis. Defaults to \code{ylab="Mean excess"}.
 #' @param \dots Optional arguments to \code{plot}.
 #' @param col Colour of the line on the MRL plot.
+#' @param rug Whether to add raw data as a rug along axis of plot.
 #' @param fill Colour of the pointwise confidence region on the MRL plot.
 #' @param main Main title.
 #' @param addNexcesses Whether to annotate the plot with the numbers of
