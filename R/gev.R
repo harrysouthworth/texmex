@@ -49,8 +49,8 @@ gev <- texmexFamily(name = 'GEV',
                     rng = function(n, param, model){
                             rgev(n, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
-                    density = function(x, param, model){
-                                dgev(x, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
+                    density = function(x, param, model, log.d=FALSE){
+                                dgev(x, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]), log.d=log.d)
                     },
                     prob = function(x, param, model){
                              pgev(x, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
