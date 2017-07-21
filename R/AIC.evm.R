@@ -35,7 +35,12 @@ AIC.evmOpt <- function(object, penalized=FALSE, nsamp=1e3, ..., k=2){
     dic <- NA
   }
 
-  c(AIC=aic, DIC=dic)
+  waic <- try(WAIC.evm(object, samp))
+  if (class(waic) == "try-error"){
+    waic <- NA
+  }
+
+  c(AIC=aic, DIC=dic, WAIC=waic)
 }
 
 DIC.evm <- function(object, samp){
@@ -47,13 +52,49 @@ DIC.evm <- function(object, samp){
   mean(dev) + (mean(dev) + 2 * ll(colMeans(samp)))
 }
 
+WAIC.evm <- function(object, samp){
+  # Get density function
+  dfun <- object$family$density
+
+  # Need matrix with one column for each parameter
+  npar <- sapply(object$data$D, ncol)
+  i <- rep(1:length(npar), times=npar)
+
+  param <- matrix(0, ncol=length(npar), nrow=length(object$data$y))
+
+  # Get loglik for every row in samp, every value of (phi, xi)
+  ll <- sapply(1:nrow(samp), function(x){
+    for (j in 1:length(npar)){
+      param[, j] <- rowSums(t(t(object$data$D[[j]]) * samp[x, i == j]))
+    }
+
+    dfun(object$data$y, param, object, log.d=TRUE)
+  })
+  # Extreme value distributions can produce extreme values...
+  ll <- ll[rowMeans(ll) > -Inf, ]
+
+  # Get log pointwise predictive density
+  lppd <- apply(ll, 1, function(x){
+    xm <- max(x)
+    res <- sum(exp(x - xm))
+    xm + log(res)
+  }) - log(nrow(ll))
+
+  # Get effective number of parameters
+  ep <- apply(ll, 1, var)
+
+  -2 * (sum(lppd) - sum(ep))
+}
+
+
 #' @export
 AIC.evmSim <- function(object){
   samp <- object$param
 
-  res <- DIC.evm(object$map, samp)
-  names(res) <- "DIC"
-  res
+  dic <- DIC.evm(object$map, samp)
+  waic <- WAIC.evm(object$map, samp)
+
+  c(DIC=dic, WAIC=waic)
 }
 
 #' Log-likelihood for evmOpt objects
