@@ -18,7 +18,7 @@
 extremalIndex(y, data = NULL, threshold)
 
 extremalIndexRangeFit(y, data = NULL, umin = quantile(y,.5), umax =
-quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, estGPD=TRUE, 
+quantile(y, 0.95), nint = 10, nboot = 100, alpha = .05, estGPD=TRUE,
 verbose = TRUE, trace = 10, ...)
 
 bootExtremalIndex(x)
@@ -38,7 +38,7 @@ declust(y, r=NULL, data = NULL, ...)
 \method{print}{declustered}(x,...)
 
 \method{ggplot}{extremalIndexRangeFit}(data=NULL, mapping, xlab, ylab, main,
-ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange", 
+ylim = "auto",ptcol="dark blue",col="dark blue",fill="orange",
 textsize=4,addNexcesses=TRUE,estGPD=TRUE,..., environment)
 }
 \arguments{

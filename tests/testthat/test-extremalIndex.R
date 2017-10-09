@@ -27,8 +27,8 @@ test_that("extremalIndex behaves as it should", {
   # check passing data through data frames
 
   data <- data.frame(RAIN=rain[1:1000], rnorm=rnorm(1000), num=1:1000)
-  extremalIndexRangeFit(RAIN, data,verbose=FALSE,nboot=20,nint=7)
-  extremalIndexRangeFit(data$RAIN,verbose=FALSE,nboot=20,nint=7)
+  extremalIndexRangeFit(RAIN, data,verbose=FALSE,nboot=10,nint=7)
+  extremalIndexRangeFit(data$RAIN,verbose=FALSE,nboot=10,nint=7)
 
   data.de <- declust(RAIN,data=data,th=th[1],verb=FALSE)
   resp.de <- declust(data$RAIN,th=th[1],verb=FALSE)
@@ -47,21 +47,21 @@ test_that("extremalIndex behaves as it should", {
   d <- declust(ei)
   evm(d,phi=~NO)
 
-  expect_that(662.9508, equals(AIC(evm(d, phi=~NO)), tolerance=tol),
+  expect_that(662.9508, equals(as.numeric(AIC(evm(d, phi=~NO))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(662.8874, equals(AIC(evm(d, phi=~NO2)), tolerance=tol),
+  expect_that(662.8874, equals(as.numeric(AIC(evm(d, phi=~NO2))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(651.8747, equals(AIC(evm(d, phi=~O3)), tolerance=tol),
+  expect_that(651.8747, equals(as.numeric(AIC(evm(d, phi=~O3))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(663.0015, equals(AIC(evm(d, phi=~PM10)), tolerance=tol),
+  expect_that(663.0015, equals(as.numeric(AIC(evm(d, phi=~PM10))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(651.7874, equals(AIC(evm(d, phi=~O3, xi=~NO)), tolerance=tol),
+  expect_that(651.7874, equals(as.numeric(AIC(evm(d, phi=~O3, xi=~NO))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(653.2512, equals(AIC(evm(d, phi=~O3, xi=~NO2)), tolerance=tol),
+  expect_that(653.2512, equals(as.numeric(AIC(evm(d, phi=~O3, xi=~NO2))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(653.6385, equals(AIC(evm(d, phi=~O3, xi=~O3)), tolerance=tol),
+  expect_that(653.6385, equals(as.numeric(AIC(evm(d, phi=~O3, xi=~O3))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
-  expect_that(652.9238, equals(AIC(evm(d, phi=~O3, xi=~PM10)), tolerance=tol),
+  expect_that(652.9238, equals(as.numeric(AIC(evm(d, phi=~O3, xi=~PM10))[1]), tolerance=tol),
               label="extremalIndex: covariate fitting after declustering")
 }
 )

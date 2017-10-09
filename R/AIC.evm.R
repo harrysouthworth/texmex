@@ -48,7 +48,7 @@ DIC.evm <- function(object, samp){
 }
 
 #' @export
-AIC.evmSim <- function(object){
+AIC.evmSim <- function(object, ..., k=2){
   samp <- object$param
 
   res <- DIC.evm(object$map, samp)
