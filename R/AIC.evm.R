@@ -27,8 +27,7 @@ AIC.evmOpt <- function(object, penalized=FALSE, nsamp=1e3, ..., k=2){
   attr(aic, "df") <- NULL
 
   # Get approximate DIC by sampling from Gaussian
-  samp <- rmvnorm(nsamp, coef(object), object$cov)
-
+  samp <- try(rmvnorm(nsamp, coef(object), object$cov),silent=TRUE) # can throw error if very short tailed so cov mat is singular
   dic <- try(DIC.evm(object, samp), silent=TRUE)
 
   if (class(dic) == "try-error"){
