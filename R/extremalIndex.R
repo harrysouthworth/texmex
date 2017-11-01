@@ -261,11 +261,6 @@ declust.default <- function(y,r=NULL,data=NULL,verbose=TRUE,...)
   } else {
     ei <- extremalIndex(substitute(y),data,...)
   }
-  if(verbose & is.null(r)){
-    message("\nThreshold ",ei$threshold,"\n")
-    message("Declustering using the", ei$method,"method, run length", ei$r,"\n")
-    message("Identified", length(ei$sizes),"clusters.\n")
-  }
 
   declust(ei, r=r)
 }
