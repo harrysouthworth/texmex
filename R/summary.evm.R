@@ -57,8 +57,11 @@ print.summary.evmOpt <- function(x, digits = 3 , ...){
         cat(format(x$rate, digits=digits, ...))
     }
 
-    cat("\n\nLog-lik.\t\tAIC\n")
-    cat(format(x$loglik, digits, ...), "\t\t", format(AIC(x), digits=digits, ...))
+    cat("\n\n")
+    wh <- t(c(x$loglik, x$ploglik, AIC(x)))
+    colnames(wh) <- c("Log lik.", "Penalized log lik.", "AIC", "DIC")
+    rownames(wh) <- ""
+    print(wh, print.gap=2, quote=FALSE, justify="left")
 
     cat( "\n\nCoefficients:\n" )
     print.default(format(co, digits=digits, ...), print.gap=2, quote=FALSE)

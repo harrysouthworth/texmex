@@ -116,7 +116,7 @@ NULL
 #' Extreme values modelling, including the conditional multivariate approach of
 #' Heffernan and Tawn (2004).
 #' 
-#' \tabular{ll}{ Package: \tab mex\cr Type: \tab Package\cr Version: \tab
+#' \tabular{ll}{ Package: \tab texmex\cr Type: \tab Package\cr Version: \tab
 #' 2.3\cr Date: \tab 2014-03-03\cr License: \tab GPL (>=2) | BSD\cr } The
 #' packages was originally called `texmex' for Threshold EXceedances and
 #' Multivariate EXtremes. However, it is no longer the case that only threshold

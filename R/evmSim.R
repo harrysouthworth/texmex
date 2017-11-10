@@ -27,7 +27,7 @@
 #' @param theCall (internal use only)
 #' @param ... ignored
 #' @return an object of class \code{evmSim}:
-#' 
+#'
 #' \item{call}{The call to \code{evmSim} that produced the object.}
 #'
 #' \item{threshold}{The threshold above which the model was fit.}
