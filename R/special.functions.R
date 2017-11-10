@@ -1,4 +1,4 @@
-#' @useDynLib texmex .c.exprel .c.log1prel .c.log1mexp
+#' @useDynLib texmex, .registration = TRUE
 NULL
 
 ## Accurately compute (exp(x) - 1) / x

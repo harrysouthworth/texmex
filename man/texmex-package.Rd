@@ -2,15 +2,15 @@
 % Please edit documentation in R/texmex-package.R
 \docType{package}
 \name{texmex-package}
-\alias{texmex}
 \alias{texmex-package}
+\alias{texmex}
 \title{Extreme value modelling}
 \description{
 Extreme values modelling, including the conditional multivariate approach of
 Heffernan and Tawn (2004).
 }
 \details{
-\tabular{ll}{ Package: \tab mex\cr Type: \tab Package\cr Version: \tab
+\tabular{ll}{ Package: \tab texmex\cr Type: \tab Package\cr Version: \tab
 2.3\cr Date: \tab 2014-03-03\cr License: \tab GPL (>=2) | BSD\cr } The
 packages was originally called `texmex' for Threshold EXceedances and
 Multivariate EXtremes. However, it is no longer the case that only threshold
@@ -110,13 +110,6 @@ plot(Dmex, col="blue")
 # estimate proportion exceeding 3*upper limit of normal mean(res >
 # 36 * 3) # 36 is the upper limit of normal for ALT
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-
-Maintainer: Harry Southworth <harry.southworth@gmail.com>
-
-URL: https://github.com/harrysouthworth/texmex
-}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -125,7 +118,13 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 C.A.T Ferro and J. Segers, Inference for Clusters of Extreme Values, Journal
 of the Royal Statistical society B, 65, 545 -- 556, 2003.
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+
+Maintainer: Harry Southworth <harry.southworth@gmail.com>
+
+URL: https://github.com/harrysouthworth/texmex
+}
 \keyword{models}
 \keyword{multivariate}
 \keyword{package}
-

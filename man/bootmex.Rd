@@ -2,8 +2,8 @@
 % Please edit documentation in R/bootmex.R
 \name{bootmex}
 \alias{bootmex}
-\alias{plot.bootmex}
 \alias{print.bootmex}
+\alias{plot.bootmex}
 \title{Bootstrap a conditional multivariate extreme values model}
 \usage{
 bootmex(x, R = 100, nPass=3, trace=10)
@@ -102,9 +102,6 @@ the mean bias is the correct thing to do.
 #plot(myboot,plots="dependence")
 
 }
-\author{
-Harry Southworth
-}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -114,6 +111,8 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 \code{\link{migpd}}, \code{\link{mexDependence} },
 \code{\link{bootmex}}, \code{\link{predict.mex}}.
 }
+\author{
+Harry Southworth
+}
 \keyword{models}
 \keyword{multivariate}
-

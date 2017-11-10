@@ -3,7 +3,7 @@ context("extremalIndex")
 test_that("extremalIndex behaves as it should", {
   skip_on_cran()
   skip_on_travis()
-    tol <- 0.0001
+  tol <- 0.0001
   th <- quantile(rain,seq(0.7,0.99,len=10))
   for(i in 1:length(th)){
     texmex.ei <- extremalIndex(rain,threshold=th[i])

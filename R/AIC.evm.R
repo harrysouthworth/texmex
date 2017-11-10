@@ -16,7 +16,9 @@
 #'   not be trusted if priors are not flat. For example, if you use a regularizing
 #'   prior on xi, say xi ~ N(0, 0.25), AIC can be misleading and DIC should be
 #'   preferred. If the object has class 'evmSim', the actual posterior draws are
-#'   used in the computation.
+#'   used in the computation. Also note that sometimes the optimizer returns
+#'   an approximatae covariance that is not postive-semidefinite, in which case
+#'   the DIC will be reported as NA.
 #' @return The AIC and DIC
 #' @seealso \code{\link[stats]{AIC}}
 #' @importFrom stats AIC logLik
@@ -27,11 +29,15 @@ AIC.evmOpt <- function(object, penalized=FALSE, nsamp=1e3, ..., k=2){
   attr(aic, "df") <- NULL
 
   # Get approximate DIC by sampling from Gaussian
-  samp <- try(rmvnorm(nsamp, coef(object), object$cov),silent=TRUE) # can throw error if very short tailed so cov mat is singular
-  dic <- try(DIC.evm(object, samp), silent=TRUE)
+  if (all(eigen(object$cov)$values > 0)){ # Not PSD
+    samp <- try(rmvnorm(nsamp, coef(object), object$cov), silent=TRUE) # can throw error if very short tailed so cov mat is singular
+    dic <- try(DIC.evm(object, samp), silent=TRUE)
 
-  if (class(dic) == "try-error"){
-    dic <- NA
+    if (class(dic) == "try-error"){
+      dic <- NA
+    } else {
+      dic <- NA
+    }
   }
 
   c(AIC=aic, DIC=dic)

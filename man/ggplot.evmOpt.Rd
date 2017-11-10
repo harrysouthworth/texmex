@@ -2,10 +2,10 @@
 % Please edit documentation in R/ggplot.evm.R
 \name{ggplot.evmOpt}
 \alias{ggplot.evmOpt}
-\alias{ggplot.evmOpt,}
-\alias{ggplot.hist.evmOpt}
 \alias{ggplot.ppevm}
 \alias{ggplot.qqevm}
+\alias{ggplot.hist.evmOpt}
+\alias{ggplot.evmOpt,}
 \alias{ggplotrl}
 \title{Diagnostic plots for an evm object}
 \usage{
@@ -76,4 +76,3 @@ The function attempts to arrange the plots nicely. If the
     setting \code{span=1}.
 }
 \keyword{hplot}
-

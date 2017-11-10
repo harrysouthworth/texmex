@@ -2,12 +2,13 @@
 % Please edit documentation in R/jointExceedanceCurves.R
 \name{JointExceedanceCurve}
 \alias{JointExceedanceCurve}
+\alias{geom_jointExcCurve}
 \alias{JointExceedanceCurve.default}
 \alias{JointExceedanceCurve.mexMC}
 \alias{JointExceedanceCurve.predict.mex}
 \alias{calcJointExceedanceCurve}
-\alias{geom_jointExcCurve}
 \alias{print.jointExcCurve}
+\alias{geom_jointExcCurve}
 \title{Joint exceedance curves}
 \usage{
 JointExceedanceCurve(Sample, ExceedanceProb,...)
@@ -112,4 +113,3 @@ to \code{predict} being used to calculate the joint exceedance curve).
 #     geom_jointExcCurve(j8,col="orange") +
 #     geom_jointExcCurve(j9,col="orange")
 }
-

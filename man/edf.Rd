@@ -23,11 +23,10 @@ Compute the empirical distribution function
 plot(winter$NO, edf(winter$NO))   
 
 }
-\author{
-Harry Southworth
-}
 \seealso{
 \code{\link{copula}}
 }
+\author{
+Harry Southworth
+}
 \keyword{univar}
-

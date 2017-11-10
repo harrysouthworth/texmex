@@ -75,7 +75,7 @@ test_that("evm behaves as it should", {
   gp6 <- list(c(0, 1), diag(c(10^4, .05)))
 
   mod5 <- evm(rain, th=30, priorParameters=gp5, penalty="gaussian")
-  mod6 <- evm(rain, th=30, priorParameters=gp6, penalty="gaussian")
+  mod6 <- suppressWarnings(evm(rain, th=30, priorParameters=gp6, penalty="gaussian"))
 
   expect_that(1-coef(mod)[2]>1-coef(mod5)[2], is_true(),
             label="gpd: Gaussian penalization xi being drawn to 1")
@@ -255,7 +255,7 @@ test_that("evm behaves as it should", {
 
   mod0 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,penalty="none")
   mod1 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
-  mod2 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2)
+  mod2 <- suppressWarnings(evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2))
 
   expect_that(all(abs(coef(mod0)[2:3])>abs(coef(mod1)[2:3])), is_true(),
             label="gpd: with covariates, xi drawn to zero")

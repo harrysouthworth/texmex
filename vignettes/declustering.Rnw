@@ -1,7 +1,11 @@
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{texmex: Temporal dependence and declustering}
 \documentclass[10pt]{article}
 %*********************************************************************
+
+%\VignetteEngine{knitr::knitr}
+%\VignetteIndexEntry{texmex: Temporal dependence and declustering}
+
+%*********************************************************************
+
 \usepackage{amsmath}
 \usepackage{amscd}
 \usepackage{bbm}
@@ -55,7 +59,7 @@ R, this can be done using the {\tt install.packages}
 command in R, or by downloading the package from CRAN and
 installing it from a local archive.
 
-Once {\tt texmex} is installed, use the {\tt library} command to make the package available to the current session. 
+Once {\tt texmex} is installed, use the {\tt library} command to make the package available to the current session.
 
 <<setstuff>>=
 library(texmex)
@@ -75,7 +79,7 @@ We summarise here the approach put forward by Ferro and Segers (2003)~\cite{Ferr
 
 We denote by $\{\xi_n: n=1,2,\ldots\}$, a strictly stationary sequence of random variables with marginal distribution function $F$, and tail function $\overline F$.  $F$ may have a finite upper end point or it may be a distribution with an infinite upper tail. We define $M_n$ as the maximum of the first $n\geq1$ observations of the process.
 
-We are concerned with the behaviour of excesses of $\{\xi_n:n=1,2,\ldots\}$ above thresholds.  As with all Extreme Value statistical modelling, the motivation behind the model comes from the limiting behaviour of extreme values of the process as we look further and further into the tails.  Here, the limiting operation involves the threshold above which we observe excesses.  This threshold is increased to the upper limit of the support of $F$ and the limiting form of dependence between excesses gives the form of model that will be adopted for subsequent statistical analysis.  
+We are concerned with the behaviour of excesses of $\{\xi_n:n=1,2,\ldots\}$ above thresholds.  As with all Extreme Value statistical modelling, the motivation behind the model comes from the limiting behaviour of extreme values of the process as we look further and further into the tails.  Here, the limiting operation involves the threshold above which we observe excesses.  This threshold is increased to the upper limit of the support of $F$ and the limiting form of dependence between excesses gives the form of model that will be adopted for subsequent statistical analysis.
 
 Dependence in the original sequence of random variables may or may not persist into the tails of their joint distribution. If the dependence does persist then the excesses of high thresholds can tend to cluster together in the limit. If such clustering occurs then the variables within a given cluster cannot be considered independent.  This complicates inference about threshold exceedances constructed from a sequence which exhibits such extremal dependence.  However, clusters of exceedances can be considered to be independent and a common approach involves the identification of such clusters, and inference on the characteristics of these clusters, or on independent cluster maxima, see Coles~\cite{coles} Chapter 5 for more details.
 %
@@ -144,7 +148,7 @@ Thus the bootstrap procedure in this case is semi-parametric: we sample from the
 \subsection{Threshold selection}
 \label{sect:thresholdChoice}
 %
-As mentioned in Section~\ref{sect:estEI}, the model adopted for inference about the extremal index and subsequent declustering arises in the limit as the threshold attains the upper end point of the distribution $F$.  Whilst this is the case, to carry out this inference, the threshold must be set at a finite level, balancing opposing pulls on the value which it takes.  The threshold should be high enough that the underlying distribution is well approximated by its limiting form.  It should preferrably also be sufficiently low that we can use observed threshold excesses to estimate the model parameters with some precision. There are two diagnostic tools which we put forward to aid the selection of a suitable threshold, both of which exploit the properties of the Ferro and Segers model in Equation~\ref{eqn:interexceedTimeLimit}. 
+As mentioned in Section~\ref{sect:estEI}, the model adopted for inference about the extremal index and subsequent declustering arises in the limit as the threshold attains the upper end point of the distribution $F$.  Whilst this is the case, to carry out this inference, the threshold must be set at a finite level, balancing opposing pulls on the value which it takes.  The threshold should be high enough that the underlying distribution is well approximated by its limiting form.  It should preferrably also be sufficiently low that we can use observed threshold excesses to estimate the model parameters with some precision. There are two diagnostic tools which we put forward to aid the selection of a suitable threshold, both of which exploit the properties of the Ferro and Segers model in Equation~\ref{eqn:interexceedTimeLimit}.
 %
 \subsubsection{Quantile-quantile plot of normalised interexceedance times}
 \label{sect:qqplot}
@@ -181,7 +185,7 @@ We now demonstrate how to carry out the above analysis in R using the implementa
 %
 \subsection{Daily rainfall series}
 %
-We work here with the {\tt rain} data available in the {\tt texmex} package.  This is a series of daily rainfall observations collected at a location in the the south-west of England over 1914 -- 1962.  
+We work here with the {\tt rain} data available in the {\tt texmex} package.  This is a series of daily rainfall observations collected at a location in the the south-west of England over 1914 -- 1962.
 
 \setkeys{Gin}{width=0.8\textwidth}
 
@@ -268,7 +272,7 @@ We can compare the parameter estimates of the GPD model fitted to the cluster ma
 evm(rain,th=13)
 @
 
-The point estimates are not significantly different although the estimated standard errors are slightly larger for the model fitted to cluster maxima.  The key difference between the fits is that the independence assumption underlinning the fitting of both of these models is not met in the case where the GPD is fitted to all threshold exceedances, whereas the assumption that cluster maxima are indpendent is satisfied. 
+The point estimates are not significantly different although the estimated standard errors are slightly larger for the model fitted to cluster maxima.  The key difference between the fits is that the independence assumption underlinning the fitting of both of these models is not met in the case where the GPD is fitted to all threshold exceedances, whereas the assumption that cluster maxima are indpendent is satisfied.
 
 The rate of excess in the GPD fitted to the whole series refers to the rate at which the original series exceeds the threhsold of 13mm.  Note that the AIC values for these two fitted models are not comparable since they are fitted to different sets of data.
 
@@ -294,7 +298,7 @@ breaks <- c(20,50,100,200,500,1000)
 grid.arrange(p1[[1]] + scale_x_continuous(trans="log",breaks=breaks),
              p2[[1]] + scale_x_continuous(trans="log",breaks=breaks),
              ncol=1)
-@ 
+@
 
 The return levels calculated for the cluster maxima and the original series do not differ enormously.  Close to the threhsold, excesses of a given level are rarer under the fitted cluster-max model than under the fitted original series model.  This is is explained by the trivial observation that cluster maxima occur at a lower rate than do threshold exceedances.  Away from the fitting threshold, the two curves give very similar estimates of return levels.  This reflects the relatively weak dependence in the original series so that clusters are of short duration and the declustered series is not so different from the original one.
 
@@ -330,7 +334,7 @@ We look at the sulphur dioxide component of this series which exhibits temporal 
 \setkeys{Gin}{width=0.8\textwidth}
 
 <<winterSO2plot>>=
-ggplot(data=data.frame(Index = 1:length(winter$SO2), SO2 = winter$SO2), 
+ggplot(data=data.frame(Index = 1:length(winter$SO2), SO2 = winter$SO2),
        aes(Index,SO2)) + geom_point(colour="dark blue",alpha=0.5)
 @
 
@@ -440,13 +444,13 @@ So we have managed to get rid of the previous kink in the Q-Q plot (Page~\pagere
 O3 <- winter[winter$SO2>d$threshold,"O3"][d$isClusterMax]
 
 p1 <- ggplot(data=data.frame(O3=O3, Residuals = resid(so2.gpd)),
-             aes(O3,Residuals)) + 
-    geom_point(colour="dark blue",alpha=0.5) + 
+             aes(O3,Residuals)) +
+    geom_point(colour="dark blue",alpha=0.5) +
     labs(title="No covariate model") + geom_smooth()
 
 p2 <- ggplot(data=data.frame(O3=O3, Residuals = resid(so2.o3.gpd)),
-             aes(O3,Residuals)) + 
-    geom_point(colour="dark blue",alpha=0.5) + 
+             aes(O3,Residuals)) +
+    geom_point(colour="dark blue",alpha=0.5) +
     labs(title="O3 covariate model") + geom_smooth()
 grid.arrange(p1,p2,ncol=1)
 @
@@ -455,7 +459,7 @@ These plots show the covariate model captures the dependence of the no covariate
 %
 \subsubsection*{Return level estimation}
 %
-Now that our preferred model for SO2 has model parameters that are specified as a function of a covariate -- {\tt O3} -- we now have to specify a value of O3 to calculate a return level for SO2. 
+Now that our preferred model for SO2 has model parameters that are specified as a function of a covariate -- {\tt O3} -- we now have to specify a value of O3 to calculate a return level for SO2.
 
 For instance, to look at {\tt O3} values of 10, 15 and 20 and predicted return levels for each of these environmental conditions, we can do:
 
@@ -465,11 +469,11 @@ so2.o3.rl <- predict(so2.o3.gpd,M=seq(100,1000,len=100),ci.fit=TRUE,
                      newdata=newdata)
 g <- ggplot(so2.o3.rl)
 breaks <- c(100,200,500,1000)
-grid.arrange(g[[1]] + scale_x_continuous(trans="log",breaks=breaks) + 
+grid.arrange(g[[1]] + scale_x_continuous(trans="log",breaks=breaks) +
                  scale_y_continuous(limits=c(0,350)),
-             g[[2]] + scale_x_continuous(trans="log",breaks=breaks) + 
+             g[[2]] + scale_x_continuous(trans="log",breaks=breaks) +
                  scale_y_continuous(limits=c(0,350)),
-             g[[3]] + scale_x_continuous(trans="log",breaks=breaks) + 
+             g[[3]] + scale_x_continuous(trans="log",breaks=breaks) +
                  scale_y_continuous(limits=c(0,350)),ncol=3)
 @
 The unit of time to which the {\it return period} now refers is the {\it cluster}, since the GPD model has been fitted to cluster maxima.
