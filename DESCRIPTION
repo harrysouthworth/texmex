@@ -89,8 +89,6 @@ Collate:
     'gumbel.R'
     'hist.evm.R'
     'initial_posneg.R'
-    'internal-roxygen.R'
-    'inv_Laplace.R'
     'jointExceedanceCurves.R'
     'mex.R'
     'mexDependence.R'

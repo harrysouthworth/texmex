@@ -184,8 +184,8 @@ test_that("mexDependence behaves as it should", {
         mar.trans <- mexTransform(mar.model, margins=margins, method=marTrans)
         X <- list(mar.trans$transformed)
         Dqu <- 1 - mean(mar.trans$transformed[,1] > dth)
-        init <- texmex:::initial_posneg(D=1, listdata=X, u=dth, v=v)
-        a <- texmex:::estimate_HT_KPT_joint_posneg_nm(pars=init, x=dth,listr=X,params=FALSE,k=k,v=v)
+        init <- initial_posneg(D=1, listdata=X, u=dth, v=v)
+        a <- estimate_HT_KPT_joint_posneg_nm(pars=init, x=dth,listr=X,params=FALSE,k=k,v=v)
         KTPest[i,] <- a$par
         b <- mexDependence(mar.trans,which=1,dqu=Dqu,margins=margins[[1]],constrain=TRUE,v=v,
                            marTransform=marTrans,start=init,nOptim=k)

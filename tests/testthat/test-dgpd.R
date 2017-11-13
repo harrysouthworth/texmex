@@ -3,7 +3,7 @@ context("dgpd")
 test_that("dgpd behaves as it should", {
   skip_on_cran()
   skip_on_travis()
-    evd.dgpd <- texmex:::.evd.dgpd
+    evd.dgpd <- .evd.dgpd
 
   myTest <- function(sig, xi, thresh, label){
     myd <- sapply(1:nreps, function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
