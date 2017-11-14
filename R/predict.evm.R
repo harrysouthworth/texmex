@@ -24,15 +24,15 @@
 
 #' Predict return levels from extreme value models, or obtain the linear
 #' predictors.
-#' 
+#'
 #' Predict return levels from extreme value models, or obtain the linear
 #' predictors.
-#' 
+#'
 #' By default, return levels predicted from the unique values of the linear
 #' predictors are returned. For the \code{evmBoot} method, estimates of
 #' confidence intervals are simply quantiles of the bootstrap sample. The
 #' \code{evmBoot} method is just a wrapper for the \code{evmSim} method.
-#' 
+#'
 #' @param object An object of class \code{evmOpt}, \code{evmSim} or
 #' \code{evmBoot}.
 #' @param newdata The new data that you want to make the prediction for.
@@ -45,7 +45,7 @@
 #' return period via the \code{M} argument. If \code{type = "link"} the linear
 #' predictor(s) for \code{phi} and \code{xi} (or whatever other parameters are
 #' in your \code{texmexFamily} are returned.
-#' 
+#'
 #' For the plot methods for simulation based estimation of underlying
 #' distributions i.e. objects derived from "evmSim" and "evmBoot" classes,
 #' whether to use the sample median \code{type="median"} or mean
@@ -241,7 +241,7 @@ linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
 #' conditioning on the threshold having been exceeded. This
 #' consideration is taken into account by \code{rl} which calculates
 #' unconditional return levels from the entire distribution of
-#' observations above and below the GPD fitting threshold. 
+#' observations above and below the GPD fitting threshold.
 #' @examples
 #' mod <- evm(rain, qu=.8) # daily rainfall observations
 #' rl(mod, M=100*365) # 100-year return level
@@ -272,6 +272,10 @@ rl.evmOpt <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
 
     delta <- object$family$delta
     rl <- object$family$rl
+
+    if (any(M * object$rate < 1)){
+      stop("M * rate must be > 1 for every M")
+    }
 
     res <- lapply(M, rl, param=co, model=object)
 
