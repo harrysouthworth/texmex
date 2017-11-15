@@ -7,7 +7,10 @@ Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),
              person(c("Paul", "D."), "Metcalfe", role="aut",
-                    email="paul.metcalfe@gmail.com"))
+                    ,email="paul.metcalfe@gmail.com"),
+             person("Yiannis", "Papastathopoulos", role="ctb"),
+             person("Alec", "Stephenson", role="ctb"),
+             person("Stuart", "Coles", role="ctb"))
 Description: Statistical extreme value modelling of threshold excesses,
     maxima and multivariate extremes.  Univariate models for threshold
     excesses and maxima are the Generalised Pareto, and Generalised
