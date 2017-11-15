@@ -83,13 +83,13 @@
 #' @keywords models multivariate
 #' @examples
 #' 
-#' # Uncomment the following lines to run example - commented out to keep CRAN happy
-#' #mymex <- mex(winter , mqu = .7, dqu = .7, which = "NO")
-#' #myboot <- bootmex(mymex)
-#' #myboot
-#' #plot(myboot,plots="gpd")
-#' #plot(myboot,plots="dependence")
-#' 
+#' \donttest{
+#' mymex <- mex(winter , mqu = .7, dqu = .7, which = "NO")
+#' myboot <- bootmex(mymex)
+#' myboot
+#' plot(myboot,plots="gpd")
+#' plot(myboot,plots="dependence")
+#' } 
 #' @export bootmex
 bootmex <-
     # Bootstrap inference for a conditional multivaratiate extremes model.

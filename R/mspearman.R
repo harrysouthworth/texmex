@@ -69,11 +69,11 @@
 #' 
 #' D <- liver[liver$dose == "D",]
 #' plot(D)
-#' # Following lines commented out to keep CRAN happy
-#' #Dmcs <- bootMCS(D[, 5:6])
-#' #Dmcs
-#' #plot(Dmcs)
-#' 
+#' \donttest{
+#' Dmcs <- bootMCS(D[, 5:6])
+#' Dmcs
+#' plot(Dmcs)
+#' }
 #' @export MCS
 MCS <- function(X,p=seq(.1, .9, by=.1)) {
     theCall <- match.call()

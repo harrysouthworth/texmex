@@ -230,17 +230,21 @@
 #'   par(mfrow=c(2, 2))
 #'   plot(mod)
 #'
-#' #  mod <- evm(rain, th=30, method="sim")
-#' #  par(mfrow=c(3, 2))
-#' #  plot(mod)
+#'   \donttest{
+#'   mod <- evm(rain, th=30, method="sim")
+#'   par(mfrow=c(3, 2))
+#'   plot(mod)
+#'   }
 #'
 #'   mod <- evm(SeaLevel, data=portpirie, family=gev)
 #'   mod
 #'   plot(mod)
 #'
-#' #  mod <- evm(SeaLevel, data=portpirie, family=gev, method="sim")
-#' #  par(mfrow=c(3, 3))
-#' #  plot(mod)
+#'   \donttest{
+#'   mod <- evm(SeaLevel, data=portpirie, family=gev, method="sim")
+#'   par(mfrow=c(3, 3))
+#'   plot(mod)
+#'   }
 #'
 #' @export evm
 evm <- function(y, data, family=gpd, ...){

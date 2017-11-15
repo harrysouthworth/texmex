@@ -17,10 +17,12 @@ Description: Statistical extreme value modelling of threshold excesses,
     in any/all model parameters.  Model diagnostics support the fitting
     process. Graphical output for visualising fitted models and return
     level estimates is provided.  For serially dependent sequences, the
-    intervals declustering algorithm of Ferro and Segers is provided,
+    intervals declustering algorithm of Ferro and Segers
+    (2003) <doi:10.1111/1467-9868.00401> is provided,
     with diagnostic support to aid selection of threshold and declustering
     horizon.  Multivariate modelling is performed via the conditional
-    approach of Heffernan and Tawn, with graphical tools for threshold
+    approach of Heffernan and Tawn (2004) <doi:10.1111/j.1467-9868.2004.02050.x>,
+    with graphical tools for threshold
     selection and to diagnose estimation convergence.
 License: GPL (>=2)
 Depends:

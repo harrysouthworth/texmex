@@ -11,11 +11,12 @@
 #' @author Harry Southworth
 #' @seealso \code{\link{evm}}
 #' @examples
-#' 
-#' # data <- rnorm(1000)
-#' # mod <- evm(data, qu=.7, method="simulate")
-#' # evmSimSetSeed(mod)
-#' # mod1 <- evm(data, qu=.7, method="simulate") # this produces the same MCMC output as mod
+#'  \donttest{ 
+#'  data <- rnorm(1000)
+#'  mod <- evm(data, qu=.7, method="simulate")
+#'  evmSimSetSeed(mod)
+#'  mod1 <- evm(data, qu=.7, method="simulate") # this produces the same MCMC output as mod
+#' }
 #' 
 #' @export evmSimSetSeed
 evmSimSetSeed <- function(x){
