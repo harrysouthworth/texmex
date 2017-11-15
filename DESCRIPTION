@@ -41,7 +41,6 @@ Suggests:
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
-VignetteBuilder: knitr
 RoxygenNote: 6.0.1
 Collate:
     'AIC.evm.R'

@@ -1,8 +1,6 @@
 \documentclass[10pt]{article}
 %*********************************************************************
 
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{texmex: Temporal dependence and declustering}
 
 %*********************************************************************
 

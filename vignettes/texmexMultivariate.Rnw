@@ -1,7 +1,5 @@
 \documentclass[10pt]{article}
 %*********************************************************************
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{texmex: Multivariate modelling}
 %*********************************************************************
 \usepackage{amsmath}
 \usepackage{amscd}

@@ -4,8 +4,6 @@
 \usepackage{rotating}
 \usepackage{morefloats}
 
-%\VignetteEngine{knitr::knitr}
-%\VignetteIndexEntry{texmex: Validation suite}
 
 \begin{document}
 \title{A validation suite for texmex}
