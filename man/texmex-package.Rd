@@ -72,43 +72,43 @@ plot(Amex)
 plot(Dmex, col="blue")
 
 ## Take a closer look at the marginal behaviour of ALT
-# Lines commented out to keep CRAN checks short
+\donttest{
+r$ndose <- liver$ndose
 
-#r$ndose <- liver$ndose
-
-#altmod1 <- evm(alt, qu=.7, phi = ~ ndose, xi = ~ ndose, data=r)
-#altmod2 <- evm(alt, qu=.7, phi = ~ ndose, data=r)
-#altmod3 <- evm(alt, qu=.7, xi = ~ ndose, data=r)
-#altmod4 <- evm(alt, qu=.7, data=r)
+altmod1 <- evm(alt, qu=.7, phi = ~ ndose, xi = ~ ndose, data=r)
+altmod2 <- evm(alt, qu=.7, phi = ~ ndose, data=r)
+altmod3 <- evm(alt, qu=.7, xi = ~ ndose, data=r)
+altmod4 <- evm(alt, qu=.7, data=r)
 
 # Prefer model 3, with term for xi on basis of AIC
 
-#balt3 <- evm(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
-#par(mfrow=c(3,3))
-#plot(balt3)
+balt3 <- evm(alt, qu=.7, xi = ~ ndose, data=r, method="simulate")
+par(mfrow=c(3,3))
+plot(balt3)
 
 # use longer burn-in and also thin the output
 
-#balt3 <- thinAndBurn(balt3,burn=1000,thin=5)
-#plot(balt3)
+balt3 <- thinAndBurn(balt3,burn=1000,thin=5)
+plot(balt3)
 
 # Get some simulated values for dose D
 
 #DParam <- predict(balt3,type="lp",newdata=data.frame(ndose=4),all=TRUE)$obj$link[[1]]
 
-#simD <- rgpd(nrow(DParam), sigma=exp(DParam[,"phi"]), xi=DParam[,"xi"], u=quantile(alt, .7))
+simD <- rgpd(nrow(DParam), sigma=exp(DParam[,"phi"]), xi=DParam[,"xi"], u=quantile(alt, .7))
 
 # These are simulated residuals. Get some baselines and transform all
 # to raw scale
 
-#b <- sample(log(liver$ALT.M), size=nrow(balt3$param), replace=TRUE)
-#res <- exp(b + simD)
+b <- sample(log(liver$ALT.M), size=nrow(balt3$param), replace=TRUE)
+res <- exp(b + simD)
 
 # estimate quantiles on raw scale
-#quantile(res, prob=c(.5, .75, .9, .95, .99))
+quantile(res, prob=c(.5, .75, .9, .95, .99))
 
 # estimate proportion exceeding 3*upper limit of normal mean(res >
 # 36 * 3) # 36 is the upper limit of normal for ALT
+}
 }
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for

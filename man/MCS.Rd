@@ -88,11 +88,11 @@ bootstrap confidence intervals are displayed.
 
 D <- liver[liver$dose == "D",]
 plot(D)
-# Following lines commented out to keep CRAN happy
-#Dmcs <- bootMCS(D[, 5:6])
-#Dmcs
-#plot(Dmcs)
-
+\donttest{
+Dmcs <- bootMCS(D[, 5:6])
+Dmcs
+plot(Dmcs)
+}
 }
 \references{
 F. Schmid and R. Schmidt, Multivariate conditional versions of

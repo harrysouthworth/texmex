@@ -94,13 +94,13 @@ the mean bias is the correct thing to do.
 }
 \examples{
 
-# Uncomment the following lines to run example - commented out to keep CRAN happy
-#mymex <- mex(winter , mqu = .7, dqu = .7, which = "NO")
-#myboot <- bootmex(mymex)
-#myboot
-#plot(myboot,plots="gpd")
-#plot(myboot,plots="dependence")
-
+\donttest{
+mymex <- mex(winter , mqu = .7, dqu = .7, which = "NO")
+myboot <- bootmex(mymex)
+myboot
+plot(myboot,plots="gpd")
+plot(myboot,plots="dependence")
+} 
 }
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for

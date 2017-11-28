@@ -47,13 +47,17 @@ LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
 RoxygenNote: 6.0.1
-Collate:
+Collate: 
     'AIC.evm.R'
     'Dcond.R'
     'Profile_likelihood_HT_unc.R'
     'Profile_likelihood_cd_nm_joint_D_KT.R'
     'Profile_likelihood_cd_nm_joint_D_KT_neg.R'
     'bootmex.R'
+    'gpd.sandwich.R'
+    'gpd.info.R'
+    'texmexFamily.R'
+    'cgpd.R'
     'chi.R'
     'coef.evmSim.R'
     'coefficients.evm.R'
@@ -64,7 +68,6 @@ Collate:
     'dgev.R'
     'dgpd.R'
     'efficient.closures.R'
-    'texmexFamily.R'
     'egp3.R'
     'egp3RangeFit.R'
     'endPoint.R'
@@ -86,8 +89,6 @@ Collate:
     'ggplot.predict.R'
     'ggplot.thresh.R'
     'globalVariables.R'
-    'gpd.sandwich.R'
-    'gpd.info.R'
     'gpd.R'
     'gpdRangeFit.R'
     'gumbel.R'
