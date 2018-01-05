@@ -46,9 +46,10 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
 								             qu = migpd$mqu[ -which ][ i ],
 								             sigma=coxmi[ 1,i ], xi=coxmi[ 2,i ] )
 	  }
-    sim <- data.frame( xi , xmi )
-    names( sim ) <- c( colnames( migpd$data )[ which ], colnames( migpd$data )[ -which ])
-    sim[,dim(sim)[2]+1] <- y > apply(ymi,1,max)
+    sim <- data.frame( xi , xmi , y, ymi)
+    names( sim ) <- c( colnames( migpd$data )[ which ], colnames( migpd$data )[ -which ],
+    				   paste0(c(colnames( migpd$data )[ which ], colnames( migpd$data )[ -which ]),".trans"))
+    sim[,dim(sim)[2]+1] <- y > apply(ymi,1,max) # condlargest extra column
     sim
   }
 
@@ -77,7 +78,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
        res <- MakeThrowData(dco=bo[[ i ]]$dependence,z=bo[[ i ]]$Z, coxi = bo[[i]]$GPD[,which],
                             coxmi = as.matrix(bo[[ i ]]$GPD[,-which]),
                             data = bo[[i]]$Y)
-	   res <- res[,-dim(res)[2]]
+	   res <- res[,1:((dim(res)[2]-1)/2)]
        res
     }
 
@@ -99,13 +100,14 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
 
   sim <- MakeThrowData(dco=dall$dependence$coefficients,z=dall$dependence$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
   CondLargest <- sim[,dim(sim)[2]]
-  sim <- sim[,-dim(sim)[2]]
-  
+  transformed <- sim[,(((dim(sim)[2]-1)/2)+1):(dim(sim)[2]-1)]
+  sim <- sim[,1:((dim(sim)[2]-1)/2)]
+
   m <- 1 / ( 1 - pqu ) # Need to estimate pqu quantile
   zeta <- 1 - migpd$mqu[ which ] # Coles, page 81
   pth <- migpd$mth[ which ] + cox[ 1 ] / cox[ 2 ] * ( ( m*zeta )^cox[ 2 ] - 1 )
 
-  data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ), simulated = sim, pth=pth,CondLargest=CondLargest)
+  data <- list( real = data.frame( migpd$data[, which ], migpd$data[, -which] ), simulated = sim, pth=pth,CondLargest=CondLargest, transformed = transformed)
   names(data$real)[1] <- colnames(migpd$data)[which]
 
   res <- list( call = theCall , replicates = bootRes, data = data,
