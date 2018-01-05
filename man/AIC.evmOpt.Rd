@@ -40,3 +40,4 @@ If the object has class 'evmOpt', \code{nsamp} random draws are
 \seealso{
 \code{\link[stats]{AIC}}
 }
+

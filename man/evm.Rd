@@ -278,6 +278,11 @@ no covariates, lower otherwise).
   }
 
 }
+\author{
+Janet E. Heffernan, Harry Southworth. Some of the internal code is
+based on the \code{gpd.fit} function in the \code{ismev} package and is due
+to Stuart Coles.
+}
 \references{
 S. Coles. An Introduction to Statistical Modelling of Extreme
 Values. Springer, 2001.
@@ -290,9 +295,5 @@ tail estimation, Journal of Statistical Planning and Inference, 143, 131 -
 \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}},
 \code{\link{evm.declustered}}.
 }
-\author{
-Janet E. Heffernan, Harry Southworth. Some of the internal code is
-based on the \code{gpd.fit} function in the \code{ismev} package and is due
-to Stuart Coles.
-}
 \keyword{models}
+

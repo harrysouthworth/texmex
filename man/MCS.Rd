@@ -2,20 +2,15 @@
 % Please edit documentation in R/mspearman.R
 \name{MCS}
 \alias{MCS}
-\alias{plot.MCS}
-\alias{ggplot.MCS}
-\alias{print.MCS}
 \alias{bootMCS}
-\alias{plot.bootMCS}
-\alias{print.bootMCS}
-\alias{summary.bootMCS}
-\alias{plot.MCS}
 \alias{ggplot.MCS}
-\alias{bootMCS}
 \alias{ggplot.bootMCS}
+\alias{plot.MCS}
 \alias{plot.bootMCS}
-\alias{summary.bootMCS}
+\alias{print.MCS}
+\alias{print.bootMCS}
 \alias{print.summary.bootMCS}
+\alias{summary.bootMCS}
 \title{Multivariate conditional Spearman's rho}
 \usage{
 MCS(X, p = seq(0.1, 0.9, by = 0.1))
@@ -94,6 +89,9 @@ Dmcs
 plot(Dmcs)
 }
 }
+\author{
+Yiannis Papastathopoulos, Harry Southworth
+}
 \references{
 F. Schmid and R. Schmidt, Multivariate conditional versions of
 Spearman's rho and related measures of tail dependence, Journal of
@@ -102,7 +100,5 @@ Multivariate Analysis, 98, 1123 -- 1140, 2007
 \seealso{
 \code{\link{chi}}
 }
-\author{
-Yiannis Papastathopoulos, Harry Southworth
-}
 \keyword{multivariate}
+

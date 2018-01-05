@@ -23,3 +23,4 @@ Return the log-likelihood or penalized log-likelihood for
 \seealso{
 \code{\link[stats]{logLik}}
 }
+

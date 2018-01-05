@@ -81,3 +81,4 @@ MCMC simulation around an evmOpt fit
 \note{
 it is not expected that the user should call this directly
 }
+

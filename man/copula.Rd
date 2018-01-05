@@ -44,10 +44,11 @@ Print and plot methods are available for the copula class.
   plot(Dco)
 
 }
-\seealso{
-\code{\link{edf}}
-}
 \author{
 Harry Southworth
 }
+\seealso{
+\code{\link{edf}}
+}
 \keyword{multivariate}
+

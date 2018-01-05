@@ -11,22 +11,19 @@ Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
              person("Yiannis", "Papastathopoulos", role="ctb"),
              person("Alec", "Stephenson", role="ctb"),
              person("Stuart", "Coles", role="ctb"))
-Description: Statistical extreme value modelling of threshold excesses,
-    maxima and multivariate extremes.  Univariate models for threshold
-    excesses and maxima are the Generalised Pareto, and Generalised
-    Extreme Value model respectively.  These models may be fitted by
-    using maximum (optionally penalised-)likelihood, or Bayesian
-    estimation, and both classes of models may be fitted with covariates
-    in any/all model parameters.  Model diagnostics support the fitting
-    process. Graphical output for visualising fitted models and return
-    level estimates is provided.  For serially dependent sequences, the
-    intervals declustering algorithm of Ferro and Segers
-    (2003) <doi:10.1111/1467-9868.00401> is provided,
-    with diagnostic support to aid selection of threshold and declustering
-    horizon.  Multivariate modelling is performed via the conditional
-    approach of Heffernan and Tawn (2004) <doi:10.1111/j.1467-9868.2004.02050.x>,
-    with graphical tools for threshold
-    selection and to diagnose estimation convergence.
+Description: Statistical extreme value modelling of threshold excesses, maxima
+    and multivariate extremes. Univariate models for threshold excesses and maxima
+    are the Generalised Pareto, and Generalised Extreme Value model respectively.
+    These models may be fitted by using maximum (optionally penalised-)likelihood,
+    or Bayesian estimation, and both classes of models may be fitted with covariates
+    in any/all model parameters. Model diagnostics support the fitting process.
+    Graphical output for visualising fitted models and return level estimates is
+    provided. For serially dependent sequences, the intervals declustering algorithm
+    of Ferro and Segers (2003) <doi:10.1111/1467-9868.00401> is provided, with
+    diagnostic support to aid selection of threshold and declustering horizon.
+    Multivariate modelling is performed via the conditional approach of Heffernan
+    and Tawn (2004) <doi:10.1111/j.1467-9868.2004.02050.x>, with graphical tools for
+    threshold selection and to diagnose estimation convergence.
 License: GPL (>=2)
 Depends:
     mvtnorm,
@@ -46,8 +43,8 @@ Suggests:
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
-RoxygenNote: 6.0.1
-Collate: 
+RoxygenNote: 5.0.1
+Collate:
     'AIC.evm.R'
     'Dcond.R'
     'Profile_likelihood_HT_unc.R'

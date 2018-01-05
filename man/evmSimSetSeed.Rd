@@ -26,9 +26,10 @@ Sets the seed to the value used to fit the model.
 }
 
 }
-\seealso{
-\code{\link{evm}}
-}
 \author{
 Harry Southworth
 }
+\seealso{
+\code{\link{evm}}
+}
+

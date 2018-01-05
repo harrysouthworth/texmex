@@ -63,6 +63,9 @@ sampling variation.
 }
   
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -71,8 +74,6 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 \seealso{
 \code{\link{mexDependence}}, \code{\link{bootmex}}
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \keyword{models}
 \keyword{multivariate}
+

@@ -2,9 +2,9 @@
 % Please edit documentation in R/egp3RangeFit.R
 \name{egp3RangeFit}
 \alias{egp3RangeFit}
-\alias{print.egp3RangeFit}
-\alias{plot.egp3RangeFit}
 \alias{ggplot.egp3RangeFit}
+\alias{plot.egp3RangeFit}
+\alias{print.egp3RangeFit}
 \title{Estimate the EGP3 distribution power parameter over a range of thresholds}
 \usage{
 egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data,
@@ -87,6 +87,9 @@ plot(erf)
 ggplot(erf)
 
 }
+\author{
+Harry Southworth
+}
 \references{
 I. Papastathopoulos and J. A. Tawn, Extended generalized Pareto
 modles for tail estimation, Journal of Statistical Planning and Inference,
@@ -95,7 +98,5 @@ modles for tail estimation, Journal of Statistical Planning and Inference,
 \seealso{
 \code{\link{evm}}, \code{\link{gpdRangeFit}}, \code{\link{mrl}}
 }
-\author{
-Harry Southworth
-}
 \keyword{models}
+
