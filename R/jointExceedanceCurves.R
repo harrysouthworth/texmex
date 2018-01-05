@@ -164,6 +164,7 @@ calcJointExceedanceCurve  <- function(Sample,ExceedanceProb,n=50,x=NULL) {
         res <- data.frame(x=c(px,cy),y=c(cx,py))
         # sort results
         res <- res[order(res[,1]),]
+        res[,2] <- sort(res[,2],decreasing=TRUE) # gets rid of errors introduced by tied values which are sorted on in previous line.  Shape has to be convex so must be decreasing.
         row.names(res) <- NULL
     } else {
         res <- data.frame(x=px,y=cx)
