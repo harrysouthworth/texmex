@@ -43,7 +43,7 @@
 #' diagnostic.
 #' 
 #' @usage mexDependence(x, which, dqu, margins="laplace", constrain=TRUE, v =
-#' 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1,
+#' 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", referenceMargin = NULL, nOptim = 1,
 #' PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
 #' @param x An object of class "migpd" as returned by \code{\link{migpd}}.
 #' @param which The name of the variable on which to condition. This is the
@@ -89,6 +89,7 @@
 #' \code{x}, and the fitted gpd tail model is used above this threshold.  When
 #' \code{marTransform="empirical"} the rank transform is used for the entire
 #' range of each marginal distribution.
+#' @param referenceMargin Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceDistributionForMexTransform}.
 #' @param nOptim Number of times to run optimiser when estimating dependence
 #' model parameters. Defaults to 1.  In the case of \code{nOptim > 1} the first
 #' call to the optimiser uses the value \code{start} as a starting point, while
@@ -148,7 +149,7 @@
 #' 
 #' @export mexDependence
 `mexDependence` <-
-function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1,
+function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01), marTransform="mixture", referenceMargin=NULL, nOptim = 1,
           PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
 {
    theCall <- match.call()
@@ -163,7 +164,7 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
                                 "gumbel" = function(q)exp(-exp(-q)),
                                 "laplace" = function(q)ifelse(q < 0, exp(q)/2, 1- 0.5*exp(-q))))
 
-   x <- mexTransform(x, margins = margins, method = marTransform)
+   x <- mexTransform(x, margins = margins, method = marTransform, r=referenceMargin)
 
    if (margins[[1]] == "gumbel" & constrain){
      warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
