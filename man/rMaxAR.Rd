@@ -20,3 +20,4 @@ Generation of samples from  Max AR(theta) processes.
 \examples{
 rMaxAR(1000,0.2)
 }
+

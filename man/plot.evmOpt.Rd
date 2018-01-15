@@ -47,3 +47,4 @@ on \code{nsim} simulated samples.
 \seealso{
 \code{\link{evm}}
 }
+

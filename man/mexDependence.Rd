@@ -6,7 +6,7 @@
 values model}
 \usage{
 mexDependence(x, which, dqu, margins="laplace", constrain=TRUE, v =
-10, maxit=1000000, start=c(.01, .01), marTransform="mixture", nOptim = 1,
+10, maxit=1000000, start=c(.01, .01), marTransform="mixture", referenceMargin = NULL, nOptim = 1,
 PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
 }
 \arguments{
@@ -62,6 +62,8 @@ rank transform is used below the corresponding GPD fitting threshold used in
 \code{x}, and the fitted gpd tail model is used above this threshold.  When
 \code{marTransform="empirical"} the rank transform is used for the entire
 range of each marginal distribution.}
+
+\item{referenceMargin}{Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceDistributionForMexTransform}.}
 
 \item{nOptim}{Number of times to run optimiser when estimating dependence
 model parameters. Defaults to 1.  In the case of \code{nOptim > 1} the first
@@ -159,6 +161,9 @@ mexDependence(NO.NO2, which = "NO",dqu=0.7,start=c(0.1,0.1),
 
 
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -173,8 +178,6 @@ Multivariate Analysis, 115, 396 -- 404, 2013
 \code{\link{migpd}}, \code{\link{bootmex}},
 \code{\link{predict.mex}}, \code{\link{plot.mex}}
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \keyword{models}
 \keyword{multivariate}
+

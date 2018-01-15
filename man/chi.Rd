@@ -2,11 +2,11 @@
 % Please edit documentation in R/chi.R
 \name{chi}
 \alias{chi}
-\alias{summary.chi}
+\alias{ggplot.chi}
 \alias{plot.chi}
 \alias{print.chi}
-\alias{ggplot.chi}
 \alias{print.summary.chi}
+\alias{summary.chi}
 \title{Measures of extremal dependence}
 \usage{
 chi(data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE)
@@ -128,6 +128,9 @@ ggplot(chiA)
 
 
 }
+\author{
+Janet E. Heffernan, Alec Stephenson, Harry Southworth
+}
 \references{
 S. Coles, J. E. Heffernan and J. A. Tawn, Dependence measures
 for extreme values analyses, Extremes, 2, 339 -- 365, 1999.
@@ -137,7 +140,5 @@ A. G. Stephenson. evd: Extreme Value Distributions, R News, 2, 2002.
 \seealso{
 \code{\link{MCS}}, \code{\link{rank}}
 }
-\author{
-Janet E. Heffernan, Alec Stephenson, Harry Southworth
-}
 \keyword{multivariate}
+

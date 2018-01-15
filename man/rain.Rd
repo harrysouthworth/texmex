@@ -2,11 +2,11 @@
 % Please edit documentation in R/texmex-package.R
 \docType{data}
 \name{rain, wavesurge and portpirie}
-\alias{rain, wavesurge and portpirie}
-\alias{rain}
-\alias{wavesurge}
-\alias{portpirie}
 \alias{nidd}
+\alias{portpirie}
+\alias{rain}
+\alias{rain, wavesurge and portpirie}
+\alias{wavesurge}
 \title{Rain, wavesurge, portpirie and nidd datasets.}
 \format{The format of the rain data is: num [1:17531] 0 2.3 1.3 6.9 4.6 0 1
 1.5 1.8 1.8 ...
@@ -42,3 +42,4 @@ Tail Estimation, Journal of Statistical Planning and Inference, 143, 134 --
 143, 2011
 }
 \keyword{datasets}
+

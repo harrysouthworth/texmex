@@ -18,3 +18,4 @@ Generation of samples from unit Frechet processes.
 \examples{
 rFrechet(1000)
 }
+
