@@ -45,6 +45,8 @@ technical details.
 \subsection{Acknowledgements}
 This work was partly funded by AstraZeneca. I'm also grateful to Yiannis
 Papastathopoulos and Paul Metcalfe for various comments and corrections.
+Thanks also to Emmanuel Flachaire for pointing out a bug in an earlier
+version of {\tt egp3RangeFit}.
 
 \subsection{Software}
 \Sexpr{version$version.string}~\cite{R} will be used for all analyses.
@@ -102,16 +104,15 @@ liver$r <- resid(rmod)
 
 p <- lapply(LETTERS[1:4],function(dose){
     ggplot(egp3RangeFit(liver$r[liver$dose == dose],
-                        umin=-.5, umax=.135)) + 
+                        umin=-.5, umax=.135)) +
         ggtitle(paste("\nDose",dose))})
 
 grid.arrange(p[[1]],p[[2]],p[[3]],p[[4]],ncol=2)
 @
 
 The plots of $\hat\kappa$ over the range of thresholds in Figure~\ref{fig:liver}
-suggests that GPD models
-ought to fit above a threshold of about 0, the $57^{th}$ percentile, for each
-dose.
+suggests that GPD models ought to fit above a threshold of about 0, the $57^{th}$
+percentile, or even a little lower for some doses.
 
 We now pool the residual bilirubin data from all doses and present the standard
 threshold selection plots as well as the EGP3 plot. The results appear in

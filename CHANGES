@@ -96,3 +96,19 @@ Changes from version 2.1
 9. Added functionality to carry out estimation of Joint Exceedance Curves, from 
    fitted Heffernan and Tawn model, documented in multivariate vignette.
 10.Plotting now available using ggplot2 methods.
+
+---------------------------------- Version 2.4 -----------------------------------
+
+Changes from version 2.3
+
+1. weibull family added.
+
+---------------------------------- Version 2.4.2 -----------------------------------
+
+Changes from version 2.4
+
+1. gcpd family added (constrianed parameter space for xi)
+2. Bug in egp3RangeFit fixed (thanks to Emmanuel Flachire)
+
+
+
