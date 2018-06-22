@@ -60,9 +60,23 @@ ggplot.mex <- function(data=NULL, mapping,
            geom_vline(xintercept = depThr)
 
        # add quantile contour lines
-       ploty <- apply(dep$margins$q2p(yq), 2, revTransform, data=dat$y,
-                      qu=mar$mqu[-dep$which][i], th=mar$mth[-dep$which][i],
-                      sigma=coef(mar)[3, -dep$which][i], xi=coef(mar)[4, -dep$which][i])
+       if(is.null(mar$referenceMargin)){
+           trns <- dat$y
+           qu <- mar$mqu[-dep$which][i]
+           th <- mar$mth[-dep$which][i]
+           sigma <- coef(mar)[3, -dep$which][i]
+           xi <- coef(mar)[4, -dep$which][i]
+       } else{
+           IndexDependentVar <- (1:(dim(dep$Z)[2]+1))[-dep$which][i]
+           trns <- mar$referenceMargin$transData[[IndexDependentVar]]
+           qu <- mar$referenceMargin$mqu[IndexDependentVar]
+           th <- mar$referenceMargin$mth[IndexDependentVar]
+           sigma <- exp(mar$referenceMargin$models[[IndexDependentVar]]$coefficients[1])
+           xi <- mar$referenceMargin$models[[IndexDependentVar]]$coefficients[2]
+       }
+
+       ploty <- apply(dep$margins$q2p(yq), 2, revTransform, data=trns,
+                      qu=qu, th=th, sigma=sigma, xi=xi)
 
        for(j in 1:length(quantiles))
            plots[[3]] <- plots[[3]] + geom_line(data=data.frame(x=plotx, y=ploty[, j]),mapping=aes(x,y),linetype=2,col=ptcol)

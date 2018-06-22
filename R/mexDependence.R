@@ -165,7 +165,8 @@ function (x, which, dqu, margins = "laplace", constrain=TRUE, v = 10, maxit=1000
                                 "laplace" = function(q)ifelse(q < 0, exp(q)/2, 1- 0.5*exp(-q))))
 
    x <- mexTransform(x, margins = margins, method = marTransform, r=referenceMargin)
-
+   x$referenceMargin <- referenceMargin
+   
    if (margins[[1]] == "gumbel" & constrain){
      warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
      constrain <- FALSE

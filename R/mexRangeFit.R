@@ -50,7 +50,7 @@
 #' @export mexRangeFit
 mexRangeFit <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nPass=3, trace=10,
-          margins="laplace", constrain=TRUE, v=10){
+          margins="laplace", constrain=TRUE, v=10, referenceMargin=NULL){
   if (class(x) == "mex"){
     if( (!missing(margins))){
       warning("margins given, but already specified in 'mex' object.  Using 'mex' value")
@@ -64,10 +64,14 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
     if( (!missing(which))){
       warning("which given, but already specified in 'mex' object.  Using 'mex' value")
     }
+    if( (!missing(referenceMargin))){
+      warning("referenceMargin given, but already specified in 'mex' object.  Using 'mex' value")
+    }
     constrain <- x$dependence$constrain
     v <- x$dependence$v
     which <- x$dependence$which
     margins <- x$dependence$margins
+    referenceMargin <- x$referenceMargin
     x <- x[[1]]
   } else {
     if (class(x) != "migpd"){
@@ -79,13 +83,13 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
     }
   }
 
-  ests <- lapply(quantiles, function(qu, which, x, margins, start, constrain=constrain, v=v)
-                                     mexDependence(x=x, which=which, dqu=qu, margins = margins, start=start, constrain=constrain, v=v),
-                 which=which, x=x, margins = margins[[1]], start=start, constrain=constrain, v=v)
+  ests <- lapply(quantiles, function(qu, which, x, margins, start, constrain=constrain, v=v, ...)
+                                     mexDependence(x=x, which=which, dqu=qu, margins = margins, start=start, constrain=constrain, v=v,),
+                 which=which, x=x, margins = margins[[1]], start=start, constrain=constrain, v=v, referenceMargin=referenceMargin)
 
-  boot <- lapply(ests, function(X, R, nPass, trace)
-                                bootmex(x=X, R=R, nPass=nPass, trace=trace),
-                 R=R, nPass=nPass, trace=trace)
+  boot <- lapply(ests, function(X, R, nPass, trace, ...)
+                                bootmex(x=X, R=R, nPass=nPass, trace=trace, referenceMargin=referenceMargin),
+                 R=R, nPass=nPass, trace=trace, referenceMargin=referenceMargin)
 
   res <- list(ests=ests,boot=boot,quantiles=quantiles)
   oldClass(res) <- "mexRangeFit"
