@@ -117,7 +117,7 @@ print.MCS <- function(x, ...){
 bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    theCall <- match.call()
    bfun <- function(i, data, p, trace){
-       if (i %% trace == 0){ cat("Replicate", i, "\n") }
+       if (i %% trace == 0){ message("Replicate ", i) }
        d <- data[sample(1:nrow(data), replace=TRUE),]
        MCS(d, p)$mcs
    }
