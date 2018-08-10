@@ -30,21 +30,21 @@ test_that("MCS behaves as it should", {
     p <- seq(by,1-by,by=by)
     data <- rbind(rnorm(n),rnorm(n))
     
-    tmRl <- MCS(t(data),p)
-    myRl <- myMCS(data,tmRl$p)
+    tmRl <- MCS(t(data), p)
+    myRl <- myMCS(data, tmRl$p)
     
     expect_equal(myRl, tmRl$mcs, label="MCS:independentnormaldata")
     expect_equal(p, tmRl$p, label="MCS:mathchingpargument")
     
     ## winter air pollution data - dimension 5
-    tmWinterMCS <- MCS(winter,p)
-    myWinterMCS <- myMCS(t(winter),p)
+    tmWinterMCS <- MCS(winter, p)
+    myWinterMCS <- myMCS(t(winter), p)
     expect_equal(myWinterMCS, tmWinterMCS$mcs,
                  label="MCS:winterairpollutiondata")
   
     ## summer airpollution data - dimension 5
-    tmSummerMCS <- MCS(summer,p)
-    mySummerMCS <- myMCS(t(summer),p)
+    tmSummerMCS <- MCS(summer, p)
+    mySummerMCS <- myMCS(t(summer), p)
     expect_equal(mySummerMCS, tmSummerMCS$mcs,
                  label="MCS:summerairpollutiondata")
 })
