@@ -123,15 +123,9 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
     # Get the EDFs
     t.method <- "first"
 
-	if (is.R()){
-	    data <- cbind(rank(data[, 1],ties.method = t.method)/(n + 1), 
-    	              rank(data[, 2],ties.method = t.method)/(n + 1))
-	}
-	else {
-		data <- cbind(rank(data[, 1])/(n + 1), 
-    	              rank(data[, 2])/(n + 1))
-	}
-
+    data <- cbind(rank(data[, 1],ties.method = t.method)/(n + 1), 
+                  rank(data[, 2],ties.method = t.method)/(n + 1))
+	
     rowmax <- apply(data, 1, max)
     rowmin <- apply(data, 1, min)
 
@@ -238,11 +232,10 @@ plot.chi <- function(x, show=c("Chi"=TRUE,"ChiBar"=TRUE), lty = 1, cilty = 2, co
   col <- c(cicol, col, cicol)
   nb.fig <- prod(par("mfcol"))
 
-	if (is.R() & missing(ask)){
-	  ask <- nb.fig < sum(show) && dev.interactive()
-	}	else {
-		ask <- FALSE
-	}
+    if (missing(ask)){
+        ask <- nb.fig < sum(show) && dev.interactive()
+    }
+    
   if (ask) {
      op <- par(ask = TRUE)
      on.exit(par(op))

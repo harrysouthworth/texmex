@@ -1,7 +1,7 @@
 #' @rdname mex
 #' @export
 summary.predict.mex <- function( object, mth, probs=c( .05, .5, .95 ), ... ){
-    if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
+    stdev <- function( x ) sqrt( var( x ) )
     if ( missing( mth ) ) mth <- object$mth
 
     if (!is.null(object$replicates)){

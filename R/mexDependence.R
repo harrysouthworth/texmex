@@ -369,10 +369,8 @@
    if (class(z) %in% c("Error", "try-error")) {
        z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
    }
-   else if (is.R()) {
-       if (!is.array(z)) {
-           z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
-       }
+   else if (!is.array(z)) {
+       z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
    }
    dimnames(z) <- list(NULL,dimnames(x$transformed)[[2]][dependent])
    res2 <- list(coefficients = res, Z = z, dth = unique(dth),

@@ -1,16 +1,14 @@
 #' @rdname mex
 #' @export
 `plot.predict.mex` <-
-function( x, pch=c( 1, 3, 20 ), col=c( 2, 8, 3), cex=c( 1, 1, 1 ), ask = TRUE, ... ){
+    function( x, pch=c( 1, 3, 20 ), col=c( 2, 8, 3), cex=c( 1, 1, 1 ), ask = TRUE, ... ){
 
-    if ( is.R() ) {
-      d <- dim( x$data$simulated )[[ 2 ]] -1
-      if ( prod( par( "mfrow" ) ) < d ){
+    d <- dim( x$data$simulated )[[ 2 ]] -1
+    if ( prod( par( "mfrow" ) ) < d ){
         if ( ask ) {
-          op <- par(ask = TRUE)
-          on.exit(par(op))
+            op <- par(ask = TRUE)
+            on.exit(par(op))
         }
-      }
     }
 
   xdat <- x$data$real[, 1 ]

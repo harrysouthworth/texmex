@@ -1,6 +1,6 @@
 #' @export
 print.predict.mex <- function( x, ... ){
-    if ( is.R() ) stdev <- function( x ) sqrt( var( x ) )
+    stdev <- function( x ) sqrt( var( x ) )
 
     print( x$call, ... )
 
