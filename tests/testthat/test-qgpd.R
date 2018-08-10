@@ -10,8 +10,8 @@ test_that("qgpd behaves as it should", {
     myq <- sapply(1:nreps,function(i) qgpd(x[,i], sig[i], xi[i], u=thresh[i]))
     myp <- sapply(1:nreps,function(i) pgpd(myq[,i], sig[i], xi[i], u=thresh[i]))
     eq <- sapply(1:nreps, function(i) evd.qgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-    expect_that(eq, equals(myq), label=paste(msg,"testusing.evd.qgpd"))
-    expect_that(x, equals(myp), label=paste(msg,"testusingqgpd"))
+    expect_equal(eq, myq, label=paste(msg,"testusing.evd.qgpd"))
+    expect_equal(x, myp, label=paste(msg,"testusingqgpd"))
   }
 
   #*************************************************************
@@ -54,20 +54,20 @@ test_that("qgpd behaves as it should", {
   myq <- qgpd(x, sig, xi, thresh)
   eq <- sapply(1:nsim, function(i) evd.qgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
 
-  expect_that(eq, equals(myq), label="qgpd:vectorisation")
+  expect_equal(eq, myq, label="qgpd:vectorisation")
 
   #*************************************************************
   # 6.6a Test log.p argument
 
   lq <- qgpd(log(x), sig,xi,thresh,log.p=TRUE)
 
-  expect_that(myq, equals(lq), label="qgpd:log.p=TRUE")
+  expect_equal(myq, lq, label="qgpd:log.p=TRUE")
 
   #*************************************************************
   # 6.6a Test log.p argument
 
   LTq <- qgpd(1-x, sig,xi,thresh, lower.tail=FALSE)
 
-  expect_that(myq, equals(LTq), label="qgpd:lower.tail=FALSE")
+  expect_equal(myq, LTq, label="qgpd:lower.tail=FALSE")
 }
 )

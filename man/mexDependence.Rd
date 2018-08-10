@@ -5,93 +5,114 @@
 \title{Estimate the dependence parameters in a conditional multivariate extreme
 values model}
 \usage{
-mexDependence(x, which, dqu, margins="laplace", constrain=TRUE, v =
-10, maxit=1000000, start=c(.01, .01), marTransform="mixture", referenceMargin = NULL, nOptim = 1,
-PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)), PlotLikTitle=NULL)
+mexDependence(x, which, dqu, margins="laplace",
+    constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01),
+    marTransform="mixture", referenceMargin = NULL, nOptim = 1,
+    PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)),
+    PlotLikTitle=NULL)
 }
 \arguments{
-\item{x}{An object of class "migpd" as returned by \code{\link{migpd}}.}
+\item{x}{An object of class "migpd" as returned by
+\code{\link{migpd}}.}
 
-\item{which}{The name of the variable on which to condition. This is the
-name of a column of the data that was passed into \code{migpd}.}
+\item{which}{The name of the variable on which to condition. This
+is the name of a column of the data that was passed into
+\code{migpd}.}
 
-\item{dqu}{See documentation for this argument in \code{\link{mex}}.}
+\item{dqu}{See documentation for this argument in
+\code{\link{mex}}.}
 
-\item{margins}{The form of margins to which the data are transformed for
-carrying out dependence estimation.  Defaults to "laplace", with the
-alternative option being "gumbel".  The choice of margins has an impact on
-the interpretation of the fitted dependence parameters.  Under Gumbel
-margins, the estimated parameters a and b describe only positive dependence,
-while c and d describe negative dependence in this case.  For Laplace
-margins, only parameters a and b are estimated as these capture both
-positive and negative dependence.}
+\item{margins}{The form of margins to which the data are
+transformed for carrying out dependence estimation.  Defaults
+to "laplace", with the alternative option being "gumbel".  The
+choice of margins has an impact on the interpretation of the
+fitted dependence parameters.  Under Gumbel margins, the
+estimated parameters a and b describe only positive dependence,
+while c and d describe negative dependence in this case.  For
+Laplace margins, only parameters a and b are estimated as these
+capture both positive and negative dependence.}
 
-\item{constrain}{Logical value.  Defaults to \code{constrain=TRUE} although
-this will subsequently be changed to FALSE if \code{margins="gumbel"} for
-which constrained estimation is not implemented.  If
-\code{margins="laplace"} and \code{constrain=TRUE} then the dependence
-parameter space is constrained to allow only combinations of parameters
-which give the correct stochastic ordering between (positively and
-negatively) asymptotically dependent variables and variables which are
-asymptotically independent.}
+\item{constrain}{Logical value.  Defaults to \code{constrain=TRUE}
+although this will subsequently be changed to FALSE if
+\code{margins="gumbel"} for which constrained estimation is not
+implemented.  If \code{margins="laplace"} and
+\code{constrain=TRUE} then the dependence parameter space is
+constrained to allow only combinations of parameters which give
+the correct stochastic ordering between (positively and
+negatively) asymptotically dependent variables and variables
+which are asymptotically independent.}
 
-\item{v}{Scalar. Tuning parameter used to carry out constrained estimation
-of dependence structure under \code{constrain=TRUE}. Takes positive values
-greater than 1; values between 2 and 10 are recommended.}
+\item{v}{Scalar. Tuning parameter used to carry out constrained
+estimation of dependence structure under
+\code{constrain=TRUE}. Takes positive values greater than 1;
+values between 2 and 10 are recommended.}
 
-\item{maxit}{The maximum number of iterations to be used by the optimizer.
-Defaults to \code{maxit = 1000000}.}
+\item{maxit}{The maximum number of iterations to be used by the
+optimizer.  Defaults to \code{maxit = 1000000}.}
 
-\item{start}{Optional starting value for dependence estimation.  This can
-be: a vector of length two, with values corresponding to dependence
-parameters a and b respectively, and in which case \code{start} is used as a
-starting value for numerical estimation of each of the dependence models to
-be estimated; a matrix with two rows corresponding to dependence parameters
-a and b respectively and number of columns equal to the number of dependence
-models to be estimated (the ordering of the columns will be as in the
-original data matrix); or a previously estimated object of class "mex" whose
-dependence parameter estimates are used as a starting point for estimation.
-Note that under \code{constrain=TRUE}, if supplied, \code{start} must lie
-within the permitted area of the parameter space.}
+\item{start}{Optional starting value for dependence estimation.
+This can be: a vector of length two, with values corresponding
+to dependence parameters a and b respectively, and in which
+case \code{start} is used as a starting value for numerical
+estimation of each of the dependence models to be estimated; a
+matrix with two rows corresponding to dependence parameters a
+and b respectively and number of columns equal to the number of
+dependence models to be estimated (the ordering of the columns
+will be as in the original data matrix); or a previously
+estimated object of class "mex" whose dependence parameter
+estimates are used as a starting point for estimation.  Note
+that under \code{constrain=TRUE}, if supplied, \code{start}
+must lie within the permitted area of the parameter space.}
 
 \item{marTransform}{Optional form of transformation to be used for
-probability integral transform of data from original to Gumbel or Laplace
-margins.  Takes values \code{marTransform="mixture"} (the default) or
-\code{marTransform="empirical"}. When \code{marTransform="mixture"}, the
-rank transform is used below the corresponding GPD fitting threshold used in
-\code{x}, and the fitted gpd tail model is used above this threshold.  When
-\code{marTransform="empirical"} the rank transform is used for the entire
-range of each marginal distribution.}
+probability integral transform of data from original to Gumbel
+or Laplace margins.  Takes values \code{marTransform="mixture"}
+(the default) or \code{marTransform="empirical"}. When
+\code{marTransform="mixture"}, the rank transform is used below
+the corresponding GPD fitting threshold used in \code{x}, and
+the fitted gpd tail model is used above this threshold.  When
+\code{marTransform="empirical"} the rank transform is used for
+the entire range of each marginal distribution.}
 
-\item{referenceMargin}{Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceDistributionForMexTransform}.}
+\item{referenceMargin}{Optional set of reference marginal
+distributions to use for marginal transformation if the data's
+own marginal distribution is not appropriate (for instance if
+only data for which one variable is large is available, the
+marginal distributions of the other variables will not be
+represented by the available data).  This object can be created
+from a combination of datasets and fitted GPDs using the
+function \code{makeReferenceDistributionForMexTransform}.}
 
-\item{nOptim}{Number of times to run optimiser when estimating dependence
-model parameters. Defaults to 1.  In the case of \code{nOptim > 1} the first
-call to the optimiser uses the value \code{start} as a starting point, while
-subsequent calls to the optimiser are started at the parameter value to
-which the previous call converged.}
+\item{nOptim}{Number of times to run optimiser when estimating
+dependence model parameters. Defaults to 1.  In the case of
+\code{nOptim > 1} the first call to the optimiser uses the
+value \code{start} as a starting point, while subsequent calls
+to the optimiser are started at the parameter value to which
+the previous call converged.}
 
 \item{PlotLikDo}{Logical value: whether or not to plot the profile
-likelihood surface for dependence model parameters under constrained
-estimation.}
+likelihood surface for dependence model parameters under
+constrained estimation.}
 
-\item{PlotLikRange}{This is used to specify a region of the parameter space
-over which to plot the profile log-likelihood surface.  List of length 2;
-each item being a vector of length two corresponding to the plotting ranges
-for dependence parameters a and b respectively. If this argument is not
+\item{PlotLikRange}{This is used to specify a region of the
+parameter space over which to plot the profile log-likelihood
+surface.  List of length 2; each item being a vector of length
+two corresponding to the plotting ranges for dependence
+parameters a and b respectively. If this argument is not
 missing, then \code{PlotLikDo} is set equal to TRUE.}
 
-\item{PlotLikTitle}{Used only if \code{PlotLikDo=TRUE}.  Character string.
-Optional title added to the profile log-likelihood surface plot.}
+\item{PlotLikTitle}{Used only if \code{PlotLikDo=TRUE}.  Character
+string.  Optional title added to the profile log-likelihood
+surface plot.}
 
 \item{...}{Further arguments to be passed to methods.}
 }
 \value{
-An object of class \code{mex} which is a list containing the
-following three objects: \item{margins}{An object of class
-\code{\link{migpd}}.} \item{dependence}{An object of class
-\code{\link{mexDependence}}.} \item{call}{This matches the original function
-call.}
+An object of class \code{mex} which is a list containing
+    the following three objects: \item{margins}{An object of class
+    \code{\link{migpd}}.} \item{dependence}{An object of class
+    \code{\link{mexDependence}}.} \item{call}{This matches the
+    original function call.}
 }
 \description{
 Estimate the dependence parameters in a conditional multivariate extreme
@@ -161,13 +182,10 @@ mexDependence(NO.NO2, which = "NO",dqu=0.7,start=c(0.1,0.1),
 
 
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \references{
-J. E. Heffernan and J. A. Tawn, A conditional approach for
-multivariate extreme values, Journal of the Royal Statistical society B, 66,
-497 -- 546, 2004.
+J. E. Heffernan and J. A. Tawn, A conditional approach
+    for multivariate extreme values, Journal of the Royal
+    Statistical society B, 66, 497 -- 546, 2004.
 
 C. Keef, I. Papastathopoulos and J. A. Tawn.  Estimation of the conditional
 distribution of a multivariate variable given that one of its components is
@@ -176,8 +194,10 @@ Multivariate Analysis, 115, 396 -- 404, 2013
 }
 \seealso{
 \code{\link{migpd}}, \code{\link{bootmex}},
-\code{\link{predict.mex}}, \code{\link{plot.mex}}
+    \code{\link{predict.mex}}, \code{\link{plot.mex}}
+}
+\author{
+Harry Southworth, Janet E. Heffernan
 }
 \keyword{models}
 \keyword{multivariate}
-

@@ -6,19 +6,18 @@
 #denote dimension and length, respectively.	
 #---------------------------------------------------------------------------
 
-.MCSlower <- function(U,p)
+.MCSlower <- function(U, p)
   {
     d <- dim(U)[1]
     n <- dim(U)[2]
-    res1         <- p-U
-    res1[res1<0] <- 0
+    res1         <- p - U
+    res1[res1 < 0] <- 0
     res2         <- apply(res1,2,prod)
     res3         <- sum(res2)
     res4         <- ( (1/n)*res3-((p^2)/2)^(d) )/
       ( (p^(d+1))/(d+1) -((p^2)/2)^(d))
     return(res4)
   }
-
 
 
 #' Multivariate conditional Spearman's rho
@@ -78,10 +77,9 @@
 MCS <- function(X,p=seq(.1, .9, by=.1)) {
     theCall <- match.call()
      
-    X <- t(X) # Yiannis's original code had variables as rows
-    U <- t(apply(X,1,edf)) #transpose cause apply transposes g(X), g:edf
+    U <- t(apply(X, 2, edf)) #transpose cause apply transposes g(X), g:edf
     n    <- length(p)
-    res <- sapply(p, .MCSlower, U=U)
+    res <- vapply(p, FUN=.MCSlower, FUN.VALUE=0, U=U)
 
     res <- list(mcs=res, p=p, call=theCall)
     oldClass(res) <- "MCS"
@@ -119,7 +117,7 @@ print.MCS <- function(x, ...){
 bootMCS <- function(X,p=seq(.1, .9, by=.1),R=100, trace=10) {
    theCall <- match.call()
    bfun <- function(i, data, p, trace){
-       if (i %% trace == 0){ cat("Replicate", i, "\n") }
+       if (i %% trace == 0){ message("Replicate ", i) }
        d <- data[sample(1:nrow(data), replace=TRUE),]
        MCS(d, p)$mcs
    }

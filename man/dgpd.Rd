@@ -52,4 +52,3 @@ exponential.
 Janet E Heffernan, Paul Metcalfe, Harry Southworth
 }
 \keyword{models}
-

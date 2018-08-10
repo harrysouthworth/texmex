@@ -52,11 +52,10 @@ summary(Dgpds)
 
 
 }
-\author{
-Harry Southworth
-}
 \seealso{
 \code{\link{migpd}}
 }
+\author{
+Harry Southworth
+}
 \keyword{multivariate}
-

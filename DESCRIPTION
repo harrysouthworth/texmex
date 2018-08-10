@@ -40,16 +40,19 @@ Suggests:
     GGally,
     survival,
     ismev
+Imports: Rcpp (>= 0.12.18)
+LinkingTo: Rcpp
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.0
 Collate:
     'AIC.evm.R'
     'Dcond.R'
     'Profile_likelihood_HT_unc.R'
     'Profile_likelihood_cd_nm_joint_D_KT.R'
     'Profile_likelihood_cd_nm_joint_D_KT_neg.R'
+    'RcppExports.R'
     'bootmex.R'
     'gpd.sandwich.R'
     'gpd.info.R'
@@ -139,7 +142,7 @@ Collate:
     'roots.R'
     'simulate.R'
     'sombrero-internal.R'
-    'special.functions.R'
+    'special_functions.R'
     'summary.evm.R'
     'summary.evmSim.R'
     'summary.migpd.R'

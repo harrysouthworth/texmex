@@ -1,5 +1,4 @@
 
-
 #' Air pollution data, separately for summer and winter months
 #' 
 #' Air pollution data from Leeds (U.K.) city centre, collected from 1994 to
@@ -247,6 +246,8 @@ NULL
 #'     geom_line geom_polygon element_text geom_rug geom_abline
 #'     geom_rect geom_histogram geom_text geom_hline geom_vline 
 #'     geom_density labs coord_cartesian geom_smooth
+#' @importFrom Rcpp evalCpp
+#' @useDynLib texmex, .registration=TRUE
 NULL
 
 

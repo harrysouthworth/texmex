@@ -1,14 +1,12 @@
 context("dgpd")
 
 test_that("dgpd behaves as it should", {
-  skip_on_cran()
-  skip_on_travis()
-    evd.dgpd <- .evd.dgpd
+  evd.dgpd <- .evd.dgpd
 
   myTest <- function(sig, xi, thresh, label){
-    myd <- sapply(1:nreps, function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
-    ed <- sapply(1:nreps, function(i) evd.dgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-  expect_that(ed, equals(myd), label=label)
+      myd <- sapply(1:nreps, function(i) dgpd(x[,i], sig[i], xi[i],u=thresh[i]))
+      ed <- sapply(1:nreps, function(i) evd.dgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
+      expect_equal(ed, myd, label=label)
   }
 
   set.seed(20101111)
@@ -22,7 +20,8 @@ test_that("dgpd behaves as it should", {
   p[, 1] <- p[, 1] + 1
   thresh <- rep(0,nreps)
 
-  x <- sapply(1:nreps,function(i)rgpd(nsim,sigma=p[i,1],xi=p[i,2],u=thresh[i]))
+  x <- sapply(1:nreps,
+              function(i)rgpd(nsim,sigma=p[i,1], xi=p[i,2],u=thresh[i]))
 
   myTest(sig=p[,1], xi=p[,2], thresh=thresh, label="dgpd: random xi")
 
@@ -48,12 +47,12 @@ test_that("dgpd behaves as it should", {
   myd <- dgpd(x, sig, xi,u=thresh)
 
   ed <- sapply(1:nsim, function(i) evd.dgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-  expect_that(ed, equals(myd), label="dgpd:vectorisation")
+  expect_equal(ed, myd, label="dgpd:vectorisation")
 
   #*************************************************************
   # 6.15 test log.d argument
 
   ld <- dgpd(x,sig,xi,u=thresh,log.d=TRUE)
-  expect_that(myd, equals(exp(ld)), label="dgpd:logdensity")
+  expect_equal(myd, exp(ld), label="dgpd:logdensity")
 }
 )

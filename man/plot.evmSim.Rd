@@ -38,4 +38,3 @@ quickly to zero.
 
 \code{\link[stats]{density}}
 }
-
