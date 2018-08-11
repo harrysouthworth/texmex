@@ -5,21 +5,21 @@
 #' @param x numeric vector
 #' @return numeric vector
 .exprel <- function(x) {
-    .Call(`_texmex_exprel`, x)
+    .Call(`_texmex_warp_dexprl`, x)
 }
 
 #' Accurately compute log(1 + x) / x
 #' @param x numeric vector
 #' @return numeric vector
 .log1prel <- function(x) {
-    .Call(`_texmex_log1prel`, x)
+    .Call(`_texmex_wrap_log1prel`, x)
 }
 
 #' Accurately compute log(1-exp(x))
 #' @param x numeric vector
 #' @return a numeric vector
 .log1mexp <- function(x) {
-    .Call(`_texmex_log1mexp`, x)
+    .Call(`_texmex_wrap_log1mexp`, x)
 }
 
 #' Compute pmax(x y, -1) in such a way that zeros in x beat
@@ -31,6 +31,6 @@
 #' @param y a numeric vector
 #' @return an appropriate numeric vector
 .specfun.safe.product <- function(x, y) {
-    .Call(`_texmex__safe_product`, x, y)
+    .Call(`_texmex_wrap_safe_product`, x, y)
 }
 

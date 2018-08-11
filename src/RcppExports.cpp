@@ -5,53 +5,53 @@
 
 using namespace Rcpp;
 
-// exprel
-Rcpp::NumericVector exprel(const Rcpp::NumericVector& x);
-RcppExport SEXP _texmex_exprel(SEXP xSEXP) {
+// warp_dexprl
+Rcpp::NumericVector warp_dexprl(const Rcpp::NumericVector& x);
+RcppExport SEXP _texmex_warp_dexprl(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(exprel(x));
+    rcpp_result_gen = Rcpp::wrap(warp_dexprl(x));
     return rcpp_result_gen;
 END_RCPP
 }
-// log1prel
-Rcpp::NumericVector log1prel(const Rcpp::NumericVector& x);
-RcppExport SEXP _texmex_log1prel(SEXP xSEXP) {
+// wrap_log1prel
+Rcpp::NumericVector wrap_log1prel(const Rcpp::NumericVector& x);
+RcppExport SEXP _texmex_wrap_log1prel(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(log1prel(x));
+    rcpp_result_gen = Rcpp::wrap(wrap_log1prel(x));
     return rcpp_result_gen;
 END_RCPP
 }
-// log1mexp
-Rcpp::NumericVector log1mexp(const Rcpp::NumericVector& x);
-RcppExport SEXP _texmex_log1mexp(SEXP xSEXP) {
+// wrap_log1mexp
+Rcpp::NumericVector wrap_log1mexp(const Rcpp::NumericVector& x);
+RcppExport SEXP _texmex_wrap_log1mexp(SEXP xSEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
-    rcpp_result_gen = Rcpp::wrap(log1mexp(x));
+    rcpp_result_gen = Rcpp::wrap(wrap_log1mexp(x));
     return rcpp_result_gen;
 END_RCPP
 }
-// _safe_product
-Rcpp::NumericVector _safe_product(const Rcpp::NumericVector& x, const Rcpp::NumericVector& y);
-RcppExport SEXP _texmex__safe_product(SEXP xSEXP, SEXP ySEXP) {
+// wrap_safe_product
+Rcpp::NumericVector wrap_safe_product(const Rcpp::NumericVector& x, const Rcpp::NumericVector& y);
+RcppExport SEXP _texmex_wrap_safe_product(SEXP xSEXP, SEXP ySEXP) {
 BEGIN_RCPP
     Rcpp::RObject rcpp_result_gen;
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
     Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type y(ySEXP);
-    rcpp_result_gen = Rcpp::wrap(_safe_product(x, y));
+    rcpp_result_gen = Rcpp::wrap(wrap_safe_product(x, y));
     return rcpp_result_gen;
 END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
-    {"_texmex_exprel", (DL_FUNC) &_texmex_exprel, 1},
-    {"_texmex_log1prel", (DL_FUNC) &_texmex_log1prel, 1},
-    {"_texmex_log1mexp", (DL_FUNC) &_texmex_log1mexp, 1},
-    {"_texmex__safe_product", (DL_FUNC) &_texmex__safe_product, 2},
+    {"_texmex_warp_dexprl", (DL_FUNC) &_texmex_warp_dexprl, 1},
+    {"_texmex_wrap_log1prel", (DL_FUNC) &_texmex_wrap_log1prel, 1},
+    {"_texmex_wrap_log1mexp", (DL_FUNC) &_texmex_wrap_log1mexp, 1},
+    {"_texmex_wrap_safe_product", (DL_FUNC) &_texmex_wrap_safe_product, 2},
     {NULL, NULL, 0}
 };
 
