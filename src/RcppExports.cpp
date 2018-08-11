@@ -35,11 +35,23 @@ BEGIN_RCPP
     return rcpp_result_gen;
 END_RCPP
 }
+// _safe_product
+Rcpp::NumericVector _safe_product(const Rcpp::NumericVector& x, const Rcpp::NumericVector& y);
+RcppExport SEXP _texmex__safe_product(SEXP xSEXP, SEXP ySEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type y(ySEXP);
+    rcpp_result_gen = Rcpp::wrap(_safe_product(x, y));
+    return rcpp_result_gen;
+END_RCPP
+}
 
 static const R_CallMethodDef CallEntries[] = {
     {"_texmex_exprel", (DL_FUNC) &_texmex_exprel, 1},
     {"_texmex_log1prel", (DL_FUNC) &_texmex_log1prel, 1},
     {"_texmex_log1mexp", (DL_FUNC) &_texmex_log1mexp, 1},
+    {"_texmex__safe_product", (DL_FUNC) &_texmex__safe_product, 2},
     {NULL, NULL, 0}
 };
 

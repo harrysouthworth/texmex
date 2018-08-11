@@ -1,5 +1,7 @@
 #include <Rcpp.h>
 
+#include "safe_product.h"
+
 namespace {
   inline
   double true_dexprl(const double x) {
@@ -111,4 +113,18 @@ Rcpp::NumericVector log1prel(const Rcpp::NumericVector& x) {
 // [[Rcpp::export(name=".log1mexp", rng=FALSE)]]
 Rcpp::NumericVector log1mexp(const Rcpp::NumericVector& x) {
   return Rcpp::sapply(x, true_log1mexp);
+}
+
+//' Compute pmax(x y, -1) in such a way that zeros in x beat
+//' infinities in y.
+//'
+//' This is a common pattern in much of the distribution code, so it's
+//' worth factoring out.
+//' @param x a numeric vector
+//' @param y a numeric vector
+//' @return an appropriate numeric vector
+// [[Rcpp::export(name=".specfun.safe.product", rng=FALSE)]]
+Rcpp::NumericVector _safe_product(const Rcpp::NumericVector &x,
+				  const Rcpp::NumericVector &y) {
+  return Rcpp::mapply(x, y, safe_product);
 }
