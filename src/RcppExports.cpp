@@ -5,6 +5,20 @@
 
 using namespace Rcpp;
 
+// wrap_dgpd
+Rcpp::NumericVector wrap_dgpd(const Rcpp::NumericVector& x, const Rcpp::NumericVector& sigma, const Rcpp::NumericVector& xi, const Rcpp::NumericVector& u, const bool log_d);
+RcppExport SEXP _texmex_wrap_dgpd(SEXP xSEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP uSEXP, SEXP log_dSEXP) {
+BEGIN_RCPP
+    Rcpp::RObject rcpp_result_gen;
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type x(xSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type sigma(sigmaSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type xi(xiSEXP);
+    Rcpp::traits::input_parameter< const Rcpp::NumericVector& >::type u(uSEXP);
+    Rcpp::traits::input_parameter< const bool >::type log_d(log_dSEXP);
+    rcpp_result_gen = Rcpp::wrap(wrap_dgpd(x, sigma, xi, u, log_d));
+    return rcpp_result_gen;
+END_RCPP
+}
 // warp_dexprl
 Rcpp::NumericVector warp_dexprl(const Rcpp::NumericVector& x);
 RcppExport SEXP _texmex_warp_dexprl(SEXP xSEXP) {
@@ -48,6 +62,7 @@ END_RCPP
 }
 
 static const R_CallMethodDef CallEntries[] = {
+    {"_texmex_wrap_dgpd", (DL_FUNC) &_texmex_wrap_dgpd, 5},
     {"_texmex_warp_dexprl", (DL_FUNC) &_texmex_warp_dexprl, 1},
     {"_texmex_wrap_log1prel", (DL_FUNC) &_texmex_wrap_log1prel, 1},
     {"_texmex_wrap_log1mexp", (DL_FUNC) &_texmex_wrap_log1mexp, 1},
