@@ -5,10 +5,10 @@ residuals.evmOpt <- function(object,...){
 
 #' @export
 residuals.evmSim <- function(object,...){
-    object$map$residuals
+    resid(object$map)
 }
 
 #' @export
 residuals.evmBoot <- function(object,...){
-    object$map$residuals
+    resid(object$map)
 }
