@@ -23,7 +23,6 @@ edf <- function(x, na.last=NA){
 }
 
 
-
 #' Calculate the copula of a matrix of variables
 #' 
 #' Returns the copula of several random variables.
@@ -33,22 +32,14 @@ edf <- function(x, na.last=NA){
 #' 
 #' Print and plot methods are available for the copula class.
 #' 
-#' @aliases copula plot.copula print.copula
-#' @usage copula(x, na.last = NA)
-#' \method{plot}{copula}(x, jitter. = FALSE, jitter.factor=1, ...)
-#' \method{print}{copula}(x, ...)
 #' @param x A matrix or data.frame containing numeric variables.
 #' @param na.last How to treat missing values. See \code{rank} for details.
-#' @param jitter. In the call to \code{plot.copula}, if \code{jitter=TRUE}, the
-#' values are jittered before plotting. Defaults to \code{jitter. = FALSE}.
-#' @param jitter.factor How much jittering to use. Defaults to
-#' \code{jitter.factor = 1.}
-#' @param ... Further arguments to be passed to plot method.
+#' @param ... further arguments
 #' @return A matrix with the same dimensions as \code{x}, each column of which
 #' contains the quantiles of each column of \code{x}. This object is of class
 #' \code{copula}.
 #' @author Harry Southworth
-#' @seealso \code{\link{edf}}
+#' @seealso \code{\link{edf}} \code{\link{plot.copula}}
 #' @keywords multivariate
 #' @examples
 #' 
@@ -57,32 +48,44 @@ edf <- function(x, na.last=NA){
 #'   plot(Dco)
 #' 
 #' @export copula
-copula <- 
-function (x, na.last = NA) {
+copula <- function(x, na.last=NA, ...) {
+    UseMethod("copula")
+}
+
+#' @describeIn copula default method
+#' @export
+copula.default <- function(x, na.last=NA, ...) {
+    stop("Can't calculate copula")
+}
+
+#' @describeIn copula data frame method
+#' @export
+copula.data.frame <- function(x, na.last=NA, ...) {
     theCall <- match.call()
-    
-    if (is.data.frame(x)){
-        really.numeric <- function(x){
-            if (! class(x) %in% c("integer", "numeric")){ FALSE }
-            else { TRUE }
-        }
 
-        wh <- sapply(x, really.numeric)
-    
-        if (sum(wh) == 0){
-            stop("x contains no numeric columns")
-        }
-    
-        if (sum(wh) < length(wh)){
-            warning(paste("Some variables have been dropped:", paste(colnames(x)[!wh], collapse=", ")))
-        }
-
-        x <- as.matrix(x[, wh])
-    } # Close if
-    
-    else if (!is.matrix(x)){
-        stop("x should be a matrix or a data.frame with some numeric columns")
+    really.numeric <- function(x){
+        class(x) %in% c("integer", "numeric")
     }
+
+    wh <- sapply(x, really.numeric)
+    
+    if (sum(wh) == 0){
+        stop("x contains no numeric columns")
+    }
+    
+    if (sum(wh) < length(wh)){
+        warning(paste("Some variables have been dropped:", paste(colnames(x)[!wh], collapse=", ")))
+    }
+
+    result <- copula(as.matrix(x[, wh]), na.last=na.last)
+    result$call <- theCall
+    result
+}
+
+#' @describeIn copula matrix method
+#' @export
+copula.matrix <- function (x, na.last = NA, ...) {
+    theCall <- match.call()
     
     res <- apply(x, 2, edf)
 
@@ -99,6 +102,13 @@ print.copula <- function(x, ...){
     invisible(x)
 }
 
+#' Plot copulas
+#' @param x A copula object
+#' @param jitter. If \code{jitter=TRUE}, the values are jittered
+#'     before plotting. Defaults to \code{jitter. = FALSE}.
+#' @param jitter.factor How much jittering to use. Defaults to
+#'     \code{jitter.factor = 1.}
+#' @param ... Further arguments to be passed to plot method.
 #' @export
 plot.copula <- function(x, jitter. = FALSE, jitter.factor=1, ...){
     x <- x$copula
