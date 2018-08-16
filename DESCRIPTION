@@ -142,7 +142,6 @@ Collate:
     'roots.R'
     'simulate.R'
     'sombrero-internal.R'
-    'special_functions.R'
     'summary.evm.R'
     'summary.evmSim.R'
     'summary.migpd.R'
