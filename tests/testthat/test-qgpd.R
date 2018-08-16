@@ -2,7 +2,6 @@ context("qgpd")
 
 test_that("qgpd behaves as it should", {
   skip_on_cran()
-  skip_on_travis()
 
   set.seed(201110101)
   evd.qgpd <- .evd.qgpd
@@ -16,12 +15,9 @@ test_that("qgpd behaves as it should", {
 
   #*************************************************************
   # 6.4.0 Test exception for out of range probabilties
-  op <- options()
-  options(show.error.messages=FALSE)
   expect_error(qgpd(1.5, 1, 0, 2), label="qgpd:exceptionforoutofrangeprob")
   expect_error(qgpd(-1, 1, 0, 2), label="qgpd:exceptionforoutofrangeprob")
-  options(op)
-
+  
   #*************************************************************
   # 6.4. Test qgpd. Note that .evd.qgpd is NOT vectorized.
 
