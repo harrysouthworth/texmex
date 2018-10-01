@@ -44,7 +44,7 @@ test_that("plot.bootmex behaves as it should", {
   Sboot.PM10 <- bootmex(smarmex.PM10, R=R,trace=R+1)
   Wboot.PM10 <- bootmex(wmarmex.PM10, R=R,trace=R+1)
   
-  par(mfrow=c(4,2))
+  par(mfrow=c(3,2))
   check3 <- plot(Sboot.O3,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
   plot(Wboot.O3,plots="dep",main="Winter air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
   plot(Sboot.NO2,plots="dep",main="Summer air pollution data\nFig.5 Heffernan & Tawn 2004",xlim=c(0,1),ylim=c(-1,1))
