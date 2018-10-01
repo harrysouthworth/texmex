@@ -6,7 +6,7 @@
 \alias{print.bootmex}
 \title{Bootstrap a conditional multivariate extreme values model}
 \usage{
-bootmex(x, R = 100, nPass=3, trace=10)
+bootmex(x, R = 100, nPass=3, trace=10,referenceMargin=NULL)
 
 \method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
 \method{print}{bootmex}(x, ...)
@@ -24,6 +24,8 @@ giving up.}
 
 \item{trace}{How often to inform the user of progress. Defaults to
 \code{trace=10}.}
+
+\item{referenceMargin}{Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.}
 
 \item{plots}{What type of diagnostic plots to produce.  Defaults to "gpd" in
 which case gpd parameter estimate plots are produced otherwise plots are

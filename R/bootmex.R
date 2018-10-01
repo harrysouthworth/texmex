@@ -54,7 +54,7 @@
 #' the mean bias is the correct thing to do.
 #' 
 #' @aliases bootmex print.bootmex plot.bootmex
-#' @usage bootmex(x, R = 100, nPass=3, trace=10)
+#' @usage bootmex(x, R = 100, nPass=3, trace=10,referenceMargin=NULL)
 #' 
 #' \method{plot}{bootmex}(x, plots = "gpd", main = "", ...)
 #' \method{print}{bootmex}(x, ...)
@@ -67,6 +67,7 @@
 #' giving up.
 #' @param trace How often to inform the user of progress. Defaults to
 #' \code{trace=10}.
+#' @param referenceMargin Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.
 #' @param plots What type of diagnostic plots to produce.  Defaults to "gpd" in
 #' which case gpd parameter estimate plots are produced otherwise plots are
 #' made for the dependence parameters.
@@ -93,7 +94,7 @@
 #' @export bootmex
 bootmex <-
     # Bootstrap inference for a conditional multivaratiate extremes model.
-function (x, R = 100, nPass = 3, trace = 10,referenceMargin=referenceMargin) {
+function (x, R = 100, nPass = 3, trace = 10,referenceMargin=NULL) {
     theCall <- match.call()
     if (class(x) != "mex"){
       stop("object must be of type 'mex'")

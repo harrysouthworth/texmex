@@ -89,7 +89,7 @@
 #' \code{x}, and the fitted gpd tail model is used above this threshold.  When
 #' \code{marTransform="empirical"} the rank transform is used for the entire
 #' range of each marginal distribution.
-#' @param referenceMargin Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceDistributionForMexTransform}.
+#' @param referenceMargin Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.
 #' @param nOptim Number of times to run optimiser when estimating dependence
 #' model parameters. Defaults to 1.  In the case of \code{nOptim > 1} the first
 #' call to the optimiser uses the value \code{start} as a starting point, while

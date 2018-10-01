@@ -7,7 +7,7 @@ model over a range of thresholds.}
 \usage{
 mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9),
 start=c(.01, .01), R = 10, nPass=3, trace=10, margins = "laplace", constrain
-= TRUE, v = 10)
+= TRUE, v = 10, referenceMargin=NULL)
 }
 \arguments{
 \item{x}{An object of class \code{\link{mex}} or \code{\link{migpd}}.}
@@ -33,6 +33,8 @@ to \code{R}=10.}
 \item{constrain}{Argument passed to function \code{\link{mexDependence}}.}
 
 \item{v}{Argument passed to function \code{\link{mexDependence}}.}
+
+\item{referenceMargin}{Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.}
 
 \item{\dots}{Further graphical parameters may be passed, which will be used
 for plotting.}

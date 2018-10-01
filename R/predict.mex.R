@@ -18,7 +18,11 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
       dall <- mexDependence( migpd , which=which , dqu=object$dqu, margins = margins[[1]], constrain=constrain )
   } else {
       which <- object$dependence$which
-      migpd <- object$margins
+      if(is.null(object$margins$referenceMargin)){
+          migpd <- object$margins
+      } else {
+          migpd <- object$margins$referenceMargin
+      }
       margins <- object$dependence$margins
       constrain <- object$dependence$constrain
       dall <- object
