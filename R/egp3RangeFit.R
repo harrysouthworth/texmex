@@ -81,8 +81,8 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
 
   for (i in 1:nint) {
     z <- evm(data, th=u[i], penalty=penalty, priorParameters=priorParameters, family=egp3)
-    m[i] <- z$coefficients[3]
-    s[i] <- z$se[3]
+    m[i] <- z$coefficients[1]
+    s[i] <- z$se[1]
   }
 
   # egp3 family works with labmda = log(kappa)

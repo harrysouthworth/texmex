@@ -13,9 +13,13 @@ test_that("log1prel behaves as it should", {
                label="log1prel: value tests")
 
   ## special values
-  expect_equal(.log1prel(c(-1, 0, Inf)), c(Inf,1,0),
+  expect_equal(.log1prel(c(-1, 0, Inf)), c(Inf, 1, 0),
                label="log1prel: special value tests")
 
+  expect_true(is.nan(.log1prel(0/0)), label="log1prel: NaN handling")
+  expect_true(is.nan(.log1prel(-Inf)), label="log1prel: -Inf")
+
+  
   ## check with reference to .exprel
 
   x <- runif(10, -5, 5)

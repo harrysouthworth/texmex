@@ -19,6 +19,7 @@ all:
 	bibtex test_texmex
 	pdflatex test_texmex.tex
 	pdflatex test_texmex.tex
+	rm *.log *.aux *.bbl *.blg *.tex *.toc
 	
 texmexMultivariate:
 	pdflatex  texmexMultivariate.tex

@@ -1,9 +1,6 @@
 context("chi")
 
 test_that("chi behaves as it should", {
-  skip_on_cran()
-  skip_on_travis()
-    
   # independent implementation of chi and chibar, Janet Heffernan personal code library
   
   
@@ -74,12 +71,12 @@ test_that("chi behaves as it should", {
   chi.JH <- .ChiFunction(wavesurge,nLevels=nq)
   chi <- chi(wavesurge,nq=nq,qlim=range(chi.JH$u),trunc= TRUE)
   
-  expect_that(chi.JH$u, equals(chi$quantile), label="chi:u")
-  expect_that(chi.JH$Chi, equals(chi$chi[, 2]), label="chi:Chi")
-  expect_that(chi.JH$ChiLower, equals(chi$chi[, 1]), label="chi:ChiLower")
-  expect_that(chi.JH$ChiUpper, equals(chi$chi[, 3]), label="chi:ChiUpper")
-  expect_that(chi.JH$ChiBar, equals(chi$chibar[, 2]), label="chi:ChiBar")
-  expect_that(chi.JH$ChiBarLower, equals(chi$chibar[, 1]), label="chi:ChiBarLower")
-  expect_that(chi.JH$ChiBarUpper, equals(chi$chibar[, 3]), label="chi:ChiBarUpper")
+  expect_equal(chi.JH$u, chi$quantile, label="chi:u")
+  expect_equal(chi.JH$Chi, chi$chi[, 2], label="chi:Chi")
+  expect_equal(chi.JH$ChiLower, chi$chi[, 1], label="chi:ChiLower")
+  expect_equal(chi.JH$ChiUpper, chi$chi[, 3], label="chi:ChiUpper")
+  expect_equal(chi.JH$ChiBar, chi$chibar[, 2], label="chi:ChiBar")
+  expect_equal(chi.JH$ChiBarLower, chi$chibar[, 1], label="chi:ChiBarLower")
+  expect_equal(chi.JH$ChiBarUpper, chi$chibar[, 3], label="chi:ChiBarUpper")
 }
 )

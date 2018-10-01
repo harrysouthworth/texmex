@@ -5,7 +5,8 @@
 \alias{AIC.evmSim}
 \title{Information Criteria}
 \usage{
-\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, ..., k = 2)
+\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, ...,
+  k = 2)
 }
 \arguments{
 \item{object}{fit model object}
@@ -40,4 +41,3 @@ If the object has class 'evmOpt', \code{nsamp} random draws are
 \seealso{
 \code{\link[stats]{AIC}}
 }
-

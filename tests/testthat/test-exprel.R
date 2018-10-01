@@ -17,5 +17,10 @@ test_that("exprel behaves as it should", {
   expect_equal(exprel.values, desired.values,
                label="exprel: special value tests")
 
+
+  ## and here's a different special case
+  expect_true(is.nan(.exprel(0/0)),
+              label="exprel: NaN handling")
+
 }
 )

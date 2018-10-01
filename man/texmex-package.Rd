@@ -2,8 +2,8 @@
 % Please edit documentation in R/texmex-package.R
 \docType{package}
 \name{texmex-package}
-\alias{texmex}
 \alias{texmex-package}
+\alias{texmex}
 \title{Extreme value modelling}
 \description{
 Extreme values modelling, including the conditional multivariate approach of
@@ -110,13 +110,6 @@ quantile(res, prob=c(.5, .75, .9, .95, .99))
 # 36 * 3) # 36 is the upper limit of normal for ALT
 }
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-
-Maintainer: Harry Southworth <harry.southworth@gmail.com>
-
-URL: https://github.com/harrysouthworth/texmex
-}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -125,7 +118,13 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 C.A.T Ferro and J. Segers, Inference for Clusters of Extreme Values, Journal
 of the Royal Statistical society B, 65, 545 -- 556, 2003.
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+
+Maintainer: Harry Southworth <harry.southworth@gmail.com>
+
+URL: https://github.com/harrysouthworth/texmex
+}
 \keyword{models}
 \keyword{multivariate}
 \keyword{package}
-

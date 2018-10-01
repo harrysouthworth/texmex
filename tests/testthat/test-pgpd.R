@@ -1,13 +1,11 @@
 context("pgpd")
 
 test_that("pgpd behaves as it should", {
-  skip_on_cran()
-  skip_on_travis()
-    evd.pgpd <- .evd.pgpd
-    myTest <- function(sig, xi, thresh, msg){
+  evd.pgpd <- .evd.pgpd
+  myTest <- function(sig, xi, thresh, msg){
       myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
       ep <- sapply(1:nreps, function(i) evd.pgpd(x[,i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-      expect_that(ep, equals(myp), label=msg)
+      expect_equal(ep, myp, label=msg)
     } # Close myTest
 
   set.seed(20101111)
@@ -47,34 +45,34 @@ test_that("pgpd behaves as it should", {
   myp <- pgpd(x, sig, xi,u=thresh)
 
   ep <- sapply(1:nsim, function(i)evd.pgpd(x[i], loc=thresh[i], scale=sig[i], shape=xi[i]))
-  expect_that(ep, equals(myp), label="pgpd:vectorisation")
+  expect_equal(ep, myp, label="pgpd:vectorisation")
 
   #*************************************************************
   # 6.10 test log.p argument
 
   lp <- pgpd(x,sig,xi,u=thresh,log.p=TRUE)
-  expect_that(myp, equals(exp(lp)), label="pgpd:logprobabilities")
+  expect_equal(myp, exp(lp), label="pgpd:logprobabilities")
 
   #*************************************************************
   # 6.11 test lower tail argument
 
   sp <- pgpd(x,sig,xi,u=thresh,lower.tail=FALSE)
-  expect_that(myp, equals(1-sp), label="pgpd:lowertail")
+  expect_equal(myp, 1-sp, label="pgpd:lowertail")
 
   ## check pgpd when q < threshold
   upperProb <- pgpd(0, 1, 1, u=0.5, lower.tail=TRUE)
-  expect_that(upperProb, equals(0), label="pgpd:valuebelowthreshold(1)")
+  expect_equal(upperProb, 0, label="pgpd:valuebelowthreshold(1)")
 
   lowerProb <- pgpd(0, 1, 1, u=0.5, lower.tail=FALSE)
-  expect_that(upperProb, equals(0), label="pgpd:valuebelowthreshold(2)")
+  expect_equal(upperProb, 0, label="pgpd:valuebelowthreshold(2)")
 
   ## check pgpd when xi < 0 and value above upper limit
 
   xi <- -2.3
   upperProb <- pgpd(-2/xi, 1, xi, u=0, lower.tail=TRUE)
-  expect_that(upperProb, equals(1), label="pgpd:negativexi(1)")
+  expect_equal(upperProb, 1, label="pgpd:negativexi(1)")
 
   lowerProb <- pgpd(-2/xi, 1, xi, u=0, lower.tail=FALSE)
-  expect_that(lowerProb, equals(0), label="pgpd:negativexi(2)")
+  expect_equal(lowerProb, 0, label="pgpd:negativexi(2)")
 }
 )

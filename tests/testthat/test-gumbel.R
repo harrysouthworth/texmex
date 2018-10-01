@@ -2,7 +2,6 @@ context("gumbel")
 
 test_that("gumbel family behaves as it should", {
   skip_on_cran()
-  skip_on_travis()
   library(ismev)
   library(survival)
   

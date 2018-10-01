@@ -1,8 +1,8 @@
 Package: texmex
 Type: Package
 Title: Statistical Modelling of Extreme Values
-Version: 2.4.1
-Date: 2017-11-15
+Version: 2.4.2
+Date: 2018-06-14
 Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),
@@ -40,16 +40,19 @@ Suggests:
     GGally,
     survival,
     ismev
+Imports: Rcpp (>= 0.12.18)
+LinkingTo: Rcpp
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.0
 Collate:
     'AIC.evm.R'
     'Dcond.R'
     'Profile_likelihood_HT_unc.R'
     'Profile_likelihood_cd_nm_joint_D_KT.R'
     'Profile_likelihood_cd_nm_joint_D_KT_neg.R'
+    'RcppExports.R'
     'bootmex.R'
     'gpd.sandwich.R'
     'gpd.info.R'
@@ -140,7 +143,6 @@ Collate:
     'roots.R'
     'simulate.R'
     'sombrero-internal.R'
-    'special.functions.R'
     'summary.evm.R'
     'summary.evmSim.R'
     'summary.migpd.R'

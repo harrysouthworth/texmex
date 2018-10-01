@@ -9,10 +9,10 @@ evm(y, data, family = gpd, ...)
 
 \method{evm}{default}(y, data, family = gpd, th = -Inf, qu, ...,
   penalty = NULL, prior = "gaussian", method = "optimize",
-  cov = "observed", start = NULL, priorParameters = NULL, maxit = 10000,
-  trace = NULL, iter = 40500, burn = 500, thin = 4,
-  proposal.dist = c("gaussian", "cauchy"), jump.cov, jump.const = NULL,
-  R = 1000, cores = NULL, verbose = TRUE)
+  cov = "observed", start = NULL, priorParameters = NULL,
+  maxit = 10000, trace = NULL, iter = 40500, burn = 500,
+  thin = 4, proposal.dist = c("gaussian", "cauchy"), jump.cov,
+  jump.const = NULL, R = 1000, cores = NULL, verbose = TRUE)
 }
 \arguments{
 \item{y}{Either a numeric vector or the name of a variable in \code{data}.}
@@ -278,11 +278,6 @@ no covariates, lower otherwise).
   }
 
 }
-\author{
-Janet E. Heffernan, Harry Southworth. Some of the internal code is
-based on the \code{gpd.fit} function in the \code{ismev} package and is due
-to Stuart Coles.
-}
 \references{
 S. Coles. An Introduction to Statistical Modelling of Extreme
 Values. Springer, 2001.
@@ -295,5 +290,9 @@ tail estimation, Journal of Statistical Planning and Inference, 143, 131 -
 \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}},
 \code{\link{evm.declustered}}.
 }
+\author{
+Janet E. Heffernan, Harry Southworth. Some of the internal code is
+based on the \code{gpd.fit} function in the \code{ismev} package and is due
+to Stuart Coles.
+}
 \keyword{models}
-

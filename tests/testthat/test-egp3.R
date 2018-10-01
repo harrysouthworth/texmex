@@ -158,3 +158,4 @@ test_that("degp3 behaves as expected", {
     expect_that(d1, equals(d2, tol=1.0e-02))
   }
 })
+

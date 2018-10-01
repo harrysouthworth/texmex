@@ -2,9 +2,9 @@
 % Please edit documentation in R/endPoint.R
 \name{endPoint}
 \alias{endPoint}
-\alias{endPoint.evmBoot}
 \alias{endPoint.evmOpt}
 \alias{endPoint.evmSim}
+\alias{endPoint.evmBoot}
 \title{Calculate upper end point for a fitted extreme value model}
 \usage{
 endPoint(y, verbose=TRUE, .unique=TRUE, ...)
@@ -33,4 +33,3 @@ Calculate upper end point for fitted extreme value model
 \author{
 Janet E. Heffernan
 }
-
