@@ -9,7 +9,8 @@ ggplot.mex <- function(data=NULL, mapping,
                        ..., environment){
    mar <- data[[1]]
    dep <- data[[2]]
-   z <- dep$Z
+   z <- as.matrix(dep$Z[order(mar$transformed[mar$transformed[,dep$which] > dep$dth,dep$which]),]) # order Z since this is plotted agains p which is an ordered sequence
+   colnames(z) <- colnames(dep$Z)
    n <- nrow(z)
    
    xmax <- max(mar$data[, dep$which])
