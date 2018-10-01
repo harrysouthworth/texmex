@@ -56,7 +56,7 @@ methods.}
 \item{object}{An object of class \code{evmOpt}, \code{evmSim} or
 \code{evmBoot}.}
 
-\item{M}{The return level: units are number of observations. Defaults to
+\item{M}{The return period: units are number of observations. Defaults to
 \code{M = 1000}. If a vector is passed, a list is returned, with items
 corresponding to the different values of the vector \code{M}.}
 

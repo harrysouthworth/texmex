@@ -87,6 +87,7 @@ Collate:
     'ggplot.thresh.R'
     'globalVariables.R'
     'gpd.R'
+    'gpdProfileLikRetLevels.R'
     'gpdRangeFit.R'
     'gumbel.R'
     'hist.evm.R'

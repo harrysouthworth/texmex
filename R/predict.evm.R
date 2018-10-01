@@ -60,7 +60,7 @@
 #' standard error. For the \code{evmSim} and \code{evmBoot} methods, the
 #' confidence interval represents quantiles of the simulated distribution of
 #' the parameters.
-#' @param M The return level: units are number of observations. Defaults to
+#' @param M The return period: units are number of observations. Defaults to
 #' \code{M = 1000}. If a vector is passed, a list is returned, with items
 #' corresponding to the different values of the vector \code{M}.
 #' @param alpha If \code{ci.fit = TRUE}, a 100(1 - alpha)\% confidence interval
