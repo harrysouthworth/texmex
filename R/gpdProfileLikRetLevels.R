@@ -48,7 +48,7 @@ gpd.prof <-
 			f + z$loglik - dev
 		}
 
-		dev <- 0.5 * qchisq(conf, 1)
+		dev <- 0.5 * stats::qchisq(conf, 1)
 		Low <- uniroot(plikInt,c(xlow,xmax))$root
 		Upp <- .secant.method(plikInt,xmax,mult*xmax-Low)
 		

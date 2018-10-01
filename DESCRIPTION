@@ -11,6 +11,13 @@ Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
              person("Yiannis", "Papastathopoulos", role="ctb"),
              person("Alec", "Stephenson", role="ctb"),
              person("Stuart", "Coles", role="ctb"))
+Author: Harry Southworth [aut, cre],
+  Janet E. Heffernan [aut],
+  Paul D. Metcalfe [aut],
+  Yiannis Papastathopoulos [ctb]
+  Alec Stephenson [ctb]
+  Stuart Coles [ctb]
+Maintainer: Harry Southworth <harry.southworth@gmail.com>
 Description: Statistical extreme value modelling of threshold excesses, maxima
     and multivariate extremes. Univariate models for threshold excesses and maxima
     are the Generalised Pareto, and Generalised Extreme Value model respectively.
@@ -46,6 +53,7 @@ LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
 RoxygenNote: 6.1.0
+Encoding: UTF-8
 Collate:
     'AIC.evm.R'
     'Dcond.R'

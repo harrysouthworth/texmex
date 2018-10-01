@@ -107,8 +107,17 @@ Changes from version 2.3
 
 Changes from version 2.4
 
-1. gcpd family added (constrianed parameter space for xi)
-2. Bug in egp3RangeFit fixed (thanks to Emmanuel Flachire)
-
+1. gcpd family added (constrained parameter space for xi)
+2. Profile likelihood based confidence interval estimation added for GPD models fit by
+   evmOpt, only for models containing no covariates.
+3. Added option for user to supply reference marginal distributions for marginal 
+   transformation required in conditional dependence model estimation.  This is for use
+   in instances where the marginal distributions are not well represented in the data 
+   prividing joint observation (for instance where data represent only observaitons with
+   a given variable above a threshold).
+3. Bug in egp3RangeFit fixed (thanks to Emmanuel Flachire)
+4. Bug fix: axis label in gpd range fit diagnostic plot.
+5. Bug fix: plotting points in diagnostic plot for checkin independence of model residuals
+   from conditioning varibale in mex fitting.
 
 
