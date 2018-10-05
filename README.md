@@ -15,6 +15,7 @@ Tawn.
 The package contains a test suite that depends on the
 testthat package. To use the test suite, install
 using 'R CMD INSTALL --install-tests' and then running
-'test_package("texmex")' within R.
+'devtools::test("texmex")' within R, where "texmex" points
+to the package location.
 
 This work was partially funded by AstraZeneca.
