@@ -32,4 +32,3 @@ Numeric vector of length two, with lower and upper ends of the estiamted confide
 \description{
 Calculates profile likelilhood based confidence intervals for a given fitted GPD model -- this is only implemented for two parameter GPD with no covariates in the model.
 }
-

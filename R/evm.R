@@ -18,13 +18,12 @@
 #'
 #' For the GPD model, we use the following parameterisation of evm:
 #'
-#' \deqn{P(Y \le y) = 1 - \left(1 + \frac{\xi y}{\sigma}\right)^{-1/\xi}}
+#' \deqn{P(Y \le y) = 1 - (1 + \xi y / \sigma)^{-1/\xi}}
 #' for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
 #'
 #' For the GEV model, we use:
 #'
-#' \deqn{P(Y \le y) = \exp \left\{ -\left[ 1 + \xi \left( \frac{y -
-#' \mu}{\sigma}\right) \right] ^{-1/\xi} \right\} }
+#' \deqn{P(Y \le y) = exp (-(1 + \xi (y - \mu) / \sigma) ^{-1/\xi})}
 #'
 #'
 #' In each case, the scale parameter is sigma (\eqn{\sigma}) and the shape
@@ -63,9 +62,14 @@
 #' @param y Either a numeric vector or the name of a variable in \code{data}.
 #' @param data A data frame containing \code{y} and any covariates.
 #' @param family An object of class 'texmexFamily'. Defaults to
-#' \code{family=gpd} and a generalized Pareto distribution is fit to the data.
-#' Alternatively the family could be \code{gev}, resulting in a generalized
-#' extreme value distribution being fit. No other families are currently
+#' \code{family=gpd} and a generalized Pareto distribution (GPD) is fit to the data.
+#' Alternatively the family could be \code{gev}, \code{weibull} or
+#' \code{gumbel}, resulting in a generalized extreme value distribution, Weibull
+#' or Gumbell distribution being fit. Family \code{cgpd} fits the generalized
+#' Pareto distribution but with the shape parameter constrained to be
+#' > 0.5 by using the link function suggested by Yee and Stephenson (2007),
+#' \eqn{\eta} = log(\eqn{\xi} + 0.5). Family \code{egp3} fits the extended
+#' GP family 3 of Papastathopoulos and Tawn (2013). No other families are currently
 #' available in texmex, but users may write their own.
 #' @param th For threshold excess models (such as when \code{family=gpd}), the
 #' threshold for \code{y}, exceedances above which will be used to fit the
@@ -166,7 +170,15 @@
 #' \item{priorParameters}{See above.}
 #'
 #' \item{residuals}{Residuals computed using the residual function in the
-#' \code{texmexFamily} object, if any.} \item{ploglik}{The value of the
+#' \code{texmexFamily} object, if any. These are used primarly for producing
+#' QQ and PP plots via \code{\link{plot.evmOpt}} or \code{\link{ggplot.evmOpt}}.
+#' The residuals are transformed values of the raw data, accounting for the
+#' parameter estimates: see the \code{residuals} component of the
+#' \code{\link{texmexFamily}} object for the calculations. For the generalized
+#' Pareto family, they are (if the model fits well) standard exponential variates;
+#' for the GEV family, standard Gumbel variates.}
+#'
+#' \item{ploglik}{The value of the
 #' optimized penalized log-likelihood.} \item{loglik}{The value of the
 #' optimized (unpenalized) log-likelihood. If \code{penalty='none'} is used,
 #' this will be identical to \code{ploglik}, above.} \item{cov}{The estimated
@@ -210,11 +222,14 @@
 #' bootstrap. It might be possible to simulate from the posterior, but finding
 #' a good proposal distribution might be difficult and you should take care to
 #' get an acceptance rate that is reasonably high (around 40\% when there are
-#' no covariates, lower otherwise).
+#' no covariates, lower otherwise). To constrain the parameter space of the GP
+#' shape parameter, use \code{family = cgpd} in the call to \code{evm} and
+#' the transformation \eqn{\eta} = log(\eqn{\xi} + 0.5) is used, as suggested
+#' by Yee and Stephenson (2007).
 #' @author Janet E. Heffernan, Harry Southworth. Some of the internal code is
 #' based on the \code{gpd.fit} function in the \code{ismev} package and is due
 #' to Stuart Coles.
-#' @seealso \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}},
+#' @seealso \code{\link{plot.evmOpt}} \code{\link{ggplot.evmOpt}} \code{\link{rl.evmOpt}}, \code{\link{predict.evmOpt}},
 #' \code{\link{evm.declustered}}.
 #' @references S. Coles. An Introduction to Statistical Modelling of Extreme
 #' Values. Springer, 2001.
@@ -222,6 +237,9 @@
 #' I. Papastathopoulos and J. A. Tawn, Extended generalised Pareto models for
 #' tail estimation, Journal of Statistical Planning and Inference, 143, 131 -
 #' 143, 2013.
+#'
+#' T. W. Yee and A. G. Stephenson, Vector generalized linear and additive
+#' extreme value models, Extremes, 10, 1 -- 19, 2007.
 #' @keywords models
 #' @examples
 #'

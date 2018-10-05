@@ -2,7 +2,7 @@ Package: texmex
 Type: Package
 Title: Statistical Modelling of Extreme Values
 Version: 2.4.2
-Date: 2018-06-14
+Date: 2018-10-05
 Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),
@@ -44,9 +44,7 @@ Suggests:
     knitr,
     testthat,
     devtools,
-    GGally,
-    survival,
-    ismev
+    survival
 Imports: Rcpp (>= 0.12.18)
 LinkingTo: Rcpp
 LazyLoad: yes

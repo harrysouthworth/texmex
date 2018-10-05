@@ -108,7 +108,8 @@ function(data, mapping, alpha = .050,
 
 #' Diagnostic plots for an evm object
 #'
-#' Create and display diagnostic plots for an evm object.
+#' Create and display diagnostic plots for an evm object. See \code{\link{plot.evmOpt}}
+#' for further details on what is being plotted.
 #' @aliases ggplot.ppevm ggplot.qqevm ggplot.hist.evmOpt
 #'     ggplot.evmOpt, ggplotrl
 #' @param data An object of class \code{evm}.
@@ -150,6 +151,7 @@ function(data, mapping, alpha = .050,
 #'     \code{grid.arrange} directly.  Also, if you have one or more
 #'     covariates in the model and the loess smoother looks wrong, try
 #'     setting \code{span=1}.
+#' @seealso \code{\link{plot.evmOpt}}
 #' @keywords hplot
 #' @method ggplot evmOpt
 #' @export

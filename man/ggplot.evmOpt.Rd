@@ -66,7 +66,8 @@ plot. Defaults to \code{nrow=2}. This argument is passed into
 functions.}
 }
 \description{
-Create and display diagnostic plots for an evm object.
+Create and display diagnostic plots for an evm object. See \code{\link{plot.evmOpt}}
+for further details on what is being plotted.
 }
 \details{
 The function attempts to arrange the plots nicely. If the
@@ -75,5 +76,8 @@ The function attempts to arrange the plots nicely. If the
     \code{grid.arrange} directly.  Also, if you have one or more
     covariates in the model and the loess smoother looks wrong, try
     setting \code{span=1}.
+}
+\seealso{
+\code{\link{plot.evmOpt}}
 }
 \keyword{hplot}

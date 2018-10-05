@@ -107,7 +107,8 @@ Changes from version 2.3
 
 Changes from version 2.4
 
-1. gcpd family added (constrained parameter space for xi)
+1. gcpd family added (constrained parameter space for xi) as suggested by Yee &
+   Stephenson (2007).
 2. Profile likelihood based confidence interval estimation added for GPD models fit by
    evmOpt, only for models containing no covariates.
 3. Added option for user to supply reference marginal distributions for marginal 
@@ -119,5 +120,6 @@ Changes from version 2.4
 4. Bug fix: axis label in gpd range fit diagnostic plot.
 5. Bug fix: plotting points in diagnostic plot for checkin independence of model residuals
    from conditioning varibale in mex fitting.
+6. Various improvements to documentation.
 
 
