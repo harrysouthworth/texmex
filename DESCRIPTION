@@ -14,8 +14,8 @@ Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
 Author: Harry Southworth [aut, cre],
   Janet E. Heffernan [aut],
   Paul D. Metcalfe [aut],
-  Yiannis Papastathopoulos [ctb]
-  Alec Stephenson [ctb]
+  Yiannis Papastathopoulos [ctb],
+  Alec Stephenson [ctb],
   Stuart Coles [ctb]
 Maintainer: Harry Southworth <harry.southworth@gmail.com>
 Description: Statistical extreme value modelling of threshold excesses, maxima
@@ -44,7 +44,8 @@ Suggests:
     knitr,
     testthat,
     devtools,
-    survival
+    survival,
+    ismev
 Imports: Rcpp (>= 0.12.18)
 LinkingTo: Rcpp
 LazyLoad: yes
