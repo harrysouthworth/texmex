@@ -2,26 +2,25 @@
 % Please edit documentation in R/copulas.R
 \name{copula}
 \alias{copula}
-\alias{plot.copula}
-\alias{print.copula}
+\alias{copula.default}
+\alias{copula.data.frame}
+\alias{copula.matrix}
 \title{Calculate the copula of a matrix of variables}
 \usage{
-copula(x, na.last = NA)
-\method{plot}{copula}(x, jitter. = FALSE, jitter.factor=1, ...)
-\method{print}{copula}(x, ...)
+copula(x, na.last = NA, ...)
+
+\method{copula}{default}(x, na.last = NA, ...)
+
+\method{copula}{data.frame}(x, na.last = NA, ...)
+
+\method{copula}{matrix}(x, na.last = NA, ...)
 }
 \arguments{
 \item{x}{A matrix or data.frame containing numeric variables.}
 
 \item{na.last}{How to treat missing values. See \code{rank} for details.}
 
-\item{jitter.}{In the call to \code{plot.copula}, if \code{jitter=TRUE}, the
-values are jittered before plotting. Defaults to \code{jitter. = FALSE}.}
-
-\item{jitter.factor}{How much jittering to use. Defaults to
-\code{jitter.factor = 1.}}
-
-\item{...}{Further arguments to be passed to plot method.}
+\item{...}{further arguments}
 }
 \value{
 A matrix with the same dimensions as \code{x}, each column of which
@@ -37,6 +36,15 @@ The result is obtained by applying \code{\link{edf}} to each column of
 
 Print and plot methods are available for the copula class.
 }
+\section{Methods (by class)}{
+\itemize{
+\item \code{default}: default method
+
+\item \code{data.frame}: data frame method
+
+\item \code{matrix}: matrix method
+}}
+
 \examples{
 
   D <- liver[liver$dose == "D",]
@@ -45,7 +53,7 @@ Print and plot methods are available for the copula class.
 
 }
 \seealso{
-\code{\link{edf}}
+\code{\link{edf}} \code{\link{plot.copula}}
 }
 \author{
 Harry Southworth

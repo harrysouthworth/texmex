@@ -19,3 +19,16 @@ test_that("copula throws errors", {
     expect_error(copula(TRUE), label="copula:exception")
     expect_error(copula("text"), label="copula:exception")
 })
+
+test_that("copula fails for data frames without numerics", {
+    dat <- data.frame(x=letters, stringsAsFactors=FALSE)
+    expect_error(copula(dat))
+})
+
+test_that("copula warns if it drops variables", {
+    dat <- data.frame(x=letters,
+                      y=seq_along(letters),
+                      stringsAsFactors=FALSE)
+    expect_warning(copula(dat))
+})
+

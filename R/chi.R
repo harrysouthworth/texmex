@@ -144,8 +144,11 @@ function (data, nq = 100, qlim = NULL, alpha = 0.05, trunc = TRUE) {
 
     # HS. Replaced 2 for loops with calls to sapply
 
-    cu <- sapply(1:nq, function(i, x, y){ mean(y < x[i]) }, y=rowmax, x=u )
-    cbaru <- sapply(1:nq, function(i, x, y){ mean(y > x[i]) }, y=rowmin, x=u )
+    cu <- vapply(seq_len(nq),
+                 function(i, x, y){ mean(y < x[i]) },
+                 0, y=rowmax, x=u )
+    cbaru <- vapply(seq_len(nq), function(i, x, y){ mean(y > x[i]) },
+                    0, y=rowmin, x=u )
 
     # Get \chi and \bar\chi
     chiu <- 2 - log(cu)/log(u) # 3.2 of Coles, Heffernan, Tawn
