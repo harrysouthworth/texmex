@@ -7,7 +7,7 @@ test_that("specfun.safe.product behaves as it should", {
   x <- runif(10, -5, 5)
   y <- runif(length(x), -5, 5)
 
-  expect_equal(prod(x, y), pmax(x*y,-1),
+  expect_equal(prod(x, y), pmax(x * y, -1),
                label="safe product: simple values")
 
   ## complicated values
@@ -19,3 +19,21 @@ test_that("specfun.safe.product behaves as it should", {
                label="safe product: complicated values")
 }
 )
+
+test_that("specfun.safe.product correctly recycles", {
+    set.seed(123456)
+    x <- runif(10, -5, 5)
+    y <- c(0.5)
+
+    expect_equal(.specfun.safe.product(x, y),
+                 pmax(x * y, -1))
+})
+
+test_that("specfun.safe.product correctly recycles again", {
+    x <- 0.5
+    y <- c(1,2,3,4)
+
+    expect_equal(.specfun.safe.product(x, y),
+                 pmax(x * y, -1))
+    
+})

@@ -38,5 +38,8 @@ Rcpp::NumericVector wrap_log1mexp(const Rcpp::NumericVector& x) {
 // [[Rcpp::export(name=".specfun.safe.product", rng=FALSE)]]
 Rcpp::NumericVector wrap_safe_product(const Rcpp::NumericVector &x,
 				      const Rcpp::NumericVector &y) {
-  return Rcpp::mapply(x, y, safe_product);
+  const R_xlen_t size = std::max(x.size(), y.size());
+  return Rcpp::mapply(Rcpp::rep_len(x, size),
+		      Rcpp::rep_len(y, size),
+		      safe_product);
 }
