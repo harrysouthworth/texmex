@@ -1,8 +1,8 @@
 Package: texmex
 Type: Package
 Title: Statistical Modelling of Extreme Values
-Version: 2.4.2
-Date: 2018-10-05
+Version: 2.4.3
+Date: 2018-10-11
 Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),
@@ -31,7 +31,7 @@ Description: Statistical extreme value modelling of threshold excesses, maxima
     Multivariate modelling is performed via the conditional approach of Heffernan
     and Tawn (2004) <doi:10.1111/j.1467-9868.2004.02050.x>, with graphical tools for
     threshold selection and to diagnose estimation convergence.
-License: GPL (>=2)
+License: GPL (>=2) 
 Depends:
     mvtnorm,
     ggplot2,
@@ -149,11 +149,11 @@ Collate:
     'rgpd.R'
     'roots.R'
     'simulate.R'
-    'sombrero-internal.R'
     'summary.evm.R'
     'summary.evmSim.R'
     'summary.migpd.R'
     'summary.predict.mex.R'
+    'testFunctions-internal.R'
     'texmex-package.R'
     'texmexWorkers.R'
     'thinAndBurn.evm.sim.R'
