@@ -73,8 +73,8 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     for (i in 1:nint) {
         z <- evm(data, th=u[i], penalty=penalty, priorParameters=priorParameters, cov=cov)
         m[i, ] <- z$coefficients
-        m[i, 1] <- m[i, 1] - m[i, 2] * u[i]
-        d <- matrix(c(1, -u[i]), ncol = 1)
+        m[i, 1] <- log(exp(m[i, 1]) - m[i, 2] * u[i])
+        d <- matrix(c( exp(m[i, 1])/(exp(m[i, 1])- m[i, 2] * u[i]) , -u[i]), ncol = 1)
         v <- t(d) %*% z$cov %*% d
         s[i, ] <- sqrt(diag(z$cov))
         s[i, 1] <- sqrt(v)
@@ -92,7 +92,7 @@ print.gpdRangeFit <- function(x, ...){
     sc <- cbind(threshold=x$th, phi=x$par[, 1], lo=x$lo[, 1], hi=x$hi[, 1])
     sh <- cbind(threshold=x$th, xi=x$par[, 2], lo=x$lo[, 2], hi=x$hi[, 2])
 
-    cat("\nScale parameter\n---------------\n")
+    cat("\nLog-scale parameter\n---------------\n")
     print(sc)
     cat("\nShape parameter\n---------------\n")
     print(sh)
