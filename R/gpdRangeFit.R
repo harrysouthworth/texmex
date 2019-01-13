@@ -74,7 +74,7 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
         z <- evm(data, th=u[i], penalty=penalty, priorParameters=priorParameters, cov=cov)
         m[i, ] <- z$coefficients
         m[i, 1] <- log(exp(m[i, 1]) - m[i, 2] * u[i])
-        d <- matrix(c( exp(m[i, 1])/(exp(m[i, 1])- m[i, 2] * u[i]) , -u[i]), ncol = 1)
+        d <- matrix(c( exp(z$coefficients[1])/(exp(z$coefficients[1])- m[i, 2] * u[i]) , -u[i]), ncol = 1)
         v <- t(d) %*% z$cov %*% d
         s[i, ] <- sqrt(diag(z$cov))
         s[i, 1] <- sqrt(v)
