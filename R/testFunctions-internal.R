@@ -1,9 +1,13 @@
+# Functions copied from other packages and used the the texmex test suite.
+#
+# The evd::*gpd functions were copied to here a long time ago. As at version 2.3.3
+# of evd, they haven't changed (according to visual inspection, anyway)
 .evd.dgpd <-
-function (x, loc = 0, scale = 1, shape = 0, log = FALSE) 
+function (x, loc = 0, scale = 1, shape = 0, log = FALSE)
 {
-    if (min(scale) <= 0) 
+    if (min(scale) <= 0)
         stop("invalid scale")
-    if (length(shape) != 1) 
+    if (length(shape) != 1)
         stop("invalid shape")
     d <- (x - loc)/scale
     nn <- length(d)
@@ -14,61 +18,137 @@ function (x, loc = 0, scale = 1, shape = 0, log = FALSE)
         d[!index] <- -Inf
     }
     else {
-        d[index] <- log(1/scale[index]) - (1/shape + 1) * log(1 + 
+        d[index] <- log(1/scale[index]) - (1/shape + 1) * log(1 +
             shape * d[index])
         d[!index] <- -Inf
     }
-    if (!log) 
+    if (!log)
         d <- exp(d)
     d
 }
 .evd.pgpd <-
-function (q, loc = 0, scale = 1, shape = 0, lower.tail = TRUE) 
+function (q, loc = 0, scale = 1, shape = 0, lower.tail = TRUE)
 {
-    if (min(scale) <= 0) 
+    if (min(scale) <= 0)
         stop("invalid scale")
-    if (length(shape) != 1) 
+    if (length(shape) != 1)
         stop("invalid shape")
     q <- pmax(q - loc, 0)/scale
-    if (shape == 0) 
+    if (shape == 0)
         p <- 1 - exp(-q)
     else {
         p <- pmax(1 + shape * q, 0)
         p <- 1 - p^(-1/shape)
     }
-    if (!lower.tail) 
+    if (!lower.tail)
         p <- 1 - p
     p
 }
 .evd.qgpd <-
-function (p, loc = 0, scale = 1, shape = 0, lower.tail = TRUE) 
+function (p, loc = 0, scale = 1, shape = 0, lower.tail = TRUE)
 {
-    if (min(p, na.rm = TRUE) <= 0 || max(p, na.rm = TRUE) >= 
-        1) 
+    if (min(p, na.rm = TRUE) <= 0 || max(p, na.rm = TRUE) >=
+        1)
         stop("`p' must contain probabilities in (0,1)")
-    if (min(scale) < 0) 
+    if (min(scale) < 0)
         stop("invalid scale")
-    if (length(shape) != 1) 
+    if (length(shape) != 1)
         stop("invalid shape")
-    if (lower.tail) 
+    if (lower.tail)
         p <- 1 - p
-    if (shape == 0) 
+    if (shape == 0)
         return(loc - scale * log(p))
     else return(loc + scale * (p^(-shape) - 1)/shape)
 }
 .evd.rgpd <-
-function (n, loc = 0, scale = 1, shape = 0) 
+function (n, loc = 0, scale = 1, shape = 0)
 {
-    if (min(scale) < 0) 
+    if (min(scale) < 0)
         stop("invalid scale")
-    if (length(shape) != 1) 
+    if (length(shape) != 1)
         stop("invalid shape")
-    if (shape == 0) 
+    if (shape == 0)
         return(loc + scale * rexp(n))
     else return(loc + scale * (runif(n)^(-shape) - 1)/shape)
 }
+
+################################################################################
+# evd::*gev functions from version 2.3.3
+
+.evd.dgev <-
+function (x, loc = 0, scale = 1, shape = 0, log = FALSE)
+{
+  if (min(scale) <= 0)
+    stop("invalid scale")
+  if (length(shape) != 1)
+    stop("invalid shape")
+  x <- (x - loc)/scale
+  if (shape == 0)
+    d <- log(1/scale) - x - exp(-x)
+  else {
+    nn <- length(x)
+    xx <- 1 + shape * x
+    xxpos <- xx[xx > 0 | is.na(xx)]
+    scale <- rep(scale, length.out = nn)[xx > 0 | is.na(xx)]
+    d <- numeric(nn)
+    d[xx > 0 | is.na(xx)] <- log(1/scale) - xxpos^(-1/shape) -
+      (1/shape + 1) * log(xxpos)
+    d[xx <= 0 & !is.na(xx)] <- -Inf
+  }
+  if (!log)
+    d <- exp(d)
+  d
+}
+
+.evd.pgev <-
+function (q, loc = 0, scale = 1, shape = 0, lower.tail = TRUE)
+{
+  if (min(scale) <= 0)
+    stop("invalid scale")
+  if (length(shape) != 1)
+    stop("invalid shape")
+  q <- (q - loc)/scale
+  if (shape == 0)
+    p <- exp(-exp(-q))
+  else p <- exp(-pmax(1 + shape * q, 0)^(-1/shape))
+  if (!lower.tail)
+    p <- 1 - p
+  p
+}
+
+.evd.qgev <-
+function (p, loc = 0, scale = 1, shape = 0, lower.tail = TRUE)
+{
+  if (min(p, na.rm = TRUE) <= 0 || max(p, na.rm = TRUE) >=
+      1)
+    stop("`p' must contain probabilities in (0,1)")
+  if (min(scale) < 0)
+    stop("invalid scale")
+  if (length(shape) != 1)
+    stop("invalid shape")
+  if (!lower.tail)
+    p <- 1 - p
+  if (shape == 0)
+    return(loc - scale * log(-log(p)))
+  else return(loc + scale * ((-log(p))^(-shape) - 1)/shape)
+}
+
+.evd.rgev <-
+function (n, loc = 0, scale = 1, shape = 0)
+{
+  if (min(scale) < 0)
+    stop("invalid scale")
+  if (length(shape) != 1)
+    stop("invalid shape")
+  if (shape == 0)
+    return(loc - scale * log(rexp(n)))
+  else return(loc + scale * (rexp(n)^(-shape) - 1)/shape)
+}
+
+################################################################################
+
 .extRemes.decluster.intervals <-
-function (Z, ei) 
+function (Z, ei)
 {
     if (ei >= 1) {
         r <- 0
@@ -86,24 +166,24 @@ function (Z, ei)
     out
 }
 .extRemes.decluster.runs <-
-function (Z, r) 
+function (Z, r)
 {
     nx <- sum(Z)
     s <- c(1:length(Z))[Z]
     t <- diff(s)
     cluster <- rep(1, nx)
-    if (nx > 1) 
+    if (nx > 1)
         cluster[2:nx] <- 1 + cumsum(t > r)
     size <- tabulate(cluster)
     nc <- length(size)
     inter <- rep(FALSE, nx)
     inter[match(1:nc, cluster)] <- TRUE
-    list(scheme = "runs", par = r, nc = nc, size = size, s = s, 
-        cluster = cluster, t = c(NA, t), inter = inter, intra = !inter, 
+    list(scheme = "runs", par = r, nc = nc, size = size, s = s,
+        cluster = cluster, t = c(NA, t), inter = inter, intra = !inter,
         r = r)
 }
 .extRemes.exi.intervals <-
-function(Z) 
+function(Z)
 {
     if (sum(Z) <= 1) {
         warning("estimator undefined: too few exceedances")
@@ -125,10 +205,10 @@ function(Z)
     2 * (t1^2)/t2
 }
 .ismev.gev.fit <-
-function (xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL, 
-          mulink = identity, siglink = identity, shlink = identity, 
-          muinit = NULL, siginit = NULL, shinit = NULL, show = TRUE, 
-          method = "Nelder-Mead", maxit = 10000, ...) 
+function (xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL,
+          mulink = identity, siglink = identity, shlink = identity,
+          muinit = NULL, siginit = NULL, shinit = NULL, show = TRUE,
+          method = "Nelder-Mead", maxit = 10000, ...)
 {
   z <- list()
   npmu <- length(mul) + 1
@@ -139,35 +219,35 @@ function (xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL,
   in1 <- mean(xdat) - 0.57722 * in2
   if (is.null(mul)) {
     mumat <- as.matrix(rep(1, length(xdat)))
-    if (is.null(muinit)) 
+    if (is.null(muinit))
       muinit <- in1
   }
   else {
     z$trans <- TRUE
     mumat <- cbind(rep(1, length(xdat)), ydat[, mul])
-    if (is.null(muinit)) 
+    if (is.null(muinit))
       muinit <- c(in1, rep(0, length(mul)))
   }
   if (is.null(sigl)) {
     sigmat <- as.matrix(rep(1, length(xdat)))
-    if (is.null(siginit)) 
+    if (is.null(siginit))
       siginit <- in2
   }
   else {
     z$trans <- TRUE
     sigmat <- cbind(rep(1, length(xdat)), ydat[, sigl])
-    if (is.null(siginit)) 
+    if (is.null(siginit))
       siginit <- c(in2, rep(0, length(sigl)))
   }
   if (is.null(shl)) {
     shmat <- as.matrix(rep(1, length(xdat)))
-    if (is.null(shinit)) 
+    if (is.null(shinit))
       shinit <- 0.1
   }
   else {
     z$trans <- TRUE
     shmat <- cbind(rep(1, length(xdat)), ydat[, shl])
-    if (is.null(shinit)) 
+    if (is.null(shinit))
       shinit <- c(0.1, rep(0, length(shl)))
   }
   z$model <- list(mul, sigl, shl)
@@ -179,12 +259,12 @@ function (xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL,
     xi <- shlink(shmat %*% (a[seq(npmu + npsc + 1, length = npsh)]))
     y <- (xdat - mu)/sc
     y <- 1 + xi * y
-    if (any(y <= 0) || any(sc <= 0)) 
+    if (any(y <= 0) || any(sc <= 0))
       return(10^6)
-    sum(log(sc)) + sum(y^(-1/xi)) + sum(log(y) * (1/xi + 
+    sum(log(sc)) + sum(y^(-1/xi)) + sum(log(y) * (1/xi +
                                                     1))
   }
-  x <- optim(init, gev.lik, hessian = TRUE, method = method, 
+  x <- optim(init, gev.lik, hessian = TRUE, method = method,
              control = list(maxit = maxit, ...))
   z$conv <- x$convergence
   mu <- mulink(mumat %*% (x$par[1:npmu]))
@@ -200,10 +280,10 @@ function (xdat, ydat = NULL, mul = NULL, sigl = NULL, shl = NULL,
   z$se <- sqrt(diag(z$cov))
   z$vals <- cbind(mu, sc, xi)
   if (show) {
-    if (z$trans) 
+    if (z$trans)
       print(z[c(2, 3, 4)])
     else print(z[4])
-    if (!z$conv) 
+    if (!z$conv)
       print(z[c(5, 7, 9)])
   }
   class(z) <- "gev.fit"
@@ -297,12 +377,12 @@ function (xdat, threshold, npy = 365, ydat = NULL, sigl = NULL,
     z$npy <- npy
     z$xdata <- xdat
     if (show) {
-        if (z$trans) 
+        if (z$trans)
             print(z[c(2, 3)])
-        if (length(z[[4]]) == 1) 
+        if (length(z[[4]]) == 1)
             print(z[4])
         print(z[c(5, 7)])
-        if (!z$conv) 
+        if (!z$conv)
             print(z[c(8, 10, 11, 13)])
     }
     class(z) <- "gpd.fit"
