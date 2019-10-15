@@ -122,4 +122,9 @@ Changes from version 2.4
    from conditioning varibale in mex fitting.
 6. Various improvements to documentation.
 
+---------------------------------- Version 2.4.3 -----------------------------------
 
+Changes from version 2.4.2
+
+1. Bug fixes in gpdFitRange: calculation of log-scale parameter and also standard error 
+2. gpdIntCensored family added

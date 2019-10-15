@@ -618,5 +618,27 @@ test_that("evm behaves as it should", {
             label="gev: with covariates, mu drawn to 4")
   expect_that(abs(4-coef(mod10)[1])>abs(4-coef(mod11)[1]), is_true(),
             label="gev: with covariates, mu drawn to 4")
+  
+  ####################################################################
+  # 6.1 gpdIntCensored:  Check that estimates for interval censored data approach those treating data as exact as reported precision of data increases
+  
+  nReps <- 10
+  y.exact <- lapply(1:nReps,function(i)rgpd(100,sigma=1,xi=-0.1))
+  gpd.exact <- lapply(y.exact,function(x)evm(x,th=0))
+  nDP <- 4
+  DP <- seq(0,length=nDP)
+  gpd.cens <- lapply(y.exact,function(x)lapply(DP,function(dp)evm(round(x,digits=dp),th=0,family=gpdIntCensored)))
+
+  gpdCens.scale <- sapply(gpd.cens,function(x)sapply(x,function(y)y$par[1]))
+  gpdCens.shape <- sapply(gpd.cens,function(x)sapply(x,function(y)y$par[2]))
+  gpdExct.scale <- sapply(gpd.exact,function(x)x$par[1])
+  gpdExct.shape <- sapply(gpd.exact,function(x)x$par[2])
+  
+  scaleCgce <- sapply(1:nDP,function(i)abs(mean(gpdCens.scale[i,] - gpdExct.scale)))
+  shapeCgce <- sapply(1:nDP,function(i)abs(mean(gpdCens.shape[i,] - gpdExct.shape)))
+
+  expect_that(all(diff(scaleCgce)<0), is_true(),"gpdIntCensored")
+  expect_that(all(diff(shapeCgce)<0), is_true(),"gpdIntCensored")
+  
 }
 )

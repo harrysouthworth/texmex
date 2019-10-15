@@ -51,7 +51,7 @@ LinkingTo: Rcpp
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
-RoxygenNote: 6.1.0
+RoxygenNote: 6.1.1
 Encoding: UTF-8
 Collate:
     'AIC.evm.R'

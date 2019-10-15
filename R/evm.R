@@ -10,7 +10,9 @@
 #' The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
 #' Currently, the other \code{texmexFamily} objects available are \code{gev}
 #' which results in fitting a generalized extreme value (GEV) distribution to
-#' the data, and \code{egp3} which fits the extended generalized Pareto
+#' the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has 
+#' been rounded to a given numebr of decimal places by recognisiing the data as 
+#' interval censored, and \code{egp3} which fits the extended generalized Pareto
 #' distribution version 3 of Papastathopoulos and Tawn (2013).
 #'
 #' See Coles (2001) for an introduction to extreme value modelling and the GPD
@@ -150,6 +152,7 @@
 #' @param cores The number of cores to use when bootstrapping. Defaults to
 #' \code{cores=NULL} and the function guesses how many cores are available and
 #' uses them all.
+#' @param dp Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.
 #' @return If \code{method = "optimize"}, an object of class \code{evmOpt}:
 #'
 #' \item{call}{The call to \code{evmSim} that produced the object.}

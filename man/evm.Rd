@@ -128,6 +128,8 @@ uses them all.}
 
 \item{verbose}{Whether or not to print progress to screen. Defaults to
 \code{verbose=TRUE}.}
+
+\item{dp}{Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.}
 }
 \value{
 If \code{method = "optimize"}, an object of class \code{evmOpt}:
@@ -208,7 +210,9 @@ distribution to be used is specified by passing an object of class
 The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
 Currently, the other \code{texmexFamily} objects available are \code{gev}
 which results in fitting a generalized extreme value (GEV) distribution to
-the data, and \code{egp3} which fits the extended generalized Pareto
+the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has 
+been rounded to a given numebr of decimal places by recognisiing the data as 
+interval censored, and \code{egp3} which fits the extended generalized Pareto
 distribution version 3 of Papastathopoulos and Tawn (2013).
 
 See Coles (2001) for an introduction to extreme value modelling and the GPD
