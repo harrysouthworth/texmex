@@ -18,14 +18,14 @@ output.
 Sets the seed to the value used to fit the model.
 }
 \examples{
- \donttest{
+ \donttest{ 
  data <- rnorm(1000)
  mod <- evm(data, qu=.7, method="simulate")
  evmSimSetSeed(mod)
  mod1 <- evm(data, qu=.7, method="simulate") # this produces the same MCMC output as mod
 }
-}
 
+}
 \seealso{
 \code{\link{evm}}
 }

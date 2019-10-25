@@ -37,7 +37,6 @@ If the object has class 'evmOpt', \code{nsamp} random draws are
   used in the computation. Also note that sometimes the optimizer returns
   an approximatae covariance that is not postive-semidefinite, in which case
   the DIC will be reported as NA.
-  used in the computation.
 }
 \seealso{
 \code{\link[stats]{AIC}}
