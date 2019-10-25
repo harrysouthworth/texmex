@@ -53,7 +53,10 @@ Print and plot methods are available for the copula class.
 
 }
 \seealso{
+
 \code{\link{edf}} \code{\link{plot.copula}}
+
+\code{\link{edf}}
 }
 \author{
 Harry Southworth

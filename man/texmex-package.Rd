@@ -109,7 +109,9 @@ quantile(res, prob=c(.5, .75, .9, .95, .99))
 # estimate proportion exceeding 3*upper limit of normal mean(res >
 # 36 * 3) # 36 is the upper limit of normal for ALT
 }
+
 }
+
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,

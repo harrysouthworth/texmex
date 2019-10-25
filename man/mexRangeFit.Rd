@@ -63,8 +63,8 @@ sampling variation.
   par(mfrow=c(4,2))
   mexRangeFit(w,which=1,main="Winter data, Heffernan and Tawn 2004",cex=0.5)
 }
-  
 }
+
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,

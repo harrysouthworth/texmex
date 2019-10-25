@@ -87,9 +87,14 @@ The functions are used by the modelling functions to create
 diagnostic plots, predictions, etc..
 }
 \note{
+
 The \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and
     \code{egp3} families are provided. The \code{\link{evm}}
     function defaults to using the \code{gpd} family.
+
+The \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and \code{egp3} families are provided. The
+\code{\link{evm}} function defaults to using the \code{gpd} family.
+
 }
 \seealso{
 \code{\link{evm}}

@@ -53,6 +53,7 @@ LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
 RoxygenNote: 6.1.1
 Encoding: UTF-8
+VignetteBuilder: knitr
 Collate:
     'AIC.evm.R'
     'Dcond.R'

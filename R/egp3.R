@@ -4,8 +4,8 @@ NULL
 
 egp3 <- texmexFamily(name="EGP3",
                      param = c(lambda=0, phi=0, xi=0), # Standard exponential
-                     density = function(n, param, model){
-                                 degp3(n, exp(c(param[, 1])), exp(c(param[, 2])), c(param[, 3]), u=model$threshold)
+                     density = function(n, param, model, log.d=FALSE){
+                                 degp3(n, exp(c(param[, 1])), exp(c(param[, 2])), c(param[, 3]), u=model$threshold, log.d=log.d)
                      },
                      rng = function(n, param, model){
                              regp3(n, exp(c(param[, 1])), exp(c(param[, 2])), c(param[, 3]), u=model$threshold)
@@ -63,7 +63,7 @@ egp3 <- texmexFamily(name="EGP3",
                                dz1 <- -sigma * (1 - z^(1/kappa))^(-xi) * log(1 - z^(1/kappa)) / xi
                                dz2 <- -sigma * ((1 - z^(1/kappa))^(-xi) -1) / xi^2
                                dz <- dz1 + dz2
-                               
+
                                out[1, ] <- dk * kappa # To account for working with exp(lambda)
                                out[2, ] <- ds * sigma # To account for working with exp(phi)
                                out[3, ] <- dz

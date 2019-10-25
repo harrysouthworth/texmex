@@ -199,5 +199,8 @@ Multivariate Analysis, 115, 396 -- 404, 2013
 \author{
 Harry Southworth, Janet E. Heffernan
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+}
 \keyword{models}
 \keyword{multivariate}

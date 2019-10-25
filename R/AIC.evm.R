@@ -25,26 +25,14 @@
 #' @export
 AIC.evmOpt <- function(object, penalized=FALSE, nsamp=1e3, ..., k=2){
   ll <- unclass(logLik(object, penalized=penalized))
-  aic <- -2*ll + k * attr(ll, 'df')
-  attr(aic, "df") <- NULL
-
-  # Get approximate DIC by sampling from Gaussian
-  if (all(eigen(object$cov)$values > 0)){ # PSD
-    samp <- try(rmvnorm(nsamp, coef(object), object$cov), silent=TRUE) # can throw error if very short tailed so cov mat is singular
-    dic <- try(DIC.evm(object, samp), silent=TRUE)
-
-    if (class(dic) == "try-error"){
-      dic <- NA
-    }
-  } else {
-    dic <- NA
-  }
-
-  c(AIC=aic, DIC=dic)
+  AIC <- -2*ll + k * attr(ll, 'df')
+  attr(AIC, "df") <- NULL
+  AIC
 }
 
-DIC.evm <- function(object, samp){
-  ll <- object$family$log.lik(object$data, object$th)
+DIC.evmSim <- function(object){
+  ll <- object$map$family$log.lik(object$map$data, object$map$th)
+  samp <- object$param
 
   dev <- -2 * apply(samp, 1, ll)
   dev <- dev[dev < Inf]
@@ -52,13 +40,63 @@ DIC.evm <- function(object, samp){
   mean(dev) + (mean(dev) + 2 * ll(colMeans(samp)))
 }
 
-#' @export
-AIC.evmSim <- function(object, ..., k=2){
+WAIC.evmSim <- function(object){
+  # This follows Richard McElreath's Statistical Rethinking, Section 6.4.2
+  # Get density function
+  dfun <- object$map$family$density
   samp <- object$param
 
-  res <- DIC.evm(object$map, samp)
-  names(res) <- "DIC"
-  res
+  # Need matrix with one column for each parameter
+  npar <- length(coef(object))
+
+  D <- texmexMakeNewdataD(object$map, newdata=NULL)
+
+  n <- length(object$map$data$y)
+
+  # Get loglik for every row in samp, every value of (phi, xi)
+  param <- texmexGetParam(data = D, co = samp)
+
+  lps <- lapply(1:nrow(D[[1]]), # For each observation get matrix of parameters
+                function(i, x, p){
+                  wh <- lapply(1:length(D),
+                               function(j, x, p, i){
+                                 rowSums(t(t(p[[j]]) * c(x[[j]][i, ])))
+                               }, x=x, p=p, i=i)
+                  wh <- do.call("cbind", wh)
+                  colnames(wh) <- names(x)
+                  wh
+                }, x=D, p=param)
+
+  # lps is a list of matrices, one for each observation in the original dataset,
+  # each matrix having columns for the parameters (phi and xi for GPD), and
+  # with number of rows equal to the number of retained samples from the
+  # Markov chains
+
+  ll <- sapply(1:length(lps), function(X){
+    dfun(object$map$data$y[X], lps[[X]], object$map, log.d=TRUE)
+  })
+
+
+  lppd <- apply(ll, 2, function(X){
+    xm <- max(X)
+    s <- sum(exp(X - xm))
+    xm + log(s)
+  }) - log(n)
+
+  # Get effective number of parameters
+  ep <- apply(ll, 2, var)
+
+  -2 * (sum(lppd) - sum(ep))
+}
+
+
+#' @export
+AIC.evmSim <- function(object){
+  aic <- AIC.evmOpt(object$map)
+  dic <- DIC.evmSim(object)
+  waic <- WAIC.evmSim(object)
+
+  c(AIC = aic, DIC = dic, WAIC=waic)
 }
 
 #' Log-likelihood for evmOpt objects
