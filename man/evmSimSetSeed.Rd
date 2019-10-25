@@ -25,10 +25,9 @@ Sets the seed to the value used to fit the model.
 # mod1 <- evm(data, qu=.7, method="simulate") # this produces the same MCMC output as mod
 
 }
-\author{
-Harry Southworth
-}
 \seealso{
 \code{\link{evm}}
 }
-
+\author{
+Harry Southworth
+}

@@ -159,9 +159,6 @@ mexDependence(NO.NO2, which = "NO",dqu=0.7,start=c(0.1,0.1),
 
 
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -176,6 +173,8 @@ Multivariate Analysis, 115, 396 -- 404, 2013
 \code{\link{migpd}}, \code{\link{bootmex}},
 \code{\link{predict.mex}}, \code{\link{plot.mex}}
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+}
 \keyword{models}
 \keyword{multivariate}
-

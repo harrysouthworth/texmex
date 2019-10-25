@@ -2,15 +2,15 @@
 % Please edit documentation in R/mspearman.R
 \name{MCS}
 \alias{MCS}
-\alias{bootMCS}
-\alias{ggplot.MCS}
-\alias{ggplot.bootMCS}
 \alias{plot.MCS}
-\alias{plot.bootMCS}
+\alias{ggplot.MCS}
 \alias{print.MCS}
+\alias{bootMCS}
+\alias{plot.bootMCS}
 \alias{print.bootMCS}
-\alias{print.summary.bootMCS}
 \alias{summary.bootMCS}
+\alias{ggplot.bootMCS}
+\alias{print.summary.bootMCS}
 \title{Multivariate conditional Spearman's rho}
 \usage{
 MCS(X, p = seq(0.1, 0.9, by = 0.1))
@@ -21,11 +21,11 @@ MCS(X, p = seq(0.1, 0.9, by = 0.1))
 
 bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
 
-\method{ggplot}{bootMCS}(data, mapping, main = "", alpha = 0.05, ylim, ...,
-  environment)
+\method{ggplot}{bootMCS}(data, mapping, main = "", alpha = 0.05, ylim,
+  ..., environment)
 
-\method{plot}{bootMCS}(x, xlab = "p", ylab = "MCS", alpha = 0.05, ylim,
-  ...)
+\method{plot}{bootMCS}(x, xlab = "p", ylab = "MCS", alpha = 0.05,
+  ylim, ...)
 
 \method{summary}{bootMCS}(object, alpha = 0.05, ...)
 
@@ -89,9 +89,6 @@ plot(D)
 #plot(Dmcs)
 
 }
-\author{
-Yiannis Papastathopoulos, Harry Southworth
-}
 \references{
 F. Schmid and R. Schmidt, Multivariate conditional versions of
 Spearman's rho and related measures of tail dependence, Journal of
@@ -100,5 +97,7 @@ Multivariate Analysis, 98, 1123 -- 1140, 2007
 \seealso{
 \code{\link{chi}}
 }
+\author{
+Yiannis Papastathopoulos, Harry Southworth
+}
 \keyword{multivariate}
-

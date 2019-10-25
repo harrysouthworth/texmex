@@ -16,4 +16,3 @@
 \description{
 Print evmOpt objects
 }
-

@@ -42,7 +42,7 @@ LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
 VignetteBuilder: knitr
-RoxygenNote: 5.0.1
+RoxygenNote: 6.1.1
 Collate:
     'AIC.evm.R'
     'Dcond.R'

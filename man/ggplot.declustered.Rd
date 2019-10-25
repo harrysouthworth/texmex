@@ -36,4 +36,3 @@
 \description{
 Create and display diagnostic plots for a declustered object.
 }
-

@@ -9,7 +9,8 @@ extended generalized Pareto distribution 3}
 \usage{
 degp3(x, kappa = 1, sigma, xi, u = 0, log.d = FALSE)
 
-pegp3(q, kappa = 1, sigma, xi, u = 0, lower.tail = TRUE, log.p = FALSE)
+pegp3(q, kappa = 1, sigma, xi, u = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
 regp3(n, kappa = 1, sigma, xi, u = 0)
 }
@@ -44,13 +45,12 @@ EGP3 distribution of Papastathopoulos and Tawn
   plot(pegp3(x, kappa=2, sigma=1, xi=.5))
 
 }
-\author{
-Harry Southworth
-}
 \references{
 I. Papastathopoulos and J. A. Tawn, Extended generalized Pareto
 modles for tail estimation, Journal of Statistical Planning and Inference,
 143, 131 -- 143, 2013
 }
+\author{
+Harry Southworth
+}
 \keyword{models}
-

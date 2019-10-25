@@ -2,8 +2,8 @@
 % Please edit documentation in R/texmex-package.R
 \docType{data}
 \name{summer and winter data}
-\alias{summer}
 \alias{summer and winter data}
+\alias{summer}
 \alias{winter}
 \title{Air pollution data, separately for summer and winter months}
 \format{Data frames with 578 (summer) and 532 (winter) observations on the
@@ -42,4 +42,3 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 497 -- 546, 2004
 }
 \keyword{datasets}
-

@@ -2,14 +2,19 @@
 % Please edit documentation in R/AIC.evm.R
 \name{AIC.evmOpt}
 \alias{AIC.evmOpt}
-\title{Akaike's Information Criterion}
+\alias{AIC.evmSim}
+\title{Information Criteria}
 \usage{
-\method{AIC}{evmOpt}(object, penalized = FALSE, ..., k = 2)
+\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, ...,
+  k = 2)
 }
 \arguments{
 \item{object}{fit model object}
 
 \item{penalized}{whether to use the penalized log-likelihood}
+
+\item{nsamp}{Number of approximate Gaussian sample to use in computing DIC.
+Defaults to \code{nsamp=1e3}. Only used when the object has class 'evmOpt'.}
 
 \item{...}{other arguments currently ignored}
 
@@ -17,12 +22,20 @@
 default \code{k = 2} is the classical AIC.}
 }
 \value{
-the AIC
+The AIC and DIC
 }
 \description{
-Compute AIC for \code{evmOpt} objects
+Compute AIC and (approximate) DIC for \code{evmOpt} objects
+}
+\details{
+If the object has class 'evmOpt', \code{nsamp} random draws are
+  made from the Gaussian distribution with mean and covariance inferred from
+  the model object. The result will be an approximate DIC. Note that AIC should
+  not be trusted if priors are not flat. For example, if you use a regularizing
+  prior on xi, say xi ~ N(0, 0.25), AIC can be misleading and DIC should be
+  preferred. If the object has class 'evmSim', the actual posterior draws are
+  used in the computation.
 }
 \seealso{
 \code{\link[stats]{AIC}}
 }
-

@@ -62,9 +62,6 @@ sampling variation.
 #  mexRangeFit(w,which=1,main="Winter data, Heffernan and Tawn 2004",cex=0.5)
   
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
@@ -73,6 +70,8 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 \seealso{
 \code{\link{mexDependence}}, \code{\link{bootmex}}
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+}
 \keyword{models}
 \keyword{multivariate}
-

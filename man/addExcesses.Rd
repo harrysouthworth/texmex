@@ -21,4 +21,3 @@ addExcesses(p, x, y, data, textsize)
 Annotate a threshold selection ggplot with the number
 of exceedances of various thresholds.
 }
-

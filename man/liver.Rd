@@ -33,4 +33,3 @@ dose. The baseline values were taken prior to any treatment being received,
 and the clinical trial had a single post-baseline visit.
 }
 \keyword{datasets}
-

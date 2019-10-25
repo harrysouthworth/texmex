@@ -2,11 +2,11 @@
 % Please edit documentation in R/jointExceedanceCurves.R
 \name{JointExceedanceCurve}
 \alias{JointExceedanceCurve}
+\alias{geom_jointExcCurve}
 \alias{JointExceedanceCurve.default}
 \alias{JointExceedanceCurve.mexMC}
 \alias{JointExceedanceCurve.predict.mex}
 \alias{calcJointExceedanceCurve}
-\alias{geom_jointExcCurve}
 \alias{print.jointExcCurve}
 \title{Joint exceedance curves}
 \usage{
@@ -19,8 +19,8 @@ JointExceedanceCurve(Sample, ExceedanceProb,...)
 \method{JointExceedanceCurve}{mexMC}(Sample, ExceedanceProb, n = 50,
   x = NULL, which = 1:2, ...)
 
-\method{JointExceedanceCurve}{predict.mex}(Sample, ExceedanceProb, n = 50,
-  x = NULL, which = 1:2, ...)
+\method{JointExceedanceCurve}{predict.mex}(Sample, ExceedanceProb,
+  n = 50, x = NULL, which = 1:2, ...)
 
 calcJointExceedanceCurve(Sample, ExceedanceProb, n = 50, x = NULL)
 
@@ -42,20 +42,20 @@ geom_jointExcCurve(x, ...)
 \item{which}{Vector length two identifying which margins to use for joint exceedance curve estimation. Can be integer vector, giving column numbers of original data matrix, or character vector identifying variables by name (these must match column names in original data).}
 }
 \value{
-Returns an object of class \code{jointExcCurve}. This is a 
-list of length two, one for each variable for which the curve is 
-calculated.  Each item of the list is a vector of coordinate values 
-for the variable in question.  Attributes include \code{names} and 
+Returns an object of class \code{jointExcCurve}. This is a
+list of length two, one for each variable for which the curve is
+calculated.  Each item of the list is a vector of coordinate values
+for the variable in question.  Attributes include \code{names} and
 the exceedance probability used to calculate the curve \code{ExceedanceProb}.
 
-The curve is calculated by finding pairs of points (x,y) for which the empirical 
-probability P(X>x, Y>y) of both variables exceeding their corresponding value is equal 
-to the specified \code{ExceedanceProb}.  Note that when this is calculated 
-for an object of class \code{predict.mex} (returned by a call to the \code{predict} 
-method for an object of class \code{mex}) then the exceedance probability is 
-interpreted as the UNCONDITIONAL exceedance probability of the importance sample, 
-ie the probability of sampled values occurring from the original modelled joint 
-distribution, and NOT the conditional distribution used to generate the 
+The curve is calculated by finding pairs of points (x,y) for which the empirical
+probability P(X>x, Y>y) of both variables exceeding their corresponding value is equal
+to the specified \code{ExceedanceProb}.  Note that when this is calculated
+for an object of class \code{predict.mex} (returned by a call to the \code{predict}
+method for an object of class \code{mex}) then the exceedance probability is
+interpreted as the UNCONDITIONAL exceedance probability of the importance sample,
+ie the probability of sampled values occurring from the original modelled joint
+distribution, and NOT the conditional distribution used to generate the
 importance sample.
 
 Estimated curve can be added to a ggplot of the data (and/or importance sample) by using the function \code{geom_jointExcCurve}, see examples below.
@@ -64,15 +64,15 @@ Estimated curve can be added to a ggplot of the data (and/or importance sample) 
 Calculate bivariate joint exceedance curves
 }
 \details{
-Calculates pairs of points (x,y) for which the point exceedance 
-probability P(X>x and Y>y) is constant.  This is available only in 
-two dimensions: for higher dimensional data, the bivariate margin 
-will be used and other variables ignored. Takes as input either a 
-two column matrix of observations, output from \code{mexMonteCarlo} 
-(in which case samples from all fitted models are used to calculate curves) 
-or output from a call to the \code{predict} method for an object of 
-class \code{mex} (in which case just the single fitted model is used 
-for estimation, with the importance sample generated in the call 
+Calculates pairs of points (x,y) for which the point exceedance
+probability P(X>x and Y>y) is constant.  This is available only in
+two dimensions: for higher dimensional data, the bivariate margin
+will be used and other variables ignored. Takes as input either a
+two column matrix of observations, output from \code{mexMonteCarlo}
+(in which case samples from all fitted models are used to calculate curves)
+or output from a call to the \code{predict} method for an object of
+class \code{mex} (in which case just the single fitted model is used
+for estimation, with the importance sample generated in the call
 to \code{predict} being used to calculate the joint exceedance curve).
 }
 \examples{
@@ -83,9 +83,9 @@ to \code{predict} being used to calculate the joint exceedance curve).
 # j1 <- JointExceedanceCurve(m1,0.01)
 # j2 <- JointExceedanceCurve(m1,0.005)
 # j3 <- JointExceedanceCurve(m1,0.001)
-# ggplot(m1,aes(V1,V2)) + geom_point(colour="dark blue",alpha=0.5) + 
-# geom_jointExcCurve(j1,colour="orange") + 
-# geom_jointExcCurve(j2,colour="orange") + 
+# ggplot(m1,aes(V1,V2)) + geom_point(colour="dark blue",alpha=0.5) +
+# geom_jointExcCurve(j1,colour="orange") +
+# geom_jointExcCurve(j2,colour="orange") +
 # geom_jointExcCurve(j3,colour="orange")
 
 # using importance sample generated by call to predict for object of class mex
@@ -95,21 +95,20 @@ to \code{predict} being used to calculate the joint exceedance curve).
 # j4 <- JointExceedanceCurve(m2,0.0005,which=c("NO","NO2"))
 # j5 <- JointExceedanceCurve(m2,0.0002,which=c("NO","NO2"))
 # j6 <- JointExceedanceCurve(m2,0.0001,which=c("NO","NO2"))
-# g[[2]] +  
-#     geom_jointExcCurve(j4,aes(NO,NO2),col="orange") + 
-#     geom_jointExcCurve(j5,aes(NO,NO2),col="orange") + 
+# g[[2]] +
+#     geom_jointExcCurve(j4,aes(NO,NO2),col="orange") +
+#     geom_jointExcCurve(j5,aes(NO,NO2),col="orange") +
 #     geom_jointExcCurve(j6,aes(NO,NO2),col="orange")
-# 
+#
 # for augmented dataset, generated by MC sampling from collection of fitted H+T models
 # m <- mexAll(winter,mqu=0.7,dqu=rep(0.7,5))
 # m3 <- mexMonteCarlo(nSample=5000,mexList=m)
 # j7 <- JointExceedanceCurve(m3,0.05,which=c("NO","NO2"))
 # j8 <- JointExceedanceCurve(m3,0.02,which=c("NO","NO2"))
 # j9 <- JointExceedanceCurve(m3,0.01,which=c("NO","NO2"))
-# ggplot(as.data.frame(m3$MCsample[,c("NO","NO2")]),aes(NO,NO2)) + 
-#     geom_point(col="light blue",alpha=0.5) + 
-#     geom_jointExcCurve(j7,col="orange") + 
-#     geom_jointExcCurve(j8,col="orange") + 
+# ggplot(as.data.frame(m3$MCsample[,c("NO","NO2")]),aes(NO,NO2)) +
+#     geom_point(col="light blue",alpha=0.5) +
+#     geom_jointExcCurve(j7,col="orange") +
+#     geom_jointExcCurve(j8,col="orange") +
 #     geom_jointExcCurve(j9,col="orange")
 }
-

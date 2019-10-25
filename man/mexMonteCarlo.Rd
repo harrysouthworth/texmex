@@ -45,14 +45,13 @@ the largest of all marignal variables (measured on a quantile scale).
 #  pairs(mexMC$MCsample)
   
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for
 multivariate extreme values, Journal of the Royal Statistical society B, 66,
 497 -- 546, 2004
 }
+\author{
+Harry Southworth, Janet E. Heffernan
+}
 \keyword{models}
 \keyword{multivariate}
-

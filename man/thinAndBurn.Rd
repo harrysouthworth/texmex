@@ -49,10 +49,9 @@ thin the output and discard observations from burn-in period.
   plot(mod1)
 
 }
-\author{
-Harry Southworth, Janet E. Heffernan
-}
 \seealso{
 \code{\link{evm}}
 }
-
+\author{
+Harry Southworth, Janet E. Heffernan
+}
