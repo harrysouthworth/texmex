@@ -66,8 +66,8 @@ cgpd <- texmexFamily(name = 'CGPD',
                        }
                        out
                      }, # Close delta
-                     density = function(n, param, model){
-                       dgpd(n, exp(c(param[, 1])), c(exp(param[, 2]) - 1/2), u=model$threshold)
+                     density = function(n, param, model, log.d = FALSE){
+                       dgpd(n, exp(c(param[, 1])), c(exp(param[, 2]) - 1/2), u=model$threshold, log.d = log.d)
                      },
 
                      rng = function(n, param, model){
