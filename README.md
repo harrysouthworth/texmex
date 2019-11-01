@@ -19,3 +19,12 @@ using 'R CMD INSTALL --install-tests' and then running
 to the package location.
 
 This work was partially funded by AstraZeneca.
+
+Currently (2019-11-01) for me (Harry) to get roxygen to work, it seems necessary
+to do
+
+remotes::install_version("roxygen2", "6.0.1")
+
+I'm sure there are other workarounds and the issue may be system
+dependent. There's a whole lovefest about it under Issue 822
+in the roxygen2 GitHub.

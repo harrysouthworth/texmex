@@ -10,6 +10,10 @@
 #' @param ... other arguments currently ignored
 #' @param k numeric, the penalty per parameter to be used; the
 #'     default \code{k = 2} is the classical AIC.
+#' @param DIC Logical. Whether to compute DIC. Defaults to \code{DIC = TRUE}.
+#'   Only applicable to objects of class 'evmSim'.
+#' @param WAIC Logical. Whether to compute WAIC. Defaults to \code{WAIC = TRUE}.
+#'   Only applicable to objects of class 'evmSim'.
 #' @details If the object has class 'evmOpt', \code{nsamp} random draws are
 #'   made from the Gaussian distribution with mean and covariance inferred from
 #'   the model object. The result will be an approximate DIC. Note that AIC should
@@ -35,7 +39,7 @@ DIC.evmSim <- function(object){
   samp <- object$param
 
   dev <- -2 * apply(samp, 1, ll)
-  dev <- dev[dev < Inf]
+  #dev <- dev[dev < Inf]
 
   mean(dev) + (mean(dev) + 2 * ll(colMeans(samp)))
 }
@@ -91,12 +95,19 @@ WAIC.evmSim <- function(object){
 
 
 #' @export
-AIC.evmSim <- function(object){
+AIC.evmSim <- function(object, DIC = TRUE, WAIC = TRUE){
   aic <- AIC.evmOpt(object$map)
-  dic <- DIC.evmSim(object)
-  waic <- WAIC.evmSim(object)
+  aic <- c(AIC = aic)
+  if (DIC){
+    dic <- DIC.evmSim(object)
+    aic <- c(aic, DIC = dic)
+  }
+  if (WAIC){
+    waic <- WAIC.evmSim(object)
+    aic <- c(aic, WAIC = waic)
+  }
 
-  c(AIC = aic, DIC = dic, WAIC=waic)
+  aic
 }
 
 #' Log-likelihood for evmOpt objects
