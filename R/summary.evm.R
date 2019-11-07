@@ -61,7 +61,7 @@ print.summary.evmOpt <- function(x, digits = 3 , ...){
 
   cat("\n\n")
   wh <- t(c(x$loglik, x$ploglik, AIC(x)))
-  colnames(wh) <- c("Log lik.", "Penalized log lik.", "AIC", "DIC")
+  colnames(wh) <- c("Log lik.", "Penalized log lik.", "AIC")
   rownames(wh) <- ""
   print(wh, print.gap=2, quote=FALSE, justify="left")
 
