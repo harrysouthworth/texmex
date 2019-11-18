@@ -29,13 +29,13 @@ print.evmOpt <- function(x , digits=max(3, getOption("digits") - 3), ... ){
 
     if (x$penalty == "none"){
       wh <- t(format(c(x$loglik, AIC(x)), digits, ...))
-      colnames(wh) <- c("Log. lik", "AIC","DIC")
+      colnames(wh) <- c("Log. lik", "AIC")
       rownames(wh) <- ""
       print(wh, print.gap=2, quote=FALSE, justify="left")
     }
     else {
       wh <- t(format(c(x$loglik, x$ploglik, AIC(x)), digits, ...))
-      colnames(wh) <- c("Log lik.", "Penalized log lik.", "AIC", "DIC")
+      colnames(wh) <- c("Log lik.", "Penalized log lik.", "AIC")
       rownames(wh) <- ""
       print(wh, print.gap=2, quote=FALSE, justify="left")
     }

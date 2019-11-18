@@ -129,6 +129,11 @@ uses them all.}
 \item{verbose}{Whether or not to print progress to screen. Defaults to
 \code{verbose=TRUE}.}
 
+\item{export}{Character vector of names of objects to export if parallel
+processing is being used and you are using objects from outside of
+texmex. It it passed to \code{parallel::clusterExport} and used by
+\code{texmex::evmBoot}.}
+
 \item{dp}{Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.}
 }
 \value{
@@ -210,8 +215,8 @@ distribution to be used is specified by passing an object of class
 The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
 Currently, the other \code{texmexFamily} objects available are \code{gev}
 which results in fitting a generalized extreme value (GEV) distribution to
-the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has 
-been rounded to a given numebr of decimal places by recognisiing the data as 
+the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has
+been rounded to a given numebr of decimal places by recognisiing the data as
 interval censored, and \code{egp3} which fits the extended generalized Pareto
 distribution version 3 of Papastathopoulos and Tawn (2013).
 

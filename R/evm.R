@@ -10,8 +10,8 @@
 #' The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
 #' Currently, the other \code{texmexFamily} objects available are \code{gev}
 #' which results in fitting a generalized extreme value (GEV) distribution to
-#' the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has 
-#' been rounded to a given numebr of decimal places by recognisiing the data as 
+#' the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has
+#' been rounded to a given numebr of decimal places by recognisiing the data as
 #' interval censored, and \code{egp3} which fits the extended generalized Pareto
 #' distribution version 3 of Papastathopoulos and Tawn (2013).
 #'
@@ -152,6 +152,10 @@
 #' @param cores The number of cores to use when bootstrapping. Defaults to
 #' \code{cores=NULL} and the function guesses how many cores are available and
 #' uses them all.
+#' @param export Character vector of names of objects to export if parallel
+#'   processing is being used and you are using objects from outside of
+#'   texmex. It it passed to \code{parallel::clusterExport} and used by
+#'   \code{texmex::evmBoot}.
 #' @param dp Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.
 #' @return If \code{method = "optimize"}, an object of class \code{evmOpt}:
 #'
@@ -290,7 +294,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           iter = 40500, burn=500, thin = 4,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL,
-          R=1000, cores=NULL, verbose=TRUE) {
+          R=1000, cores=NULL, export=NULL, verbose=TRUE) {
 
     modelParameters <- texmexParameters(theCall, family,...)
 
@@ -353,7 +357,7 @@ function (y, data, family=gpd, th= -Inf, qu,
                     trace=trace, theCall)
     } # Close else
     else if (method == "b"){
-        o <- evmBoot(o, R=R, cores=cores)
+        o <- evmBoot(o, R=R, cores=cores, export=export)
     }
 
     o
