@@ -20,6 +20,12 @@ Defaults to \code{nsamp=1e3}. Only used when the object has class 'evmOpt'.}
 
 \item{k}{numeric, the penalty per parameter to be used; the
 default \code{k = 2} is the classical AIC.}
+
+\item{DIC}{Logical. Whether to compute DIC. Defaults to \code{DIC = TRUE}.
+Only applicable to objects of class 'evmSim'.}
+
+\item{WAIC}{Logical. Whether to compute WAIC. Defaults to \code{WAIC = TRUE}.
+Only applicable to objects of class 'evmSim'.}
 }
 \value{
 The AIC and DIC

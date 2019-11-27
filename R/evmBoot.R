@@ -2,7 +2,7 @@
 #'
 #' This runs a parametric bootstrap simulating from an optimized
 #' model.
-#' 
+#'
 #' @param o a fit \code{evmOpt} object
 #' @param R the number of parametric bootstrap samples to run
 #' @param trace the frequency of trace messages
@@ -20,21 +20,21 @@
 #' \item{call}{The call to \code{evmBoot} that produced the object.}
 #' \item{replicates}{The parameter estimates from the bootstrap fits.}
 #' \item{map}{The fit by by maximum penalized likelihood to the original data.}
-#' 
+#'
 #' @aliases evmBoot summary.evmBoot plot.evmBoot coef.evmBoot print.summary.evmBoot print.evmBoot
-#' 
+#'
 #' @usage evmBoot(o, R=1000, trace=100, cores=NULL, theCall)
 #' \method{summary}{evmBoot}(object,...)
 #' \method{plot}{evmBoot}(x,col=4,border=NULL,...)
 #' \method{coef}{evmBoot}(object,...)
 #' \method{print}{summary.evmBoot}(x,...)
 #' \method{print}{evmBoot}(x,...)
-#' 
+#'
 #' @note It is not expected that a user will need to call
 #'     this function directly; you are directed to \code{\link{evm}}.
 #' @seealso \code{\link{evm}}
 #' @export
-evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
+evmBoot <- function(o, R=1000, trace=100, cores=NULL, export=NULL, theCall){
     if (class(o) != "evmOpt"){
         stop("o must be of class 'evmOpt'")
     }
@@ -57,6 +57,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     cluster <- getCluster(cores)
     on.exit(if (!is.null(cluster)){ parallel::stopCluster(cluster) })
 
+
     bfun <- function(X){
         if (X %% trace == 0){ cat("Replicate", X, "\n") }
 
@@ -71,7 +72,11 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, theCall){
     }
     seeds <- as.integer(runif(R, -(2^31 - 1), 2^31))
 
-    if (!is.null(cluster)){
+
+    if (!is.null(cluster) ){
+      if (!is.null(export)){
+        parallel::clusterExport(cl = cluster, varlist = export)
+      }
       res <- t(parallel::parSapply(cluster, X=1:R, bfun))
     }
     else {
