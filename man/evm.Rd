@@ -12,7 +12,8 @@ evm(y, data, family = gpd, ...)
   cov = "observed", start = NULL, priorParameters = NULL,
   maxit = 10000, trace = NULL, iter = 40500, burn = 500,
   thin = 4, proposal.dist = c("gaussian", "cauchy"), jump.cov,
-  jump.const = NULL, R = 1000, cores = NULL, verbose = TRUE)
+  jump.const = NULL, R = 1000, cores = NULL, export = NULL,
+  verbose = TRUE)
 }
 \arguments{
 \item{y}{Either a numeric vector or the name of a variable in \code{data}.}
@@ -126,13 +127,13 @@ algorithm.  This is scaled by \code{jump.const}.}
 \code{cores=NULL} and the function guesses how many cores are available and
 uses them all.}
 
-\item{verbose}{Whether or not to print progress to screen. Defaults to
-\code{verbose=TRUE}.}
-
 \item{export}{Character vector of names of objects to export if parallel
 processing is being used and you are using objects from outside of
 texmex. It it passed to \code{parallel::clusterExport} and used by
 \code{texmex::evmBoot}.}
+
+\item{verbose}{Whether or not to print progress to screen. Defaults to
+\code{verbose=TRUE}.}
 
 \item{dp}{Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.}
 }
