@@ -1,6 +1,6 @@
 context("WAIC")
 
-testthat("Telling AIC whether to compute DIC or WAIC behaves as expected", {
+test_that("Telling AIC whether to compute DIC or WAIC behaves as expected", {
   m <- evm(log(ALT.M / ALT.B), data = liver, qu=.7, method = "sim")
   aic <- AIC(m)
   
@@ -16,7 +16,7 @@ testthat("Telling AIC whether to compute DIC or WAIC behaves as expected", {
   expect_equal(names(aic), "AIC", label = "WAIC: AIC returns only AIC when DIC=FALSE, WAIC=FALSE")
 })
 
-testthat("WAIC, AIC and DIC are broadly in alignment on well behaved data", {
+test_that("WAIC, AIC and DIC are broadly in alignment on well behaved data", {
   set.seed(1234)
   b <- function(){
     i <- sample(1:nrow(liver), size=nrow(liver), replace=TRUE)

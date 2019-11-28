@@ -116,7 +116,7 @@ test_that("mexDependence behaves as it should", {
 
   p.x <- runif(50)
   q.x <- -log(-log(p.x))
-  expect_that(mySdepO3$dependence$margins[[1]], matches("gumbel"),label="mexDependence: gumbel marginal name")
+  expect_match(mySdepO3$dependence$margins[[1]],"gumbel",label="mexDependence: gumbel marginal name")
   expect_that(mySdepO3$dependence$margins$p2q(p.x), equals(q.x), label="mexDependence: gumbel marginal transform p2q")
   expect_that(mySdepO3$dependence$margins$q2p(q.x), equals(p.x), label="mexDependence: gumbel marginal transform q2p")
 
@@ -157,7 +157,7 @@ test_that("mexDependence behaves as it should", {
 
   p.x <- runif(50)
   q.x <- ifelse(p.x < 0.5,log(2*p.x),-log(2*(1-p.x)))
-  expect_that(summer.mex1$dependence$margins[[1]], matches("laplace"),label="mexDependence: laplace marginal name")
+  expect_match(summer.mex1$dependence$margins[[1]], "laplace",label="mexDependence: laplace marginal name")
   expect_that(summer.mex1$dependence$margins$p2q(p.x), equals(q.x), label="mexDependence: laplace marginal transform p2q")
   expect_that(summer.mex1$dependence$margins$q2p(q.x), equals(p.x), label="mexDependence: laplace marginal transform q2p")
 

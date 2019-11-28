@@ -3,7 +3,7 @@ context("rgev")
 test_that("rgev behaves as it should", {
   skip_on_cran()
   skip_on_travis()
-function() {
+
   ## so, how do we test an RNG...
   num.simple <- 1000
   num.quantile <- 1e6
@@ -45,5 +45,5 @@ function() {
   } # Close quantile.test
   lapply(xi.values, core.sanity.test)
   lapply(xi.values, quantile.test)
-}}
+}
 )
