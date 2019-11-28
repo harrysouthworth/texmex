@@ -5,6 +5,7 @@
 \alias{print.texmexFamily}
 \alias{summary.texmexFamily}
 \alias{gpd}
+\alias{glo}
 \alias{gev}
 \alias{egp3}
 \alias{cgpd}
@@ -79,7 +80,7 @@ functions. They should take a matrix with number of columns equal
 to the number of parameters, and a fitted model object even if the
 model object is not used by the function.
 
-Examples of "texmexFamily" objects are \code{gpd}, \code{gev},
+Examples of "texmexFamily" objects are \code{gpd}, \code{gev}, \code{glo},
 \code{weibull}, \code{gumbel} and \code{egp3}.  Take a look at
 those objects to see how the functions should be constructed.
 
@@ -87,7 +88,7 @@ The functions are used by the modelling functions to create
 diagnostic plots, predictions, etc..
 }
 \note{
-The \code{gpd}, \code{gev}, \code{weibull}, \code{gumbel} and
+The \code{gpd}, \code{gev}, \code{weibull}, generalised logistic (\code{glo}), \code{gumbel} and
     \code{egp3} families are provided. The \code{\link{evm}}
     function defaults to using the \code{gpd} family.
 }

@@ -96,6 +96,7 @@ Collate:
     'ggplot.migpd.R'
     'ggplot.predict.R'
     'ggplot.thresh.R'
+    'glo.R'
     'globalVariables.R'
     'gpd.R'
     'gpdProfileLikRetLevels.R'
