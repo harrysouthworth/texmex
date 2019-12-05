@@ -18,9 +18,9 @@ test_that("rgev behaves as it should", {
     expect_that(length(samples), equals(num.simple), 
                 "rgev: output of correct length")
     if (xi > 0) {
-      expect_that(all(samples>=-1/xi), is_true(), "rgev:lowerboundcheck")
+      expect_true(all(samples>=-1/xi), "rgev:lowerboundcheck")
     } else if (xi < 0) {
-    expect_that(all(samples<=-1/xi), is_true(), "rgev:upperboundcheck")
+    expect_true(all(samples<=-1/xi), "rgev:upperboundcheck")
     }
     ## scale and shift property
     sigma <- rexp(1)
