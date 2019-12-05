@@ -18,18 +18,16 @@ test_that("rgev behaves as it should", {
     expect_that(length(samples), equals(num.simple), 
                 "rgev: output of correct length")
     if (xi > 0) {
-      expect_true(all(samples>=-1/xi), "rgev:lowerboundcheck")
+      expect_true(all(samples>=-1/xi), label="rgev:lowerboundcheck")
     } else if (xi < 0) {
-    expect_true(all(samples<=-1/xi), "rgev:upperboundcheck")
+    expect_true(all(samples<=-1/xi), label="rgev:upperboundcheck")
     }
     ## scale and shift property
     sigma <- rexp(1)
     mu    <- runif(1, -5, 5)
     shifted <- mu + sigma * samples
     set.seed(seed)
-    expect_that(shifted, equals(), 
-                       rgev(num.simple, mu, sigma, xi),
-                       "rgev: scale and shift")
+    expect_that(shifted, equals(rgev(num.simple, mu, sigma, xi)),label="rgev: scale and shift")
   } # Close core.sanity.test
   
   quantile.test <- function(xi) {
@@ -39,9 +37,7 @@ test_that("rgev behaves as it should", {
                           probs=test.quantiles,
                           names=FALSE)
     ## this is a bit crude, but hey...
-    expect_that(test.quantiles, equals(quantiles), 
-                       tolerance=0.02,
-                       "rgev: quantile test")
+    expect_equal(test.quantiles, quantiles, tolerance=0.02, scale=quantiles[2], check.attributes = F,"rgev: quantile test")
   } # Close quantile.test
   lapply(xi.values, core.sanity.test)
   lapply(xi.values, quantile.test)
