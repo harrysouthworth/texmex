@@ -60,7 +60,7 @@ test_that("regp3 behaves as it should", {
     kappa <- runif(1); sigma <- runif(1, .1, 6); xi <- runif(1); u <- runif(1, -10, 10)
     x1 <- sort(regp3_test(1000, kappa=.5, sigma=2, xi=.2, u=6))
     x2 <- sort(regp3(1000, kappa=.5, sigma=2, xi=.2, u=6))
-    expect_gt(cor(x1, x2), 0.90)
+    expect_gt(cor(x1, x2), 0.85)
     plot(x1, x2); abline(0, 1)
   }
   title("Comparing 2 implementations of EGP3 rng", outer=TRUE)

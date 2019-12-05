@@ -17,9 +17,9 @@ test_that("rgpd behaves as it should", {
     expect_that(length(samples), equals(num.simple), 
                 "rgpd: output of correct length")
     if (xi < 0) {
-      expect_that(all(samples<=-1/xi), is_true(), "rgpd:upperboundcheck")
+      expect_true(all(samples<=-1/xi), "rgpd:upperboundcheck")
     }
-    expect_that(all(samples>0), is_true(), "rgpd:lowerboundcheck")
+    expect_true(all(samples>0), "rgpd:lowerboundcheck")
     
     sigma <- rexp(1)
     mu    <- runif(1, -5, 5)

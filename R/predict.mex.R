@@ -30,7 +30,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
 
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
-    ui <- runif( nsim , min=pqu )
+    ui <- runif( nsim , max=pqu )
     y <- margins$p2q(ui)
     distFun <- margins$q2p
 

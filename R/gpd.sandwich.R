@@ -1,7 +1,7 @@
 gpd.sandwich <-
     # Compute the filling in the Huber sandwich estimator of the covariance of gpd model parameters, by using the observed score vectors 
 function(o){
-    if (class(o) != "evmOpt"){ stop("object must be of class 'evmOpt'") }
+    if (!inherits(o, "evmOpt")){ stop("object must be of class 'evmOpt'") }
     
     x <- o$data$D$phi; z <- o$data$D$xi
     ns <- ncol(x); nk <- ncol(z)

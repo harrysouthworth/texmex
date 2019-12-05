@@ -178,7 +178,7 @@
               PlotLikTitle=NULL)
 {
    theCall <- match.call()
-   if (class(x) != "migpd")
+   if (!inherits(x, "migpd"))
        stop("you need to use an object created by migpd")
 
    margins <- list(casefold(margins),
@@ -221,7 +221,7 @@
 
    if (missing(start)){
      start <- c(.01, .01)
-   } else if(class(start) == "mex"){
+   } else if(inherits(start, "mex")){
      start <- start$dependence$coefficients[1:2,]
    }
 
@@ -251,7 +251,7 @@
               control=list(maxit=maxit),
               yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
 
-     if (class(o) == "try-error"){
+     if (inherits(o, "try-error")){
         warning("Error in optim call from mexDependence")
         o <- as.list(o)
         o$par <- rep(NA, 6)
@@ -267,7 +267,7 @@
            o <- try(optim(par=o$par, fn=Qpos,
                     control=list(maxit=maxit),
                     yex = yex[wh], ydep = X[wh], constrain=constrain, v=v, aLow=aLow), silent=TRUE)
-           if (class(o) == "try-error"){
+           if (inherits(o, "try-error")){
              warning("Error in optim call from mexDependence")
              o <- as.list(o)
              o$par <- rep(NA, 6)
@@ -323,7 +323,7 @@
                    upper=c(1, 1-10^(-10), Inf, 1-10^(-10), Inf, Inf),
                    yex = yex[wh], ydep = X[wh]), silent=TRUE)
 
-          if (class(o) == "try-error" || o$convergence != 0) {
+          if (inherits(o, "try-error") || o$convergence != 0) {
              warning("Non-convergence in mexDependence")
              o <- as.list(o)
              o$par <- rep(NA, 6)
@@ -367,7 +367,7 @@
    }
    z <- try(sapply(1:(dim(gdata)[[2]]), tfun, data = gdata,
        yex = yex[wh], a = res[1, ], b = res[2, ], cee = res[3, ], d = res[4, ]))
-   if (class(z) %in% c("Error", "try-error")) {
+   if (inherits(z, c("Error", "try-error"))) {
        z <- matrix(nrow = 0, ncol = dim(x$data)[[2]] - 1)
    }
    else if (!is.array(z)) {

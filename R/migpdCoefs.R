@@ -51,7 +51,7 @@ migpdCoefs <-
   # learn something about the dependence between
   # margins.
 function(object, which, coefs){
-  if (class(object) != "migpd"){
+  if (!inherits(object, "migpd")){
     stop("object must be of class \'migpd\'")
   }
 

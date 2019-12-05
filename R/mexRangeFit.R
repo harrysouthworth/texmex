@@ -52,7 +52,7 @@
 mexRangeFit <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nPass=3, trace=10,
           margins="laplace", constrain=TRUE, v=10, referenceMargin=NULL){
-  if (class(x) == "mex"){
+  if (inherits(x, "mex")){
     if( (!missing(margins))){
       warning("margins given, but already specified in 'mex' object.  Using 'mex' value")
     }
@@ -75,17 +75,17 @@ function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nP
     referenceMargin <- x$referenceMargin
     x <- x[[1]]
   } else {
-    if (class(x) != "migpd"){
+    if (!inherits(x, "migpd")){
       stop("object should have class mex or migpd")
     }
     if (missing(which)) {
       which <- 1
-      cat("Missing 'which'. Conditioning on", names(x$models)[which], ".\n")
+      message(paste("Missing 'which'. Conditioning on", names(x$models)[which], ".\n"))
     }
   }
 
   ests <- lapply(quantiles, function(qu, which, x, margins, start, constrain=constrain, v=v, ...)
-                                     mexDependence(x=x, which=which, dqu=qu, margins = margins, start=start, constrain=constrain, v=v,),
+                                     mexDependence(x=x, which=which, dqu=qu, margins = margins, start=start, constrain=constrain, v=v),
                  which=which, x=x, margins = margins[[1]], start=start, constrain=constrain, v=v, referenceMargin=referenceMargin)
 
   boot <- lapply(ests, function(X, R, nPass, trace, ...)

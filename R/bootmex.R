@@ -96,7 +96,7 @@ bootmex <-
     # Bootstrap inference for a conditional multivaratiate extremes model.
 function (x, R = 100, nPass = 3, trace = 10,referenceMargin=NULL) {
     theCall <- match.call()
-    if (class(x) != "mex"){
+    if (!inherits(x, "mex")){
       stop("object must be of type 'mex'")
     }
 

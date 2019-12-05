@@ -5,7 +5,7 @@ test_that("gpd.info behaves as it should", {
   skip_on_travis()
     lmod <- evm(ALT.M, data=liver, qu=.5, xi=~I(240*as.numeric(dose)),
               cov="numeric")
-    expect_that(all(sqrt(diag(solve(gpd.info(lmod))))>0), is_true(), 
+    expect_true(all(sqrt(diag(solve(gpd.info(lmod))))>0), 
             label="gpd.inf: SDs positive")
 
   # Check equality to numerical approximation in big samples

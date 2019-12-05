@@ -182,7 +182,7 @@ test_that("predict.evmOpt behaves as it should", {
     # is that we don't trust the approximate SEs based on numerical approximations
     # from the non-quadratic likelihood...
     d <- fit.seboot - fit.seest
-    expect_that(abs(mean(d) / sd(d - mean(d))) < 1.28, is_true(),
+    expect_true(abs(mean(d) / sd(d - mean(d))) < 1.28,
                 label=pst("predict.evmOpt: mean SE difference in expected range"))
 #    expect_that(all(abs(d) < 0.4), is_true(),
 #                label=pst("predict.evmOpt: return level standard error estimate compared with bootstrap standard errors"))

@@ -3,7 +3,7 @@
 `plot.migpd` <-
 function(x, main=c("Probability plot","Quantile plot","Return level plot","Histogram and density"), xlab=rep(NULL,4), nsim=1000, alpha=.05, ... ){
   
-  if( class(x) != "migpd" ){
+  if(!inherits(x, "migpd" )){
      stop("you need to use an object created by migpd")
   }
   

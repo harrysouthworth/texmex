@@ -51,9 +51,9 @@ test_that("evm behaves as it should", {
   mod1 <- evm(rain, th=30, priorParameters=gp1, penalty="gaussian")
   mod2 <- evm(rain, th=30, priorParameters=gp2, penalty="gaussian")
 
-  expect_that(coef(mod)[2]>coef(mod1)[2], is_true(),
+  expect_true(coef(mod)[2]>coef(mod1)[2],
             label="gpd: Gaussian penalization xi being drawn to 0")
-  expect_that(coef(mod1)[2]>coef(mod2)[2], is_true(),
+  expect_true(coef(mod1)[2]>coef(mod2)[2],
             label="gpd: Gaussian penalization xi being drawn to 0")
 
   # 2.2 Tests for phi being drawn to 0
@@ -64,9 +64,9 @@ test_that("evm behaves as it should", {
   mod3 <- evm(rain, th=30, priorParameters=gp3, penalty="gaussian")
   mod4 <- evm(rain, th=30, priorParameters=gp4, penalty="gaussian")
 
-  expect_that(coef(mod)[1]>coef(mod3)[1], is_true(),
+  expect_true(coef(mod)[1]>coef(mod3)[1],
             label="gpd: Gaussian penalization phi being drawn to 0")
-  expect_that(coef(mod3)[1]>coef(mod4)[1], is_true(),
+  expect_true(coef(mod3)[1]>coef(mod4)[1],
             label="gpd: Gaussian penalization phi being drawn to 0")
 
   # 2.3 Tests for xi being drawn to 1
@@ -76,9 +76,9 @@ test_that("evm behaves as it should", {
   mod5 <- evm(rain, th=30, priorParameters=gp5, penalty="gaussian")
   mod6 <- suppressWarnings(evm(rain, th=30, priorParameters=gp6, penalty="gaussian"))
 
-  expect_that(1-coef(mod)[2]>1-coef(mod5)[2], is_true(),
+  expect_true(1-coef(mod)[2]>1-coef(mod5)[2],
             label="gpd: Gaussian penalization xi being drawn to 1")
-  expect_that(1-coef(mod1)[2]>1-coef(mod6)[2], is_true(),
+  expect_true(1-coef(mod1)[2]>1-coef(mod6)[2],
             label="gpd: Gaussian penalization xi being drawn to 1")
 
   # 2.4 Tests for phi being drawn to 4 (greater than mle for phi)
@@ -89,9 +89,9 @@ test_that("evm behaves as it should", {
   mod7 <- evm(rain, th=30, priorParameters=gp7, penalty="gaussian")
   mod8 <- evm(rain, th=30, priorParameters=gp8, penalty="gaussian")
 
-  expect_that(4-coef(mod)[1]>4-coef(mod7)[1], is_true(),
+  expect_true(4-coef(mod)[1]>4-coef(mod7)[1],
             label="gpd: Gaussian penalization phi being drawn to 4")
-  expect_that(4-coef(mod3)[1]>4-coef(mod8)[1], is_true(),
+  expect_true(4-coef(mod3)[1]>4-coef(mod8)[1],
             label="gpd: Gaussian penalization phi being drawn to 4")
 
   ###################################################################
@@ -107,9 +107,9 @@ test_that("evm behaves as it should", {
   mod1 <- evm(rain, th=30, priorParameters=gp1, penalty="lasso")
   mod2 <- evm(rain, th=30, priorParameters=gp2, penalty="lasso")
 
-  expect_that(coef(mod)[2]>coef(mod1)[2], is_true(),
+  expect_true(coef(mod)[2]>coef(mod1)[2],
             label="gpd: lasso penalization xi being drawn to 0")
-  expect_that(coef(mod1)[2]>coef(mod2)[2], is_true(),
+  expect_true(coef(mod1)[2]>coef(mod2)[2],
             label="gpd: lasso penalization xi being drawn to 0")
 
   # 2a.2 Tests for phi being drawn to 0
@@ -120,9 +120,9 @@ test_that("evm behaves as it should", {
   mod3 <- evm(rain, th=30, priorParameters=gp3, penalty="lasso")
   mod4 <- evm(rain, th=30, priorParameters=gp4, penalty="lasso")
 
-  expect_that(coef(mod)[1]>coef(mod3)[1], is_true(),
+  expect_true(coef(mod)[1]>coef(mod3)[1],
             label="gpd: lasso penalization phi being drawn to 0")
-  expect_that(coef(mod3)[1]>coef(mod4)[1], is_true(),
+  expect_true(coef(mod3)[1]>coef(mod4)[1],
             label="gpd: lasso penalization phi being drawn to 0")
 
   # 2a.3 Tests for xi being drawn to 1
@@ -132,9 +132,9 @@ test_that("evm behaves as it should", {
   mod5 <- evm(rain, th=30, priorParameters=gp5, penalty="lasso")
   mod6 <- evm(rain, th=30, priorParameters=gp6, penalty="lasso")
 
-  expect_that(1-coef(mod)[2]>1-coef(mod5)[2], is_true(),
+  expect_true(1-coef(mod)[2]>1-coef(mod5)[2],
             label="gpd: lasso penalization xi being drawn to 1")
-  expect_that(1-coef(mod1)[2]>1-coef(mod6)[2], is_true(),
+  expect_true(1-coef(mod1)[2]>1-coef(mod6)[2],
             label="gpd: lasso penalization xi being drawn to 1")
 
   # 2a.4 Tests for phi being drawn to 4 (greater than mle for phi)
@@ -145,9 +145,9 @@ test_that("evm behaves as it should", {
   mod7 <- evm(rain, th=30, priorParameters=gp7, penalty="lasso")
   mod8 <- evm(rain, th=30, priorParameters=gp8, penalty="lasso")
 
-  expect_that(4-coef(mod)[1]>4-coef(mod7)[1], is_true(),
+  expect_true(4-coef(mod)[1]>4-coef(mod7)[1],
             label="gpd: lasso penalization phi being drawn to 4")
-  expect_that(4-coef(mod3)[1]>4-coef(mod8)[1], is_true(),
+  expect_true(4-coef(mod3)[1]>4-coef(mod8)[1],
             label="gpd: lasso penalization phi being drawn to 4")
 
   ########################################################
@@ -256,9 +256,9 @@ test_that("evm behaves as it should", {
   mod1 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp1)
   mod2 <- suppressWarnings(evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp2))
 
-  expect_that(all(abs(coef(mod0)[2:3])>abs(coef(mod1)[2:3])), is_true(),
+  expect_true(all(abs(coef(mod0)[2:3])>abs(coef(mod1)[2:3])),
             label="gpd: with covariates, xi drawn to zero")
-  expect_that(abs(coef(mod1)[3])>abs(coef(mod2)[3]), is_true(),
+  expect_true(abs(coef(mod1)[3])>abs(coef(mod2)[3]),
             label="gpd: with covariates, xi drawn to zero")
 
   # 2.2 Tests for phi being drawn to 0
@@ -277,9 +277,9 @@ test_that("evm behaves as it should", {
   mod4 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp4)
   mod5 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp5)
 
-  expect_that(all(abs(coef(mod3)[1:2])>abs(coef(mod4)[1:2])), is_true(),
+  expect_true(all(abs(coef(mod3)[1:2])>abs(coef(mod4)[1:2])),
             label="gpd: with covariates, phi being drawn to 0")
-  expect_that(all(abs(coef(mod4)[1:2])>abs(coef(mod5)[1:2])), is_true(),
+  expect_true(all(abs(coef(mod4)[1:2])>abs(coef(mod5)[1:2])),
             label="gpd: with covariates, phi being drawn to 0")
 
   # 2.3 Tests for xi being drawn to 2
@@ -293,9 +293,9 @@ test_that("evm behaves as it should", {
   mod7 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp7)
   mod8 <- evm(y,qu=0.6,data=data,phi=~1,xi=~b,priorParameters=gp8)
 
-  expect_that(all(abs(2-coef(mod6)[2:3])>abs(2-coef(mod7)[2:3])), is_true(),
+  expect_true(all(abs(2-coef(mod6)[2:3])>abs(2-coef(mod7)[2:3])),
             label="gpd: with covariates, xi drawn to 2")
-  expect_that(all(abs(2-coef(mod7)[2:3])>abs(2-coef(mod8)[2:3])), is_true(),
+  expect_true(all(abs(2-coef(mod7)[2:3])>abs(2-coef(mod8)[2:3])),
             label="gpd: with covariates, xi drawn to 2")
 
   # 2.4 Tests for phi being drawn to 4
@@ -311,9 +311,9 @@ test_that("evm behaves as it should", {
   mod10 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp10)
   mod11 <- evm(y,qu=0.6,data=data,phi=~a,xi=~1,priorParameters=gp11)
 
-  expect_that(abs(4-coef(mod9)[2])>abs(4-coef(mod10)[2]), is_true(),
+  expect_true(abs(4-coef(mod9)[2])>abs(4-coef(mod10)[2]),
             label="gpd: with covariates, phi drawn to 4")
-  expect_that(abs(4-coef(mod10)[2])>abs(4-coef(mod11)[2]), is_true(),
+  expect_true(abs(4-coef(mod10)[2])>abs(4-coef(mod11)[2]),
             label="gpd: with covariates, phi drawn to 4")
 
   #*************************************************************
@@ -424,11 +424,11 @@ test_that("evm behaves as it should", {
   mod1 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp1)
   mod2 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp2)
 
-  expect_that(abs(coef(mOpt)[3])>abs(coef(mod1)[3]), is_true(),
+  expect_true(abs(coef(mOpt)[3])>abs(coef(mod1)[3]),
             label="gev: Gaussian penalization xi being drawn to 0")
-  expect_that(abs(coef(mOpt)[3])>abs(coef(mod2)[3]), is_true(),
+  expect_true(abs(coef(mOpt)[3])>abs(coef(mod2)[3]),
             label="gev: Gaussian penalization xi being drawn to 0")
-  expect_that(abs(coef(mod1)[3])>abs(coef(mod2)[3]), is_true(),
+  expect_true(abs(coef(mod1)[3])>abs(coef(mod2)[3]),
             label="gev: Gaussian penalization xi being drawn to 0")
 
   # Tests for phi being drawn to 0
@@ -439,11 +439,11 @@ test_that("evm behaves as it should", {
   mod3 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp3)
   mod4 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp4)
 
-  expect_that(abs(coef(mOpt)[2])>abs(coef(mod3)[2]), is_true(),
+  expect_true(abs(coef(mOpt)[2])>abs(coef(mod3)[2]),
             label="gev: Gaussian penalization phi being drawn to 0")
-  expect_that(abs(coef(mOpt)[2])>abs(coef(mod4)[2]), is_true(),
+  expect_true(abs(coef(mOpt)[2])>abs(coef(mod4)[2]),
             label="gev: Gaussian penalization phi being drawn to 0")
-  expect_that(abs(coef(mod3)[2])>abs(coef(mod4)[2]), is_true(),
+  expect_true(abs(coef(mod3)[2])>abs(coef(mod4)[2]),
             label="gev: Gaussian penalization phi being drawn to 0")
 
   # Tests for xi being drawn to 1
@@ -453,11 +453,11 @@ test_that("evm behaves as it should", {
   mod5 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp5)
   mod6 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp6)
 
-  expect_that(abs(1-coef(mOpt)[3])>abs(1-coef(mod5)[3]), is_true(),
+  expect_true(abs(1-coef(mOpt)[3])>abs(1-coef(mod5)[3]),
             label="gev: Gaussian penalization xi being drawn to 1")
-  expect_that(abs(1-coef(mOpt)[3])>abs(1-coef(mod6)[3]), is_true(),
+  expect_true(abs(1-coef(mOpt)[3])>abs(1-coef(mod6)[3]),
             label="gev: Gaussian penalization xi being drawn to 1")
-  expect_that(abs(1-coef(mod5)[3])>abs(1-coef(mod6)[3]), is_true(),
+  expect_true(abs(1-coef(mod5)[3])>abs(1-coef(mod6)[3]),
             label="gev: Gaussian penalization xi being drawn to 1")
 
   # Tests for phi being drawn to 0.5 (greater than mle for phi)
@@ -468,9 +468,9 @@ test_that("evm behaves as it should", {
   mod7 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp7)
   mod8 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp8)
 
-  expect_that(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod7)[2]), is_true(),
+  expect_true(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod7)[2]),
             label="gpd: Gaussian penalization phi being drawn to .5")
-  expect_that(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod8)[2]), is_true(),
+  expect_true(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod8)[2]),
             label="gpd: Gaussian penalization phi being drawn to .5")
 
   # test above but with lasso penalty
@@ -478,9 +478,9 @@ test_that("evm behaves as it should", {
   mod9 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp7,penalty="lasso")
   mod10 <- evm(SeaLevel, data=portpirie, family=gev, priorParameters=gp8,penalty="lasso")
 
-  expect_that(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod9)[2]), is_true(),
+  expect_true(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod9)[2]),
             label="gpd: Gaussian lasso penalization phi being drawn to .5")
-  expect_that(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod10)[2]), is_true(),
+  expect_true(abs(.5-coef(mOpt)[2])>abs(.5-coef(mod10)[2]),
             label="gpd: Gaussian lasso penalization phi being drawn to .5")
 
   ###################################################################
@@ -562,9 +562,9 @@ test_that("evm behaves as it should", {
   mod1 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp1)
   mod2 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp2)
 
-  expect_that(all(abs(coef(mod0)[3:4])>abs(coef(mod1)[3:4])), is_true(),
+  expect_true(all(abs(coef(mod0)[3:4])>abs(coef(mod1)[3:4])),
             label="gev: with covariates, xi drawn to zero")
-  expect_that(abs(coef(mod1)[4])>abs(coef(mod2)[4]), is_true(),
+  expect_true(abs(coef(mod1)[4])>abs(coef(mod2)[4]),
             label="gev: with covariates, xi drawn to zero")
 
   # Tests for phi being drawn to 0
@@ -580,9 +580,9 @@ test_that("evm behaves as it should", {
   mod4 <- evm(y,family=gev,data=data,phi=~a,priorParameters=gp4)
   mod5 <- evm(y,family=gev,data=data,phi=~a,priorParameters=gp5)
 
-  expect_that(all(abs(coef(mod3)[2:3])>abs(coef(mod4)[2:3])), is_true(),
+  expect_true(all(abs(coef(mod3)[2:3])>abs(coef(mod4)[2:3])),
             label="gev: with covariates, phi being drawn to 0")
-  expect_that(all(abs(coef(mod4)[2:3])>abs(coef(mod5)[2:3])), is_true(),
+  expect_true(all(abs(coef(mod4)[2:3])>abs(coef(mod5)[2:3])),
             label="gev: with covariates, phi being drawn to 0")
 
   # Tests for xi being drawn to 2
@@ -596,9 +596,9 @@ test_that("evm behaves as it should", {
   mod7 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp7)
   mod8 <- evm(y,family=gev,data=data,xi=~b,priorParameters=gp8)
 
-  expect_that(all(abs(1-coef(mod6)[3:4])>abs(1-coef(mod7)[3:4])), is_true(),
+  expect_true(all(abs(1-coef(mod6)[3:4])>abs(1-coef(mod7)[3:4])),
             label="gev: with covariates, xi drawn to 1")
-  expect_that(all(abs(1-coef(mod7)[3:4])>abs(1-coef(mod8)[3:4])), is_true(),
+  expect_true(all(abs(1-coef(mod7)[3:4])>abs(1-coef(mod8)[3:4])),
             label="gev: with covariates, xi drawn to 1")
 
   # Tests for mu being drawn to 4
@@ -614,9 +614,9 @@ test_that("evm behaves as it should", {
   mod10 <- evm(y,family=gev,data=data,mu=~u,priorParameters=gp10)
   mod11 <- evm(y,family=gev,data=data,mu=~u,priorParameters=gp11)
 
-  expect_that(abs(4-coef(mod9)[1])>abs(4-coef(mod10)[1]), is_true(),
+  expect_true(abs(4-coef(mod9)[1])>abs(4-coef(mod10)[1]),
             label="gev: with covariates, mu drawn to 4")
-  expect_that(abs(4-coef(mod10)[1])>abs(4-coef(mod11)[1]), is_true(),
+  expect_true(abs(4-coef(mod10)[1])>abs(4-coef(mod11)[1]),
             label="gev: with covariates, mu drawn to 4")
   
   ####################################################################
@@ -637,8 +637,8 @@ test_that("evm behaves as it should", {
   scaleCgce <- sapply(1:nDP,function(i)abs(mean(gpdCens.scale[i,] - gpdExct.scale)))
   shapeCgce <- sapply(1:nDP,function(i)abs(mean(gpdCens.shape[i,] - gpdExct.shape)))
 
-  expect_that(all(diff(scaleCgce)<0), is_true(),"gpdIntCensored")
-  expect_that(all(diff(shapeCgce)<0), is_true(),"gpdIntCensored")
+  expect_true(all(diff(scaleCgce)<0), "gpdIntCensored")
+  expect_true(all(diff(shapeCgce)<0), "gpdIntCensored")
   
 }
 )

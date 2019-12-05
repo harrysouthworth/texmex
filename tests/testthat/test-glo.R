@@ -237,9 +237,9 @@ test_that("rglo behaves as it should", {
 			expect_that(length(samples), equals(num.simple), 
 						"rglo: output of correct length")
 			if (xi > 0) {
-				expect_that(all(samples>=-1/xi), is_true(), "rglo:lowerboundcheck")
+				expect_true(all(samples>=-1/xi), "rglo:lowerboundcheck")
 			} else if (xi < 0) {
-				expect_that(all(samples<=-1/xi), is_true(), "rglo:upperboundcheck")
+				expect_true(all(samples<=-1/xi), "rglo:upperboundcheck")
 			}
 			## scale and shift property
 			sigma <- rexp(1)

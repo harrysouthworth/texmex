@@ -39,13 +39,13 @@ test_that("evmBoot behaves as it should", {
     bse <- apply(boot$replicates, 2, sd)
     rse <- bse / fit$se
     rse <- ifelse(rse < 1, 1/rse, rse)
-    expect_that(max(rse) < 1.1, is_true(), label=pst("evmBoot: SEs with xi in model, with penalty applied"))
+    expect_true(max(rse) < 1.1, label=pst("evmBoot: SEs with xi in model, with penalty applied"))
     
     best <- apply(boot$replicates, 2, median)
     fest <- coef(fit)
     rdiff <- abs(best - fest)
     # Do 80% test
-    expect_that(all(rdiff < 1.281552*fit$se), is_true(), label=pst("evmBoot: medians in line with point ests, with penalty applied"))
+    expect_true(all(rdiff < 1.281552*fit$se), label=pst("evmBoot: medians in line with point ests, with penalty applied"))
     
     ##################################################################
     # models with covariates. Due to apparent instability
@@ -62,13 +62,13 @@ test_that("evmBoot behaves as it should", {
       bse <- apply(boot$replicates, 2, sd)
       rse <- bse / fit$se
       rse <- ifelse(rse < 1, 1/rse, rse)
-      expect_that(max(rse) < 1.5, is_true(), label=pst(paste("evmBoot: SEs with covariates in", txt)))
+      expect_true(max(rse) < 1.5, label=pst(paste("evmBoot: SEs with covariates in", txt)))
       
       best <- apply(boot$replicates, 2, median)
       fest <- coef(fit)
       rdiff <- abs((best - fest)/fest)
 
-      expect_that(all(rdiff < 0.25), is_true(), label=pst(paste("evmBoot:medians in line with point ests, covariates in", txt)))
+      expect_true(all(rdiff < 0.25), label=pst(paste("evmBoot:medians in line with point ests, covariates in", txt)))
     }
     
     param <- switch(Family$name, GPD=cbind(2 + X[, 1], xi), GEV=cbind(mu, 2 + X[, 1], xi))

@@ -35,7 +35,7 @@
 #' @seealso \code{\link{evm}}
 #' @export
 evmBoot <- function(o, R=1000, trace=100, cores=NULL, export=NULL, theCall){
-    if (class(o) != "evmOpt"){
+    if (!inherits(o, "evmOpt")){
         stop("o must be of class 'evmOpt'")
     }
 
@@ -47,7 +47,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, export=NULL, theCall){
 
     getCluster <- function(n){
       wh <- try(requireNamespace("parallel"))
-      if (class(wh) != "try-error"){
+      if (inherits(wh, "try-error")){
         if (is.null(n)) n <- parallel::detectCores()
         if (n == 1) { NULL }
         else parallel::makeCluster(n)

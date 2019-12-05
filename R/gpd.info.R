@@ -6,7 +6,7 @@ gpd.info <-
 	# If penalization is used, the calculation accounts for this, but the resulting
 	# estimates of variance will be too low and bias might dominate MSE
 function(o, method="observed"){
-    if (class(o) != "evmOpt"){ stop("object must be of class 'evmOpt'") }
+    if (!inherits(o, "evmOpt")){ stop("object must be of class 'evmOpt'") }
     if (method != "observed"){ stop("only 'observed' information is implemented") }
 
     x <- o$data$D$phi; z <- o$data$D$xi
