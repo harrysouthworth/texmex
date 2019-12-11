@@ -5,7 +5,8 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
 	theCall <- match.call()
 
   # Class can be either mex or bootmex
-  theClass <- class(object)[1]
+  theClass <- class(object)
+  theClass <- theClass[1] # Avoid R CMD check that doesn't like indexing class(x) at 1
   if (! theClass %in% c("mex", "bootmex")){
       stop("object must have class 'mex' or 'bootmex'")
   }
@@ -30,7 +31,7 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
 
 	################################################################
   MakeThrowData <- function(dco,z,coxi,coxmi,data){
-    ui <- runif( nsim , min=pqu )
+    ui <- runif(nsim , min = max(c(migpd$mqu[which], pqu)))
     y <- margins$p2q(ui)
     distFun <- margins$q2p
 
@@ -42,7 +43,8 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
 
     xmi <- apply( ymi, 2, distFun )
 
-    xi <- u2gpd( ui, p = 1 - migpd$mqu[ which ], th=migpd$mth[ which ], sigma=coxi[ 1 ], xi = coxi[ 2 ] )
+    xi <- u2gpd( ui, p = 1 - migpd$mqu[which], th = migpd$mth[ which ],
+                 sigma = coxi[ 1 ], xi = coxi[ 2 ] )
 
   	for( i in 1:( dim( xmi )[[ 2 ]] ) ){
 		  xmi[, i ] <- revTransform( xmi[ ,i ], as.matrix(data[,-which])[, i ],
@@ -102,7 +104,8 @@ function(object, which, pqu = .99, nsim = 1000, trace=10, smoothZdistribution=FA
   cox <- coef(migpd)[3:4, which]
   coxmi <- as.matrix(coef(migpd)[3:4, -which])
 
-  sim <- MakeThrowData(dco=dall$dependence$coefficients,z=dall$dependence$Z,coxi=cox,coxmi=coxmi,data=migpd$data)
+  sim <- MakeThrowData(dco=dall$dependence$coefficients, z=dall$dependence$Z,
+                       coxi=cox, coxmi=coxmi, data=migpd$data)
   CondLargest <- sim[,dim(sim)[2]]
   transformed <- sim[,(((dim(sim)[2]-1)/2)+1):(dim(sim)[2]-1)]
   sim <- sim[,1:((dim(sim)[2]-1)/2)]
