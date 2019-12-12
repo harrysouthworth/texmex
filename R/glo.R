@@ -1,5 +1,4 @@
-#' @export
-
+#' @export glo
 glo <- texmexFamily(name = 'GLO',
 					param = c(mu=0, phi=0, xi=0),
 					log.lik = function(data, ...) {
@@ -65,9 +64,10 @@ glo <- texmexFamily(name = 'GLO',
 						qglo(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
 					}
 )
-
 #' Generalized logistic distribution
 #'
+#' @description Density, distribution and quantile functions, and random number
+#'   generation for the Generalized logistic distribution
 #' @param x,q,p Value, quantile or probability respectively.
 #' @param n Number of random numbers to generate.
 #' @param mu Location parameter.
@@ -75,8 +75,10 @@ glo <- texmexFamily(name = 'GLO',
 #' @param xi Shape parameter.
 #' @param log.d,log.p Whether to work on the log scale.
 #' @param lower.tail Whether to return the lower tail.
-#' @aliases pglo qglo dglo
+#' @family pglo qglo dglo rglo
+#' @aliases pglo qglo dglo rglo
 #' @export
+#' @rdname dglo
 rglo <- function(n, mu, sigma, xi){
 	## use standard GLO ~ exp(xi*S - 1)/xi
 	## where S is a standard Logistic
@@ -103,6 +105,7 @@ rglo <- function(n, mu, sigma, xi){
 }
 
 #' @export
+#' @name dglo
 dglo <- function(x, mu, sigma, xi, log.d=FALSE){
 	## shift and scale
 	x <- (x - mu) / sigma
@@ -122,6 +125,7 @@ dglo <- function(x, mu, sigma, xi, log.d=FALSE){
 }
 
 #' @export
+#' @rdname dglo
 pglo <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 		## first shift and scale
 		q <- (q - mu) / sigma
@@ -143,6 +147,7 @@ pglo <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 }
 
 #' @export
+#' @rdname dglo
 qglo <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 
 	if ((!log.p) && any((p < 0) || (p > 1))) {

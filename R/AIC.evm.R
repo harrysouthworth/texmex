@@ -27,7 +27,7 @@
 #' @seealso \code{\link[stats]{AIC}}
 #' @importFrom stats AIC logLik
 #' @export
-AIC.evmOpt <- function(object, penalized=FALSE, nsamp=1e3, ..., k=2){
+AIC.evmOpt <- function(object, penalized=FALSE, nsamp=1e3, DIC, WAIC, ..., k=2){
   ll <- unclass(logLik(object, penalized=penalized))
   AIC <- -2*ll + k * attr(ll, 'df')
   attr(AIC, "df") <- NULL
@@ -95,8 +95,8 @@ WAIC.evmSim <- function(object){
 
 
 #' @export
-AIC.evmSim <- function(object, DIC = TRUE, WAIC = TRUE){
-  aic <- AIC.evmOpt(object$map)
+AIC.evmSim <- function(object, DIC = TRUE, WAIC = TRUE, ..., k=2){
+  aic <- AIC.evmOpt(object$map, ..., k=2)
   aic <- c(AIC = aic)
   if (DIC){
     dic <- DIC.evmSim(object)

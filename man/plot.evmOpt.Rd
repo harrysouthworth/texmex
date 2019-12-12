@@ -4,8 +4,14 @@
 \alias{plot.evmOpt}
 \title{Plots for evmOpt objects}
 \usage{
-\method{plot}{evmOpt}(x, main = rep(NULL, 4), xlab = rep(NULL, 4),
-  nsim = 1000, alpha = 0.05, ...)
+\method{plot}{evmOpt}(
+  x,
+  main = rep(NULL, 4),
+  xlab = rep(NULL, 4),
+  nsim = 1000,
+  alpha = 0.05,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class \code{evmOpt}}

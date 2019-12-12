@@ -10,13 +10,13 @@
 #' model object is not used by the function.
 #' 
 #' Examples of "texmexFamily" objects are \code{gpd}, \code{gev}, \code{glo},
-#' \code{weibull}, \code{gumbel} and \code{egp3}.  Take a look at
+#' \code{gpdIntCensored}, \code{weibull}, \code{gumbel} and \code{egp3}.  Take a look at
 #' those objects to see how the functions should be constructed.
 #' 
 #' The functions are used by the modelling functions to create
 #' diagnostic plots, predictions, etc..
 #' 
-#' @aliases texmexFamily print.texmexFamily summary.texmexFamily gpd glo
+#' @aliases texmexFamily print.texmexFamily summary.texmexFamily gpd gpdIntCensored glo
 #'     gev egp3 cgpd weibull gumbel print.summary.texmexFamily
 #' @usage texmexFamily(name, log.lik, param, info = NULL, sandwich =
 #'     NULL, start = NULL, resid = NULL, rl, delta, endpoint, density,
@@ -53,9 +53,9 @@
 #'     list containing the input arguments. If \code{info},
 #'     \code{sandwich}, \code{start}, \code{resid} are not provided,
 #'     they default to \code{NULL}.
-#' @note The \code{gpd}, \code{gev}, \code{weibull}, generalised logistic (\code{glo}), \code{gumbel} and
-#'     \code{egp3} families are provided. The \code{\link{evm}}
-#'     function defaults to using the \code{gpd} family.
+#' @note The \code{gpd}, \code{gev}, \code{weibull}, generalised logistic (\code{glo}), 
+#' \code{gumbel}, \code{gpdIntCensored} and \code{egp3} families are provided. 
+#' The \code{\link{evm}} function defaults to using the \code{gpd} family.
 #' @author Harry Southworth
 #' @seealso \code{\link{evm}}
 #' @keywords models

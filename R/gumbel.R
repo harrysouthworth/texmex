@@ -1,7 +1,4 @@
-#' @include texmexFamily.R
 #' @export gumbel
-NULL
-
 gumbel <- texmexFamily(name = 'Gumbel',
           log.lik = function(data, ...) {
             y <- data$y
@@ -69,16 +66,19 @@ gumbel <- texmexFamily(name = 'Gumbel',
 #' @description Density, distribution and quantile functions, and random number
 #'   generation for the Gumbel distribution
 #'
-#' @aliases rgumbel pgumbel qgumbel
+#' @aliases rgumbel pgumbel qgumbel dgumbel
+#' @family rgumbel pgumbel qgumbel dgumbel
 #'
-#' @param x, q, p Vectors of quantiles or probabilities.
+#' @param x,q,p Vectors of quantiles or probabilities.
 #' @param n The number of observations.
 #' @param mu The location parameter.
 #' @param sigma The scale parameter.
-#' @param log.d,log.p Whether to return logged values, or to treat probabilities as being logged.
+#' @param log.d,log.p Whether to return logged values, or to treat probabilities/densities as being logged.
 #' @param lower.tail Whether to return the lower tail. If \code{lower.tail=FALSE},
 #'     the upper tail is returned.
+#'
 #' @export
+#' @name dgumbel
 dgumbel <- function(x, mu, sigma, log.d=FALSE){
   xs <- -(x - mu) / sigma
   d <-  xs - exp(xs) - log(sigma)
@@ -90,12 +90,14 @@ dgumbel <- function(x, mu, sigma, log.d=FALSE){
 }
 
 #' @export
+#' @rdname dgumbel
 rgumbel <- function(n, mu, sigma){
   u <- runif(n)
   mu - sigma * log(-log(u))
 }
 
 #' @export
+#' @rdname dgumbel
 pgumbel <- function(q, mu, sigma, lower.tail=TRUE, log.p=FALSE){
   qs <- -(q - mu) / sigma
   if (log.p){
@@ -112,6 +114,7 @@ pgumbel <- function(q, mu, sigma, lower.tail=TRUE, log.p=FALSE){
 }
 
 #' @export
+#' @rdname dgumbel
 qgumbel <- function(p, mu, sigma, lower.tail=TRUE, log.p = FALSE){
   if (log.p){
     p <- exp(p)

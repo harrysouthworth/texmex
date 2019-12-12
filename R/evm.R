@@ -156,7 +156,6 @@
 #'   processing is being used and you are using objects from outside of
 #'   texmex. It it passed to \code{parallel::clusterExport} and used by
 #'   \code{texmex::evmBoot}.
-#' @param dp Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.
 #' @return If \code{method = "optimize"}, an object of class \code{evmOpt}:
 #'
 #' \item{call}{The call to \code{evmSim} that produced the object.}

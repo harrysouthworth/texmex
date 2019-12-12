@@ -9,7 +9,7 @@
 \alias{print.evmBoot}
 \title{Bootstrap an evmOpt fit}
 \usage{
-evmBoot(o, R=1000, trace=100, cores=NULL, theCall)
+evmBoot(o, R=1000, trace=100, cores=NULL, export=NULL, theCall)
 \method{summary}{evmBoot}(object,...)
 \method{plot}{evmBoot}(x,col=4,border=NULL,...)
 \method{coef}{evmBoot}(object,...)

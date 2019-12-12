@@ -8,6 +8,12 @@
 \title{Generalized logistic distribution}
 \usage{
 rglo(n, mu, sigma, xi)
+
+dglo(x, mu, sigma, xi, log.d = FALSE)
+
+pglo(q, mu, sigma, xi, lower.tail = TRUE, log.p = FALSE)
+
+qglo(p, mu, sigma, xi, lower.tail = TRUE, log.p = FALSE)
 }
 \arguments{
 \item{n}{Number of random numbers to generate.}
@@ -25,5 +31,7 @@ rglo(n, mu, sigma, xi)
 \item{lower.tail}{Whether to return the lower tail.}
 }
 \description{
-Generalized logistic distribution
+Density, distribution and quantile functions, and random number
+  generation for the Generalized logistic distribution
 }
+\concept{pglo qglo dglo rglo}

@@ -21,11 +21,9 @@ MCS(X, p = seq(0.1, 0.9, by = 0.1))
 
 bootMCS(X, p = seq(0.1, 0.9, by = 0.1), R = 100, trace = 10)
 
-\method{ggplot}{bootMCS}(data, mapping, main = "", alpha = 0.05, ylim,
-  ..., environment)
+\method{ggplot}{bootMCS}(data, mapping, main = "", alpha = 0.05, ylim, ..., environment)
 
-\method{plot}{bootMCS}(x, xlab = "p", ylab = "MCS", alpha = 0.05,
-  ylim, ...)
+\method{plot}{bootMCS}(x, xlab = "p", ylab = "MCS", alpha = 0.05, ylim, ...)
 
 \method{summary}{bootMCS}(object, alpha = 0.05, ...)
 

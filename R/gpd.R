@@ -2,9 +2,7 @@
 #' @include gpd.info.R
 #' @include gpd.sandwich.R
 #' @export gpd
-#' @export gpdIntCensored
-NULL
-
+#' @aliases evm
 gpd <- texmexFamily(name = 'GPD',
                    log.lik = function(data, th, ...) {
                                y <- data$y
@@ -76,6 +74,8 @@ gpd <- texmexFamily(name = 'GPD',
                     }
 )
 
+#' @export gpdIntCensored
+#' @aliases evm
 gpdIntCensored <- texmexFamily(name = 'gpdIntCensored',
 							   log.lik= function (data, th, dp=2, ...) 
 							   {

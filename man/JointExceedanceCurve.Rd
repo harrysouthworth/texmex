@@ -13,14 +13,25 @@
 JointExceedanceCurve(Sample, ExceedanceProb,...)
 \method{print}{jointExcCurve}(x,...)
 
-\method{JointExceedanceCurve}{default}(Sample, ExceedanceProb, n = 50,
-  x = NULL, ...)
+\method{JointExceedanceCurve}{default}(Sample, ExceedanceProb, n = 50, x = NULL, ...)
 
-\method{JointExceedanceCurve}{mexMC}(Sample, ExceedanceProb, n = 50,
-  x = NULL, which = 1:2, ...)
+\method{JointExceedanceCurve}{mexMC}(
+  Sample,
+  ExceedanceProb,
+  n = 50,
+  x = NULL,
+  which = 1:2,
+  ...
+)
 
-\method{JointExceedanceCurve}{predict.mex}(Sample, ExceedanceProb,
-  n = 50, x = NULL, which = 1:2, ...)
+\method{JointExceedanceCurve}{predict.mex}(
+  Sample,
+  ExceedanceProb,
+  n = 50,
+  x = NULL,
+  which = 1:2,
+  ...
+)
 
 calcJointExceedanceCurve(Sample, ExceedanceProb, n = 50, x = NULL)
 

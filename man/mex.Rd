@@ -17,34 +17,69 @@
 \alias{ggplot.predict.mex}
 \title{Conditional multivariate extreme values modelling}
 \usage{
-\method{ggplot}{mex}(data = NULL, mapping, ptcol = "blue",
-  col = "cornflowerblue", fill = "orange", plot. = TRUE,
-  quantiles = seq(0.1, by = 0.2, len = 5), ..., environment)
+\method{ggplot}{mex}(
+  data = NULL,
+  mapping,
+  ptcol = "blue",
+  col = "cornflowerblue",
+  fill = "orange",
+  plot. = TRUE,
+  quantiles = seq(0.1, by = 0.2, len = 5),
+  ...,
+  environment
+)
 
-mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE,
-  v = 10, penalty = "gaussian", maxit = 10000, trace = 0,
-  verbose = FALSE, priorParameters = NULL)
+mex(
+  data,
+  which,
+  mth,
+  mqu,
+  dqu,
+  margins = "laplace",
+  constrain = TRUE,
+  v = 10,
+  penalty = "gaussian",
+  maxit = 10000,
+  trace = 0,
+  verbose = FALSE,
+  priorParameters = NULL
+)
 
 mexAll(data, mqu, dqu)
 
 \method{print}{mexList}(x, ...)
 
-\method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5),
-  col = "grey", ...)
+\method{plot}{mex}(x, quantiles = seq(0.1, by = 0.2, len = 5), col = "grey", ...)
 
-\method{plot}{predict.mex}(x, pch = c(1, 3, 20), col = c(2, 8, 3),
-  cex = c(1, 1, 1), ask = TRUE, ...)
+\method{plot}{predict.mex}(x, pch = c(1, 3, 20), col = c(2, 8, 3), cex = c(1, 1, 1), ask = TRUE, ...)
 
-\method{ggplot}{predict.mex}(data = NULL, mapping, xlab, ylab, main,
-  ptcol = c("grey", "dark blue", "orange"), col = "dark blue",
-  fill = "orange", shape = 16:18, size = rep(1, 3), plot. = TRUE,
-  ..., environment)
+\method{ggplot}{predict.mex}(
+  data = NULL,
+  mapping,
+  xlab,
+  ylab,
+  main,
+  ptcol = c("grey", "dark blue", "orange"),
+  col = "dark blue",
+  fill = "orange",
+  shape = 16:18,
+  size = rep(1, 3),
+  plot. = TRUE,
+  ...,
+  environment
+)
 
-\method{predict}{mex}(object, which, pqu = 0.99, nsim = 1000,
-  trace = 10, smoothZdistribution = FALSE, ...)
+\method{predict}{mex}(
+  object,
+  which,
+  pqu = 0.99,
+  nsim = 1000,
+  trace = 10,
+  smoothZdistribution = FALSE,
+  ...
+)
 
-\method{summary}{predict.mex}(object, mth, probs = c(0.05, 0.5, 0.95),
-  ...)
+\method{summary}{predict.mex}(object, mth, probs = c(0.05, 0.5, 0.95), ...)
 }
 \arguments{
 \item{data}{A numeric matrix or data.frame, the columns of which are to be

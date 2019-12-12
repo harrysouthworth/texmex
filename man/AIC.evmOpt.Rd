@@ -5,8 +5,7 @@
 \alias{AIC.evmSim}
 \title{Information Criteria}
 \usage{
-\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, ...,
-  k = 2)
+\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, DIC, WAIC, ..., k = 2)
 }
 \arguments{
 \item{object}{fit model object}
@@ -16,16 +15,16 @@
 \item{nsamp}{Number of approximate Gaussian sample to use in computing DIC.
 Defaults to \code{nsamp=1e3}. Only used when the object has class 'evmOpt'.}
 
-\item{...}{other arguments currently ignored}
-
-\item{k}{numeric, the penalty per parameter to be used; the
-default \code{k = 2} is the classical AIC.}
-
 \item{DIC}{Logical. Whether to compute DIC. Defaults to \code{DIC = TRUE}.
 Only applicable to objects of class 'evmSim'.}
 
 \item{WAIC}{Logical. Whether to compute WAIC. Defaults to \code{WAIC = TRUE}.
 Only applicable to objects of class 'evmSim'.}
+
+\item{...}{other arguments currently ignored}
+
+\item{k}{numeric, the penalty per parameter to be used; the
+default \code{k = 2} is the classical AIC.}
 }
 \value{
 The AIC and DIC

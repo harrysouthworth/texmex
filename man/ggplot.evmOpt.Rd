@@ -9,11 +9,25 @@
 \alias{ggplotrl}
 \title{Diagnostic plots for an evm object}
 \usage{
-\method{ggplot}{evmOpt}(data, mapping, which = 1:4, main = rep(NULL,
-  4), xlab = rep(NULL, 4), nsim = 1000, alpha = 0.05,
-  jitter.width = 0, ptcol = "blue", span = 2/3, col = "light blue",
-  fill = "orange", plot. = TRUE, ncol = 2, nrow = 2, ...,
-  environment)
+\method{ggplot}{evmOpt}(
+  data,
+  mapping,
+  which = 1:4,
+  main = rep(NULL, 4),
+  xlab = rep(NULL, 4),
+  nsim = 1000,
+  alpha = 0.05,
+  jitter.width = 0,
+  ptcol = "blue",
+  span = 2/3,
+  col = "light blue",
+  fill = "orange",
+  plot. = TRUE,
+  ncol = 2,
+  nrow = 2,
+  ...,
+  environment
+)
 }
 \arguments{
 \item{data}{An object of class \code{evm}.}

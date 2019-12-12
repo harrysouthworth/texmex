@@ -4,8 +4,7 @@
 \alias{plot.evmSim}
 \title{Plots for evmSim objects}
 \usage{
-\method{plot}{evmSim}(x, which.plots = 1:3, density.adjust = 2,
-  print.seed = FALSE, ...)
+\method{plot}{evmSim}(x, which.plots = 1:3, density.adjust = 2, print.seed = FALSE, ...)
 }
 \arguments{
 \item{x}{an object of class \code{evmSim}}

@@ -7,9 +7,16 @@
 \alias{ggacfplots}
 \title{Diagnostic plots for the Markov chains in an evmSim object}
 \usage{
-\method{ggplot}{evmSim}(data = NULL, mapping, which.plots = 1:3,
-  denscol = "dark blue", acfcol = "light blue", plot.it = TRUE, ...,
-  environment)
+\method{ggplot}{evmSim}(
+  data = NULL,
+  mapping,
+  which.plots = 1:3,
+  denscol = "dark blue",
+  acfcol = "light blue",
+  plot.it = TRUE,
+  ...,
+  environment
+)
 }
 \arguments{
 \item{data}{An object of class 'evmSim'.}

@@ -7,13 +7,32 @@
 \usage{
 evm(y, data, family = gpd, ...)
 
-\method{evm}{default}(y, data, family = gpd, th = -Inf, qu, ...,
-  penalty = NULL, prior = "gaussian", method = "optimize",
-  cov = "observed", start = NULL, priorParameters = NULL,
-  maxit = 10000, trace = NULL, iter = 40500, burn = 500,
-  thin = 4, proposal.dist = c("gaussian", "cauchy"), jump.cov,
-  jump.const = NULL, R = 1000, cores = NULL, export = NULL,
-  verbose = TRUE)
+\method{evm}{default}(
+  y,
+  data,
+  family = gpd,
+  th = -Inf,
+  qu,
+  ...,
+  penalty = NULL,
+  prior = "gaussian",
+  method = "optimize",
+  cov = "observed",
+  start = NULL,
+  priorParameters = NULL,
+  maxit = 10000,
+  trace = NULL,
+  iter = 40500,
+  burn = 500,
+  thin = 4,
+  proposal.dist = c("gaussian", "cauchy"),
+  jump.cov,
+  jump.const = NULL,
+  R = 1000,
+  cores = NULL,
+  export = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{y}{Either a numeric vector or the name of a variable in \code{data}.}
@@ -134,8 +153,6 @@ texmex. It it passed to \code{parallel::clusterExport} and used by
 
 \item{verbose}{Whether or not to print progress to screen. Defaults to
 \code{verbose=TRUE}.}
-
-\item{dp}{Used by the \code{gpdIntCensored} family, to specify the number of decimal places to which the data has been recorded.  Defaults to 2.}
 }
 \value{
 If \code{method = "optimize"}, an object of class \code{evmOpt}:
@@ -232,6 +249,7 @@ for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
 For the GEV model, we use:
 
 \deqn{P(Y \le y) = exp (-(1 + \xi (y - \mu) / \sigma) ^{-1/\xi})}
+
 
 In each case, the scale parameter is sigma (\eqn{\sigma}) and the shape
 parameter is xi (\eqn{\xi}). The GEV distribution also has location
