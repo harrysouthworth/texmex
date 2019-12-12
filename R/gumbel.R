@@ -69,14 +69,14 @@ gumbel <- texmexFamily(name = 'Gumbel',
 #' @description Density, distribution and quantile functions, and random number
 #'   generation for the Gumbel distribution
 #'
-#'   @aliases rgumbel, pgumbel, qgumbel
+#' @aliases rgumbel pgumbel qgumbel
 #'
-#'   @param x, q, p Vectors of quantiles or probabilities.
-#'   @param n The number of observations.
-#'   @param mu The location parameter.
-#'   @param sigma The scale parameter.
-#'   @param log.d, log.p Whether to return logged values, or to treat probabilities as being logged.
-#'   @param lower.tail Whether to return the lower tail. If \code{lower.tail=FALSE},
+#' @param x, q, p Vectors of quantiles or probabilities.
+#' @param n The number of observations.
+#' @param mu The location parameter.
+#' @param sigma The scale parameter.
+#' @param log.d,log.p Whether to return logged values, or to treat probabilities as being logged.
+#' @param lower.tail Whether to return the lower tail. If \code{lower.tail=FALSE},
 #'     the upper tail is returned.
 #' @export
 dgumbel <- function(x, mu, sigma, log.d=FALSE){

@@ -1,4 +1,4 @@
-#' @export 
+#' @export
 
 glo <- texmexFamily(name = 'GLO',
 					param = c(mu=0, phi=0, xi=0),
@@ -7,11 +7,11 @@ glo <- texmexFamily(name = 'GLO',
 						X.mu <- data$D$mu
 						X.phi <- data$D$phi
 						X.xi <- data$D$xi
-						
+
 						n.mu <- ncol(X.mu)
 						n.phi <- n.mu + ncol(X.phi)
 						n.end <- n.phi + ncol(X.xi)
-						
+
 						function(param) {
 							stopifnot(length(param) == n.end)
 							mu <- X.mu %*% param[1:n.mu]
@@ -22,7 +22,7 @@ glo <- texmexFamily(name = 'GLO',
 						}
 					}, # Close log.lik
 					info = NULL, # will mean that numerical approx gets used
-					sandwich = NULL, 
+					sandwich = NULL,
 					delta = function(param, m, model){ # model not used but required by a calling function
 						out <- rep(1, 3)
 						out[2] <- exp(param[2])/param[3] * ((m-1)^(-param[3])  - 1) # Coles p.56
@@ -34,7 +34,7 @@ glo <- texmexFamily(name = 'GLO',
 						X.mu <- data$D[[1]]
 						X.phi <- data$D[[2]]
 						X.xi <- data$D[[3]]
-						
+
 						c(mean(y), rep(0, ncol(X.mu)-1), log(IQR(y)/2),
 						  rep(.001, -1 + ncol(X.phi) + ncol(X.xi)))
 					}, # Close start
@@ -66,6 +66,16 @@ glo <- texmexFamily(name = 'GLO',
 					}
 )
 
+#' Generalized logistic distribution
+#'
+#' @param x,q,p Value, quantile or probability respectively.
+#' @param n Number of random numbers to generate.
+#' @param mu Location parameter.
+#' @param sigma Scale parameter.
+#' @param xi Shape parameter.
+#' @param log.d,log.p Whether to work on the log scale.
+#' @param lower.tail Whether to return the lower tail.
+#' @aliases pglo qglo dglo
 #' @export
 rglo <- function(n, mu, sigma, xi){
 	## use standard GLO ~ exp(xi*S - 1)/xi
@@ -84,11 +94,11 @@ rglo <- function(n, mu, sigma, xi){
 
 	## and here we go
 	standard.glo <- texmex:::.exprel(xi*s)*s
-	
+
 	if( sum(xi == 0)){
 		standard.glo[xi==0] <- s[xi==0]
 	}
-	
+
 	mu + sigma * standard.glo
 }
 
@@ -96,14 +106,14 @@ rglo <- function(n, mu, sigma, xi){
 dglo <- function(x, mu, sigma, xi, log.d=FALSE){
 	## shift and scale
 	x <- (x - mu) / sigma
-	
+
 	logrel <- texmex:::.log1prel(xi*x) * x #Accurately compute log(1 + x) / x
-	
+
 	log.density <- -log(sigma) - log1p(xi*x) - logrel - 2* log1p(exp(-logrel))
-	
+
 	## make exp(Inf) > Inf
 	log.density[logrel==(-Inf)] <- -Inf
-	
+
 	if (!log.d) {
 		exp(log.density)
 	} else {
@@ -115,20 +125,20 @@ dglo <- function(x, mu, sigma, xi, log.d=FALSE){
 pglo <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 		## first shift and scale
 		q <- (q - mu) / sigma
-		
+
 		## now set the lengths right
 		n  <- max(length(q), length(xi))
 		q  <- rep(q, length.out=n)
 		xi <- rep(xi, length.out=n)
-		
+
 		res <- texmex:::.log1prel(xi*q) * q
-		
+
 		logP <- -log1p(exp(res))
-		
+
 		if(log.p){
-			if(lower.tail) return(log1p(-exp(logP)))else return(logP) 
+			if(lower.tail) return(log1p(-exp(logP)))else return(logP)
 		} else {
-			if(lower.tail) return(1-exp(logP)) else return(exp(logP)) 
+			if(lower.tail) return(1-exp(logP)) else return(exp(logP))
 		}
 }
 
@@ -138,21 +148,21 @@ qglo <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 	if ((!log.p) && any((p < 0) || (p > 1))) {
 		stop("p must lie between 0 and 1 if log.p=FALSE")
 	}
-	
+
 	if(!lower.tail) {
 		if(!log.p) {
 			p <- 1-p
 		} else {
 			p <- log(1-exp(p))
 		}
-	} 	
-	
+	}
+
 	if(log.p) {
 		p <- exp(p)
 	}
 
 	standard <- qlogis(p=p)
-	
+
 	if( sum(xi != 0)){
 		standard[xi != 0] <- 1/xi * (1/(1/p-1)^xi - 1)
 	}

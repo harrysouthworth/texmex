@@ -9,6 +9,9 @@
 #' @param cores The number of coresto use when bootstrapping. Defaults
 #'     to \code{cores=NULL} and the function guesses how many cores
 #'     are available and uses them all.
+#' @param export Character vector of names of variables to export. See the
+#'   help file for \code{parallel::export}. Defaults to \code{export = NULL}
+#'   and most users will never need to use it.
 #' @param theCall (for internal use)
 #' @param x an \code{\link{evmBoot}} object
 #' @param col colour used to fill histogram

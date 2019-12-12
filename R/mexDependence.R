@@ -1,9 +1,9 @@
 #' Estimate the dependence parameters in a conditional multivariate extreme
 #' values model
-#' 
+#'
 #' Estimate the dependence parameters in a conditional multivariate extreme
 #' values model using the approach of Heffernan and Tawn, 2004.
-#' 
+#'
 #' Estimates the extremal dependence structure of the data in \code{x}.  The
 #' precise nature of the estimation depends on the value of \code{margins}.  If
 #' \code{margins="laplace"} (the default) then dependence parameters a and b
@@ -15,7 +15,7 @@
 #' a=0 and b is negative, parameters c and d are estimated (this is the case of
 #' negative dependence). Otherwise c and d will be fixed at zero (this is the
 #' case of positive dependence).
-#' 
+#'
 #' If \code{margins="laplace"} then the option of constrained parameter
 #' estimation is available by setting argument \code{constrain=TRUE}.  The
 #' default is to constrain the values of the parameters
@@ -28,7 +28,7 @@
 #' Heffernan and Tawn (2004).  The constraint brings with it some performance
 #' issues for the optimiser used to estimate the dependence parameters, in
 #' particular sensitivity to choice of starting value which we describe now.
-#' 
+#'
 #' The dependence parameter estimates returned by this function can be
 #' particularly sensitive to the choice of starting value used for the
 #' optimisation.  This is especially true when \code{margins="laplace"} and
@@ -41,7 +41,7 @@
 #' the argument \code{PlotLikRange} to focus on the region containing the
 #' surface maximum.  See an example below which illustrates the use of this
 #' diagnostic.
-#' 
+#'
 #' @usage mexDependence(x, which, dqu, margins="laplace",
 #'     constrain=TRUE, v = 10, maxit=1000000, start=c(.01, .01),
 #'     marTransform="mixture", referenceMargin = NULL, nOptim = 1,
@@ -138,36 +138,36 @@
 #' @references J. E. Heffernan and J. A. Tawn, A conditional approach
 #'     for multivariate extreme values, Journal of the Royal
 #'     Statistical society B, 66, 497 -- 546, 2004.
-#' 
+#'
 #' C. Keef, I. Papastathopoulos and J. A. Tawn.  Estimation of the conditional
 #' distribution of a multivariate variable given that one of its components is
 #' large: Additional constraints for the Heffernan and Tawn model, Journal of
 #' Multivariate Analysis, 115, 396 -- 404, 2013
 #' @keywords models multivariate
 #' @examples
-#' 
+#'
 #' data(winter)
 #' mygpd <- migpd(winter , mqu=.7, penalty="none")
 #' mexDependence(mygpd , which = "NO", dqu=.7)
-#' 
+#'
 #' # focus on 2-d example with parameter estimates on boundary of constrained parameter space:
 #' NO.NO2 <- migpd(winter[,2:3] , mqu=.7, penalty="none")
-#' 
+#'
 #' # starting value gives estimate far from true max:
 #' mexDependence(NO.NO2, which = "NO",dqu=0.7,start=c(0.01,0.01),
 #'               PlotLikDo=TRUE,PlotLikTitle=c("NO2 | NO"))
-#' 
+#'
 #' # zoom in on plotting region containing maximum:
 #' mexDependence(NO.NO2, which = "NO",dqu=0.7,start=c(0.01,0.01),
-#'               PlotLikDo=TRUE,PlotLikTitle=c("NO2 | NO"), 
+#'               PlotLikDo=TRUE,PlotLikTitle=c("NO2 | NO"),
 #'               PlotLikRange = list(a=c(0,0.8),b=c(-0.2,0.6)))
-#' 
+#'
 #' # try different starting value:
 #' mexDependence(NO.NO2, which = "NO",dqu=0.7,start=c(0.1,0.1),
-#'               PlotLikDo=TRUE,PlotLikTitle=c("NO2 | NO"), 
+#'               PlotLikDo=TRUE,PlotLikTitle=c("NO2 | NO"),
 #'               PlotLikRange = list(a=c(0,0.8),b=c(-0.2,0.6)))
-#' 
-#' 
+#'
+#'
 #' @export mexDependence
 `mexDependence` <-
     function (x, which, dqu, margins = "laplace",
@@ -191,7 +191,7 @@
 
    x <- mexTransform(x, margins = margins, method = marTransform, r=referenceMargin)
    x$referenceMargin <- referenceMargin
-   
+
    if (margins[[1]] == "gumbel" & constrain){
      warning("With Gumbel margins, you can't constrain, setting constrain=FALSE")
      constrain <- FALSE
@@ -341,7 +341,7 @@
 
    res <- sapply(1:length(dependent),
                  function(X,dat,yex,wh,aLow,margins,constrain,v,maxit,start)qfun(dat[,X],yex,wh,aLow,margins,constrain,v,maxit,start[,X]),
-                 dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins[[1]], 
+                 dat=as.matrix(x$transformed[, dependent]), yex=yex, wh=wh, aLow=aLow, margins=margins[[1]],
                  constrain=constrain, v=v, maxit=maxit, start=start)
 
    loglik <- -res[7,]
