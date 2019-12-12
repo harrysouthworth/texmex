@@ -114,6 +114,15 @@ be sure what scale the results are on.
 Threshold selection can be carried out with the help of functions
 \code{\link{mrl}} and \code{\link{gpdRangeFit}}.
 }
+\note{
+You are encourage to use the \code{mqu} argument and not \code{mth}.
+  If you use \code{mth}, the quantiles then need to be estimated. There
+  are, at the time of writing, 9 methods of estimating quantiles build into
+  the \code{quantile} function. Tiny differences can cause problems in
+  later stages of the analysis if functions try to simulate in an area
+  that is legitimate according to the numerical value of the threshold, but
+  not according to the estimated quantile.
+}
 \examples{
 
 mygpd <- migpd(winter, mqu=.7, penalty = "none")

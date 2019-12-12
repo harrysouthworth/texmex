@@ -27,6 +27,10 @@ evmBoot(o, R=1000, trace=100, cores=NULL, theCall)
 to \code{cores=NULL} and the function guesses how many cores
 are available and uses them all.}
 
+\item{export}{Character vector of names of variables to export. See the
+help file for \code{parallel::export}. Defaults to \code{export = NULL}
+and most users will never need to use it.}
+
 \item{theCall}{(for internal use)}
 
 \item{x}{an \code{\link{evmBoot}} object}

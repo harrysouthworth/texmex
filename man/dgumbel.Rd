@@ -2,21 +2,28 @@
 % Please edit documentation in R/gumbel.R
 \name{dgumbel}
 \alias{dgumbel}
+\alias{rgumbel,}
+\alias{pgumbel,}
+\alias{qgumbel}
 \title{The Gumbel distribution}
 \usage{
 dgumbel(x, mu, sigma, log.d = FALSE)
 }
+\arguments{
+\item{x, }{q, p Vectors of quantiles or probabilities.}
+
+\item{mu}{The location parameter.}
+
+\item{sigma}{The scale parameter.}
+
+\item{log.d, log.p}{Whether to return logged values, or to treat probabilities as being logged.}
+
+\item{n}{The number of observations.}
+
+\item{lower.tail}{Whether to return the lower tail. If \code{lower.tail=FALSE},
+the upper tail is returned.}
+}
 \description{
 Density, distribution and quantile functions, and random number
   generation for the Gumbel distribution
-
-  @aliases rgumbel, pgumbel, qgumbel
-
-  @param x, q, p Vectors of quantiles or probabilities.
-  @param n The number of observations.
-  @param mu The location parameter.
-  @param sigma The scale parameter.
-  @param log.d, log.p Whether to return logged values, or to treat probabilities as being logged.
-  @param lower.tail Whether to return the lower tail. If \code{lower.tail=FALSE},
-    the upper tail is returned.
 }
