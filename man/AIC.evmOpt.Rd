@@ -5,7 +5,8 @@
 \alias{AIC.evmSim}
 \title{Information Criteria}
 \usage{
-\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, DIC, WAIC, ..., k = 2)
+\method{AIC}{evmOpt}(object, penalized = FALSE, nsamp = 1000, DIC,
+  WAIC, ..., k = 2)
 }
 \arguments{
 \item{object}{fit model object}

@@ -6,38 +6,17 @@
 \alias{plot.migpd}
 \title{Fit multiple independent generalized Pareto models}
 \usage{
-\method{ggplot}{migpd}(
-  data,
-  mapping = NULL,
+\method{ggplot}{migpd}(data, mapping = NULL,
   main = c("Probability plot", "Quantile plot", "Return level plot",
-    "Histogram and density"),
-  xlab = rep(NULL, 4),
-  nsim = 1000,
-  alpha = 0.05,
-  ...,
-  environment
-)
+  "Histogram and density"), xlab = rep(NULL, 4), nsim = 1000,
+  alpha = 0.05, ..., environment)
 
-migpd(
-  data,
-  mth,
-  mqu,
-  penalty = "gaussian",
-  maxit = 10000,
-  trace = 0,
-  verbose = FALSE,
-  priorParameters = NULL
-)
+migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000, trace = 0,
+  verbose = FALSE, priorParameters = NULL)
 
-\method{plot}{migpd}(
-  x,
-  main = c("Probability plot", "Quantile plot", "Return level plot",
-    "Histogram and density"),
-  xlab = rep(NULL, 4),
-  nsim = 1000,
-  alpha = 0.05,
-  ...
-)
+\method{plot}{migpd}(x, main = c("Probability plot", "Quantile plot",
+  "Return level plot", "Histogram and density"), xlab = rep(NULL, 4),
+  nsim = 1000, alpha = 0.05, ...)
 }
 \arguments{
 \item{data}{A matrix or data.frame, each column of which is to be modelled.}
