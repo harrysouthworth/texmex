@@ -1,17 +1,17 @@
 #' Estimate dependence parameters in a conditional multivariate extreme values
 #' model over a range of thresholds.
-#' 
+#'
 #' Diagnostic tool to aid the choice of threshold to be used for the estimation
 #' of the dependence parameters in the conditional multivariate extreme values
 #' model of Heffernan and Tawn, 2004.
-#' 
+#'
 #' Dependence model parameters are estimated using a range of threshold values.
 #' The sampling variability of these estimates is characterised using the
 #' bootstrap.  Point estimates and bootstrap estimates are finally plotted over
 #' the range of thresholds.  Choice of threshold should be made such that the
 #' point estimates at the chosen threshold and beyond are constant, up to
 #' sampling variation.
-#' 
+#'
 #' @usage mexRangeFit(x, which, quantiles = seq(0.5, 0.9, length = 9),
 #' start=c(.01, .01), R = 10, nPass=3, trace=10, margins = "laplace", constrain
 #' = TRUE, v = 10, referenceMargin=NULL)
@@ -40,14 +40,14 @@
 #' 497 -- 546, 2004
 #' @keywords models multivariate
 #' @examples
-#' 
+#'
 #' \donttest{
 #'   w <- migpd(winter, mqu=.7)
 #'   w
 #'   par(mfrow=c(4,2))
-#'   mexRangeFit(w,which=1,main="Winter data, Heffernan and Tawn 2004",cex=0.5)
+#'   plot(mexRangeFit(w, which=1),main="Winter data, Heffernan and Tawn 2004",cex=0.5)
 #' }
-#'   
+#'
 #' @export mexRangeFit
 mexRangeFit <-
 function (x, which, quantiles=seq(0.5,0.9,length=9), start=c(.01, .01), R=10, nPass=3, trace=10,
@@ -119,7 +119,7 @@ plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE,...){
   Names <- paste(rep(rownames(cof),dim(data)[2]-1),
                  paste(rep(colnames(cof),each=6),whichName,sep=" | "),sep="  ")
   R <- length(boot[[1]]$boot)
-  
+
   for(i in 1:dim(PointEsts)[1]){
     if( sum((i %% 6) == 1:4) ){ # exclude plots from nuisance parameters m and s for which i mod 6 = 5,0 resp
       if(sum(PointEsts[i,])){
@@ -140,13 +140,13 @@ plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE,...){
 
 
 #' @export
-ggplot.mexRangeFit <- function(data=NULL, mapping, 
+ggplot.mexRangeFit <- function(data=NULL, mapping,
                              ylim = "auto",
                              ptcol="blue",
                              col="cornflowerblue",
                              bootcol="orange",
                              plot.=TRUE,
-                             addNexcesses=TRUE, 
+                             addNexcesses=TRUE,
                              textsize=4,
                              ..., environment){
     ests <- data$ests
@@ -167,12 +167,12 @@ ggplot.mexRangeFit <- function(data=NULL, mapping,
 
             d <- data.frame(q=quantiles,p=PointEsts[i,])
             b <- data.frame(q=rep(quantiles,each=R),b=c(Boot))
-            
-            p <- ggplot(d,aes(q,p)) + 
-                    labs(x="Quantiles",y=Names[i]) + 
-                    geom_line(colour=col) + 
+
+            p <- ggplot(d,aes(q,p)) +
+                    labs(x="Quantiles",y=Names[i]) +
+                    geom_line(colour=col) +
                     geom_point(data=b,aes(q,b),colour=bootcol,alpha=0.5) +
-                    geom_point(colour=col) 
+                    geom_point(colour=col)
         } else {
             p <- NULL
         }

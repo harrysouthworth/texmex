@@ -8,8 +8,12 @@ qgev <- function(p, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
   ## there's no argument checking in qexp, so we do this to match the
   ## existing behaviour
 
-  if ((!log.p) && any((p < 0) || (p > 1))) {
-    stop("p must lie between 0 and 1 if log.p=FALSE")
+  if (length(log.p) > 1){
+    stop("log.p must have length 1")
+  } else if ((!log.p)){
+    if (any((p < 0) | any(p > 1))) {
+      stop("p must lie between 0 and 1 if log.p=FALSE")
+    }
   }
 
   ## get the quantiles of the standard exponential

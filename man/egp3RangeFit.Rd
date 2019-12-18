@@ -11,7 +11,7 @@ egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data,
 .95), nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 \method{print}{egp3RangeFit}(x, ...)
 \method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, log.="", ...)
-\method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa), 
+\method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa),
 main=NULL,fill="orange", col="blue",addNexcesses=TRUE, textsize=4, ..., environment)
 }
 \arguments{
@@ -82,9 +82,11 @@ covariates included in the model.
 }
 \examples{
 
+\donttest{ # because of the time it takes to run
 erf <- egp3RangeFit(rain)
 plot(erf)
 ggplot(erf)
+}
 
 }
 \references{

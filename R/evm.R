@@ -250,10 +250,10 @@
 #' @examples
 #'
 #'   \donttest{
-#'   mod <- evm(rain, th=30)
-#'   mod
-#'   par(mfrow=c(2, 2))
-#'   plot(mod)
+#'   #mod <- evm(rain, th=30)
+#'   #mod
+#'   #par(mfrow=c(2, 2))
+#'   #plot(mod)
 #'   }
 #'
 #'   \donttest{
@@ -262,9 +262,11 @@
 #'   plot(mod)
 #'   }
 #'
+#'   \donttest{
 #'   mod <- evm(SeaLevel, data=portpirie, family=gev)
 #'   mod
 #'   plot(mod)
+#'   }
 #'
 #'   \donttest{
 #'   mod <- evm(SeaLevel, data=portpirie, family=gev, method="sim")

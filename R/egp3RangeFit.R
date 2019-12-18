@@ -1,35 +1,35 @@
 #' Estimate the EGP3 distribution power parameter over a range of thresholds
-#' 
+#'
 #' Estimate extended generalized Pareto distribution power parameter over a
 #' range of values, using maximum (penalized) likelihood.
-#' 
+#'
 #' Papastathopoulos and Tawn present 3 extended versions of the generalized
 #' Pareto distribution. Using the \code{egp3} texmex family object, the power
 #' parameter in the EGP3 distribution is estimated on the log scale, a
 #' confidence interval is calculated and the result is transformed back to the
 #' scale of the power parameter and returned to the user.
-#' 
+#'
 #' When the power paramer, kappa, is equal to 1, the EPG3 distribution is
 #' identical to the generalized Pareto distribution. Therefore, the plot of the
 #' estimated parameter over a range of thresholds provides a diagnostic for
 #' threshold selection: the lowest value of kappa whose confidence interval
 #' includes 1 is suggested as the threshold for generalized Pareto modelling.
-#' 
+#'
 #' If lower thresholds are used and the EGP3 distribution itself is used for
 #' modelling, some care should be taken to ensure the model provides a
 #' reasonable degree of fit to the data. Limited experience suggests that such
 #' models seldom fit well and the main value of the EGP3 distribution is as a
 #' diagnostic for threshold selection as described here.
-#' 
+#'
 #' Note this function does not extend to assessing model fit when there are
 #' covariates included in the model.
-#' 
+#'
 #' @aliases egp3RangeFit print.egp3RangeFit plot.egp3RangeFit ggplot.egp3RangeFit
 #' @usage egp3RangeFit(data, umin=quantile(data, .05), umax=quantile(data,
 #' .95), nint = 10, penalty = "gaussian", priorParameters = NULL, alpha=0.05)
 #' \method{print}{egp3RangeFit}(x, ...)
 #' \method{plot}{egp3RangeFit}(x, xlab = "Threshold", ylab = "kappa", main = NULL, addNexcesses=TRUE, log.="", ...)
-#' \method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa), 
+#' \method{ggplot}{egp3RangeFit}(data, mapping, xlab = "Threshold", ylab = expression(kappa),
 #' main=NULL,fill="orange", col="blue",addNexcesses=TRUE, textsize=4, ..., environment)
 #' @param data The data vector to be modelled.
 #' @param umin The minimum threshold above which to estimate the parameters.
@@ -61,11 +61,13 @@
 #' 143, 131 -- 143, 2013
 #' @keywords models
 #' @examples
-#' 
+#'
+#' \donttest{ # because of the time it takes to run
 #' erf <- egp3RangeFit(rain)
 #' plot(erf)
 #' ggplot(erf)
-#' 
+#' }
+#'
 #' @export egp3RangeFit
 egp3RangeFit <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
@@ -115,7 +117,7 @@ plot.egp3RangeFit <- function(x, xlab="Threshold", ylab="kappa",
     mtext("# threshold excesses")
   }
   abline(h=1, lty=2)
-  
+
   invisible()
 }
 
@@ -126,13 +128,13 @@ ggplot.egp3RangeFit <- function(data, mapping, xlab = "Threshold", ylab = expres
 {
     d <- data.frame(hi=data$hi,lo=data$lo,th=data$th,par=data$par)
     poly <- data.frame(x=c(data$th, rev(data$th)), y=c(data$lo, rev(data$hi)))
-    
-    p <- ggplot(data=d,aes(th,par)) + 
+
+    p <- ggplot(data=d,aes(th,par)) +
         geom_polygon(data=poly,aes(x,y),fill=fill, alpha=.5) +
-        geom_line(colour=col) + 
+        geom_line(colour=col) +
         geom_hline(yintercept=1,linetype=2) +
         labs(x=xlab,y=ylab,title=main)
-        
+
     if (addNexcesses)
         p <- addExcesses(p, poly$x, poly$y, data=data$data, textsize=textsize)
 

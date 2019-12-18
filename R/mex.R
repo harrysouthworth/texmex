@@ -1,27 +1,27 @@
 #' Conditional multivariate extreme values modelling
-#' 
+#'
 #' Fit the conditional multivariate extreme value model of Heffernan and Tawn
-#' 
+#'
 #' The function \code{mex} works as follows. First, Generalized Pareto
 #' distributions (GPD) are fitted to the upper tails of each of the marginal
 #' distributions of the data: the GPD parameters are estimated for each column
 #' of the data in turn, independently of all other columns. Then, the
 #' conditional multivariate approach of Heffernan and Tawn is used to model the
 #' dependence between variables. The returned object is of class "mex".
-#' 
+#'
 #' This function is a wrapper for calls to \code{\link{migpd}} and
 #' \code{\link{mexDependence}}, which estimate parameters of the marginal and
 #' dependence components of the Heffernan and Tawn model respectively.  See
 #' documentation of these functions for details of modelling issues including
 #' the use of penalties / priors, threshold choice and checking for convergence
 #' of parameter estimates.
-#' 
+#'
 #' The \code{plot} method produces diagnostic plots for the fitted dependence
 #' model described by Heffernan and Tawn, 2004.  The plots are best viewed by
 #' using the plotting area split by \code{par(mfcol=c(.,.))} rather than
 #' \code{mfrow}, see examples below.  Three diagnostic plots are produced for
 #' each dependent variable:
-#' 
+#'
 #' 1) Scatterplots of the residuals Z from the fitted model of Heffernan and
 #' Tawn (2004) are plotted against the quantile of the conditioning variable,
 #' with a lowess curve showing the local mean of these points.  2) The absolute
@@ -40,7 +40,7 @@
 #' distribution given the value of the conditioning variable, and while these
 #' two distributions should move into the same part of the sample space as the
 #' conditioning variable becomes more extreme, they are not the same thing!
-#' 
+#'
 #' The \code{predict} method for \code{mex} works as follows. The returned
 #' object has class "predict.mex". Simulated values of the dependent variables
 #' are created, given that the conditioning variable is above its 100\code{pqu}
@@ -54,7 +54,7 @@
 #' and point estimates appear in component \code{object$data$simulated}. The
 #' simulated data from the bootstrap estimates appear in
 #' \code{object$replicates}.
-#' 
+#'
 #' The \code{plot} method for class \code{"predict.mex"} displays both the
 #' original data and the simulated data generated above the threshold for
 #' prediction; it shows the threshold for prediction (vertical line) and also
@@ -64,12 +64,12 @@
 #' simulated data with another; colours of simulated point distinguish those
 #' points which have the conditioning variable as the largest (on a quantile
 #' scale) or not the largest.
-#' 
+#'
 #' The function \code{mexAll} fits a collection of GPD and conditional
 #' dependence models, the same fitted GPD being used for all of the dependence
 #' model fits.  This can be used in turn to generate Monte Carlo samples from
 #' the entire sample space usign the collected dependence models.
-#' 
+#'
 #' @aliases mex plot.mex print.mex predict.mex summary.predict.mex plot.predict.mex ggplot.mex
 #' mexAll print.mexList print.summary.mex summary.mex
 #' @param data A numeric matrix or data.frame, the columns of which are to be
@@ -81,7 +81,7 @@
 #' fit generalized Pareto distributions.  If this is a vector of length 1, the
 #' same threshold will be used for each variable. Otherwise, it should be a
 #' vector whose length is equal to the number of columns in \code{data}.
-#' 
+#'
 #' In \code{summary.predict.mex}, the thresholds over which to simulate data
 #' from the fitted multivariate model. If not supplied, it is taken to be the
 #' thresholds that were used to fit the dependence model on the scale of the
@@ -164,7 +164,7 @@
 #' \code{\link{mexDependence}}.} \item{call}{This matches the original function
 #' call.} There are \code{plot}, \code{summary}, \code{coef} and \code{predict}
 #' methods for this class.
-#' 
+#'
 #' A call to \code{predict.mex} does the importance sampling for prediction,
 #' and returns a list of class \code{"predict.mex"} for which there are print
 #' and plot methods available.  The summary method for this class of object is
@@ -172,7 +172,7 @@
 #' quantiles or probabilities of threshold excesses for the fitted conditional
 #' distributions given the conditioning variable above the threshold for
 #' prediction.  See examples below.
-#' 
+#'
 #' There are \code{print}, \code{summary} and \code{plot} methods available for
 #' the class "predict.mex".
 #' @note The package \code{texmex} is equipped to fit GPD models to the upper
@@ -203,12 +203,12 @@
 #' 497 - 546, 2004
 #' @keywords models multivariate
 #' @examples
-#' 
+#'
 #' w <- mex(winter, mqu=.7)
 #' w
 #' par(mfcol=c(3, 2))
 #' plot(w)
-#' 
+#'
 #' par(mfcol=c(2,2))
 #' p <- predict(w)
 #' summary(p)
@@ -216,8 +216,8 @@
 #' summary(p,probs=0.5,mth=c(40,50,150,25,50))
 #' p
 #' plot(p)
-#' 
-#' 
+#'
+#'
 #' @export mex
 mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=10,
                 penalty="gaussian", maxit=10000,
@@ -231,7 +231,7 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
 
     if (missing(which)){
         which <- colnames(data)[1]
-        message("which not given. Conditioning on", which, "\n")
+        message("which not given. Conditioning on ", which, "\n")
     }
 
     if (missing(mth)){

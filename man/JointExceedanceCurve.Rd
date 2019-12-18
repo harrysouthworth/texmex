@@ -78,6 +78,7 @@ to \code{predict} being used to calculate the joint exceedance curve).
 \examples{
 \donttest{
  # for data frame of raw data
+ Sigma <- matrix(c(1, .5, .5, 1), ncol=2)
  m1 <- rmvnorm(5000,sigma=Sigma)
  m1 <- as.data.frame(m1)
  j1 <- JointExceedanceCurve(m1,0.01)
