@@ -249,10 +249,12 @@
 #' @keywords models
 #' @examples
 #'
+#'   \donttest{
 #'   mod <- evm(rain, th=30)
 #'   mod
 #'   par(mfrow=c(2, 2))
 #'   plot(mod)
+#'   }
 #'
 #'   \donttest{
 #'   mod <- evm(rain, th=30, method="sim")
