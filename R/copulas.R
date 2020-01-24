@@ -103,38 +103,13 @@ print.copula <- function(x, ...){
 }
 
 #' Plot copulas
-#' @aliases ggplot.copula
 #'
 #' @param x A copula object
 #' @param jitter. If \code{jitter=TRUE}, the values are jittered
 #'     before plotting. Defaults to \code{jitter. = FALSE}.
 #' @param jitter.factor How much jittering to use. Defaults to
-#'     \code{jitter.factor = 1.}
-#' @param data A data.frame.
-#' @param mapping Not used.
-#' @param color Defaults to \code{color = "blue"}.
-#' @param alpha Defaults to \code{alpha = 0.7}.
-#' @param jitter Defaults to \code{jitter = FALSE}.
-#' @param jitter.factor Defaults to \code{jitter.factor = 0.05} and is used only
-#'   when \code{jitter = TRUE}.
-#' @param point.size Defaults to \code{point.size = 1}.
-#' @param smooth Defaults to \code{smooth = FALSE}.
-#' @param smooth.method Defaults to \code{smooth.method = "auto"} and is passed
-#'   to \code{geom_smooth} only when \code{smooth = TRUE}.
-#' @param smooth.se Defaults to \code{smooth.se = TRUE} and is used only when
-#'   \code{smooth = TRUE}.
-#' @param smooth.level Defaults to \code{smooth.level = 0.95} and is used only
-#'   when \code{smooth = TRUE}.
-#' @param smooth.formula A formula, defaulting to \code{smooth.formula = y ~ x}
-#'   to be passed as the \code{formula} argument to \code{geom_smooth}.
-#' @param legend.position Passed into theme, defaults to \code{legend.position="none"}.
-#' @param diag Defaults to \code{diag = FALSE} and panels on the diagonal are not
-#'   produced.
-#' @param lower Defaults to \code{lower = TRUE} and only the lower triangle is plotted.
-#' @param ticks Defaults to \code{ticks = TRUE} and ticks and their labels are put
-#'   on the axes. Otherwise, no tick or labels are used.
-#' @param environment Not used.
-#' @param ... Further arguments to be passed to plot method. Not used by \code{ggplot.copula}.
+#'     \code{jitter.factor = 1}.
+#' @param ... Other arguments to pass through to \code{plot}.
 #' @export
 plot.copula <- function(x, jitter. = FALSE, jitter.factor=1, ...){
     x <- x$copula
@@ -153,13 +128,42 @@ plot.copula <- function(x, jitter. = FALSE, jitter.factor=1, ...){
 }
 
 
+#' Fancy plotting for copulas
+#'
+#' @param jitter If \code{jitter=TRUE}, the values are jittered
+#'     before plotting. Defaults to \code{jitter. = FALSE}.
+#' @param jitter.factor How much jittering to use. Defaults to
+#'     \code{jitter.factor = .05}.
+#' @param data A data.frame.
+#' @param mapping Not used.
+#' @param color Defaults to \code{color = "blue"}.
+#' @param alpha Defaults to \code{alpha = 0.7}.
+#' @param point.size Defaults to \code{point.size = 1}.
+#' @param smooth Defaults to \code{smooth = FALSE}.
+#' @param smooth.method Defaults to \code{smooth.method = "auto"} and is passed
+#'   to \code{geom_smooth} only when \code{smooth = TRUE}.
+#' @param smooth.se Defaults to \code{smooth.se = TRUE} and is used only when
+#'   \code{smooth = TRUE}.
+#' @param smooth.level Defaults to \code{smooth.level = 0.95} and is used only
+#'   when \code{smooth = TRUE}.
+#' @param smooth.formula A formula, defaulting to \code{smooth.formula = y ~ x}
+#'   to be passed as the \code{formula} argument to \code{geom_smooth}.
+#' @param legend.position Passed into \code{theme}, defaults to \code{legend.position="none"}.
+#' @param legend.title Passed into \code{theme}. Defaults to \code{legend.title = waiver()}.
+#' @param diag Defaults to \code{diag = FALSE} and panels on the diagonal are not
+#'   produced.
+#' @param lower Defaults to \code{lower = TRUE} and only the lower triangle is plotted.
+#' @param ticks Defaults to \code{ticks = TRUE} and ticks and their labels are put
+#'   on the axes. Otherwise, no tick or labels are used.
+#' @param environment Not used.
+#' @param ... Not used.
 #' @export
 ggplot.copula <-
   function (data, mapping = aes(), color = "blue",
             alpha = 0.7, jitter = FALSE, jitter.factor = 0.05, point.size = 1,
             smooth = FALSE, smooth.method = "auto", smooth.se = TRUE,
             smooth.level = 0.95, smooth.formula = y ~ x, legend.position = "none",
-            legend.title = waiver(), diag = FALSE, lower = TRUE,
+            legend.title = ggplot2::waiver(), diag = FALSE, lower = TRUE,
             ticks = TRUE, ..., environment = parent.frame()) {
 
     data <- as.data.frame(data$copula)
@@ -172,16 +176,17 @@ ggplot.copula <-
 
     yy <- tidyr::gather(data, H, xval, -.XXidXX.)
     yy$H <- factor(yy$H, levels = lvls)
-    ww <- rename(yy, V = H, yval = xval)
+    ww <- yy
+    names(ww) <- c(".XXidXX.", "V", "yval")
 
-    zz <- dplyr::left_join(yy, ww, by = ".XXidXX.") %>%
-      dplyr::left_join(ljdata, by = ".XXidXX.")
+    zz <- dplyr::left_join(yy, ww, by = ".XXidXX.")
+    zz <- dplyr::left_join(zz, ljdata, by = ".XXidXX.")
 
     if (!diag) {
       zz <- zz[zz$H != zz$V, ]
     }
     if (lower){
-      zz <- filter(zz, as.numeric(H) <= as.numeric(V))
+      zz <- zz[as.numeric(H) <= as.numeric(V), ]
     }
     if (jitter) {
       jw <- jh <- jitter.factor
@@ -203,11 +208,11 @@ ggplot.copula <-
                             alpha = alpha,
                             position = position_jitter(height = jh, width = jw))
 
-    res <- res + facet_grid(V ~ H, scales = "free") +
+    res <- res + ggplot2::facet_grid(V ~ H, scales = "free") +
       labs(x = "", y = "")
     if (!ticks) {
-      res <- res + theme(axis.text.x = element_blank(), axis.text.y = element_blank(),
-                         axis.ticks.x = element_blank(), axis.ticks.y = element_blank())
+      res <- res + theme(axis.text.x = ggplot2::element_blank(), axis.text.y = ggplot2::element_blank(),
+                         axis.ticks.x = ggplot2::element_blank(), axis.ticks.y = ggplot2::element_blank())
     }
     if (length(unique(ljdata$color)) > 1) {
       res <- res + theme(legend.position = legend.position,

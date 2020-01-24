@@ -103,7 +103,7 @@
 #' there is no requirement for the quantiles used for marginal fitting
 #' (\code{mqu}) and dependence fitting (\code{dqu}) to be the same, or for them
 #' to be ordered in any way.
-#' #' @param cov String, passed through to \code{evm}: how to estimate the covariance.
+#' @param cov String, passed through to \code{evm}: how to estimate the covariance.
 #'   Defaults to \code{cov = "observed"}.
 #' @param family An object of class "texmexFamily". Should be either
 #'   \code{family = gpd} or \code{family = cgpd} and defaults to the first of those.

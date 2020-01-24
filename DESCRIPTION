@@ -42,6 +42,8 @@ Suggests:
     parallel,
     lattice,
     knitr,
+    dplyr,
+    tidyr,
     testthat,
     devtools,
     survival,
