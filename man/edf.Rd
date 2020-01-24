@@ -20,7 +20,7 @@ Compute the empirical distribution function
 }
 \examples{
 
-plot(winter$NO, edf(winter$NO))   
+plot(winter$NO, edf(winter$NO))
 
 }
 \seealso{

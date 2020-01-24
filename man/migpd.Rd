@@ -12,7 +12,8 @@
   alpha = 0.05, ..., environment)
 
 migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000, trace = 0,
-  verbose = FALSE, priorParameters = NULL)
+  verbose = FALSE, priorParameters = NULL, cov = "observed",
+  family = gpd)
 
 \method{plot}{migpd}(x, main = c("Probability plot", "Quantile plot",
   "Return level plot", "Histogram and density"), xlab = rep(NULL, 4),
@@ -66,6 +67,12 @@ covariance matrix of the distribution. The names should match the names of
 the columns of \code{data}. If not provided, it defaults to independent
 priors being centred at zero, with variance 10000 for log(sigma) and 0.25
 for xi. See the details section.}
+
+\item{cov}{String, passed through to \code{evm}: how to estimate the covariance.
+Defaults to \code{cov = "observed"}.}
+
+\item{family}{An object of class "texmexFamily". Should be either
+\code{family = gpd} or \code{family = cgpd} and defaults to the first of those.}
 
 \item{x}{Object of class \code{migpd} as returned by function \code{migpd}.}
 }

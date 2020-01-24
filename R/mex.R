@@ -103,6 +103,10 @@
 #' there is no requirement for the quantiles used for marginal fitting
 #' (\code{mqu}) and dependence fitting (\code{dqu}) to be the same, or for them
 #' to be ordered in any way.
+#' #' @param cov String, passed through to \code{evm}: how to estimate the covariance.
+#'   Defaults to \code{cov = "observed"}.
+#' @param family An object of class "texmexFamily". Should be either
+#'   \code{family = gpd} or \code{family = cgpd} and defaults to the first of those.
 #' @param margins See documentation for \code{\link{mexDependence}}.
 #' @param constrain See documentation for \code{\link{mexDependence}}.
 #' @param v See documentation for \code{\link{mexDependence}}.
@@ -219,7 +223,8 @@
 #'
 #'
 #' @export mex
-mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=10,
+mex <- function(data, which, mth, mqu, dqu, cov = "numeric", family = gpd,
+                margins="laplace", constrain=TRUE, v=10,
                 penalty="gaussian", maxit=10000,
                 trace=0, verbose=FALSE, priorParameters=NULL){
 
@@ -238,7 +243,7 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
         if(length(mqu) == 1){
             mqu <- rep(mqu, ncol(data))
     }
-    if( length(mqu) != ncol(data)){
+    if(length(mqu) != ncol(data)){
       stop("mqu must be length 1 or length equal to the dimension of the data")
     }
     mth <- unlist(lapply(1:length(mqu), function(i, data, p){
@@ -246,11 +251,12 @@ mex <- function(data, which, mth, mqu, dqu, margins="laplace",constrain=TRUE,v=1
                                         }, p=mqu, data=data))
     }
 
-    res1 <- migpd(data=data, mth=mth, penalty=penalty,
-                  maxit=maxit, trace=trace, verbose=verbose,
-                  priorParameters=priorParameters)
+    res1 <- migpd(data = data, mth = mth, penalty = penalty,
+                  maxit = maxit, trace = trace, verbose = verbose,
+                  priorParameters = priorParameters, cov = cov, family = family)
 
-    res2 <- mexDependence(x= res1, which=which, dqu=dqu, margins=margins, constrain=constrain, v=v)
+    res2 <- mexDependence(x = res1, which = which, dqu = dqu, margins = margins,
+                          constrain = constrain, v = v)
     res2$call <- theCall
     res2
 }

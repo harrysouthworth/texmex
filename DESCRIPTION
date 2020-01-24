@@ -1,8 +1,8 @@
 Package: texmex
 Type: Package
 Title: Statistical Modelling of Extreme Values
-Version: 2.4.3
-Date: 2019-12-17
+Version: 2.4.4
+Date: 2020-01-24
 Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),

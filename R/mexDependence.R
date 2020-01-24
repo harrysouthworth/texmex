@@ -175,8 +175,7 @@
               start=c(.01, .01), marTransform="mixture",
               referenceMargin=NULL, nOptim = 1,
               PlotLikDo=FALSE, PlotLikRange=list(a=c(-1,1),b=c(-3,1)),
-              PlotLikTitle=NULL)
-{
+              PlotLikTitle=NULL){
    theCall <- match.call()
    if (!inherits(x, "migpd"))
        stop("you need to use an object created by migpd")
@@ -207,7 +206,7 @@
        which <- match(which, dimnames(x$transformed)[[2]])
 
    if (missing(dqu)) {
-       warning("Assuming same quantile for dependence thesholding as was used\n     to fit corresponding marginal model...\n")
+       message("Assuming same quantile for dependence thesholding as was used\n     to fit corresponding marginal model...\n")
        dqu <- x$mqu[which]
    }
    dth <- quantile(x$transformed[, which], dqu)

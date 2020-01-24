@@ -72,6 +72,10 @@
 #' the columns of \code{data}. If not provided, it defaults to independent
 #' priors being centred at zero, with variance 10000 for log(sigma) and 0.25
 #' for xi. See the details section.
+#' @param cov String, passed through to \code{evm}: how to estimate the covariance.
+#'   Defaults to \code{cov = "observed"}.
+#' @param family An object of class "texmexFamily". Should be either
+#'   \code{family = gpd} or \code{family = cgpd} and defaults to the first of those.
 #' @param x Object of class \code{migpd} as returned by function \code{migpd}.
 #' @param main Character vector of length four: titles for plots produced by
 #' \code{plot} and \code{ggplot} methods.
@@ -107,8 +111,8 @@
 #' @export migpd
 migpd <-
 function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
-   trace = 0, verbose=FALSE, priorParameters = NULL)
-{
+   trace = 0, verbose=FALSE, priorParameters = NULL, cov = "observed",
+   family = gpd){
    theCall <- match.call()
    if(is.null(colnames(data))){
     colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")
@@ -118,6 +122,9 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
        stop("you must provide one of mth or mqu")
    if (!missing(mth) & !missing(mqu))
        stop("you must provide precisely one of mth or mqu")
+   if (!(family$name %in% c("GPD", "CGPD"))){
+     stop("family should be either gpd or cgpd")
+   }
    if (!missing(mth))
        mth <- rep(mth, length = d)
    if (!missing(mqu))
@@ -133,13 +140,13 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
        priorParameters <- vector("list", length = length(mth))
        for (i in 1:length(mth)) priorParameters[[i]] <- gp
        names(priorParameters) <- dimnames(data)[[2]]
-   }
-   else if (penalty %in% c("quadratic", "gaussian")) {
+   } else if (penalty %in% c("quadratic", "gaussian")) {
        nm <- names(priorParameters)
-       if (is.null(nm))
+       if (is.null(nm)){
            stop("priorParameters must be a named list")
-       else if (any(!is.element(nm, dimnames(data)[[2]])))
+       } else if (any(!is.element(nm, dimnames(data)[[2]]))){
            stop("the names of priorParameters must match the column names of the data")
+       }
    }
 
    wrapgpd <-function(i, x, mth, penalty, maxit, verbose, trace, priorParameters) {
@@ -151,7 +158,8 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
        x <- c(x[, i])
        mth <- mth[i]
 
-       evm(x, th=mth, penalty=penalty, priorParameters=priorParameters, maxit=maxit, trace=trace)
+       evm(x, th=mth, penalty=penalty, priorParameters=priorParameters,
+           maxit=maxit, trace=trace, cov = cov, family = family)
        }
 
    modlist <- lapply(1:d, wrapgpd, x=data, penalty=penalty, mth=mth, verbose=verbose,

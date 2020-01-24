@@ -2,6 +2,7 @@
 % Please edit documentation in R/copulas.R
 \name{plot.copula}
 \alias{plot.copula}
+\alias{ggplot.copula}
 \title{Plot copulas}
 \usage{
 \method{plot}{copula}(x, jitter. = FALSE, jitter.factor = 1, ...)
@@ -15,7 +16,48 @@ before plotting. Defaults to \code{jitter. = FALSE}.}
 \item{jitter.factor}{How much jittering to use. Defaults to
 \code{jitter.factor = 1.}}
 
-\item{...}{Further arguments to be passed to plot method.}
+\item{...}{Further arguments to be passed to plot method. Not used by \code{ggplot.copula}.}
+
+\item{data}{A data.frame.}
+
+\item{mapping}{Not used.}
+
+\item{color}{Defaults to \code{color = "blue"}.}
+
+\item{alpha}{Defaults to \code{alpha = 0.7}.}
+
+\item{jitter}{Defaults to \code{jitter = FALSE}.}
+
+\item{jitter.factor}{Defaults to \code{jitter.factor = 0.05} and is used only
+when \code{jitter = TRUE}.}
+
+\item{point.size}{Defaults to \code{point.size = 1}.}
+
+\item{smooth}{Defaults to \code{smooth = FALSE}.}
+
+\item{smooth.method}{Defaults to \code{smooth.method = "auto"} and is passed
+to \code{geom_smooth} only when \code{smooth = TRUE}.}
+
+\item{smooth.se}{Defaults to \code{smooth.se = TRUE} and is used only when
+\code{smooth = TRUE}.}
+
+\item{smooth.level}{Defaults to \code{smooth.level = 0.95} and is used only
+when \code{smooth = TRUE}.}
+
+\item{smooth.formula}{A formula, defaulting to \code{smooth.formula = y ~ x}
+to be passed as the \code{formula} argument to \code{geom_smooth}.}
+
+\item{legend.position}{Passed into theme, defaults to \code{legend.position="none"}.}
+
+\item{diag}{Defaults to \code{diag = FALSE} and panels on the diagonal are not
+produced.}
+
+\item{lower}{Defaults to \code{lower = TRUE} and only the lower triangle is plotted.}
+
+\item{ticks}{Defaults to \code{ticks = TRUE} and ticks and their labels are put
+on the axes. Otherwise, no tick or labels are used.}
+
+\item{environment}{Not used.}
 }
 \description{
 Plot copulas

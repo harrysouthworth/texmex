@@ -21,9 +21,10 @@
   col = "cornflowerblue", fill = "orange", plot. = TRUE,
   quantiles = seq(0.1, by = 0.2, len = 5), ..., environment)
 
-mex(data, which, mth, mqu, dqu, margins = "laplace", constrain = TRUE,
-  v = 10, penalty = "gaussian", maxit = 10000, trace = 0,
-  verbose = FALSE, priorParameters = NULL)
+mex(data, which, mth, mqu, dqu, cov = "numeric", family = gpd,
+  margins = "laplace", constrain = TRUE, v = 10,
+  penalty = "gaussian", maxit = 10000, trace = 0, verbose = FALSE,
+  priorParameters = NULL)
 
 mexAll(data, mqu, dqu)
 
@@ -94,7 +95,12 @@ dependent variable.  If not supplied then the default is to set
 fit the marginal model to the tail of the conditioning variable.  Note that
 there is no requirement for the quantiles used for marginal fitting
 (\code{mqu}) and dependence fitting (\code{dqu}) to be the same, or for them
-to be ordered in any way.}
+to be ordered in any way.
+#' @param cov String, passed through to \code{evm}: how to estimate the covariance.
+  Defaults to \code{cov = "observed"}.}
+
+\item{family}{An object of class "texmexFamily". Should be either
+\code{family = gpd} or \code{family = cgpd} and defaults to the first of those.}
 
 \item{margins}{See documentation for \code{\link{mexDependence}}.}
 
