@@ -74,6 +74,7 @@ Collate:
     'coefficients.migpd.R'
     'constructObject.R'
     'copulas.R'
+    'cv.R'
     'degp3.R'
     'dgev.R'
     'dgpd.R'
