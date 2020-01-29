@@ -22,7 +22,7 @@ penalty is used.}
 
 \item{range}{A sequence of values for the penalty parameter. Defaults to
 \code{range = seq(1, 25, length.out = 25)}. Must be strictly positive.
-The values are taken to be the reciprocals of the prior variance so mush
+The values are taken to be the reciprocals of the prior variance so must
 be strictly positive.}
 
 \item{shape}{String giving the name of the shape parameter. Defaults to
@@ -38,4 +38,21 @@ Only the shape parameter is assumed to be penalized. The penalty
   usually be between -1/2 and 1/2, a prior N(0, 1/16) distribution will
   likely be a good starting point, so values that span 16 will usually be
   appropriate.
+
+  Note that the procedure appears to frequently prefer larger penalties over
+  smaller ones, effectively driving the shape parameter to zero. However,
+  if you are fitting distributions that can model long tails, there is
+  probably a good reason for that and you should use your prior knowledge
+  to determine if non-zero values of the shape are plausible, rather than
+  rely solely on an automated procedure.
+
+  Also note that small numbers of observations can have a big impact on
+  parameter estimates. Because cross-validation involves randomly assigning
+  values to folds, the results are generally different from one run to
+  the next. These to features combined can produce quite big differences
+  between cross-validation runs and it is advisable to use either
+  leave-one-out (by setting \code{folds} to be the same as the length of
+  the data), or to run the procedure several times and average over them.
+
+  @note At present, only models without covariates are implemented.
 }
