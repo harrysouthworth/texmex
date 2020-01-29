@@ -154,6 +154,7 @@ summary.cv <- function(object, ...){
 
 #' @rdname cv
 #' @method plot cv
+#' @param x,y Arguments to plot method.
 #' @export
 plot.cv <- function(x, y, ...){
   d <- x$cv
@@ -163,6 +164,7 @@ plot.cv <- function(x, y, ...){
 
 #' @rdname cv
 #' @method ggplot cv
+#' @param data,mapping,environment Arguments ggplot method.
 #' @export
 ggplot.cv <- function(data, mapping=NULL, ..., environment = parent.frame()){
   d <- data$cv

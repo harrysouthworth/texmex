@@ -1,6 +1,6 @@
-library(texmex)
+context("cv")
 
-testthat("cv appears to work ok", {
+test_that("cv appears to work ok", {
   x <- rgev(1000, xi = .2, mu = 0, sigma = 1)
 
   g <- evm(x, family = gev)
@@ -12,7 +12,7 @@ testthat("cv appears to work ok", {
               label = "Parameter estimates shrink with increasing penalty")
 
   set.seed(1234)
-  cgL1 <- cv(g, range = seq(.1, 64, length.out = 25), penalty = "lasso")
+  cvL1 <- cv(g, range = seq(.1, 64, length.out = 25), penalty = "lasso")
 
   expect_true(all(cg$cv$estimate != cvL1$cv$estimatae),
               label = "Specifying penalty = 'lasso' gives different output")
