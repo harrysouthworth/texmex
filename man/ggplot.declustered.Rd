@@ -5,12 +5,31 @@
 \alias{ggplot.extremalIndex}
 \title{Diagnostic plots for an declustered object}
 \usage{
-\method{ggplot}{declustered}(data = NULL, mapping, xlab, ylab, main,
-  ptcol = c("blue", "orange"), col = "light blue", plot. = TRUE, ...,
-  environment)
+\method{ggplot}{declustered}(
+  data = NULL,
+  mapping,
+  xlab,
+  ylab,
+  main,
+  ptcol = c("blue", "orange"),
+  col = "light blue",
+  plot. = TRUE,
+  ...,
+  environment
+)
 
-\method{ggplot}{extremalIndex}(data = NULL, mapping, xlab, ylab, main,
-  ptcol = "blue", col = "light blue", plot. = TRUE, ..., environment)
+\method{ggplot}{extremalIndex}(
+  data = NULL,
+  mapping,
+  xlab,
+  ylab,
+  main,
+  ptcol = "blue",
+  col = "light blue",
+  plot. = TRUE,
+  ...,
+  environment
+)
 }
 \arguments{
 \item{data}{An object of class \code{declustered} or \code{extremalIndex}.}
