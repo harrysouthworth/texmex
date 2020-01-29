@@ -16,8 +16,7 @@ cv(object, folds = 10, ...)
 
 \method{plot}{cv}(x, y, ...)
 
-\method{ggplot}{cv}(data, mapping = NULL, ...,
-  environment = parent.frame())
+\method{ggplot}{cv}(data, mapping = NULL, ..., environment = parent.frame())
 }
 \arguments{
 \item{object}{A model object.}
@@ -26,6 +25,10 @@ cv(object, folds = 10, ...)
 \code{folds = 10}.}
 
 \item{...}{Other arguments to be passed through to methods.}
+
+\item{x, y}{Arguments to plot method.}
+
+\item{data, mapping, environment}{Arguments ggplot method.}
 }
 \description{
 Cross-validation for a model object
