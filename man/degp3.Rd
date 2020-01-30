@@ -9,7 +9,8 @@ extended generalized Pareto distribution 3}
 \usage{
 degp3(x, kappa = 1, sigma, xi, u = 0, log.d = FALSE)
 
-pegp3(q, kappa = 1, sigma, xi, u = 0, lower.tail = TRUE, log.p = FALSE)
+pegp3(q, kappa = 1, sigma, xi, u = 0, lower.tail = TRUE,
+  log.p = FALSE)
 
 regp3(n, kappa = 1, sigma, xi, u = 0)
 }

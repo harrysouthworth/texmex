@@ -1,6 +1,9 @@
 context("cv")
 
 test_that("cv appears to work ok", {
+  skip_on_cran()
+  skip_on_travis()
+
   x <- rgev(1000, xi = .2, mu = 0, sigma = 1)
 
   g <- evm(x, family = gev)

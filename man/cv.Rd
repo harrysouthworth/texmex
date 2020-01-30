@@ -16,7 +16,8 @@ cv(object, folds = 10, ...)
 
 \method{plot}{cv}(x, y, ...)
 
-\method{ggplot}{cv}(data, mapping = NULL, ..., environment = parent.frame())
+\method{ggplot}{cv}(data, mapping = NULL, ...,
+  environment = parent.frame())
 }
 \arguments{
 \item{object}{A model object.}

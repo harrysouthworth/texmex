@@ -1,6 +1,9 @@
 context("specfun.safe.product")
 
 test_that("specfun.safe.product behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
+
   prod <- .specfun.safe.product
 
   ## simple values
@@ -35,5 +38,5 @@ test_that("specfun.safe.product correctly recycles again", {
 
     expect_equal(.specfun.safe.product(x, y),
                  pmax(x * y, -1))
-    
+
 })

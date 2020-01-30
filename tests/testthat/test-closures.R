@@ -1,6 +1,9 @@
 context("closures")
 
 test_that("closures behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
+
   make.mvn.prior <- .make.mvn.prior
   make.quad.prior <- .make.quadratic.penalty
   make.spd.matrix <- .random.spd.matrix

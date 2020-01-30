@@ -6,6 +6,9 @@
 \usepackage{bbm}
 \usepackage{cite}
 
+%\VignetteIndexEntry{texmexMultivariate}
+%\VignetteEngine{knitr}
+
 %*********************************************************************
 
 <<include=FALSE>>=

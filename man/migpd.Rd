@@ -6,40 +6,18 @@
 \alias{plot.migpd}
 \title{Fit multiple independent generalized Pareto models}
 \usage{
-\method{ggplot}{migpd}(
-  data,
-  mapping = NULL,
+\method{ggplot}{migpd}(data, mapping = NULL,
   main = c("Probability plot", "Quantile plot", "Return level plot",
-    "Histogram and density"),
-  xlab = rep(NULL, 4),
-  nsim = 1000,
-  alpha = 0.05,
-  ...,
-  environment
-)
+  "Histogram and density"), xlab = rep(NULL, 4), nsim = 1000,
+  alpha = 0.05, ..., environment)
 
-migpd(
-  data,
-  mth,
-  mqu,
-  penalty = "gaussian",
-  maxit = 10000,
-  trace = 0,
-  verbose = FALSE,
-  priorParameters = NULL,
-  cov = "observed",
-  family = gpd
-)
+migpd(data, mth, mqu, penalty = "gaussian", maxit = 10000, trace = 0,
+  verbose = FALSE, priorParameters = NULL, cov = "observed",
+  family = gpd)
 
-\method{plot}{migpd}(
-  x,
-  main = c("Probability plot", "Quantile plot", "Return level plot",
-    "Histogram and density"),
-  xlab = rep(NULL, 4),
-  nsim = 1000,
-  alpha = 0.05,
-  ...
-)
+\method{plot}{migpd}(x, main = c("Probability plot", "Quantile plot",
+  "Return level plot", "Histogram and density"), xlab = rep(NULL, 4),
+  nsim = 1000, alpha = 0.05, ...)
 }
 \arguments{
 \item{data}{A matrix or data.frame, each column of which is to be modelled.}
@@ -154,12 +132,13 @@ You are encourage to use the \code{mqu} argument and not \code{mth}.
 }
 \examples{
 
+\donttest{
 mygpd <- migpd(winter, mqu=.7, penalty = "none")
 mygpd
 summary(mygpd)
 plot(mygpd)
 g <- ggplot(mygpd)
-
+}
 
 }
 \references{

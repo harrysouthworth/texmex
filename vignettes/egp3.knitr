@@ -7,6 +7,8 @@
 %\rfoot{DRAFT}
 %\rhead{DRAFT}
 
+%\VignetteIndexEntry{egp3}
+%\VignetteEngine{knitr}
 
 \begin{document}
 \title{The Extended Generalized Pareto Distribution 3 (EGP3) in texmex}

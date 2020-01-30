@@ -1,6 +1,9 @@
 context("log1prel")
 
 test_that("log1prel behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
+
   ## check simple values
 
   x <- runif(10, -1, 5)
@@ -19,7 +22,7 @@ test_that("log1prel behaves as it should", {
   expect_true(is.nan(.log1prel(0/0)), label="log1prel: NaN handling")
   expect_true(is.nan(.log1prel(-Inf)), label="log1prel: -Inf")
 
-  
+
   ## check with reference to .exprel
 
   x <- runif(10, -5, 5)

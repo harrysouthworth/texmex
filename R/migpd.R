@@ -101,12 +101,13 @@
 #' @keywords models multivariate
 #' @examples
 #'
+#' \donttest{
 #' mygpd <- migpd(winter, mqu=.7, penalty = "none")
 #' mygpd
 #' summary(mygpd)
 #' plot(mygpd)
 #' g <- ggplot(mygpd)
-#'
+#' }
 #'
 #' @export migpd
 migpd <-

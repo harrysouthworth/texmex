@@ -4,14 +4,8 @@
 \alias{cv.evmOpt}
 \title{Cross-validation for the shape parameter in an extreme values model}
 \usage{
-\method{cv}{evmOpt}(
-  object,
-  folds = 10,
-  ...,
-  penalty = "gaussian",
-  range = seq(1, 25, length.out = 25),
-  shape = NULL
-)
+\method{cv}{evmOpt}(object, folds = 10, ..., penalty = "gaussian",
+  range = seq(1, 25, length.out = 25), shape = NULL)
 }
 \arguments{
 \item{object}{An object of class 'evmOpt' as returned by \code{evm}.}

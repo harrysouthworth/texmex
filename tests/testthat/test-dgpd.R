@@ -1,6 +1,9 @@
 context("dgpd")
 
 test_that("dgpd behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
+
   evd.dgpd <- .evd.dgpd
 
   myTest <- function(sig, xi, thresh, label){

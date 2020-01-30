@@ -1,6 +1,9 @@
 context("exprel")
 
 test_that("exprel behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
+
   ## first check some simple values
   values <- c(-Inf, NA, seq(-5, 5, length.out=10))
   r.values <- expm1(values) / values

@@ -5,6 +5,10 @@
 \usepackage{amscd}
 \usepackage{bbm}
 \usepackage{cite}
+
+%\VignetteIndexEntry{texmex1d}
+%\VignetteEngine{knitr}
+
 %*********************************************************************
 
 <<include=FALSE>>=

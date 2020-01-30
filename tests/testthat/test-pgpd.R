@@ -1,6 +1,9 @@
 context("pgpd")
 
 test_that("pgpd behaves as it should", {
+  skip_on_cran()
+  skip_on_travis()
+
   evd.pgpd <- .evd.pgpd
   myTest <- function(sig, xi, thresh, msg){
       myp <- sapply(1:nreps,function(i) pgpd(x[,i], sig[i], xi[i],u=thresh[i]))
