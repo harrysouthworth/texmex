@@ -24,6 +24,7 @@ test_that("specfun.safe.product behaves as it should", {
 )
 
 test_that("specfun.safe.product correctly recycles", {
+  skip_on_cran()
     set.seed(123456)
     x <- runif(10, -5, 5)
     y <- c(0.5)
@@ -33,6 +34,7 @@ test_that("specfun.safe.product correctly recycles", {
 })
 
 test_that("specfun.safe.product correctly recycles again", {
+  skip_on_cran()
     x <- 0.5
     y <- c(1,2,3,4)
 

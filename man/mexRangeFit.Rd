@@ -36,7 +36,7 @@ to \code{R}=10.}
 
 \item{referenceMargin}{Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.}
 
-\item{\dots}{Further graphical parameters may be passed, which will be used
+\item{...}{Further graphical parameters may be passed, which will be used
 for plotting.}
 }
 \value{

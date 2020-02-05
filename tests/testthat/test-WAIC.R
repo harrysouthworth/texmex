@@ -20,6 +20,7 @@ test_that("Telling AIC whether to compute DIC or WAIC behaves as expected", {
 })
 
 test_that("WAIC, AIC and DIC are broadly in alignment on well behaved data", {
+  skip_on_cran()
   set.seed(1234)
   b <- function(){
     i <- sample(1:nrow(liver), size=nrow(liver), replace=TRUE)

@@ -1,7 +1,7 @@
 context("JointExceedanceCurve")
 
 test_that("JointExceedanceCurve behaves as it should", {
-    #skip_on_cran()
+    skip_on_cran()
     skip_on_travis()
 
     set.seed(20160832)

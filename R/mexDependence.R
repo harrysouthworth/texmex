@@ -126,7 +126,6 @@
 #' @param PlotLikTitle Used only if \code{PlotLikDo=TRUE}.  Character
 #'     string.  Optional title added to the profile log-likelihood
 #'     surface plot.
-#' @param ... Further arguments to be passed to methods.
 #' @return An object of class \code{mex} which is a list containing
 #'     the following three objects: \item{margins}{An object of class
 #'     \code{\link{migpd}}.} \item{dependence}{An object of class

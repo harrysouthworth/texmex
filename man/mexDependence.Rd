@@ -104,8 +104,6 @@ missing, then \code{PlotLikDo} is set equal to TRUE.}
 \item{PlotLikTitle}{Used only if \code{PlotLikDo=TRUE}.  Character
 string.  Optional title added to the profile log-likelihood
 surface plot.}
-
-\item{...}{Further arguments to be passed to methods.}
 }
 \value{
 An object of class \code{mex} which is a list containing

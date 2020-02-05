@@ -30,7 +30,7 @@
 #' @param constrain Argument passed to function \code{\link{mexDependence}}.
 #' @param v Argument passed to function \code{\link{mexDependence}}.
 #' @param referenceMargin Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.
-#' @param \dots Further graphical parameters may be passed, which will be used
+#' @param ... Further graphical parameters may be passed, which will be used
 #' for plotting.
 #' @return NULL.
 #' @author Harry Southworth, Janet E. Heffernan
@@ -107,7 +107,7 @@ print.mexRangeFit <- function(x, ...){
 }
 
 #' @export
-plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE,...){
+plot.mexRangeFit <- function(x, col=2, bootcol="grey", addNexcesses=TRUE, ...){
   ests <- x$ests
   boot <- x$boot
   quantiles <- x$quantiles
