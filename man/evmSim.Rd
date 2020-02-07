@@ -5,7 +5,7 @@
 \title{MCMC simulation around an evmOpt fit}
 \usage{
 evmSim(o, priorParameters, prop.dist, jump.const, jump.cov, iter, start,
-  thin, burn, verbose, trace, theCall, ...)
+  thin, burn, chains, verbose, trace, theCall, ...)
 }
 \arguments{
 \item{o}{a fit \code{evmOpt} object}
@@ -37,6 +37,10 @@ the MAP/ML estimates in \code{o}.}
 \item{thin}{The degree of thinning of the resulting Markov chains.}
 
 \item{burn}{The number of initial steps to be discarded.}
+
+\item{chains}{The number of Markov chains to run. Defaults to 1. If you run
+more, the function will try to figure out how to do it in parallel using
+the same number of cores as chains.}
 
 \item{verbose}{Whether or not to print progress to screen. Defaults
 to \code{verbose=TRUE}.}

@@ -140,6 +140,9 @@
 #' @param burn The number of initial steps to be discarded. Defaults to 500.
 #' @param thin The degree of thinning of the resulting Markov chains. Defaults
 #' to 4 (one in every 4 steps is retained).
+#' @param chains The number of Markov chains to run. Defaults to 1. If you run
+#'   more than 1, the function tries to figure out how to do it in parallel
+#'   using as many cores as there are chains.
 #' @param proposal.dist The proposal distribution to use, either multivariate
 #' gaussian or a multivariate Cauchy.
 #' @param jump.cov Covariance matrix for proposal distribution of Metropolis
@@ -294,7 +297,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           method = "optimize", cov="observed",
           start = NULL, priorParameters = NULL,
           maxit = 10000, trace=NULL,
-          iter = 40500, burn=500, thin = 4,
+          iter = 40500, burn=500, thin = 4, chains = 1,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL,
           R=1000, cores=NULL, export=NULL, verbose=TRUE) {
@@ -356,7 +359,7 @@ function (y, data, family=gpd, th= -Inf, qu,
                     prop.dist=proposal.dist,
                     jump.const=jump.const, jump.cov=jump.cov,
                     iter=iter, start=start, verbose=verbose,
-                    thin=thin, burn=burn,
+                    thin=thin, burn=burn, chains=chains,
                     trace=trace, theCall)
     } # Close else
     else if (method == "b"){

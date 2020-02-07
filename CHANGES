@@ -130,4 +130,12 @@ Changes from version 2.4.2
 2. gpdIntCensored family added
 3. glo (generalised logistic) family added
 4. Generic cv function and cv.evmOpt added for finding shape parameter by cross-validation.
-4. WAIC added.
+5. WAIC added
+
+---------------------------------- Version 2.4.5 -----------------------------------
+
+Changes from version 2.4.4
+
+1. New 'chains' argument added to evmSim. Can now run multiple Markov chains in
+parallel.
+.
