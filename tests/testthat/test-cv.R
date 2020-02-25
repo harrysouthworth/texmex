@@ -4,17 +4,18 @@ test_that("cv appears to work ok", {
   skip_on_cran()
   skip_on_travis()
 
+  set.seed(1234)
   x <- rgev(1000, xi = .2, mu = 0, sigma = 1)
 
   g <- evm(x, family = gev)
 
-  set.seed(1234)
+  set.seed(4321)
   cg <- cv(g, range = seq(.1, 64, length.out = 25))
 
   expect_true(all(diff(cg$cv$estimate) < 0),
               label = "Parameter estimates shrink with increasing penalty")
 
-  set.seed(1234)
+  set.seed(4321)
   cvL1 <- cv(g, range = seq(.1, 64, length.out = 25), penalty = "lasso")
 
   expect_true(all(cg$cv$estimate != cvL1$cv$estimatae),
