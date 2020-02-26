@@ -360,6 +360,7 @@ function (y, data, family=gpd, th= -Inf, qu,
                     jump.const=jump.const, jump.cov=jump.cov,
                     iter=iter, start=start, verbose=verbose,
                     thin=thin, burn=burn, chains=chains,
+                    export=export,
                     trace=trace, theCall)
     } # Close else
     else if (method == "b"){

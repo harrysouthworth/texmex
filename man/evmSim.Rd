@@ -5,7 +5,7 @@
 \title{MCMC simulation around an evmOpt fit}
 \usage{
 evmSim(o, priorParameters, prop.dist, jump.const, jump.cov, iter, start,
-  thin, burn, chains, verbose, trace, theCall, ...)
+  thin, burn, chains, export = NULL, verbose, trace, theCall, ...)
 }
 \arguments{
 \item{o}{a fit \code{evmOpt} object}
@@ -41,6 +41,10 @@ the MAP/ML estimates in \code{o}.}
 \item{chains}{The number of Markov chains to run. Defaults to 1. If you run
 more, the function will try to figure out how to do it in parallel using
 the same number of cores as chains.}
+
+\item{export}{Character vector of names of variables to export. See the
+help file for \code{parallel::export}. Defaults to \code{export = NULL}
+and most users will never need to use it. Only matters on Windows.}
 
 \item{verbose}{Whether or not to print progress to screen. Defaults
 to \code{verbose=TRUE}.}

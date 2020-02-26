@@ -50,7 +50,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, export=NULL, theCall){
 
     getCluster <- function(n){
       wh <- try(requireNamespace("parallel"))
-      if (inherits(wh, "try-error")){
+      if (!inherits(wh, "try-error")){
         if (is.null(n)) n <- parallel::detectCores()
         if (n == 1) { NULL }
         else parallel::makeCluster(n)

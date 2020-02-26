@@ -26,6 +26,9 @@
 #' @param chains The number of Markov chains to run. Defaults to 1. If you run
 #'   more, the function will try to figure out how to do it in parallel using
 #'   the same number of cores as chains.
+#' @param export Character vector of names of variables to export. See the
+#'   help file for \code{parallel::export}. Defaults to \code{export = NULL}
+#'   and most users will never need to use it. Only matters on Windows.
 #' @param trace How frequently to talk to the user
 #' @param theCall (internal use only)
 #' @param ... ignored
@@ -59,7 +62,7 @@
 #' @export
 evmSim <- function(o, priorParameters, prop.dist,
                    jump.const, jump.cov, iter, start,
-                   thin, burn, chains,
+                   thin, burn, chains, export = NULL,
                    verbose, trace, theCall, ...){
     if (!inherits(o, "evmOpt")){
         stop("o must be of class 'evmOpt'")
@@ -99,14 +102,14 @@ evmSim <- function(o, priorParameters, prop.dist,
       if (os == "windows"){
         getCluster <- function(n){
           wh <- try(requireNamespace("parallel"))
-          if (inherits(wh, "try-error")){
+          if (!inherits(wh, "try-error")){
             if (is.null(n)) n <- parallel::detectCores()
             if (n == 1) { NULL }
             else parallel::makeCluster(n)
           }
           else NULL
         }
-        cluster <- getCluster(chains)
+        cluster <- getCluster(min(c(chains, parallel::detectCores() - 1)))
         on.exit(if (!is.null(cluster)){ parallel::stopCluster(cluster) })
 
         if (!is.null(cluster)){
@@ -122,7 +125,6 @@ evmSim <- function(o, priorParameters, prop.dist,
     # Seeds required by parallel::parLapply
     seeds <- as.integer(runif(chains, -(2^31 - 1), 2^31))
 
-
     ######################## Run the Metropolis algorithm...
     if (os == "unix"){
       res <- parallel::mclapply(1:chains, texmexMetropolis, x = res, log.lik = log.lik,
@@ -130,7 +132,7 @@ evmSim <- function(o, priorParameters, prop.dist,
                                 seeds = seeds, mc.cores = chains)
     } else if (os == "windows") {
       res <- parallel::parLapply(cluster, X=1:chains,
-                                 texmexMetropolis, x = res, log.lik = log.lik,
+                                 texmexMetropolis, o = res, log.lik = log.lik,
                                  proposals = proposals, verbose = verbose,  trace = trace,
                                  seeds = seeds)
     } else { # 1 chain or something not handled
@@ -153,43 +155,42 @@ texmexMetropolis <-
     # x is a matrix, initialized to hold the chain. It's first row should be the
     #    starting point of the chain.
     # proposals is a matrix of proposals
-function(X, x, log.lik, proposals, verbose, trace, seeds){
+function(X, o, log.lik, proposals, verbose, trace, seeds){
     s <- set.seed(seeds[[X]])
 
-    last.cost <- log.lik(x[1,])
+    last.cost <- log.lik(o[1,])
     if (!is.finite(last.cost)) {
       stop("Start is infeasible.")
     }
 
     acc <- 0
-    for(i in 2:nrow(x)){
+    for(i in 2:nrow(o)){
       if( verbose){
         if(i %% trace == 0) message(i, " steps taken" )
       }
-      prop <- proposals[i - 1,] + x[i - 1,]
+      prop <- proposals[i - 1,] + o[i - 1,]
       top <- log.lik(prop)
       delta <- top - last.cost
       if (is.finite(top) && ((delta >= 0) ||
                              (runif(1) <= exp(delta)))) {
-        x[i, ] <- prop
+        o[i, ] <- prop
         last.cost <- top
         acc <- 1 + acc
-      }
-      else {
-        x[i, ] <- x[i-1,]
+      } else {
+        o[i, ] <- o[i - 1,]
       }
     } # Close for(i in 2:nrow
 
-    acc <- acc / nrow(x)
+    acc <- acc / nrow(o)
     if (acc < .1) {
         warning("Acceptance rate in Metropolis algorithm is low.")
     }
-    if ((trace < nrow(x)) & verbose) {
+    if ((trace < nrow(o)) & verbose) {
         message("Acceptance rate:", round(acc , 3) , "\n")
     }
 
-    attr(x, "acceptance") <- acc
-    x
+    attr(o, "acceptance") <- acc
+    o
 }
 
 ####### Support functions
