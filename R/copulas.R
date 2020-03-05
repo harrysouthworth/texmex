@@ -186,7 +186,7 @@ ggplot.copula <-
       zz <- zz[zz$H != zz$V, ]
     }
     if (lower){
-      zz <- zz[as.numeric(H) <= as.numeric(V), ]
+      zz <- zz[as.numeric(zz$H) <= as.numeric(zz$V), ]
     }
     if (jitter) {
       jw <- jh <- jitter.factor
