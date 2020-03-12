@@ -13,36 +13,103 @@
 \title{Predict return levels from extreme value models, or obtain the linear
 predictors.}
 \usage{
-\method{plot}{lp.evmOpt}(x, main = NULL, pch = 1, ptcol = 2,
-  cex = 0.75, linecol = 4, cicol = 1, polycol = 15, plot. = TRUE,
-  ...)
+\method{plot}{lp.evmOpt}(
+  x,
+  main = NULL,
+  pch = 1,
+  ptcol = 2,
+  cex = 0.75,
+  linecol = 4,
+  cicol = 1,
+  polycol = 15,
+  plot. = TRUE,
+  ...
+)
 
-\method{predict}{evmOpt}(object, M = 1000, newdata = NULL,
-  type = "return level", se.fit = FALSE, ci.fit = FALSE,
-  alpha = 0.05, unique. = TRUE, ...)
+\method{predict}{evmOpt}(
+  object,
+  M = 1000,
+  newdata = NULL,
+  type = "return level",
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  ...
+)
 
-\method{linearPredictors}{evmOpt}(object, newdata = NULL,
-  se.fit = FALSE, ci.fit = FALSE, alpha = 0.05, unique. = TRUE,
-  full.cov = FALSE, ...)
+\method{linearPredictors}{evmOpt}(
+  object,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  full.cov = FALSE,
+  ...
+)
 
-linearPredictors(object, newdata = NULL, se.fit = FALSE,
-  ci.fit = FALSE, alpha = 0.05, unique. = TRUE, ...)
+linearPredictors(
+  object,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  ...
+)
 
-\method{predict}{evmSim}(object, M = 1000, newdata = NULL,
-  type = "return level", se.fit = FALSE, ci.fit = FALSE,
-  alpha = 0.05, unique. = TRUE, all = FALSE, sumfun = NULL, ...)
+\method{predict}{evmSim}(
+  object,
+  M = 1000,
+  newdata = NULL,
+  type = "return level",
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  all = FALSE,
+  sumfun = NULL,
+  ...
+)
 
-\method{linearPredictors}{evmSim}(object, newdata = NULL,
-  se.fit = FALSE, ci.fit = FALSE, alpha = 0.05, unique. = TRUE,
-  all = FALSE, sumfun = NULL, ...)
+\method{linearPredictors}{evmSim}(
+  object,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  all = FALSE,
+  sumfun = NULL,
+  ...
+)
 
-\method{predict}{evmBoot}(object, M = 1000, newdata = NULL,
-  type = "return level", se.fit = FALSE, ci.fit = FALSE,
-  alpha = 0.05, unique. = TRUE, all = FALSE, sumfun = NULL, ...)
+\method{predict}{evmBoot}(
+  object,
+  M = 1000,
+  newdata = NULL,
+  type = "return level",
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  all = FALSE,
+  sumfun = NULL,
+  ...
+)
 
-\method{linearPredictors}{evmBoot}(object, newdata = NULL,
-  se.fit = FALSE, ci.fit = FALSE, alpha = 0.05, unique. = TRUE,
-  all = FALSE, sumfun = NULL, ...)
+\method{linearPredictors}{evmBoot}(
+  object,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  all = FALSE,
+  sumfun = NULL,
+  ...
+)
 
 \method{print}{lp.evmOpt}(x, digits = 3, ...)
 }

@@ -4,8 +4,23 @@
 \alias{evmSim}
 \title{MCMC simulation around an evmOpt fit}
 \usage{
-evmSim(o, priorParameters, prop.dist, jump.const, jump.cov, iter, start,
-  thin, burn, chains, export = NULL, verbose, trace, theCall, ...)
+evmSim(
+  o,
+  priorParameters,
+  prop.dist,
+  jump.const,
+  jump.cov,
+  iter,
+  start,
+  thin,
+  burn,
+  chains,
+  export = NULL,
+  verbose,
+  trace,
+  theCall,
+  ...
+)
 }
 \arguments{
 \item{o}{a fit \code{evmOpt} object}

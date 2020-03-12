@@ -4,7 +4,8 @@
 \name{liver}
 \alias{liver}
 \title{Liver related laboratory data}
-\format{A data frame with 606 observations on the following 9 variables.
+\format{
+A data frame with 606 observations on the following 9 variables.
 \describe{
 
 \item{ALP.B}{Alkaline phosphatase at baseline. A numeric vector.}
@@ -16,7 +17,8 @@
 \item{AST.M}{Aspartate aminotransferase after treatment. A numeric vector.}
 \item{TBL.M}{Total bilirubin after treatment. A numeric vector.}
 \item{dose}{The treatment group (i.e. dose group). A factor with levels \code{A} \code{B} \code{C} \code{D}}
-}}
+}
+}
 \source{
 AstraZeneca data on file.
 }

@@ -4,13 +4,27 @@
 \alias{ggplot.copula}
 \title{Fancy plotting for copulas}
 \usage{
-\method{ggplot}{copula}(data, mapping = aes(), color = "blue",
-  alpha = 0.7, jitter = FALSE, jitter.factor = 0.05,
-  point.size = 1, smooth = FALSE, smooth.method = "auto",
-  smooth.se = TRUE, smooth.level = 0.95, smooth.formula = y ~ x,
-  legend.position = "none", legend.title = ggplot2::waiver(),
-  diag = FALSE, lower = TRUE, ticks = TRUE, ...,
-  environment = parent.frame())
+\method{ggplot}{copula}(
+  data,
+  mapping = aes(),
+  color = "blue",
+  alpha = 0.7,
+  jitter = FALSE,
+  jitter.factor = 0.05,
+  point.size = 1,
+  smooth = FALSE,
+  smooth.method = "auto",
+  smooth.se = TRUE,
+  smooth.level = 0.95,
+  smooth.formula = y ~ x,
+  legend.position = "none",
+  legend.title = ggplot2::waiver(),
+  diag = FALSE,
+  lower = TRUE,
+  ticks = TRUE,
+  ...,
+  environment = parent.frame()
+)
 }
 \arguments{
 \item{data}{A data.frame.}
