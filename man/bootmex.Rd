@@ -25,7 +25,13 @@ giving up.}
 \item{trace}{How often to inform the user of progress. Defaults to
 \code{trace=10}.}
 
-\item{referenceMargin}{Optional set of reference marginal distributions to use for marginal transformation if the data's own marginal distribution is not appropriate (for instance if only data for which one variable is large is available, the marginal distributions of the other variables will not be represented by the available data).  This object can be created from a combination of datasets and fitted GPDs using the function \code{makeReferenceMarginalDistribution}.}
+\item{referenceMargin}{Optional set of reference marginal distributions to use
+for marginal transformation if the data's own marginal distribution is not
+appropriate (for instance if only data for which one variable is large is
+available, the marginal distributions of the other variables will not be
+represented by the available data).  This object can be created from a
+combination of datasets and fitted GPDs using the function
+\code{makeReferenceMarginalDistribution}.}
 
 \item{plots}{What type of diagnostic plots to produce.  Defaults to "gpd" in
 which case gpd parameter estimate plots are produced otherwise plots are
@@ -102,7 +108,7 @@ myboot <- bootmex(mymex)
 myboot
 plot(myboot,plots="gpd")
 plot(myboot,plots="dependence")
-} 
+}
 }
 \references{
 J. E. Heffernan and J. A. Tawn, A conditional approach for

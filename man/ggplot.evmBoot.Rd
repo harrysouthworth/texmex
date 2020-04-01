@@ -5,9 +5,16 @@
 \alias{ggbootdensplots}
 \title{Diagnostic plots for the replicate estimated parameter values in an evmBoot object}
 \usage{
-\method{ggplot}{evmBoot}(data = NULL, mapping, denscol = "light blue",
-  histcol = "dark blue", linecol = "orange", plot.it = TRUE, ...,
-  environment)
+\method{ggplot}{evmBoot}(
+  data = NULL,
+  mapping,
+  denscol = "light blue",
+  histcol = "dark blue",
+  linecol = "orange",
+  plot.it = TRUE,
+  ...,
+  environment
+)
 }
 \arguments{
 \item{data}{An object of class 'evmBoot'.}

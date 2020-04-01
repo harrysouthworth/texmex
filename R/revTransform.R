@@ -5,13 +5,15 @@ revTransform <-
 
    n <- length(data)
    probs <- (1:n)/(n + 1)
+
    px <- vapply(x,
                 function(x, p) {
                   p[[which.min(abs(x-p))]]
                 }, 0, p=probs)
+
    px <- as.integer(round(px * (1 + n)))
    res <- sort(data)[px]
-   
+
    if (method == "mixture"){
      # Real data contain ties which can cause x[res > th] < qu, res[res < th] > qu
      i.x <- x >= qu

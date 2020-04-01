@@ -7,13 +7,33 @@
 \usage{
 evm(y, data, family = gpd, ...)
 
-\method{evm}{default}(y, data, family = gpd, th = -Inf, qu, ...,
-  penalty = NULL, prior = "gaussian", method = "optimize",
-  cov = "observed", start = NULL, priorParameters = NULL,
-  maxit = 10000, trace = NULL, iter = 40500, burn = 500,
-  thin = 4, proposal.dist = c("gaussian", "cauchy"), jump.cov,
-  jump.const = NULL, R = 1000, cores = NULL, export = NULL,
-  verbose = TRUE)
+\method{evm}{default}(
+  y,
+  data,
+  family = gpd,
+  th = -Inf,
+  qu,
+  ...,
+  penalty = NULL,
+  prior = "gaussian",
+  method = "optimize",
+  cov = "observed",
+  start = NULL,
+  priorParameters = NULL,
+  maxit = 10000,
+  trace = NULL,
+  iter = 40500,
+  burn = 500,
+  thin = 4,
+  chains = 1,
+  proposal.dist = c("gaussian", "cauchy"),
+  jump.cov,
+  jump.const = NULL,
+  R = 1000,
+  cores = NULL,
+  export = NULL,
+  verbose = TRUE
+)
 }
 \arguments{
 \item{y}{Either a numeric vector or the name of a variable in \code{data}.}
@@ -111,6 +131,10 @@ this case it defaults to \code{trace = 10000}.}
 
 \item{thin}{The degree of thinning of the resulting Markov chains. Defaults
 to 4 (one in every 4 steps is retained).}
+
+\item{chains}{The number of Markov chains to run. Defaults to 1. If you run
+more than 1, the function tries to figure out how to do it in parallel
+using as many cores as there are chains.}
 
 \item{proposal.dist}{The proposal distribution to use, either multivariate
 gaussian or a multivariate Cauchy.}
@@ -230,6 +254,7 @@ for \eqn{y \ge 0} and \eqn{1 + \xi y / \sigma \ge 0.}
 For the GEV model, we use:
 
 \deqn{P(Y \le y) = exp (-(1 + \xi (y - \mu) / \sigma) ^{-1/\xi})}
+
 
 In each case, the scale parameter is sigma (\eqn{\sigma}) and the shape
 parameter is xi (\eqn{\xi}). The GEV distribution also has location

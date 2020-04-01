@@ -4,8 +4,17 @@
 \alias{gpd.prof}
 \title{Profile likelihood based confidence intervals for GPD}
 \usage{
-gpd.prof(z, m, xmax, xlow, conf = 0.95, nint = 50, PlotIt = FALSE,
-  mult = 2, priorParameters = NULL)
+gpd.prof(
+  z,
+  m,
+  xmax,
+  xlow,
+  conf = 0.95,
+  nint = 50,
+  PlotIt = FALSE,
+  mult = 2,
+  priorParameters = NULL
+)
 }
 \arguments{
 \item{z}{a fitted \code{evmOpt} object}

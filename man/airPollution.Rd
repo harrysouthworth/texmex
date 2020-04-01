@@ -6,7 +6,8 @@
 \alias{summer}
 \alias{winter}
 \title{Air pollution data, separately for summer and winter months}
-\format{Data frames with 578 (summer) and 532 (winter) observations on the
+\format{
+Data frames with 578 (summer) and 532 (winter) observations on the
 following 5 variables.
 \describe{
 \item{O3}{Daily maximum ozone in
@@ -16,7 +17,8 @@ billion.}
 \item{NO}{Daily maximum NO in parts per billion.}
 \item{SO2}{Daily maximum SO2 in parts per billion.}
 \item{PM10}{Daily maximum PM10 in micrograms/metre^3}
-}}
+}
+}
 \source{
 Provided as online supplementary material to Heffernan and Tawn,
 2004:

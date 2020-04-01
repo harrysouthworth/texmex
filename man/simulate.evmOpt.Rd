@@ -6,8 +6,7 @@
 \alias{simulate.evmBoot}
 \title{Simulate from a fitted evm object}
 \usage{
-\method{simulate}{evmOpt}(object, nsim = 1, seed = NULL,
-  param = NULL, ...)
+\method{simulate}{evmOpt}(object, nsim = 1, seed = NULL, param = NULL, ...)
 
 \method{simulate}{evmSim}(object, nsim = 1, seed = NULL, ...)
 

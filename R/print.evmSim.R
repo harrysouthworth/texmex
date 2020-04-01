@@ -6,7 +6,9 @@ print.evmSim <- function(x , print.seed=FALSE, ...){
     if (print.seed){
         cat("Random seed:", x$seed, "\n")
     }
-    cat("Acceptance rate: ", signif(attr(x$chains, "acceptance"), 3))
+    acc <- sapply(x$chains, function(X) signif(attr(X, "acceptance"), 3))
+    acc <- paste(acc, collapse = ", ")
+    cat("Acceptance rate: ", acc)
 
     cat("\n\nMAP estimates:\n")
     co <- coef(x)

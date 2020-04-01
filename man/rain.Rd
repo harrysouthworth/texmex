@@ -8,7 +8,8 @@
 \alias{portpirie}
 \alias{nidd}
 \title{Rain, wavesurge, portpirie and nidd datasets.}
-\format{The format of the rain data is: num [1:17531] 0 2.3 1.3 6.9 4.6 0 1
+\format{
+The format of the rain data is: num [1:17531] 0 2.3 1.3 6.9 4.6 0 1
 1.5 1.8 1.8 ...
 
 The wave-surge data is bivariate and is used for testing functions in
@@ -21,7 +22,8 @@ Nidd at Hunsingore Weir (Yorkshire, UK) between 1934 and 1969. Each
 measurement breaches the threshold of $65 m^3/2$. Various authors have
 analysed this dataset, as described by Papastathopoulos and Tawn~\cite{egp},
 there being some apparent difficulty in identifying a threshold above which
-GPD models are suitable.}
+GPD models are suitable.
+}
 \source{
 Copied from the \code{ismev} package and the \code{evir} package
 }

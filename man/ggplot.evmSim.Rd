@@ -7,9 +7,17 @@
 \alias{ggacfplots}
 \title{Diagnostic plots for the Markov chains in an evmSim object}
 \usage{
-\method{ggplot}{evmSim}(data = NULL, mapping, which.plots = 1:3,
-  denscol = "dark blue", acfcol = "light blue", plot.it = TRUE, ...,
-  environment)
+\method{ggplot}{evmSim}(
+  data = NULL,
+  mapping,
+  which.plots = 1:3,
+  chain = 1,
+  denscol = "dark blue",
+  acfcol = "light blue",
+  plot.it = TRUE,
+  ...,
+  environment
+)
 }
 \arguments{
 \item{data}{An object of class 'evmSim'.}
@@ -19,6 +27,10 @@
 \item{which.plots}{Which plots to produce. Density plots correspond
 to 1, trace plots of the Markov chains to 2 and autocorrelation
 function plots to 3.}
+
+\item{chain}{An integer indicating which chain to plot (only relevant if there
+is more than 1 chain). Defaults to 1. If you ran multiple chains, you
+should look at diagnostics for all of them.}
 
 \item{denscol}{Colour for the density plots. Defaults to 'dark blue'.}
 

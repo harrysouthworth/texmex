@@ -1,0 +1,33 @@
+\documentclass[10pt]{article}
+%*********************************************************************
+%*********************************************************************
+%\VignetteIndexEntry{texmexVignettes}
+%\VignetteEngine{knitr}
+%*********************************************************************
+<<include=FALSE>>=
+library(knitr)
+@
+
+%*********************************************************************
+\begin{document}
+
+\title{Vignettes for texmex pacakge}
+\author{Harry Southworth and Janet E.\ Heffernan}
+\maketitle
+
+%
+
+There are vignettes for the following areas of `texmex` functionality:
+
+\begin{itemize}
+\item Univariate extreme value modelling
+\item Multivariate conditional extreme value modelling
+\item Extreme value modelling of dependent series
+\item Extended Generalized Pareto Distribution 3 (EGP3) in texmex
+\item The `texmex` validation suite
+\end{itemize}
+
+These can be found at the following location: https://github.com/janetheffernan/texmexVignettes.
+\end{document}
+
+

@@ -4,8 +4,14 @@
 \alias{plot.evmSim}
 \title{Plots for evmSim objects}
 \usage{
-\method{plot}{evmSim}(x, which.plots = 1:3, density.adjust = 2,
-  print.seed = FALSE, ...)
+\method{plot}{evmSim}(
+  x,
+  which.plots = 1:3,
+  chain = 1,
+  density.adjust = 2,
+  print.seed = FALSE,
+  ...
+)
 }
 \arguments{
 \item{x}{an object of class \code{evmSim}}
@@ -14,6 +20,10 @@
 density estimates, 2 gives traces of the Markov chains with
 superimposed cumulative means, 3 gives autocorrelation
 functions.}
+
+\item{chain}{Which chain to use in the trace and ACF plots. Only used if
+more than one chain was run. Defaults to \code{chain = 1}. If you ran
+multiple chains, you'll want to look at them all.}
 
 \item{density.adjust}{In \code{plot} method for class
 \code{evmSim}.  Passed into \code{density}. Controls the amount

@@ -11,34 +11,110 @@
 \alias{print.rl.evmOpt}
 \title{Return levels}
 \usage{
-\method{plot}{rl.evmOpt}(x, xlab, ylab, main, pch = 1, ptcol = 2,
-  cex = 0.75, linecol = 4, cicol = 0, polycol = 15,
-  smooth = FALSE, sameAxes = TRUE, type = "median", ylim = NULL,
-  plot. = TRUE, ...)
+\method{plot}{rl.evmOpt}(
+  x,
+  xlab,
+  ylab,
+  main,
+  pch = 1,
+  ptcol = 2,
+  cex = 0.75,
+  linecol = 4,
+  cicol = 0,
+  polycol = 15,
+  smooth = FALSE,
+  sameAxes = TRUE,
+  type = "median",
+  ylim = NULL,
+  plot. = TRUE,
+  ...
+)
 
-\method{plot}{rl.evmSim}(x, xlab, ylab, main, pch = 1, ptcol = 2,
-  cex = 0.75, linecol = 4, cicol = 0, polycol = 15,
-  smooth = FALSE, sameAxes = TRUE, type = "median", ylim = NULL,
-  plot. = TRUE, ...)
+\method{plot}{rl.evmSim}(
+  x,
+  xlab,
+  ylab,
+  main,
+  pch = 1,
+  ptcol = 2,
+  cex = 0.75,
+  linecol = 4,
+  cicol = 0,
+  polycol = 15,
+  smooth = FALSE,
+  sameAxes = TRUE,
+  type = "median",
+  ylim = NULL,
+  plot. = TRUE,
+  ...
+)
 
-\method{plot}{rl.evmBoot}(x, xlab, ylab, main, pch = 1, ptcol = 2,
-  cex = 0.75, linecol = 4, cicol = 0, polycol = 15,
-  smooth = FALSE, sameAxes = TRUE, type = "median", ylim = NULL,
-  plot. = TRUE, ...)
+\method{plot}{rl.evmBoot}(
+  x,
+  xlab,
+  ylab,
+  main,
+  pch = 1,
+  ptcol = 2,
+  cex = 0.75,
+  linecol = 4,
+  cicol = 0,
+  polycol = 15,
+  smooth = FALSE,
+  sameAxes = TRUE,
+  type = "median",
+  ylim = NULL,
+  plot. = TRUE,
+  ...
+)
 
-rl(object, M = 1000, newdata = NULL, se.fit = FALSE,
-  ci.fit = FALSE, alpha = 0.05, unique. = TRUE, ...)
+rl(
+  object,
+  M = 1000,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  ...
+)
 
-\method{rl}{evmOpt}(object, M = 1000, newdata = NULL, se.fit = FALSE,
-  ci.fit = FALSE, alpha = 0.05, unique. = TRUE, ...)
+\method{rl}{evmOpt}(
+  object,
+  M = 1000,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  ...
+)
 
-\method{rl}{evmSim}(object, M = 1000, newdata = NULL, se.fit = FALSE,
-  ci.fit = FALSE, alpha = 0.05, unique. = TRUE, all = FALSE,
-  sumfun = NULL, ...)
+\method{rl}{evmSim}(
+  object,
+  M = 1000,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  all = FALSE,
+  sumfun = NULL,
+  ...
+)
 
-\method{rl}{evmBoot}(object, M = 1000, newdata = NULL,
-  se.fit = FALSE, ci.fit = FALSE, alpha = 0.05, unique. = TRUE,
-  all = FALSE, sumfun = NULL, ...)
+\method{rl}{evmBoot}(
+  object,
+  M = 1000,
+  newdata = NULL,
+  se.fit = FALSE,
+  ci.fit = FALSE,
+  alpha = 0.05,
+  unique. = TRUE,
+  all = FALSE,
+  sumfun = NULL,
+  ...
+)
 
 \method{print}{rl.evmOpt}(x, digits = 3, ...)
 }
