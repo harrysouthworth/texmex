@@ -315,7 +315,7 @@ dependent variables.
 }
 \examples{
 
-w <- mex(winter, mqu=.7)
+w <- mex(winter, mqu=.7, dqu=0.7, which="O3")
 w
 par(mfcol=c(3, 2))
 plot(w)
