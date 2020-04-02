@@ -11,3 +11,5 @@
 ^src\/special_fuctions\.o$
 ^src\/texmex\.dll$
 ^vignettes/Makefile
+^doc$
+^Meta$
