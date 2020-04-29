@@ -127,7 +127,7 @@ evmSim <- function(o, priorParameters, prop.dist,
 
     ######################## Run the Metropolis algorithm...
     if (os == "unix"){
-      res <- parallel::mclapply(1:chains, texmexMetropolis, x = res, log.lik = log.lik,
+      res <- parallel::mclapply(1:chains, texmexMetropolis, o = res, log.lik = log.lik,
                                 proposals = proposals, verbose = verbose,  trace = trace,
                                 seeds = seeds, mc.cores = chains)
     } else if (os == "windows") {
@@ -137,6 +137,10 @@ evmSim <- function(o, priorParameters, prop.dist,
                                  seeds = seeds)
     } else { # 1 chain or something not handled
       res <- list(texmexMetropolis(1, res, log.lik, proposals, verbose, trace, seeds))
+    }
+
+    if (class(res[[1]]) == "try-error"){
+      stop("Something went wrong: simulations not performed. Find this stop message in evmSim")
     }
 
     # XXX Tidy up the object below. Doesn't need any of the info in o, or acceptance

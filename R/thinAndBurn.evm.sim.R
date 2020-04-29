@@ -66,6 +66,7 @@ thinAndBurn.evmSim <- function(object, burn, thin){
 
   if (thin < 1) thin <- 1 / thin
   if (thin %% 1 > 10^(-6)) stop("thin, or its reciprocal, should be an integer")
+
   if (burn > dim(object$chains[[1]])[1]) stop("burn-in is longer than the whole chain")
 
   if (burn > 0){
