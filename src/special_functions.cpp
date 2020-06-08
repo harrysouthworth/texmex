@@ -24,7 +24,7 @@ Rcpp::NumericVector wrap_log1prel(const Rcpp::NumericVector& x) {
 //' @return a numeric vector
 // [[Rcpp::export(name=".log1mexp", rng=FALSE)]]
 Rcpp::NumericVector wrap_log1mexp(const Rcpp::NumericVector& x) {
-  return Rcpp::sapply(x, log1mexp);
+  return Rcpp::sapply(x, texmex_log1mexp);
 }
 
 //' Compute pmax(x y, -1) in such a way that zeros in x beat
