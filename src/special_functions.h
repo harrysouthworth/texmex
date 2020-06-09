@@ -76,7 +76,7 @@ namespace {
   */
   
   inline
-  double log1mexp(const double x) {
+  double texmex_log1mexp(const double x) {
     /* accurately compute log(1-exp(x)) */
     if (R_FINITE(x)) {
       if (x > -M_LN2) {
