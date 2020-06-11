@@ -139,7 +139,7 @@ evmSim <- function(o, priorParameters, prop.dist,
       res <- list(texmexMetropolis(1, res, log.lik, proposals, verbose, trace, seeds))
     }
 
-    if (class(res[[1]]) == "try-error"){
+    if (inherits(res[[1]], "try-error")){
       stop("Something went wrong: simulations not performed. Find this stop message in evmSim")
     }
 

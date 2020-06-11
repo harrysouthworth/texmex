@@ -8,7 +8,6 @@
 #' Accurately compute (exp(x) - 1) / x
 #' @param x numeric vector
 #' @return numeric vector
-#' @export
 .exprel <- function(x) {
     .Call(`_texmex_warp_dexprl`, x)
 }
@@ -16,7 +15,6 @@
 #' Accurately compute log(1 + x) / x
 #' @param x numeric vector
 #' @return numeric vector
-#' @export
 .log1prel <- function(x) {
     .Call(`_texmex_wrap_log1prel`, x)
 }
