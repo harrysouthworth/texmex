@@ -1,16 +1,16 @@
 #' Estimate generalized Pareto distribution parameters over a range of values
-#' 
+#'
 #' Estimate generalized Pareto distribution parameters over a range of values,
 #' using maximum (penalized) likelihood.
-#' 
+#'
 #' This is Stuart Coles' \code{gpd.fitrange}, as it appears in the \code{ismev}
 #' package, refactored into a function that does the computations, and method
 #' functions. The function uses \code{evm} internally and uses the default
 #' options for that function.
-#' 
+#'
 #' Note this function does not extend to assessing model fit when there are
 #' covariates included in the model.
-#' 
+#'
 #' @aliases gpdRangeFit print.gpdRangeFit summary.gpdRangeFit print.summary.gpdRangeFit plot.gpdRangeFit
 #' ggplot.gpdRangeFit
 #' @usage gpdRangeFit(data, umin=quantile(data, .05), umax=quantile(data, .95),
@@ -56,14 +56,14 @@
 #' @seealso \code{\link{evm}}
 #' @keywords models
 #' @examples
-#' 
+#'
 #' par(mfrow=c(1,2))
 #' plot(gpdRangeFit(rain))
-#' 
+#'
 #' @export gpdRangeFit
 gpdRangeFit <-
 function (data, umin=quantile(data, .05), umax=quantile(data, .95),
-          nint = 10, 
+          nint = 10,
           penalty="gaussian", priorParameters=NULL, alpha=.05,
           cov="observed") {
 
@@ -73,12 +73,15 @@ function (data, umin=quantile(data, .05), umax=quantile(data, .95),
     for (i in 1:nint) {
         z <- evm(data, th=u[i], penalty=penalty, priorParameters=priorParameters, cov=cov)
         m[i, ] <- z$coefficients
-        m[i, 1] <- log(exp(m[i, 1]) - m[i, 2] * u[i])
-        d <- matrix(c( exp(z$coefficients[1])/(exp(z$coefficients[1])- m[i, 2] * u[i]) , -u[i]), ncol = 1)
+        m[i, 1] <- exp(m[i, 1])
+
+        m[i, 1] <- m[i, 1] - m[i, 2] * u[i]
+
+        d <- matrix(c(1, -u[i]), ncol = 1)
         v <- t(d) %*% z$cov %*% d
         s[i, ] <- sqrt(diag(z$cov))
         s[i, 1] <- sqrt(v)
-        
+
         hi[i, ] <- m[i, ] + qz * s[i, ]
         lo[i, ] <- m[i, ] - qz * s[i, ]
     }
@@ -121,7 +124,7 @@ plot.gpdRangeFit <- function(x, xlab="Threshold", ylab=NULL,
     #############################################################
     ## Get axis labels and titles
     if (missing(ylab)){
-        ylab <- c("log(scale)", "shape")
+        ylab <- c("scale", "shape")
     }
     else if (length( ylab ) != 2){
         stop("length of ylab should be 2")

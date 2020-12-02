@@ -64,7 +64,7 @@ ggplot.gpdRangeFit <- function(data, mapping, xlab = "Threshold", ylab = NULL, m
                                fill="orange", col="blue",
                                addNexcesses = TRUE, textsize=4, ..., environment){
   if (missing(ylab)) {
-    ylab <- c(expression(hat(phi)[m]), expression(hat(xi)))
+    ylab <- c(expression(hat(sigma)[m]), expression(hat(xi)))
   }  else if (length(ylab) != 2) {
     stop("length of ylab should be 2")
   }

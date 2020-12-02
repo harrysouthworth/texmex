@@ -138,4 +138,13 @@ Changes from version 2.4.4
 
 1. New 'chains' argument added to evmSim. Can now run multiple Markov chains in
 parallel.
-.
+
+---------------------------------- Version 2.4.8 ------------------------------------
+
+Changes from version 2.4.5 in 2.4.6 & 2.4.7 were around changes made to R.
+
+Changes to Version 2.4.8 fix a longstanding bug in gpdRangeFit: the parameter \sigma*
+is constrained to be > -u\xi, not > 0. Therefore, taking logs doesn't work. Switching
+to working with \sigma*, updating plot functions. The function is now basically the
+one written by Coles.
+
