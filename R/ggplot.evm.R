@@ -154,6 +154,7 @@ function(data, mapping, alpha = .050,
 #' @seealso \code{\link{plot.evmOpt}}
 #' @keywords hplot
 #' @method ggplot evmOpt
+#' @importFrom gridExtra grid.arrange
 #' @export
 ggplot.evmOpt <-
 function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, jitter.width=0,
