@@ -57,7 +57,7 @@ glo <- texmexFamily(name = 'GLO',
 					resid = function(o) { # these have a standard Logistic distribution under the model
 						p <- texmexMakeParams(coef(o), o$data$D)
 						shift <- (o$data$y - p[,1]) / exp(p[,2])
-						standard.logistic <- texmex::.log1prel(p[,3]*shift)*shift
+						standard.logistic <- .log1prel(p[,3]*shift)*shift
 						standard.logistic
 					}, # Close resid
 					rl = function(m, param, model){
@@ -95,7 +95,7 @@ rglo <- function(n, mu, sigma, xi){
 	xi    <- rep(xi, length.out=n)
 
 	## and here we go
-	standard.glo <- texmex::.exprel(xi*s)*s
+	standard.glo <- .exprel(xi*s)*s
 
 	if( sum(xi == 0)){
 		standard.glo[xi==0] <- s[xi==0]
@@ -110,7 +110,7 @@ dglo <- function(x, mu, sigma, xi, log.d=FALSE){
 	## shift and scale
 	x <- (x - mu) / sigma
 
-	logrel <- texmex::.log1prel(xi*x) * x #Accurately compute log(1 + x) / x
+	logrel <- .log1prel(xi*x) * x #Accurately compute log(1 + x) / x
 
 	log.density <- -log(sigma) - log1p(xi*x) - logrel - 2* log1p(exp(-logrel))
 
@@ -135,7 +135,7 @@ pglo <- function(q, mu, sigma, xi, lower.tail=TRUE, log.p=FALSE){
 		q  <- rep(q, length.out=n)
 		xi <- rep(xi, length.out=n)
 
-		res <- texmex::.log1prel(xi*q) * q
+		res <- .log1prel(xi*q) * q
 
 		logP <- -log1p(exp(res))
 
