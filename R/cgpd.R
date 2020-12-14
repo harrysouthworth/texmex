@@ -34,6 +34,12 @@ cgpd <- texmexFamily(name = 'CGPD',
                        .log1prel(delta * (exp(p[,2]) - 1/2)) * delta # Standard exponential
                      }, # Close resid
 
+                     coef = function(x){
+                       o$coefficients
+                     },
+
+                     sims = gpd$param,
+
                      endpoint = function(param, model){
                        res <- model$threshold - exp(param[, 1]) / (exp(param[, 2]) - 0.5)
                        res[param[, 2] >= 0] <- Inf

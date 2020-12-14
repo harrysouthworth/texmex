@@ -1,8 +1,15 @@
 #' @export
 coef.evmSim <- function(object, ...){
-    res <- apply(object$param, 2, mean)
-#    names(res) <- c(paste("phi:", colnames(object$X.phi)),
-#        paste("xi:", colnames(object$X.xi)))
-    names(res) <- names(object$map$coefficients)
-    res
+  object$coef
+}
+
+#' Get simulated parameters from an evm object.
+#' @param object An object of class 'evmSim' or 'evmBoot'.
+#' @export
+param <- function(object){
+  if (inherits(object, "evmSim")){
+    object$param
+  } else if (inherits(object, "evmBoot")){
+    object$replicates
+  }
 }

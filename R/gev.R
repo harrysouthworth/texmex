@@ -64,6 +64,12 @@ gev <- texmexFamily(name = 'GEV',
                       .log1prel(shift * p[,3]) * shift # standard Gumbel see Coles p.110 eq (6.6)
                     }, # Close resid
 
+                    coef = function(o){
+                      o$coefficients
+                    },
+
+                    sims = gpd$sims,
+
                     rl = function(m, param, model){
                       qgev(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
                     } # Close lp

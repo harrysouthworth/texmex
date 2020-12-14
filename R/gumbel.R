@@ -32,6 +32,12 @@ gumbel <- texmexFamily(name = 'Gumbel',
             (o$data$y - p[,1]) / exp(p[,2])  # Standard gumbel
           }, # Close resid
 
+          coef = function(o){
+            o$coefficients
+          },
+
+          sims = gpd$sims,
+
           endpoint = function(param, model){
             Inf
           },

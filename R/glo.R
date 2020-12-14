@@ -60,6 +60,13 @@ glo <- texmexFamily(name = 'GLO',
 						standard.logistic <- .log1prel(p[,3]*shift)*shift
 						standard.logistic
 					}, # Close resid
+
+					coef = function(o){
+					  o$coefficients
+					},
+
+					sims = gpd$sims,
+
 					rl = function(m, param, model){
 						qglo(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
 					}

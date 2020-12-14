@@ -34,6 +34,12 @@ weibull <- texmexFamily(name = 'Weibull',
             ((o$data$y - o$threshold) / exp(p[,1]))^p[,2]  # Standard exponential
           }, # Close resid
 
+          coef = function(o){
+            o$coefficients
+          },
+
+          sims = gpd$sims,
+
           endpoint = function(param, model){
             Inf
           },

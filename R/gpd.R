@@ -33,6 +33,26 @@ gpd <- texmexFamily(name = 'GPD',
                               .log1prel(delta * p[,2]) * delta # Standard exponential
                     }, # Close resid
 
+                   coef = function(o){
+                     if (inherits(o, "evmOpt")){
+                       o$coefficients
+                     } else if (inherits(o, "evmSim")){
+                       res <- apply(param(o), 2, mean)
+                       names(res) <- names(o$map$coefficients)
+                       res
+                     } else if (inherits(o, "evmBoot")){
+                       apply(param(o), 2, mean)
+                     }
+                   },
+
+                   sims <- function(o){
+                     if (inherits(o, "evmSim")){
+                       o$param
+                     } else if (inherits(o, "evmBoot")){
+                       o$replicates
+                     }
+                   },
+
                     endpoint = function(param, model){
                         res <- model$threshold - exp(param[, 1]) / param[, 2]
                         res[param[, 2] >= 0] <- Inf
@@ -77,7 +97,7 @@ gpd <- texmexFamily(name = 'GPD',
 #' @export gpdIntCensored
 #' @aliases evm
 gpdIntCensored <- texmexFamily(name = 'gpdIntCensored',
-							   log.lik= function (data, th, dp=2, ...) 
+							   log.lik= function (data, th, dp=2, ...)
 							   {
 							   	y <- data$y
 							   	X.phi <- data$D$phi
@@ -93,6 +113,7 @@ gpdIntCensored <- texmexFamily(name = 'gpdIntCensored',
 							   },
 							   start=gpd$start,
 							   resid=gpd$resid,
+							   coef = gpd$coef,
 							   param=gpd$param,
 							   rl=gpd$rl,
 							   delta=gpd$delta,

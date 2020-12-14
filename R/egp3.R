@@ -69,6 +69,8 @@ egp3 <- texmexFamily(name="EGP3",
                                out[3, ] <- dz
                                out
                      },
+                     coef = gpd$coef,
+                     sims = gpd$sims,
                      resid = function(o){
                        p <- texmexMakeParams(coef(o), o$data$D)
                        delta <- (o$data$y - o$threshold) / exp(p[, 2]) * p[, 3]
