@@ -9,7 +9,7 @@ Changes from version 1.0:
 2. gpd was not passing 'start' through to gpd.fit. Fixed.
 3. Rationalized summary.gpd and its methods into a single script (no impact).
 4. summary.gpd did the wrong simulation when covariates were in the model. Fixed.
-5. Bug in qqgpd caused x and y values to be reversed. The y-axis is scaled to 
+5. Bug in qqgpd caused x and y values to be reversed. The y-axis is scaled to
    accomodate the simulated envelope and this meant that outliers could be
    excluded from the plot. Fixed.
 6. print.summary.predict.mex was showing too many decimal places. Fixed
@@ -21,12 +21,12 @@ Changes from version 1.1:
 
 1. rl.gpd had a bug in the way it computed standard errors. Fixed.
 2. Original Heffernan-Tawn methodology used Gumbel marginal distributions.
-   Keef-Tawn-Papastathopoulos modified this to Laplace margins and identified 
+   Keef-Tawn-Papastathopoulos modified this to Laplace margins and identified
    constraints that keep the model physically plausible. The modified and
    constrained approach is implemented and is now the default.
-3. Diagnostic plot of constrained Profile Log-likelihood surface added, to 
+3. Diagnostic plot of constrained Profile Log-likelihood surface added, to
    help users check for convergence to mle on constrained parameter space.
-4. New diagnostic plots for GPD models when there are covariates, as 
+4. New diagnostic plots for GPD models when there are covariates, as
    part of the plot method for a gpd object.
 5. A returned gpd object now has residuals attached.
 
@@ -91,9 +91,9 @@ Changes from version 2.1
 6. Available vignettes should now be listed from the package Index page.
 7. Some instances of 'cat' and 'warning' have been changed to 'message' to allow
    for easier suppression and less annoyance.
-8. Added Huber sandwich estimator of parameter estimate covariance matrix for 
+8. Added Huber sandwich estimator of parameter estimate covariance matrix for
    dependent data, for gpd model only at this stage.
-9. Added functionality to carry out estimation of Joint Exceedance Curves, from 
+9. Added functionality to carry out estimation of Joint Exceedance Curves, from
    fitted Heffernan and Tawn model, documented in multivariate vignette.
 10.Plotting now available using ggplot2 methods.
 
@@ -111,9 +111,9 @@ Changes from version 2.4
    Stephenson (2007).
 2. Profile likelihood based confidence interval estimation added for GPD models fit by
    evmOpt, only for models containing no covariates.
-3. Added option for user to supply reference marginal distributions for marginal 
+3. Added option for user to supply reference marginal distributions for marginal
    transformation required in conditional dependence model estimation.  This is for use
-   in instances where the marginal distributions are not well represented in the data 
+   in instances where the marginal distributions are not well represented in the data
    prividing joint observation (for instance where data represent only observaitons with
    a given variable above a threshold).
 3. Bug in egp3RangeFit fixed (thanks to Emmanuel Flachire)
@@ -126,7 +126,7 @@ Changes from version 2.4
 
 Changes from version 2.4.2
 
-1. Bug fixes in gpdFitRange: calculation of log-scale parameter and also standard error 
+1. Bug fixes in gpdFitRange: calculation of log-scale parameter and also standard error
 2. gpdIntCensored family added
 3. glo (generalised logistic) family added
 4. Generic cv function and cv.evmOpt added for finding shape parameter by cross-validation.
@@ -148,3 +148,9 @@ is constrained to be > -u\xi, not > 0. Therefore, taking logs doesn't work. Swit
 to working with \sigma*, updating plot functions. The function is now basically the
 one written by Coles.
 
+---------------------------------- Version 2.4.9 ------------------------------------
+
+Adding family spgpd: strictly positive GPD. At present, the linear predictor for
+xi (and only xi) can take the form xi ~ alpha + exp(beta)x for single predictor
+x. The point is to constrain the relationship between x and the response to be
+strictly positive.

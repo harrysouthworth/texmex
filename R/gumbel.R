@@ -33,10 +33,25 @@ gumbel <- texmexFamily(name = 'Gumbel',
           }, # Close resid
 
           coef = function(o){
-            o$coefficients
+            if (inherits(o, "evmOpt")){
+              o$coefficients
+            } else if (inherits(o, "evmSim")){
+              res <- apply(param(o), 2, mean)
+              names(res) <- names(o$map$coefficients)
+              res
+            } else if (inherits(o, "evmBoot")){
+              apply(param(o), 2, mean)
+            }
           },
 
-          sims = gpd$sims,
+          sims <- function(o){
+            if (inherits(o, "evmSim")){
+              o$param
+            } else if (inherits(o, "evmBoot")){
+              o$replicates
+            }
+          },
+
 
           endpoint = function(param, model){
             Inf

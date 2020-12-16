@@ -65,10 +65,25 @@ gev <- texmexFamily(name = 'GEV',
                     }, # Close resid
 
                     coef = function(o){
-                      o$coefficients
+                      if (inherits(o, "evmOpt")){
+                        o$coefficients
+                      } else if (inherits(o, "evmSim")){
+                        res <- apply(sims(o), 2, mean)
+                        names(res) <- names(o$map$coefficients)
+                        res
+                      } else if (inherits(o, "evmBoot")){
+                        apply(param(o), 2, mean)
+                      }
                     },
 
-                    sims = gpd$sims,
+                    sims <- function(o){
+                      if (inherits(o, "evmSim")){
+                        o$param
+                      } else if (inherits(o, "evmBoot")){
+                        o$replicates
+                      }
+                    },
+
 
                     rl = function(m, param, model){
                       qgev(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)

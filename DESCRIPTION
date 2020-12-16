@@ -1,8 +1,8 @@
 Package: texmex
 Type: Package
 Title: Statistical Modelling of Extreme Values
-Version: 2.4.8
-Date: 2020-12-03
+Version: 2.4.9
+Date: 2020-12-16
 Authors@R: c(person("Harry", "Southworth", role=c("aut", "cre"),
                     email="harry.southworth@gmail.com"),
              person(c("Janet", "E."), "Heffernan", role="aut"),
@@ -54,7 +54,7 @@ LinkingTo: Rcpp
 LazyLoad: yes
 LazyData: yes
 URL: https://github.com/harrysouthworth/texmex
-RoxygenNote: 7.1.0
+RoxygenNote: 7.1.1
 Encoding: UTF-8
 VignetteBuilder: knitr
 Collate:
@@ -156,6 +156,7 @@ Collate:
     'roots.R'
     'simulate.R'
     'sombrero-internal.R'
+    'spgpd.R'
     'summary.evm.R'
     'summary.evmSim.R'
     'summary.migpd.R'

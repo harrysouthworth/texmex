@@ -4,13 +4,13 @@
 #' @export spgpd
 NULL
 
-spgpd <- texmexFamily(name = 'PGPD',
+spgpd <- texmexFamily(name = 'SPGPD',
                      log.lik = function(data, th, ...) {
                        y <- data$y
                        X.phi <- data$D$phi
-                       X.xi <- data$D$eta
-                       if (ncol(X.xi > 2)){
-                         stop("only an intercept and a single predictor are allowed with spgpd")
+                       X.xi <- data$D$xi
+                       if (ncol(X.xi) != 2){
+                         stop("precisely an intercept and a single predictor are allowed with spgpd")
                        }
                        n.phi <- ncol(X.phi)
                        n.end <- n.phi + ncol(X.xi)
@@ -28,8 +28,8 @@ spgpd <- texmexFamily(name = 'PGPD',
                      start = function(data){
                        y <- data$y
                        X.phi <- data$D[[1]]
-                       X.eta <- data$D[[2]]
-                       c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.eta)))
+                       X.xi <- data$D[[2]]
+                       c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
                      }, # Close start
 
                      resid = function(o){
@@ -42,14 +42,18 @@ spgpd <- texmexFamily(name = 'PGPD',
                      coef = function(o){
                        if (inherits(o, "evmOpt")){
                          res <- o$coefficients
-                         res[length(res)] <- exp(res[length(res)])
+                         #res[length(res)] <- exp(res[length(res)])
                          res
                        } else if (inherits(o, "evmSim")){
-                         res <- apply(param(o), 2, mean)
+                         res <- apply(o$param, 2, mean)
                          names(res) <- names(o$map$coefficients)
+                         #res[, ncol(res)] <- exp(res[, ncol(res)])
                          res
                        } else if (inherits(o, "evmBoot")){
-                         apply(param(o), 2, mean)
+                         res <- apply(o$replicates, 2, mean)
+                         names(res) <- names(o$map$coefficients)
+                         #res[, ncol(res)] <- exp(res[, ncol(res)])
+                         res
                        }
                      },
 
@@ -64,14 +68,14 @@ spgpd <- texmexFamily(name = 'PGPD',
                      },
 
                      endpoint = function(param, model){
-                       res <- model$threshold - exp(param[, 1]) / param[, 2]
+                       res <- model$threshold - exp(param[, 1]) / exp(param[, 2])
                        res[param[, 2] >= 0] <- Inf
                        res
                      },
                      rl = function(m, param, model){
                        ## write in terms of qgpd; let's not reinvent the wheel
                        qgpd(1/(m * model$rate),
-                            exp(param[,1]), param[,2], u=model$threshold,
+                            exp(param[,1]), exp(param[,2]), u=model$threshold,
                             lower.tail=FALSE)
                      },
                      delta = function(param, m, model){

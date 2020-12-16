@@ -1,9 +1,9 @@
 qqevm <- function(object, nsim=1000, alpha=.050){
   object <- texmexStandardForm(object)
-  
+
   # Want parameters as a matrix with one row for passing
     # through to family$rng etc.
-    a <- t(object$coefficients)
+    a <- t(coef(object))
     u <- object$threshold
     dat <- object$data$y
 
@@ -34,11 +34,11 @@ qqevm <- function(object, nsim=1000, alpha=.050){
 
 #' @export
 plot.qqevm <- function(x, xlab, ylab, main , plot = TRUE,
-                       ylim = "auto", 
+                       ylim = "auto",
                        pch= 1, col =2 , cex=.75, linecol = 4 ,
                        intcol = 0, polycol = 15, ...){
 
-    oldpar <- par(pty = "s"); on.exit(oldpar)	
+    oldpar <- par(pty = "s"); on.exit(oldpar)
 
     if (missing(xlab) || is.null(xlab)) { xlab <- "Model" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "Empirical" }
@@ -50,16 +50,16 @@ plot.qqevm <- function(x, xlab, ylab, main , plot = TRUE,
          xlim = limits, ylim=limits,
          ylab = ylab, xlab = xlab, main = main,
          type = "n")
-		# If doing the envelope, plot it before putting the data on 
+		# If doing the envelope, plot it before putting the data on
     if (!is.null(x$sim)){
         if (polycol != 0){
             polygon(c(x$ModPoints,rev(x$ModPoints)),
                     c(x$sim[1, ], rev(x$sim[2, ])), col=polycol, border=NA)
         }
-        lines(x$ModPoints, x$sim[1, ], col = intcol) 
+        lines(x$ModPoints, x$sim[1, ], col = intcol)
         lines(x$ModPoints, x$sim[2, ], col = intcol)
     }
-			
+
     # Add the diagonal reference line and the data
     abline(0, 1, col = linecol)
     points(x$ModPoints, sort(x$dat), pch = pch, col = col, cex=cex)

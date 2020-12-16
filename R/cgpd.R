@@ -34,11 +34,25 @@ cgpd <- texmexFamily(name = 'CGPD',
                        .log1prel(delta * (exp(p[,2]) - 1/2)) * delta # Standard exponential
                      }, # Close resid
 
-                     coef = function(x){
-                       o$coefficients
+                     coef = function(o){
+                       if (inherits(o, "evmOpt")){
+                         o$coefficients
+                       } else if (inherits(o, "evmSim")){
+                         res <- apply(o$param, 2, mean)
+                         names(res) <- names(o$map$coefficients)
+                         res
+                       } else if (inherits(o, "evmBoot")){
+                         apply(o$param, 2, mean)
+                       }
                      },
 
-                     sims = gpd$param,
+                     sims <- function(o){
+                       if (inherits(o, "evmSim")){
+                         o$param
+                       } else if (inherits(o, "evmBoot")){
+                         o$replicates
+                       }
+                     },
 
                      endpoint = function(param, model){
                        res <- model$threshold - exp(param[, 1]) / (exp(param[, 2]) - 0.5)

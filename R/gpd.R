@@ -37,11 +37,11 @@ gpd <- texmexFamily(name = 'GPD',
                      if (inherits(o, "evmOpt")){
                        o$coefficients
                      } else if (inherits(o, "evmSim")){
-                       res <- apply(param(o), 2, mean)
+                       res <- apply(o$param, 2, mean)
                        names(res) <- names(o$map$coefficients)
                        res
                      } else if (inherits(o, "evmBoot")){
-                       apply(param(o), 2, mean)
+                       apply(o$param, 2, mean)
                      }
                    },
 

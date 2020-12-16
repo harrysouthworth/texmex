@@ -85,14 +85,13 @@ ggtraceplots <- function(x, chain = 1, trace="light blue", mean="blue", burn="or
 #' @keywords hplot
 #' @method ggplot evmSim
 #' @export
-ggplot.evmSim <- function(data=NULL, mapping, which.plots=1:3, chain = 1, denscol="dark blue", acfcol="light blue", plot.it=TRUE,
+ggplot.evmSim <- function(data=NULL, mapping, which.plots=1:3, chain = NULL, denscol="dark blue", acfcol="light blue", plot.it=TRUE,
                           ..., environment){
-    if (length(data$chains) > 1){
+    if (is.null(chain)){
+      chain <- 1
+      message("Plotting chain 1. Use the 'chain' argument to specify another chain.")
+    } else if (length(data$chains) > 1){
       msg <- paste0("Trace and ACF plots for chain ", chain, " only.")
-      if (chain == 1){
-        msg <- paste(msg, "Use the 'chain' argument to specify another chain.")
-      }
-      message(msg)
     }
 
     d <- if (1 %in% which.plots) ggdensplots(data, fill=denscol)
