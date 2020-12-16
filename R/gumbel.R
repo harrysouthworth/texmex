@@ -28,21 +28,9 @@ gumbel <- texmexFamily(name = 'Gumbel',
           }, # Close start
 
           resid = function(o){
-            p <- texmexMakeParams(coef(o), o$data$D)
+            p <- texmexMakeParams(o, o$data$D)
             (o$data$y - p[,1]) / exp(p[,2])  # Standard gumbel
           }, # Close resid
-
-          coef = function(o){
-            if (inherits(o, "evmOpt")){
-              o$coefficients
-            } else if (inherits(o, "evmSim")){
-              res <- apply(param(o), 2, mean)
-              names(res) <- names(o$map$coefficients)
-              res
-            } else if (inherits(o, "evmBoot")){
-              apply(param(o), 2, mean)
-            }
-          },
 
           sims <- function(o){
             if (inherits(o, "evmSim")){
@@ -51,7 +39,6 @@ gumbel <- texmexFamily(name = 'Gumbel',
               o$replicates
             }
           },
-
 
           endpoint = function(param, model){
             Inf

@@ -17,10 +17,16 @@ addCov <- function(res, X){ # used in linearPredictors.* to add covariates to co
 texmexMakeParams <-
     # Take parameter vector and list of datasets to compute
     # parameters for each row of the data.
-function(co, data){
+function(object, data){
 
     np <- length(data)
     p <- vector('list', length=np)
+
+    if (is.null(object$family$transcoef)){
+      co <- coef(object)
+    } else {
+      co <- object$family$transcoef(object)
+    }
 
     wh <- 1
     for (i in 1:np){
@@ -43,7 +49,7 @@ function(cov, data){
         which <- wh:(wh -1 + ncol(data[[i]]))
         covs[[i]] <- cov[which, which, drop=FALSE]
         # covs[[]i] contains the block of the full covariance which relates to parameter[i]
- 
+
         # Get the variance of the linear predictors
         v[[i]] <- rowSums((data[[i]] %*% covs[[i]]) * data[[i]])
 

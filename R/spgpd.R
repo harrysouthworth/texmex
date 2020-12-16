@@ -33,26 +33,25 @@ spgpd <- texmexFamily(name = 'SPGPD',
                      }, # Close start
 
                      resid = function(o){
-                       co <- coef(o)
-                       p <- texmexMakeParams(co, o$data$D)
+                       p <- texmexMakeParams(o, o$data$D)
                        delta <- (o$data$y - o$threshold) / exp(p[,1])
                        .log1prel(delta * p[,2]) * delta # Standard exponential
                      }, # Close resid
 
-                     coef = function(o){
+                     transcoef = function(o){
                        if (inherits(o, "evmOpt")){
                          res <- o$coefficients
-                         #res[length(res)] <- exp(res[length(res)])
+                         res[length(res)] <- exp(res[length(res)])
                          res
                        } else if (inherits(o, "evmSim")){
                          res <- apply(o$param, 2, mean)
                          names(res) <- names(o$map$coefficients)
-                         #res[, ncol(res)] <- exp(res[, ncol(res)])
+                         res[, ncol(res)] <- exp(res[, ncol(res)])
                          res
                        } else if (inherits(o, "evmBoot")){
                          res <- apply(o$replicates, 2, mean)
                          names(res) <- names(o$map$coefficients)
-                         #res[, ncol(res)] <- exp(res[, ncol(res)])
+                         res[, ncol(res)] <- exp(res[, ncol(res)])
                          res
                        }
                      },

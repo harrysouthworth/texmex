@@ -29,22 +29,10 @@ cgpd <- texmexFamily(name = 'CGPD',
                      }, # Close start
 
                      resid = function(o){
-                       p <- texmexMakeParams(coef(o), o$data$D)
+                       p <- texmexMakeParams(o, o$data$D)
                        delta <- (o$data$y - o$threshold) / exp(p[,1])
                        .log1prel(delta * (exp(p[,2]) - 1/2)) * delta # Standard exponential
                      }, # Close resid
-
-                     coef = function(o){
-                       if (inherits(o, "evmOpt")){
-                         o$coefficients
-                       } else if (inherits(o, "evmSim")){
-                         res <- apply(o$param, 2, mean)
-                         names(res) <- names(o$map$coefficients)
-                         res
-                       } else if (inherits(o, "evmBoot")){
-                         apply(o$param, 2, mean)
-                       }
-                     },
 
                      sims <- function(o){
                        if (inherits(o, "evmSim")){

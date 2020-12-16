@@ -38,7 +38,10 @@
 #'     model. If not provided, the modelling functions will try to
 #'     guess.
 #' @param resid Function to compute residuals for the model.
-#' @param coef Function to return the model coefficients.
+#' @param transcoef Function to return the transformed model coefficients. If,
+#'   \code{transcoef = NULL} (the default), the untransformed coefficients are
+#'   returned. Only \code{texmex:::texmexMakeParams} and one or 2 other functions
+#'   should use this.
 #' @param sims Function to return simulated coefficients (MCMC or bootstrap).
 #' @param rl Function to compute return levels.
 #' @param delta Function to compute adjustments for covariance for
@@ -67,10 +70,10 @@ texmexFamily <-
     # info, start and resid as NULL, but all other information must
     # be provided by the user.
 function(name, log.lik, param, info=NULL, sandwich = NULL, start=NULL, resid=NULL,
-         coef = NULL, sims = NULL,
+         transcoef = NULL, sims = NULL,
                          rl, delta, endpoint, density, rng, prob, quant){
     res <- list(name=name, log.lik=log.lik, param=param, info=info,
-                sandwich = sandwich, start=start, resid=resid, coef=coef,
+                sandwich = sandwich, start=start, resid=resid, transcoef=transcoef,
                 sims=sims, rl=rl, delta=delta, endpoint=endpoint,
                 density=density, rng=rng, prob=prob, quant=quant)
 

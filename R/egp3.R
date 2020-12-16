@@ -70,18 +70,6 @@ egp3 <- texmexFamily(name="EGP3",
                                out
                      },
 
-                    coef = function(o){
-                      if (inherits(o, "evmOpt")){
-                        o$coefficients
-                      } else if (inherits(o, "evmSim")){
-                        res <- apply(sims(o), 2, mean)
-                        names(res) <- names(o$map$coefficients)
-                        res
-                      } else if (inherits(o, "evmBoot")){
-                        apply(param(o), 2, mean)
-                      }
-                    },
-
                     sims <- function(o){
                       if (inherits(o, "evmSim")){
                         o$param
@@ -90,7 +78,7 @@ egp3 <- texmexFamily(name="EGP3",
                       }
                     },
                     resid = function(o){
-                       p <- texmexMakeParams(coef(o), o$data$D)
+                       p <- texmexMakeParams(o, o$data$D)
                        delta <- (o$data$y - o$threshold) / exp(p[, 2]) * p[, 3]
                        #(texmex:::.log1prel(delta * p[, 3]) * delta)^{exp(p[, 1])} # Standard exponential
                        r <- (1 - (1 + delta)^(-1/p[, 3]))^exp(p[, 1])

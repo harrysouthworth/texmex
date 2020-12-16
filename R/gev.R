@@ -59,22 +59,10 @@ gev <- texmexFamily(name = 'GEV',
                               qgev(p, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
                     },
                     resid = function(o) {
-                      p <- texmexMakeParams(coef(o), o$data$D)
+                      p <- texmexMakeParams(o, o$data$D)
                       shift <- (o$data$y - p[,1]) / exp(p[,2])
                       .log1prel(shift * p[,3]) * shift # standard Gumbel see Coles p.110 eq (6.6)
                     }, # Close resid
-
-                    coef = function(o){
-                      if (inherits(o, "evmOpt")){
-                        o$coefficients
-                      } else if (inherits(o, "evmSim")){
-                        res <- apply(sims(o), 2, mean)
-                        names(res) <- names(o$map$coefficients)
-                        res
-                      } else if (inherits(o, "evmBoot")){
-                        apply(param(o), 2, mean)
-                      }
-                    },
 
                     sims <- function(o){
                       if (inherits(o, "evmSim")){
@@ -83,7 +71,6 @@ gev <- texmexFamily(name = 'GEV',
                         o$replicates
                       }
                     },
-
 
                     rl = function(m, param, model){
                       qgev(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)

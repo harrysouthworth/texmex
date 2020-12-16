@@ -1,4 +1,7 @@
 #' @export
 coef.evmSim <- function(object, ...){
-  object$family$coef(object)
+  res <- apply(o$param, 2, mean)
+  names(res) <- names(o$map$coefficients)
+  res
 }
+

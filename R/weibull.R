@@ -30,21 +30,9 @@ weibull <- texmexFamily(name = 'Weibull',
           }, # Close start
 
           resid = function(o){
-            p <- texmexMakeParams(coef(o), o$data$D)
+            p <- texmexMakeParams(o, o$data$D)
             ((o$data$y - o$threshold) / exp(p[,1]))^p[,2]  # Standard exponential
           }, # Close resid
-
-          coef = function(o){
-            if (inherits(o, "evmOpt")){
-              o$coefficients
-            } else if (inherits(o, "evmSim")){
-              res <- apply(param(o), 2, mean)
-              names(res) <- names(o$map$coefficients)
-              res
-            } else if (inherits(o, "evmBoot")){
-              apply(param(o), 2, mean)
-            }
-          },
 
           sims <- function(o){
             if (inherits(o, "evmSim")){
@@ -53,7 +41,6 @@ weibull <- texmexFamily(name = 'Weibull',
               o$replicates
             }
           },
-
 
           endpoint = function(param, model){
             Inf

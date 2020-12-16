@@ -138,7 +138,7 @@ linearPredictors.evmOpt <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
                        }, u=u )
     }
 
-    res <- texmexMakeParams(coef(object), D)
+    res <- texmexMakeParams(object, D)
     colnames(res) <- names(D)
 
     # Get the covariance matrices - one for every unique observation

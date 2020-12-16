@@ -55,23 +55,11 @@ glo <- texmexFamily(name = 'GLO',
 						qglo(p, c(param[, 1]), exp(c(param[, 2])), c(param[, 3]))
 					},
 					resid = function(o) { # these have a standard Logistic distribution under the model
-						p <- texmexMakeParams(coef(o), o$data$D)
+						p <- texmexMakeParams(o, o$data$D)
 						shift <- (o$data$y - p[,1]) / exp(p[,2])
 						standard.logistic <- .log1prel(p[,3]*shift)*shift
 						standard.logistic
 					}, # Close resid
-
-					coef = function(o){
-					  if (inherits(o, "evmOpt")){
-					    o$coefficients
-					  } else if (inherits(o, "evmSim")){
-					    res <- apply(sims(o), 2, mean)
-					    names(res) <- names(o$map$coefficients)
-					    res
-					  } else if (inherits(o, "evmBoot")){
-					    apply(param(o), 2, mean)
-					  }
-					},
 
 					sims <- function(o){
 					  if (inherits(o, "evmSim")){
@@ -80,7 +68,6 @@ glo <- texmexFamily(name = 'GLO',
 					    o$replicates
 					  }
 					},
-
 
 					rl = function(m, param, model){
 						qglo(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)

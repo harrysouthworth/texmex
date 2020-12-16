@@ -8,6 +8,7 @@
 # }
 
 #' @export
-coef.evmOpt <- function(object, ...){
-  object$family$coef(object)
-}
+coef.evmOpt = function(object, ...){
+  o$coefficients
+  }
+

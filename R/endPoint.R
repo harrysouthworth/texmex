@@ -1,11 +1,11 @@
 #' Calculate upper end point for a fitted extreme value model
-#' 
+#'
 #' Calculate upper end point for fitted extreme value model
-#' 
-#' 
+#'
+#'
 #' @aliases endPoint endPoint.evmOpt endPoint.evmSim endPoint.evmBoot
 #' @usage endPoint(y, verbose=TRUE, .unique=TRUE, ...)
-#' 
+#'
 #' \method{endPoint}{evmOpt}(y,verbose=TRUE, .unique=TRUE, ...)
 #' \method{endPoint}{evmSim}(y,verbose=TRUE, .unique=TRUE, ...)
 #' @param y Object of class \code{evmOpt} or \code{evmSim}, as returned by
@@ -27,7 +27,7 @@ endPoint.evmOpt <- function(y, verbose=TRUE,.unique=TRUE,...){
 
   if(.unique) Unique <- unique else Unique <- identity
 
-  p <- texmexMakeParams(coef(y), y$data$D)
+  p <- texmexMakeParams(y, y$data$D)
   endpoint <- y$family$endpoint
 
   negShape <- p[, ncol(p)] < 0

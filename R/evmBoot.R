@@ -45,7 +45,7 @@ evmBoot <- function(o, R=1000, trace=100, cores=NULL, export=NULL, theCall){
     if (missing(theCall)){ theCall <- match.call() }
 
     d <- o$data
-    param <- texmexMakeParams(coef(o), d$D)
+    param <- texmexMakeParams(o, d$D)
     rng <- o$family$rng
 
     getCluster <- function(n){
