@@ -29,7 +29,7 @@ spgpd <- texmexFamily(name = 'SPGPD',
                        y <- data$y
                        X.phi <- data$D[[1]]
                        X.xi <- data$D[[2]]
-                       c(log(mean(y)), rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
+                       c(log(mean(y)), 1e-05, -5)#rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
                      }, # Close start
 
                      resid = function(o){
@@ -39,24 +39,24 @@ spgpd <- texmexFamily(name = 'SPGPD',
                      }, # Close resid
 
                      transcoef = function(o){
-                       if (inherits(o, "evmOpt")){
-                         res <- o$coefficients
-                         res[length(res)] <- exp(res[length(res)])
-                         res
-                       } else if (inherits(o, "evmSim")){
+                       if (!is.null(o$param)){
                          res <- apply(o$param, 2, mean)
                          names(res) <- names(o$map$coefficients)
                          res[, ncol(res)] <- exp(res[, ncol(res)])
                          res
-                       } else if (inherits(o, "evmBoot")){
+                       } else if (!is.null(o$replicates)){
                          res <- apply(o$replicates, 2, mean)
                          names(res) <- names(o$map$coefficients)
                          res[, ncol(res)] <- exp(res[, ncol(res)])
                          res
+                       } else {
+                         res <- o$coefficients
+                         res[length(res)] <- exp(res[length(res)])
+                         res
                        }
                      },
 
-                     sims <- function(o){
+                     sims = function(o){
                        if (inherits(o, "evmSim")){
                          res <- o$param
                        } else if (inherits(o, "evmBoot")){

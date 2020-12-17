@@ -34,7 +34,7 @@ weibull <- texmexFamily(name = 'Weibull',
             ((o$data$y - o$threshold) / exp(p[,1]))^p[,2]  # Standard exponential
           }, # Close resid
 
-          sims <- function(o){
+          sims = function(o){
             if (inherits(o, "evmSim")){
               o$param
             } else if (inherits(o, "evmBoot")){

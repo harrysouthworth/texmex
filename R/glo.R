@@ -61,7 +61,7 @@ glo <- texmexFamily(name = 'GLO',
 						standard.logistic
 					}, # Close resid
 
-					sims <- function(o){
+					sims = function(o){
 					  if (inherits(o, "evmSim")){
 					    o$param
 					  } else if (inherits(o, "evmBoot")){

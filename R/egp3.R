@@ -70,7 +70,7 @@ egp3 <- texmexFamily(name="EGP3",
                                out
                      },
 
-                    sims <- function(o){
+                    sims = function(o){
                       if (inherits(o, "evmSim")){
                         o$param
                       } else if (inherits(o, "evmBoot")){

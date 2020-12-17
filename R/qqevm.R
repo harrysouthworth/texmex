@@ -6,7 +6,7 @@ qqevm <- function(object, nsim=1000, alpha=.050){
   if (is.null(object$family$transcoef)){
     a <- t(coef(object))
   } else {
-    a <- t(transcoef(object))
+    a <- t(object$family$transcoef(object))
   }
   u <- object$threshold
   dat <- object$data$y

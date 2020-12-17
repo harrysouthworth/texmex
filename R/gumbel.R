@@ -32,7 +32,7 @@ gumbel <- texmexFamily(name = 'Gumbel',
             (o$data$y - p[,1]) / exp(p[,2])  # Standard gumbel
           }, # Close resid
 
-          sims <- function(o){
+          sims = function(o){
             if (inherits(o, "evmSim")){
               o$param
             } else if (inherits(o, "evmBoot")){

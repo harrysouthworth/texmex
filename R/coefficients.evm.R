@@ -9,6 +9,6 @@
 
 #' @export
 coef.evmOpt = function(object, ...){
-  o$coefficients
-  }
+  object$coefficients
+}
 
