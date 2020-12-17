@@ -25,7 +25,7 @@ ggacfplots <- function(x, chain=1, fill="orange"){
     for (i in 1:n){
 
         d <- thinAndBurn(x, burn = x$burn, thin = x$thin)$param
-#browser()
+
         acz <- acf(d[, i], plot=FALSE)
         acd <- data.frame(lag=acz$lag, acf=acz$acf, xend=acz$lag, yend=rep(0, length(acz$lag)))
 
