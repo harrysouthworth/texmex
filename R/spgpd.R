@@ -74,7 +74,7 @@ spgpd <- texmexFamily(name = 'SPGPD',
                      rl = function(m, param, model){
                        ## write in terms of qgpd; let's not reinvent the wheel
                        qgpd(1/(m * model$rate),
-                            exp(param[,1]), exp(param[,2]), u=model$threshold,
+                            exp(param[,1]), param[,2], u=model$threshold,
                             lower.tail=FALSE)
                      },
                      delta = function(param, m, model){
