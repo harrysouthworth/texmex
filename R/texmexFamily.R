@@ -79,8 +79,7 @@ texmexFamily <-
         } else if (inherits(o, "evmBoot")){
           o$replicates
         }
-      },
-
+      }
     }
 
     res <- list(name=name, log.lik=log.lik, param=param, info=info,
