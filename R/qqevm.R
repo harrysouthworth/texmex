@@ -3,11 +3,14 @@ qqevm <- function(object, nsim=1000, alpha=.050){
 
   # Want parameters as a matrix with one row for passing
   # through to family$rng etc.
-  if (is.null(object$family$transcoef)){
-    a <- t(coef(object))
-  } else {
-    a <- t(object$family$transcoef(object))
-  }
+  # if (is.null(object$family$transcoef)){
+  #   a <- t(coef(object))
+  # } else {
+  #   a <- t(object$family$transcoef(object))
+  # }
+
+  a <- t(coef(object))
+
   u <- object$threshold
   dat <- object$data$y
 

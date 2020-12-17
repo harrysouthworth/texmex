@@ -11,7 +11,7 @@
 #' standard exponential devaiates under the GPD model and standard
 #' Gumbel deviates under the GEV model), and plots of residuals versus
 #' fitted model parameters.
-#' 
+#'
 #' The PP- and QQ-plots show simulated pointwise tolerance intervals.
 #' The region is a \eqn{100(1 - \alpha)\%}{100(1-alpha)\%} region based
 #' on \code{nsim} simulated samples.
@@ -40,8 +40,9 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
     }
 
     plot(ppevm(x, nsim=nsim, alpha=alpha), main=main[1], xlab=xlab[1])
-    plot(qqevm(x, nsim=nsim, alpha=alpha), main=main[2], xlab=xlab[2])
-        
+    qq <- qqevm(x, nsim=nsim, alpha=alpha)
+    plot(qq, main=main[2], xlab=xlab[2])
+
     if (all(sapply(x$data$D,ncol) == 1)){
         plotrl.evmOpt(x, main=main[3], xlab=xlab[3], smooth=FALSE, ...)
         plot(hist.evmOpt(x), main=main[4], xlab=xlab[4])
@@ -57,7 +58,7 @@ function(x, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, ...){
           panel.smooth(lp[,i], resid(x), col.smooth=2)
         }
     }
-    
+
     invisible()
 }
 
