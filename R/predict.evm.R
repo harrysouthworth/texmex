@@ -382,7 +382,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     }
 
     # Get matrices of parameters (i.e. split full parameter matrix into phi, xi whatever)
-    param <- texmexGetParam(D, object$family$sims(object))
+    param <- texmexGetParam(D, object$map$family$sims(object))
 
     # Get linear predictors
     res <- lapply(1:nrow(D[[1]]), # For each observation get matrix of parameters

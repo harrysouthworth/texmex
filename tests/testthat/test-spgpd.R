@@ -65,9 +65,9 @@ test_that("spgpd family does what it ought", {
   bgp <- cbind(bg$param[, 1], bg$param[, 2] + simdat$x * bg$param[, 3])
   bsp <- cbind(bs$param[, 1], bs$param[, 2] + simdat$x * exp(bs$param[, 3]))
 
-  par(mfrow = c(2, 2))
-  hist(bgp[, 1]); hist(bgp[, 2])
-  hist(bsp[, 1]); hist(bsp[, 2])
+  #par(mfrow = c(2, 2))
+  #hist(bgp[, 1]); hist(bgp[, 2])
+  #hist(bsp[, 1]); hist(bsp[, 2])
   expect_equal(colMeans(bgp), colMeans(bsp), tolerance = .01,
                label = "spgpd: posterior means of linear predictors are similar")
   expect_equal(apply(bgp, 2, sd), apply(bsp, 2, sd), tolerance = .01,
@@ -83,11 +83,11 @@ test_that("spgpd family does what it ought", {
   bgpred <- linearPredictors(bg)
   bspred <- linearPredictors(bs)
 
+  bgpred <- predict(bg, M = seq(500, 9000, by = 100), ci.fit = TRUE)
+  bspred <- predict(bs, M = seq(500, 9000, by = 100), ci.fit = TRUE)
 
-
-  bgpred <- predict(bg, M = seq(100, 1000, by = 100))
-  bspred <- predict(bs, M = seq(100, 1000, by = 100))
-
-
+  par(mfrow = c(2, 3))
+  plot(bgpred)
+  plot(bspred)
 
 })
