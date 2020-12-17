@@ -61,14 +61,6 @@ glo <- texmexFamily(name = 'GLO',
 						standard.logistic
 					}, # Close resid
 
-					sims = function(o){
-					  if (inherits(o, "evmSim")){
-					    o$param
-					  } else if (inherits(o, "evmBoot")){
-					    o$replicates
-					  }
-					},
-
 					rl = function(m, param, model){
 						qglo(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
 					}

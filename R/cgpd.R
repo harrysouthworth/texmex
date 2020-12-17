@@ -34,14 +34,6 @@ cgpd <- texmexFamily(name = 'CGPD',
                        .log1prel(delta * (exp(p[,2]) - 1/2)) * delta # Standard exponential
                      }, # Close resid
 
-                     sims <- function(o){
-                       if (inherits(o, "evmSim")){
-                         o$param
-                       } else if (inherits(o, "evmBoot")){
-                         o$replicates
-                       }
-                     },
-
                      endpoint = function(param, model){
                        res <- model$threshold - exp(param[, 1]) / (exp(param[, 2]) - 0.5)
                        res[param[, 2] >= 0] <- Inf

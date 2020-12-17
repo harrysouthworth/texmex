@@ -33,14 +33,6 @@ gpd <- texmexFamily(name = 'GPD',
                       .log1prel(delta * p[,2]) * delta # Standard exponential
                     }, # Close resid
 
-                    sims = function(o){
-                      if (inherits(o, "evmSim")){
-                        o$param
-                      } else if (inherits(o, "evmBoot")){
-                        o$replicates
-                      }
-                    },
-
                     endpoint = function(param, model){
                       res <- model$threshold - exp(param[, 1]) / param[, 2]
                       res[param[, 2] >= 0] <- Inf

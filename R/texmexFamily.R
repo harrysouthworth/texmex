@@ -66,12 +66,23 @@
 #' @keywords models
 #' @export texmexFamily
 texmexFamily <-
-    # Create an object of class 'texmexFamily'. It is allowable to have
-    # info, start and resid as NULL, but all other information must
-    # be provided by the user.
-function(name, log.lik, param, info=NULL, sandwich = NULL, start=NULL, resid=NULL,
-         transcoef = NULL, sims = NULL,
-                         rl, delta, endpoint, density, rng, prob, quant){
+  # Create an object of class 'texmexFamily'. It is allowable to have
+  # info, start and resid as NULL, but all other information must
+  # be provided by the user.
+  function(name, log.lik, param, info=NULL, sandwich = NULL, start=NULL, resid=NULL,
+           transcoef = NULL, sims = NULL,
+           rl, delta, endpoint, density, rng, prob, quant){
+    if (is.null(sims)){
+      sims <- function(o){
+        if (inherits(o, "evmSim")){
+          o$param
+        } else if (inherits(o, "evmBoot")){
+          o$replicates
+        }
+      },
+
+    }
+
     res <- list(name=name, log.lik=log.lik, param=param, info=info,
                 sandwich = sandwich, start=start, resid=resid, transcoef=transcoef,
                 sims=sims, rl=rl, delta=delta, endpoint=endpoint,
@@ -79,31 +90,31 @@ function(name, log.lik, param, info=NULL, sandwich = NULL, start=NULL, resid=NUL
 
     oldClass(res) <- 'texmexFamily'
     res
-}
+  }
 
 
 #' @export
 print.texmexFamily <- function(x, ...){
-    cat('Family:      ', x$name, '\n')
-    invisible(x)
+  cat('Family:      ', x$name, '\n')
+  invisible(x)
 }
 
 #' @export
 summary.texmexFamily <- function(object, ...){
-    res <- list(object=object)
-    if (is.null(object$info)){
-        res$info <- 'Numerical approximation'
-    } else {
-        res$info <- 'Closed form'
-    }
-    oldClass(res) <- "summary.texmexFamily"
-    res
+  res <- list(object=object)
+  if (is.null(object$info)){
+    res$info <- 'Numerical approximation'
+  } else {
+    res$info <- 'Closed form'
+  }
+  oldClass(res) <- "summary.texmexFamily"
+  res
 }
 
 #' @export
 print.summary.texmexFamily <- function(x, ...){
-    print.texmexFamily(x$object, ...)
-    cat('Parameters:  ', x$object$param, '\n')
-    cat('Information: ', x$info, '\n')
-    invisible(x)
+  print.texmexFamily(x$object, ...)
+  cat('Parameters:  ', x$object$param, '\n')
+  cat('Information: ', x$info, '\n')
+  invisible(x)
 }

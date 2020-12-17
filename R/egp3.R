@@ -70,13 +70,6 @@ egp3 <- texmexFamily(name="EGP3",
                                out
                      },
 
-                    sims = function(o){
-                      if (inherits(o, "evmSim")){
-                        o$param
-                      } else if (inherits(o, "evmBoot")){
-                        o$replicates
-                      }
-                    },
                     resid = function(o){
                        p <- texmexMakeParams(o, o$data$D)
                        delta <- (o$data$y - o$threshold) / exp(p[, 2]) * p[, 3]

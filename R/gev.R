@@ -64,14 +64,6 @@ gev <- texmexFamily(name = 'GEV',
                       .log1prel(shift * p[,3]) * shift # standard Gumbel see Coles p.110 eq (6.6)
                     }, # Close resid
 
-                    sims = function(o){
-                      if (inherits(o, "evmSim")){
-                        o$param
-                      } else if (inherits(o, "evmBoot")){
-                        o$replicates
-                      }
-                    },
-
                     rl = function(m, param, model){
                       qgev(1/m, param[,1], exp(param[,2]), param[,3], lower.tail=FALSE)
                     } # Close lp
