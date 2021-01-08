@@ -11,7 +11,7 @@
   data = NULL,
   mapping,
   which.plots = 1:3,
-  chain = 1,
+  chain = NULL,
   denscol = "dark blue",
   acfcol = "light blue",
   plot.it = TRUE,

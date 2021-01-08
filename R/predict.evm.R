@@ -423,7 +423,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
     if(!all){
       if(ModelHasCovs){
         for (i in 1:length(D)){
-            res <- addCov(res,D[[i]])
+            res <- addCov(res, D[[i]])
         }
       }
     }
@@ -442,7 +442,7 @@ linearPredictors.evmSim <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=F
         }
     }
 
-    res <- list(link=res,family=object$map$family)
+    res <- list(link = res,family = object$map$family)
     oldClass(res) <- "lp.evmSim"
     res
 }

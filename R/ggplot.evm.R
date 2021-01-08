@@ -230,7 +230,10 @@ function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000
     #}
 
     # The loess smoother can tend to throw warnings, so suppress
-    if (plot.) suppressWarnings(do.call("grid.arrange", c(res, list(ncol=ncol, nrow=nrow))))
+    if (plot.){
+      grid.arrange <- gridExtra::grid.arrange
+      suppressWarnings(do.call("grid.arrange", c(res, list(ncol=ncol, nrow=nrow))))
+    }
 
     # Send output to the user in case it needs to be arranged
     # differently.

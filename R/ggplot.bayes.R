@@ -101,6 +101,9 @@ ggplot.evmSim <- function(data=NULL, mapping, which.plots=1:3, chain = NULL, den
     a <- if (3 %in% which.plots) ggacfplots(data, chain=chain, fill=acfcol)
          else NULL
     res <- c(d, tr, a)
-    if (plot.it) do.call("grid.arrange", c(res, ncol=ncol(data$param)))
+    if (plot.it){
+      grid.arrange <- gridExtra::grid.arrange
+      do.call("grid.arrange", c(res, ncol=ncol(data$param)))
+    }
     invisible(res)
 }

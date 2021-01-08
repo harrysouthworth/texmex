@@ -44,6 +44,13 @@ guess.}
 
 \item{resid}{Function to compute residuals for the model.}
 
+\item{transcoef}{Function to return the transformed model coefficients. If,
+\code{transcoef = NULL} (the default), the untransformed coefficients are
+returned. Only \code{texmex:::texmexMakeParams} and one or 2 other functions
+should use this.}
+
+\item{sims}{Function to return simulated coefficients (MCMC or bootstrap).}
+
 \item{rl}{Function to compute return levels.}
 
 \item{delta}{Function to compute adjustments for covariance for
@@ -89,8 +96,8 @@ The functions are used by the modelling functions to create
 diagnostic plots, predictions, etc..
 }
 \note{
-The \code{gpd}, \code{gev}, \code{weibull}, generalised logistic (\code{glo}), 
-\code{gumbel}, \code{gpdIntCensored} and \code{egp3} families are provided. 
+The \code{gpd}, \code{gev}, \code{weibull}, generalised logistic (\code{glo}),
+\code{gumbel}, \code{gpdIntCensored} and \code{egp3} families are provided.
 The \code{\link{evm}} function defaults to using the \code{gpd} family.
 }
 \seealso{

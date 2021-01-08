@@ -73,18 +73,28 @@ test_that("spgpd family does what it ought", {
   expect_equal(apply(bgp, 2, sd), apply(bsp, 2, sd), tolerance = .01,
                label = "spgpd: posterior standard deviations of linear predictors are similar")
 
+
   n <- 500
   simdat <- data.frame(i = 1:n, x = runif(n, .25, .5)) %>%
     mutate(y = rgpd(n, xi = x, sigma = 1))
 
   bg <- evm(y, data = simdat, th = 0, xi = ~ x, method = "sim")
-  bs <- evm(y, data = simdat, th = 0, xi = ~ x, family = spgpd, method = "sim")
+  bs <- evm(y, data = simdat, th = 0, xi = ~ x, family = spgpd, method = "sim",
+            priorParameters = list(c(0, 0, -3), diag(c(10^4, 1/4, 1/4))))
 
   bgpred <- linearPredictors(bg)
   bspred <- linearPredictors(bs)
 
-  bgpred <- predict(bg, M = seq(500, 9000, by = 100), ci.fit = TRUE)
-  bspred <- predict(bs, M = seq(500, 9000, by = 100), ci.fit = TRUE)
+  expect_equal(cor(bgpred$link[, 2], bspred$link[, 2]), 1,
+               label = "spgpd: linear predictors have correlation 1")
+
+  nd <- data.frame(x = c(.25, .5))
+
+  bgpred <- predict(bg, M = seq(500, 9000, by = 100), ci.fit = TRUE, newdata = nd)
+  bspred <- predict(bs, M = seq(500, 9000, by = 100), ci.fit = TRUE, newdata = nd)
+
+  ggplot(bgpred)
+  ggplot(bspred)
 
   par(mfrow = c(2, 3))
   plot(bgpred)
