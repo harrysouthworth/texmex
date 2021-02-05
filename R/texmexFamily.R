@@ -77,7 +77,11 @@ texmexFamily <-
         if (inherits(o, "evmSim")){
           o$param
         } else if (inherits(o, "evmBoot")){
-          o$replicates
+          if ("param" %in% names(o)){
+            o$param
+          } else {
+            o$replicates
+          }
         }
       }
     }

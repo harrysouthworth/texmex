@@ -4,7 +4,7 @@
 #' @export spgpdphi
 NULL
 
-spgpd2 <- texmexFamily(name = 'SPGPDphi',
+spgpdphi <- texmexFamily(name = 'SPGPDphi',
                       log.lik = function(data, th, ...) {
                         y <- data$y
                         X.phi <- data$D$phi

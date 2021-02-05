@@ -541,11 +541,13 @@ linearPredictors.evmBoot <- function(object, newdata=NULL, se.fit=FALSE, ci.fit=
 
 #' @rdname rl
 #' @export
-rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE, alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
+rl.evmBoot <- function(object, M=1000, newdata=NULL, se.fit=FALSE, ci.fit=FALSE,
+                       alpha=0.050, unique.=TRUE, all=FALSE, sumfun=NULL,...){
     # This should just be the same as for an evmSim object, but some
     # names are different.
   object <- namesBoot2sim(object)
-  res <- rl.evmSim(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
+  res <- rl.evmSim(object, M=M, newdata=newdata, se.fit=se.fit, ci.fit=ci.fit,
+                   alpha=alpha, unique.=unique., all=all, sumfun=sumfun,...)
   oldClass(res) <- "rl.evmBoot"
   res
 }
