@@ -58,7 +58,7 @@ WAIC.evmSim <- function(object){
   n <- length(object$map$data$y)
 
   # Get loglik for every row in samp, every value of (phi, xi)
-  param <- texmexGetParam(data = D, co = samp)
+  param <- texmexGetParam(data = D, object$map$family$sims(object))##co = samp)
 
   lps <- lapply(1:nrow(D[[1]]), # For each observation get matrix of parameters
                 function(i, x, p){
@@ -79,7 +79,6 @@ WAIC.evmSim <- function(object){
   ll <- sapply(1:length(lps), function(X){
     dfun(object$map$data$y[X], lps[[X]], object$map, log.d=TRUE)
   })
-
 
   lppd <- apply(ll, 2, function(X){
     xm <- max(X)

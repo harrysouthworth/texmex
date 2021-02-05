@@ -157,6 +157,7 @@ Collate:
     'simulate.R'
     'sombrero-internal.R'
     'spgpd.R'
+    'spgpd2.R'
     'summary.evm.R'
     'summary.evmSim.R'
     'summary.migpd.R'

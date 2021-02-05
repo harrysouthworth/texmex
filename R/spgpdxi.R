@@ -1,16 +1,16 @@
 #' @include texmexFamily.R
 #' @include gpd.info.R
 #' @include gpd.sandwich.R
-#' @export spgpd
+#' @export spgpdxi
 NULL
 
-spgpd <- texmexFamily(name = 'SPGPD',
+spgpdxi <- texmexFamily(name = 'SPGPDxi',
                      log.lik = function(data, th, ...) {
                        y <- data$y
                        X.phi <- data$D$phi
                        X.xi <- data$D$xi
                        if (ncol(X.xi) != 2){
-                         stop("precisely an intercept and a single predictor are allowed with spgpd")
+                         stop("precisely an intercept and a single predictor in xi are allowed with spgpd")
                        }
                        n.phi <- ncol(X.phi)
                        n.end <- n.phi + ncol(X.xi)
@@ -29,7 +29,7 @@ spgpd <- texmexFamily(name = 'SPGPD',
                        y <- data$y
                        X.phi <- data$D[[1]]
                        X.xi <- data$D[[2]]
-                       c(log(mean(y)), 1e-05, -5)#rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
+                       c(log(mean(y)), 1e-05, -1.4)#rep(1e-05, -1 + ncol(X.phi) + ncol(X.xi)))
                      }, # Close start
 
                      resid = function(o){
