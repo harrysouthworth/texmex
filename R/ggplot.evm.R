@@ -157,6 +157,7 @@ function(data, mapping, alpha = .050,
 #' @export
 ggplot.evmOpt <-
 function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, jitter.width=0,
+         jitter.height = 0,
          ptcol="blue", span=2/3, col="light blue", fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment){
     if (!missing(main)){
         if (length(main) != 1 & length(main) != 4){
@@ -210,11 +211,12 @@ function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000
           d <- data.frame(lp=lp[, i], r = resid(data))
 
           co[[i]] <- ggplot(d, aes(lp, r)) +
-                         geom_point(color=ptcol, alpha=.7, position=position_jitter(width=jitter.width)) +
+                         geom_point(color=ptcol, alpha=.7,
+                                    position=position_jitter(width = jitter.width, height = jitter.height)) +
                          stat_smooth(color=col, se=FALSE, span=span, method="loess") +
                          ggtitle(paste("Residuals vs fitted", ParName)) +
                          scale_x_continuous(paste("Fitted", ParName)) +
-                         scale_y_continuous("Residuals", limits=range(d$r))
+                         scale_y_continuous("Residuals")##, limits=range(d$r))
         }
         co <- co[!sapply(co, is.null)] # modifyList will do this
 

@@ -5,6 +5,11 @@
 
 using namespace Rcpp;
 
+#ifdef RCPP_USE_GLOBAL_ROSTREAM
+Rcpp::Rostream<true>&  Rcpp::Rcout = Rcpp::Rcpp_cout_get();
+Rcpp::Rostream<false>& Rcpp::Rcerr = Rcpp::Rcpp_cerr_get();
+#endif
+
 // wrap_dgpd
 Rcpp::NumericVector wrap_dgpd(const Rcpp::NumericVector& x, const Rcpp::NumericVector& sigma, const Rcpp::NumericVector& xi, const Rcpp::NumericVector& u, const bool log_d);
 RcppExport SEXP _texmex_wrap_dgpd(SEXP xSEXP, SEXP sigmaSEXP, SEXP xiSEXP, SEXP uSEXP, SEXP log_dSEXP) {

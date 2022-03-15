@@ -18,6 +18,7 @@
   nsim = 1000,
   alpha = 0.05,
   jitter.width = 0,
+  jitter.height = 0,
   ptcol = "blue",
   span = 2/3,
   col = "light blue",
