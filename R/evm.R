@@ -279,18 +279,39 @@
 #'
 #' @export evm
 evm <- function(y, data, family=gpd, ...){
-  theCall <- match.call()
-  if (!missing(data)) {
+  ## 2023-11-06: Attempting to update code to work with upcoming changes in R
+  if (FALSE){
+    theCall <- match.call()
+    if (!missing(data)) {
       y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
       y <- formula(paste(y, "~ 1"))
       y <- model.response(model.frame(y, data=data))
+    }
   }
   UseMethod("evm", y)
 }
 
 #' @rdname evm
 #' @export
-evm.default <-
+evm.character <- function(y, data, family=gpd, ...) {
+  theCall <- match.call()
+  stopifnot(!missing(data))
+  stopifnot(length(y) == 1)
+
+  y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
+  y <- formula(paste(y, "~ 1"))
+  y <- model.response(model.frame(y, data=data))
+
+  resp <- evm(y, data, family=family, ...)
+
+  resp$call <- theCall
+
+  resp
+}
+
+#' @rdname evm
+#' @export
+evm.numeric <-
 function (y, data, family=gpd, th= -Inf, qu,
           ..., # arguments specific to family such as phi = ~ 1
           penalty = NULL, prior = "gaussian",
@@ -301,6 +322,8 @@ function (y, data, family=gpd, th= -Inf, qu,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL,
           R=1000, cores=NULL, export=NULL, verbose=TRUE) {
+
+  theCall <- match.call()
 
     modelParameters <- texmexParameters(theCall, family,...)
 
@@ -367,6 +390,13 @@ function (y, data, family=gpd, th= -Inf, qu,
         o <- evmBoot(o, R=R, cores=cores, export=export)
     }
 
+    o$call <- theCall
+
     o
 }
 
+#' @rdname evm
+#' @export
+evm.default <- function(y, data, family=gpd, ...) {
+  stop("y should be numeric or character")
+}

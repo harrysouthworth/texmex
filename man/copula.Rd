@@ -38,13 +38,13 @@ Print and plot methods are available for the copula class.
 }
 \section{Methods (by class)}{
 \itemize{
-\item \code{default}: default method
+\item \code{copula(default)}: default method
 
-\item \code{data.frame}: data frame method
+\item \code{copula(data.frame)}: data frame method
 
-\item \code{matrix}: matrix method
+\item \code{copula(matrix)}: matrix method
+
 }}
-
 \examples{
 
   D <- liver[liver$dose == "D",]

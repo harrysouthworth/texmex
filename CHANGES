@@ -148,8 +148,13 @@ is constrained to be > -u\xi, not > 0. Therefore, taking logs doesn't work. Swit
 to working with \sigma*, updating plot functions. The function is now basically the
 one written by Coles.
 
---------------------------------- Versino 2.4.9 ------------------------------------
+--------------------------------- Version 2.4.9 ------------------------------------
 
 With covariates in the model ggplot.evmOpt jittered the data vertically by default,
 but also used a fixed vertical range. Therefore, if the maximum residual was jittered
 upwards, it was removed from the plot. Added jitter.height and removed fixed range.
+
+--------------------------------- Version 2.4.10 -----------------------------------
+
+Technical changes to avoid the package breaking under an upcoming change to R.
+evm.numeric and evm.character replace evm.default.

@@ -2,12 +2,16 @@
 % Please edit documentation in R/evm.R
 \name{evm}
 \alias{evm}
+\alias{evm.character}
+\alias{evm.numeric}
 \alias{evm.default}
 \title{Extreme value modelling}
 \usage{
 evm(y, data, family = gpd, ...)
 
-\method{evm}{default}(
+\method{evm}{character}(y, data, family = gpd, ...)
+
+\method{evm}{numeric}(
   y,
   data,
   family = gpd,
@@ -34,6 +38,8 @@ evm(y, data, family = gpd, ...)
   export = NULL,
   verbose = TRUE
 )
+
+\method{evm}{default}(y, data, family = gpd, ...)
 }
 \arguments{
 \item{y}{Either a numeric vector or the name of a variable in \code{data}.}
