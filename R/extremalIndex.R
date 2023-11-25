@@ -228,14 +228,15 @@ print.extremalIndex <- function(x,...)
 }
 
 #' @export
-plot.extremalIndex <- function(x,...)
-{
+plot.extremalIndex <- function(x,...){
   NormInterExceedTimes <- x$interExceedTimes * x$thExceedanceProb
 
   StdExpQuantiles <- qexp(ppoints(NormInterExceedTimes))
   Theta <- x$EIintervals
 
-  plot(StdExpQuantiles, sort(NormInterExceedTimes),xlab="Standard Exponential Quantiles",ylab="Interexceedance Times",cex=0.7,...)
+  plot(StdExpQuantiles, sort(NormInterExceedTimes),
+       xlab="Standard Exponential Quantiles",
+       ylab="Interexceedance Times",cex=0.7,...)
   abline(v=qexp(1-Theta))
   abline(a = -qexp(1-Theta)/Theta, b=1/Theta)
   title(paste("Threshold=",x$threshold))
@@ -243,10 +244,9 @@ plot.extremalIndex <- function(x,...)
 }
 
 #' @export
-declust <- function(y, r=NULL, data=NULL, ...)
-{
+declust <- function(y, r=NULL, data=NULL, ...){
   if (!missing(data)) {
-     y <- deparse(substitute(y))
+     ##y <- deparse(substitute(y))
      y <- formula(paste(y, "~ 1"))
      y <- model.response(model.frame(y, data=data))
   }
@@ -254,20 +254,18 @@ declust <- function(y, r=NULL, data=NULL, ...)
 }
 
 #' @export
-declust.default <- function(y,r=NULL,data=NULL,verbose=TRUE,...)
-{
-  if(missing(data)){
+declust.default <- function(y, r=NULL, data=NULL, verbose=TRUE,...){
+  if(!is.null(data)){
     ei <- extremalIndex(y,...)
   } else {
-    ei <- extremalIndex(substitute(y),data,...)
+    ei <- extremalIndex(data[, y], data,...)
   }
 
   declust(ei, r=r)
 }
 
 #' @export
-declust.extremalIndex <- function(y,r=NULL,...)
-{
+declust.extremalIndex <- function(y, r=NULL,...){
   theCall <- match.call()
   Times <- y$interExceedTimes
   sTimes <- sort(Times, decreasing=TRUE)

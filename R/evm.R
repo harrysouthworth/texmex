@@ -278,18 +278,41 @@
 #'   }
 #'
 #' @export evm
-evm <- function(y, data, family=gpd, ...){
-  ## 2023-11-06: Attempting to update code to work with upcoming changes in R
-  if (FALSE){
-    theCall <- match.call()
-    if (!missing(data)) {
-      y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
-      y <- formula(paste(y, "~ 1"))
-      y <- model.response(model.frame(y, data=data))
-    }
-  }
-  UseMethod("evm", y)
+evm <- function(formula, data) {
+  warning("This will eventually be deprecated")
+  mf <- match.call()
+  m <- match(c("formula", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  formula_string <- paste(deparse(mf[[2]]), "~ 1")
+  use_formula <- as.formula(formula_string, env = parent.frame())
+  mf[[2L]] <- use_formula
+  mf[[1L]] <- quote(evmReal)
+  eval(mf, parent.frame())
 }
+
+#' @rdname evm
+#' @export
+evmReal <- function(formula, data) {
+  mf <- match.call()
+  m <- match(c("formula", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  mf[[1L]] <- quote(stats::model.frame)
+  mf <- eval(mf, parent.frame())
+  model.response(mf)
+}
+
+##evm <- function(y, data, family=gpd, ...){
+  ## 2023-11-06: Attempting to update code to work with upcoming changes in R
+##  if (FALSE){
+##    theCall <- match.call()
+##    if (!missing(data)) {
+##      y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
+##      y <- formula(paste(y, "~ 1"))
+##      y <- model.response(model.frame(y, data=data))
+##    }
+##  }
+##  UseMethod("evm", y)
+##}
 
 #' @rdname evm
 #' @export
@@ -298,11 +321,11 @@ evm.character <- function(y, data, family=gpd, ...) {
   stopifnot(!missing(data))
   stopifnot(length(y) == 1)
 
-  y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
   y <- formula(paste(y, "~ 1"))
-  y <- model.response(model.frame(y, data=data))
 
-  resp <- evm(y, data, family=family, ...)
+  y <- model.response(model.frame(y, data = data))
+
+  resp <- evm(y, data, family = family, ...)
 
   resp$call <- theCall
 
@@ -323,7 +346,7 @@ function (y, data, family=gpd, th= -Inf, qu,
           jump.cov, jump.const=NULL,
           R=1000, cores=NULL, export=NULL, verbose=TRUE) {
 
-  theCall <- match.call()
+    theCall <- match.call()
 
     modelParameters <- texmexParameters(theCall, family,...)
 
@@ -338,7 +361,7 @@ function (y, data, family=gpd, th= -Inf, qu,
     ############################## Construct data to use...
 
     if (missing(data)){ data <- NULL }
-    else { y <- deparse(substitute(y)) }
+    ##else { y <- deparse(substitute(y)) }
 
     # Get list containing response (y) and design matrix for each parameter
     modelData <- texmexPrepareData(y, data, modelParameters)

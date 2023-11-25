@@ -97,7 +97,7 @@
 #' 497 -- 546, 2004
 #'
 #' J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the
-#' genralized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
+#' generalized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
 #' @keywords models multivariate
 #' @examples
 #'
@@ -174,4 +174,3 @@ function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
    oldClass(res) <- "migpd"
    invisible(res)
 }
-
