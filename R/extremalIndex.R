@@ -474,8 +474,10 @@ evm.declustered <- function(y, data=NULL, family=gpd, ...){
     res <- evm(y$clusterMaxima, th = y$threshold, family=family, ...)
   } else {
     response <- y$clusterMaxima
-    dat <- cbind(response,y$data[y$y>y$threshold,][y$isClusterMax,])
-    res <- evm(response, data=dat, th = y$threshold, family=family, ...)
+    dat <- cbind(response, y$data[y$y > y$threshold,][y$isClusterMax, ])
+
+
+    res <- evm("response", data=dat, th = y$threshold, family=family, ...)
   }
 
   clusterRate <- max(y$clusters) / length(y$y)

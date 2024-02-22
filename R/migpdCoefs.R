@@ -1,9 +1,9 @@
 #' Change values of parameters in a migpd object
-#' 
+#'
 #' Change the values of parameters in a \code{migpd} object. You might want to
 #' do this after modelling marginal distributions as functions of covariates.
-#' 
-#' 
+#'
+#'
 #' @usage migpdCoefs(object, which, coefs)
 #' @param object An object of class \code{migpd}.
 #' @param which Which models in the \code{migpd} object you want to change.
@@ -16,7 +16,7 @@
 #' @seealso \code{\link{migpd}}
 #' @keywords multivariate
 #' @examples
-#' 
+#'
 #' library(MASS)
 #' liver <- liver
 #' liver$ndose <- as.numeric(liver$dose)
@@ -24,25 +24,25 @@
 #'                 ast = resid(rlm(log(AST.M) ~ log(AST.B) + ndose, data=liver)),
 #'                 alp = resid(rlm(log(ALP.M) ~ log(ALP.B) + ndose, data=liver)),
 #'                 tbl = resid(rlm(log(TBL.M) ~ log(TBL.B) + ndose, data=liver)))
-#' 
+#'
 #' Dgpds <- migpd(d[liver$dose == "D", 1:4], mqu=.7)
-#' 
+#'
 #' d$ndose <- liver$ndose
-#' galt <- evm(alt, data=d, qu=.7, xi = ~ ndose)
-#' gast <- evm(ast, data=d, qu=.7, xi = ~ ndose)
-#' galp <- evm(alp, data=d, qu=.7, xi = ~ ndose)
-#' 
+#' galt <- evm("alt", data=d, qu=.7, xi = ~ ndose)
+#' gast <- evm("ast", data=d, qu=.7, xi = ~ ndose)
+#' galp <- evm("alp", data=d, qu=.7, xi = ~ ndose)
+#'
 #' altco <- predict(galt,type="lp",newdata=data.frame(ndose=4))$obj$link[1:2]
 #' astco <- predict(gast,type="lp",newdata=data.frame(ndose=4))$obj$link[1:2]
 #' alpco <- predict(galp,type="lp",newdata=data.frame(ndose=4))$obj$link[1:2]
-#' 
+#'
 #' Dgpd <- migpdCoefs(Dgpds, which=c("alt", "ast", "alp"),
 #'                    coefs=list(altco, astco, alpco))
-#' 
+#'
 #' summary(Dgpd)
 #' summary(Dgpds)
-#' 
-#' 
+#'
+#'
 #' @export migpdCoefs
 migpdCoefs <-
   # Coerce coefficients of a migpd object.

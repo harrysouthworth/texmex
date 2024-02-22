@@ -11,7 +11,7 @@
 #' Currently, the other \code{texmexFamily} objects available are \code{gev}
 #' which results in fitting a generalized extreme value (GEV) distribution to
 #' the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has
-#' been rounded to a given numebr of decimal places by recognisiing the data as
+#' been rounded to a given number of decimal places by recognisiing the data as
 #' interval censored, and \code{egp3} which fits the extended generalized Pareto
 #' distribution version 3 of Papastathopoulos and Tawn (2013).
 #'
@@ -61,7 +61,10 @@
 #' When \code{method = "bootstrap"}, summaries of the bootstrap distribution
 #' and the bootstrap estimate of bias are displayed.
 #'
-#' @param y Either a numeric vector or the name of a variable in \code{data}.
+#' @param y Either a numeric vector, the name of a variable in \code{data},
+#' a formula of the form y ~ 1, or a string representing the name of a
+#' variable in \code{data}. NOTE THAT the use of non-standard evaluation is
+#' likely to be removed from future versions of texmex.
 #' @param data A data frame containing \code{y} and any covariates.
 #' @param family An object of class 'texmexFamily'. Defaults to
 #' \code{family=gpd} and a generalized Pareto distribution (GPD) is fit to the data.
@@ -277,65 +280,38 @@
 #'   plot(mod)
 #'   }
 #'
-#' @export evm
-evm <- function(formula, data) {
-  warning("This will eventually be deprecated")
+#' @rdname evm
+#' @export
+evm <- function(y, data, ...) {
   mf <- match.call()
-  m <- match(c("formula", "data"), names(mf), 0L)
+  m <- match(c("y", "data"), names(mf), 0L)
   mf <- mf[c(1L, m)]
-  formula_string <- paste(deparse(mf[[2]]), "~ 1")
-  use_formula <- as.formula(formula_string, env = parent.frame())
-  mf[[2L]] <- use_formula
-  mf[[1L]] <- quote(evmReal)
-  eval(mf, parent.frame())
+
+  if (!missing(data)){
+    isfo <- try(inherits(y, "formula"), silent = TRUE)
+
+    if (class(isfo) != "try-error" && is.character(y)){ ## deal with y is a string
+      formula_string <- paste(y, "~ 1")
+      use_formula <- as.formula(formula_string, env = parent.frame())
+    } else if (class(isfo) != "try-error"){ ## deal with y as formula
+      use_formula <- y
+    } else { ## deal with y as non-standard eval
+      formula_string <- paste(deparse(mf[[2]]), "~ 1")
+      use_formula <- as.formula(formula_string, env = parent.frame())
+    }
+
+    mf[[2L]] <- use_formula
+    mf[[1L]] <- quote(evmReal)
+
+    y <- eval(mf, parent.frame())
+  }
+
+  UseMethod("evm", y)
 }
 
 #' @rdname evm
 #' @export
-evmReal <- function(formula, data) {
-  mf <- match.call()
-  m <- match(c("formula", "data"), names(mf), 0L)
-  mf <- mf[c(1L, m)]
-  mf[[1L]] <- quote(stats::model.frame)
-  mf <- eval(mf, parent.frame())
-  model.response(mf)
-}
-
-##evm <- function(y, data, family=gpd, ...){
-  ## 2023-11-06: Attempting to update code to work with upcoming changes in R
-##  if (FALSE){
-##    theCall <- match.call()
-##    if (!missing(data)) {
-##      y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
-##      y <- formula(paste(y, "~ 1"))
-##      y <- model.response(model.frame(y, data=data))
-##    }
-##  }
-##  UseMethod("evm", y)
-##}
-
-#' @rdname evm
-#' @export
-evm.character <- function(y, data, family=gpd, ...) {
-  theCall <- match.call()
-  stopifnot(!missing(data))
-  stopifnot(length(y) == 1)
-
-  y <- formula(paste(y, "~ 1"))
-
-  y <- model.response(model.frame(y, data = data))
-
-  resp <- evm(y, data, family = family, ...)
-
-  resp$call <- theCall
-
-  resp
-}
-
-#' @rdname evm
-#' @export
-evm.numeric <-
-function (y, data, family=gpd, th= -Inf, qu,
+evm.default <- function (y, data, family=gpd, th= -Inf, qu,
           ..., # arguments specific to family such as phi = ~ 1
           penalty = NULL, prior = "gaussian",
           method = "optimize", cov="observed",
@@ -420,6 +396,14 @@ function (y, data, family=gpd, th= -Inf, qu,
 
 #' @rdname evm
 #' @export
-evm.default <- function(y, data, family=gpd, ...) {
-  stop("y should be numeric or character")
+evmReal <- function(y, data) {
+  mf <- match.call()
+  m <- match(c("y", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  mf[[1L]] <- quote(stats::model.frame)
+
+  names(mf)[names(mf) == "y"] <- "formula"
+
+  mf <- eval(mf, parent.frame())
+  model.response(mf)
 }
