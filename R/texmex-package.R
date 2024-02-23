@@ -238,7 +238,7 @@ NULL
 #'     mahalanobis median model.frame model.matrix model.response
 #'     na.omit optim pexp ppoints predict qexp qnorm qlogis quantile rcauchy
 #'     rlogis resid rexp runif sd simulate spline uniroot update var bw.nrd
-#'     rnorm
+#'     rnorm as.formula
 #' @importFrom utils tail
 #' @importFrom ggplot2 ggplot scale_x_continuous scale_x_discrete
 #'     scale_y_continuous ggtitle aes geom_area geom_segment

@@ -331,9 +331,9 @@ plot.declustered <- function(x,ylab="Data",...){
 
 #' @export
 bootExtremalIndex <- function(x){
-  if( class(x) == "extremalIndex"){
+  if(inherits(x, "extremalIndex")){
     x <- declust(x)
-  } else if(class(x) != "declustered"){
+  } else if (!inherits(x, "declustered")){
     stop("x must be of class extremalIndex or declust")
   }
   nc <- length(x$sizes)
@@ -392,7 +392,7 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
         z.d <- declust(z.b)
         z.d$clusterMaxima <- rgpd(z.d$nClusters,exp(co.d[1]),co.d[2],u=z.d$threshold)
         gpd.b <- try(evm.declustered(z.d,cov="numeric"))
-        if(class(gpd.b) == "try-error"){
+        if(inherits(gpd.b, "try-error")){
           SH$boot[i,j] <- SC$boot[i,j] <- NA
         } else {
           SH$boot[i,j] <- coef(gpd.b)[2]
@@ -481,9 +481,9 @@ evm.declustered <- function(y, data=NULL, family=gpd, ...){
   }
 
   clusterRate <- max(y$clusters) / length(y$y)
-  if(class(res) == "evmOpt"){
+  if(inherits(res, "evmOpt")){
     res$rate <- clusterRate
-  } else if(class(res) == "evmSim") {
+  } else if(inherits(res, "evmSim")) {
     res$map$rate <- clusterRate
   }
   res$call <- myCall

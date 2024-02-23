@@ -290,14 +290,14 @@ evm <- function(y, data, ...) {
   if (!missing(data)){
     isfo <- try(inherits(y, "formula"), silent = TRUE)
 
-    if (class(isfo) != "try-error" && is.character(y)){ ## deal with y is a string
+    if (!inherits(isfo, "try-error") && is.character(y)){ ## deal with y as a string
       formula_string <- paste(y, "~ 1")
-      use_formula <- as.formula(formula_string, env = parent.frame())
-    } else if (class(isfo) != "try-error"){ ## deal with y as formula
+      use_formula <- formula(paste(formula_string, collapse = " "), env = parent.frame())
+    } else if (!inherits(isfo, "try-error")){ ## deal with y as formula
       use_formula <- y
     } else { ## deal with y as non-standard eval
       formula_string <- paste(deparse(mf[[2]]), "~ 1")
-      use_formula <- as.formula(formula_string, env = parent.frame())
+      use_formula <- formula(paste(formula_string, collapse = " "), env = parent.frame())
     }
 
     mf[[2L]] <- use_formula

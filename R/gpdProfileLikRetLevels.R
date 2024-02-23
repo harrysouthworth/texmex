@@ -1,5 +1,5 @@
 #' Profile likelihood based confidence intervals for GPD
-#' 
+#'
 #' Calculates profile likelilhood based confidence intervals for a given fitted GPD model -- this is only implemented for two parameter GPD with no covariates in the model.
 #' @param z a fitted \code{evmOpt} object
 #' @param m return period : units are number of observations
@@ -12,10 +12,10 @@
 #' @param priorParameters optional, value of prior/penalty parameters used for penalised likelihood estimation, default to NULL
 #' @return Numeric vector of length two, with lower and upper ends of the estiamted confidence intervals respectively.
 #' @export
-gpd.prof <- 
-	function (z, m, xmax, xlow, conf = 0.95, nint = 50, PlotIt=FALSE,mult=2,priorParameters=NULL) 
+gpd.prof <-
+	function (z, m, xmax, xlow, conf = 0.95, nint = 50, PlotIt=FALSE,mult=2,priorParameters=NULL)
 	{
-		if(class(z) != "evmOpt"){
+		if(!inherits(z,  "evmOpt")){
 			stop("Please pass an object of class evmOpt in gpd.prof")
 		}
 		if(length(z$par) >2 ){
@@ -24,38 +24,38 @@ gpd.prof <-
 		xdat <- z$data[[1]]
 		u <- z$threshold
 		la <- z$rate
-		
+
 		sol <- z$par[2]
 		prior <- .make.quadratic.penalty(priorParameters)
 		gpd.plik <- function(a,xp) {
-			if (m != Inf) 
+			if (m != Inf)
 				sc <- (a * (xp - u))/((m * la)^a - 1)
 			else sc <- (u - xp)/a
-			if (abs(a) < 10^(-4)) 
+			if (abs(a) < 10^(-4))
 				l <- length(xdat) * log(sc) + sum(xdat - u)/sc
 			else {
 				y <- (xdat - u)/sc
 				y <- 1 + a * y
-				if (any(y <= 0) || sc <= 0) 
+				if (any(y <= 0) || sc <= 0)
 					l <- 10^6
-				else l <- length(xdat) * log(sc) + sum(log(y)) * 
+				else l <- length(xdat) * log(sc) + sum(log(y)) *
 					(1/a + 1) + prior(c(log(sc),a))
 			}
 			l
 		}
 		plikInt <- function(r){
-			f <- optim(z$par[2], gpd.plik, method = "BFGS",xp=r)$value 
+			f <- optim(z$par[2], gpd.plik, method = "BFGS",xp=r)$value
 			f + z$loglik - dev
 		}
 
 		dev <- 0.5 * stats::qchisq(conf, 1)
 		Low <- uniroot(plikInt,c(xlow,xmax))$root
 		Upp <- .secant.method(plikInt,xmax,mult*xmax-Low)
-		
+
 		if(PlotIt){
 			v <- numeric(nint)
 			x <- seq(Low-0.1, Upp+0.1, length = nint)
-			
+
 			for (i in 1:nint) {
 				opt <- optim(sol, gpd.plik, method = "BFGS",xp=x[i])
 				sol <- opt$par
@@ -70,7 +70,7 @@ gpd.prof <-
 		}
 		result <- c(Low,Upp)
 		names(result) <-  c(paste("Lower",conf,sep=""),
-							paste("Upper",conf,sep=""))					
+							paste("Upper",conf,sep=""))
 		result
 	}
 
@@ -82,26 +82,26 @@ gpd.prof <-
 		}
 		# If the root was not determined in the previous iteration, update the values and proceed to the next iteration.
 		x0 <- x1
-		x1 <- x2 
+		x1 <- x2
 	}
 }
 
 .make.quadratic.penalty <- function(priorParameters=NULL) {
-	
+
 	if(is.null(priorParameters)){
 		f <- function(param) 0
 	} else {
 		centre <- priorParameters[[1]]
 		cov <- priorParameters[[2]]
-	
+
 		factors <- svd(as.matrix(cov))
 		if (min(factors$d) == 0) {
 			stop("Singular covariance matrix: quadratic penalty impossible")
 			}
-	
+
 		stacked <- rbind(t(factors$u), t(factors$v))
 		n.prior <- length(centre)
-		
+
 		f <- function(param) {
 			delta <- param - centre
 			prod <- as.numeric(stacked %*% delta)

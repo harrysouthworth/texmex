@@ -42,15 +42,15 @@
 \item{xlab}{Labels for x-axes.}
 
 \item{nsim}{Number of simulated datasets to create to form
-tolerence regions.}
+tolerance regions.}
 
 \item{alpha}{Used to compute coverage of pointwise confidence
 intervals.}
 
-\item{jitter.width}{Used to control the amount of horizontal
+\item{jitter.width, jitter.height}{Used to control the amount of
 jittering of points in the plots of the residuals versus
 covariates (when covariates are in the model).  Defaults to
-\code{jitter.width=0}.}
+\code{jitter.width=0, jitter.height = 0}.}
 
 \item{ptcol}{Colour for points. Defaults to \code{ptcol="blue"}.}
 

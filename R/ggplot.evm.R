@@ -49,7 +49,8 @@ ggplot.ppevm <- function(data=NULL, mapping, xlab, ylab,  main,
 }
 
 ggplot.hist.evmOpt <- function(data, mapping, xlab=NULL, ylab=NULL, main=NULL,
-                               ptcol="orange", col="dark blue", fill="light blue", ..., environment){
+                               ptcol="orange", col="dark blue", fill="light blue", ...,
+                               environment){
 
     if (missing(xlab) || is.null(xlab)) { xlab <- "Data" }
     if (missing(ylab) || is.null(ylab)) { ylab <- "" }
@@ -117,13 +118,13 @@ function(data, mapping, alpha = .050,
 #' @param main Main titles. Should have length 4.
 #' @param xlab Labels for x-axes.
 #' @param nsim Number of simulated datasets to create to form
-#'     tolerence regions.
+#'     tolerance regions.
 #' @param alpha Used to compute coverage of pointwise confidence
 #'     intervals.
-#' @param jitter.width Used to control the amount of horizontal
+#' @param jitter.width,jitter.height Used to control the amount of
 #'     jittering of points in the plots of the residuals versus
 #'     covariates (when covariates are in the model).  Defaults to
-#'     \code{jitter.width=0}.
+#'     \code{jitter.width=0, jitter.height = 0}.
 #' @param span Passed to the loess smoother and defaults to
 #'     \code{span=2/3}. Sometimes this choice is poor: if the loess
 #'     smoother looks wrong, try \code{span=1}.
@@ -156,8 +157,8 @@ function(data, mapping, alpha = .050,
 #' @method ggplot evmOpt
 #' @export
 ggplot.evmOpt <-
-function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05, jitter.width=0,
-         jitter.height = 0,
+function(data, mapping, which=1:4, main=rep(NULL,4), xlab=rep(NULL,4), nsim=1000, alpha=.05,
+         jitter.width=0, jitter.height = 0,
          ptcol="blue", span=2/3, col="light blue", fill="orange", plot.=TRUE, ncol=2, nrow=2, ..., environment){
     if (!missing(main)){
         if (length(main) != 1 & length(main) != 4){

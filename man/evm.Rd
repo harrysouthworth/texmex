@@ -2,16 +2,13 @@
 % Please edit documentation in R/evm.R
 \name{evm}
 \alias{evm}
-\alias{evm.character}
-\alias{evm.numeric}
 \alias{evm.default}
+\alias{evmReal}
 \title{Extreme value modelling}
 \usage{
-evm(y, data, family = gpd, ...)
+evm(y, data, ...)
 
-\method{evm}{character}(y, data, family = gpd, ...)
-
-\method{evm}{numeric}(
+\method{evm}{default}(
   y,
   data,
   family = gpd,
@@ -39,12 +36,18 @@ evm(y, data, family = gpd, ...)
   verbose = TRUE
 )
 
-\method{evm}{default}(y, data, family = gpd, ...)
+evmReal(y, data)
 }
 \arguments{
-\item{y}{Either a numeric vector or the name of a variable in \code{data}.}
+\item{y}{Either a numeric vector, the name of a variable in \code{data},
+a formula of the form y ~ 1, or a string representing the name of a
+variable in \code{data}. NOTE THAT the use of non-standard evaluation is
+likely to be removed from future versions of texmex.}
 
 \item{data}{A data frame containing \code{y} and any covariates.}
+
+\item{...}{In \code{evm}, formulae for the parameters in the family, e.g.
+\code{phi = ~ x}. If none are specified, they all default to \code{~1}.}
 
 \item{family}{An object of class 'texmexFamily'. Defaults to
 \code{family=gpd} and a generalized Pareto distribution (GPD) is fit to the data.
@@ -56,9 +59,6 @@ Pareto distribution but with the shape parameter constrained to be
 \eqn{\eta} = log(\eqn{\xi} + 0.5). Family \code{egp3} fits the extended
 GP family 3 of Papastathopoulos and Tawn (2013). No other families are currently
 available in texmex, but users may write their own.}
-
-\item{...}{In \code{evm}, formulae for the parameters in the family, e.g.
-\code{phi = ~ x}. If none are specified, they all default to \code{~1}.}
 
 \item{th}{For threshold excess models (such as when \code{family=gpd}), the
 threshold for \code{y}, exceedances above which will be used to fit the
@@ -245,7 +245,7 @@ The default \code{texmexFamily} object used by \code{evm} is \code{gpd}.
 Currently, the other \code{texmexFamily} objects available are \code{gev}
 which results in fitting a generalized extreme value (GEV) distribution to
 the data, \code{gpdIntCensored} which can be used to fit the GPD to data which has
-been rounded to a given numebr of decimal places by recognisiing the data as
+been rounded to a given number of decimal places by recognisiing the data as
 interval censored, and \code{egp3} which fits the extended generalized Pareto
 distribution version 3 of Papastathopoulos and Tawn (2013).
 

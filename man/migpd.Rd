@@ -169,7 +169,7 @@ multivariate extreme values, Journal of the Royal Statistical society B, 66,
 497 -- 546, 2004
 
 J. R. M. Hosking and J. R. Wallis, Parameter and quantile estimation for the
-genralized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
+generalized Pareto distribution, Technometrics, 29, 339 -- 349, 1987
 }
 \seealso{
 \code{\link{mex}}, \code{\link{mexDependence}},
