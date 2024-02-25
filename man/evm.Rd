@@ -3,7 +3,6 @@
 \name{evm}
 \alias{evm}
 \alias{evm.default}
-\alias{evmReal}
 \title{Extreme value modelling}
 \usage{
 evm(y, data, ...)
@@ -35,8 +34,6 @@ evm(y, data, ...)
   export = NULL,
   verbose = TRUE
 )
-
-evmReal(y, data)
 }
 \arguments{
 \item{y}{Either a numeric vector, the name of a variable in \code{data},

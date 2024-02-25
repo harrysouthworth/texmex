@@ -71,8 +71,9 @@ texmexPrepareData <-
 function(y, data, params){
     D <- vector('list', length=length(params))
     if (!is.null(data)){
-        y <- formula(paste(y, "~ 1"))
-        y <- model.response(model.frame(y, data=data))
+        fo <- formula(paste(y, "~ 1", collapse = " "))
+
+        y <- model.response(model.frame(fo, data=data))
 
         for (i in 1:length(params)){
           D[[i]] <- model.matrix(params[[i]], data)

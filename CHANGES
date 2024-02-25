@@ -154,7 +154,5 @@ With covariates in the model ggplot.evmOpt jittered the data vertically by defau
 but also used a fixed vertical range. Therefore, if the maximum residual was jittered
 upwards, it was removed from the plot. Added jitter.height and removed fixed range.
 
---------------------------------- Version 2.4.10 -----------------------------------
-
-Technical changes to avoid the package breaking under an upcoming change to R.
-evm.numeric and evm.character replace evm.default.
+Technical changes to avoid the package breaking under an upcoming change to R,
+and to pass newer version of R CMD check.

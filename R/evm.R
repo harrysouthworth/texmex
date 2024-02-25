@@ -283,27 +283,17 @@
 #' @rdname evm
 #' @export
 evm <- function(y, data, ...) {
-  mf <- match.call()
-  m <- match(c("y", "data"), names(mf), 0L)
-  mf <- mf[c(1L, m)]
+  if (!missing(data)) {
+    isch <- try(is.character(y), silent = TRUE)
+    if (!inherits(isch, "try-error")){ ## y is character
+      y <- data[, y]
+    } else {
+      y <- ifelse(deparse(substitute(y)) == "substitute(y)", deparse(y),
+                  deparse(substitute(y)))
+      y <- formula(paste(y, "~ 1", collapse = " "))
 
-  if (!missing(data)){
-    isfo <- try(inherits(y, "formula"), silent = TRUE)
-
-    if (!inherits(isfo, "try-error") && is.character(y)){ ## deal with y as a string
-      formula_string <- paste(y, "~ 1")
-      use_formula <- formula(paste(formula_string, collapse = " "), env = parent.frame())
-    } else if (!inherits(isfo, "try-error")){ ## deal with y as formula
-      use_formula <- y
-    } else { ## deal with y as non-standard eval
-      formula_string <- paste(deparse(mf[[2]]), "~ 1")
-      use_formula <- formula(paste(formula_string, collapse = " "), env = parent.frame())
+      y <- model.response(model.frame(y, data=data))
     }
-
-    mf[[2L]] <- use_formula
-    mf[[1L]] <- quote(evmReal)
-
-    y <- eval(mf, parent.frame())
   }
 
   UseMethod("evm", y)
@@ -394,16 +384,17 @@ evm.default <- function (y, data, family=gpd, th= -Inf, qu,
     o
 }
 
-#' @rdname evm
-#' @export
-evmReal <- function(y, data) {
-  mf <- match.call()
-  m <- match(c("y", "data"), names(mf), 0L)
-  mf <- mf[c(1L, m)]
-  mf[[1L]] <- quote(stats::model.frame)
 
-  names(mf)[names(mf) == "y"] <- "formula"
+if (FALSE){
+  evmReal <- function(y, data) {
+    mf <- match.call()
+    m <- match(c("y", "data"), names(mf), 0L)
+    mf <- mf[c(1L, m)]
+    mf[[1L]] <- quote(stats::model.frame)
 
-  mf <- eval(mf, parent.frame())
-  model.response(mf)
+    names(mf)[names(mf) == "y"] <- "formula"
+
+    mf <- eval(mf, parent.frame())
+    model.response(mf)
+  }
 }

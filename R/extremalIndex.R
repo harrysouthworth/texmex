@@ -218,8 +218,7 @@ extremalIndex <- function(y,data=NULL,threshold)
 }
 
 #' @export
-print.extremalIndex <- function(x,...)
-{
+print.extremalIndex <- function(x,...){
   cat("\nLength of original series",x$TotalN,"\n")
   cat("Threshold", x$threshold,"\n")
   cat("Number of Threshold Exceedances",x$nExceed,"\n")
@@ -468,16 +467,12 @@ plot.extremalIndexRangeFit <- function(x,addNexcesses=TRUE,estGPD=TRUE,...){
 
 #' @export
 evm.declustered <- function(y, data=NULL, family=gpd, ...){
-  myCall <- match.call()
-
   if(is.null(y$data)){
-    res <- evm(y$clusterMaxima, th = y$threshold, family=family, ...)
+    res <- eval(evm.default(y$clusterMaxima, th = y$threshold, family=family, data = data, ...))
   } else {
     response <- y$clusterMaxima
     dat <- cbind(response, y$data[y$y > y$threshold,][y$isClusterMax, ])
-
-
-    res <- evm("response", data=dat, th = y$threshold, family=family, ...)
+    res <- evm.default("response", data = dat, th = y$threshold, family=family, ...)
   }
 
   clusterRate <- max(y$clusters) / length(y$y)
@@ -486,7 +481,7 @@ evm.declustered <- function(y, data=NULL, family=gpd, ...){
   } else if(inherits(res, "evmSim")) {
     res$map$rate <- clusterRate
   }
-  res$call <- myCall
+
   res
 }
 
