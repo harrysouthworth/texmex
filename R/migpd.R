@@ -112,8 +112,8 @@
 #' @export migpd
 migpd <-
 function (data, mth, mqu, penalty = "gaussian", maxit = 10000,
-   trace = 0, verbose=FALSE, priorParameters = NULL, cov = "observed",
-   family = gpd){
+          trace = 0, verbose=FALSE, priorParameters = NULL, cov = "observed",
+          family = gpd){
    theCall <- match.call()
    if(is.null(colnames(data))){
     colnames(data) <- paste(rep("Column",ncol(data)),1:ncol(data),sep="")

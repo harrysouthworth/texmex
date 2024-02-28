@@ -69,41 +69,35 @@ function(trace, method){
 texmexPrepareData <-
     # Get design matrices
 function(y, data, params){
-    D <- vector('list', length=length(params))
-    if (!is.null(data)){
-        fo <- formula(paste(y, "~ 1", collapse = " "))
-
-        y <- model.response(model.frame(fo, data=data))
-
-        for (i in 1:length(params)){
-          D[[i]] <- model.matrix(params[[i]], data)
+  D <- vector('list', length=length(params))
+  if (!is.null(data)){
+    for (i in 1:length(params)){
+      D[[i]] <- model.matrix(params[[i]], data)
+    }
+  } else { # Close if(!is.null(data
+    for (i in 1:length(params)){
+        if (length(as.character(params[[i]])) == 2 & as.character(params[[i]])[2] == "1"){
+          D[[i]] <- matrix(ncol = 1, rep(1, length(y)))
+        } else {
+          D[[i]] <- model.matrix(params[[i]])
         }
-    } # Close if(!is.null(data
-    else {
-        for (i in 1:length(params)){
-            if (length(as.character(params[[i]])) == 2 & as.character(params[[i]])[2] == "1"){
-                D[[i]] <- matrix(ncol = 1, rep(1, length(y)))
-            }
-            else {
-                D[[i]] <- model.matrix(params[[i]])
-            }
-        } # Close for
-    } # Close else
+    } # Close for
+  } # Close else
 
-    names(D) <- names(params)
+  names(D) <- names(params)
 
-    # Check for missing values
-    n <- length(y)
-    if (length(na.omit(y)) < n){
-      stop("missing values in response: missing values are not supported")
+  # Check for missing values
+  n <- length(y)
+  if (length(na.omit(y)) < n){
+    stop("missing values in response: missing values are not supported")
+  }
+  for (i in 1:length(D)){
+    if (nrow(na.omit(D[[i]])) < n){
+      stop("missing values in predictors: missing values are not supported")
     }
-    for (i in 1:length(D)){
-      if (nrow(na.omit(D[[i]])) < n){
-        stop("missing values in predictors: missing values are not supported")
-      }
-    }
+  }
 
-    list(y=y, D=D)
+  list(y = y, D = D)
 }
 
 texmexThresholdData <- function(threshold, data){

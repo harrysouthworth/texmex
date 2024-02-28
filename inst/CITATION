@@ -3,9 +3,9 @@ citHeader("To cite package 'texmex' in publications use:")
 year <- sub(".*(2[[:digit:]]{3})-.*", "\\1", meta$Date, perl = TRUE)
 vers <- paste("R package version", meta$Version)
 
-citEntry(entry = "Manual",
+bibentry(bibtype = "Manual",
          title = "texmex: Statistical modelling of extreme values",
-         author = personList(as.person("Harry Southworth"),
+         author = c(as.person("Harry Southworth"),
                              as.person("Janet E. Heffernan"), 
                              as.person("Paul D. Metcalfe")),
          year = year,

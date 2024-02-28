@@ -23,7 +23,7 @@ cv <- function(object, folds = 10, ...){
 #'   penalty. The other allowed value is \code{penalty = "lasso"} and an L1
 #'   penalty is used.
 #' @param range A sequence of values for the penalty parameter. Defaults to
-#'   \code{range = seq(1, 25, length.out = 25)}. Must be strictly positive.
+#'   \code{range = seq(1, 25, length.out = 25)}.
 #'   The values are taken to be the reciprocals of the prior variance so must
 #'   be strictly positive.
 #' @param shape String giving the name of the shape parameter. Defaults to
@@ -112,12 +112,13 @@ cv.evmOpt <- function(object, folds = 10, ..., penalty = "gaussian",
   for (i in 1:nRange){
     pp[[2]][sindex, sindex] <- 1 / range[i]
     for (j in 1:folds){
-      m <- evm(y, dat[dat$fold != j, ], family = f, th = object$threshold,
+
+      m <- evm("y", dat[dat$fold != j, ], family = f, th = object$threshold,
                penalty = penalty, priorParameters = pp, cov = object$cov.method)
 
       cverror[i] <- cverror[i] +  cost(dat$y[dat$fold == j], m)
     }
-    m <- evm(y, dat, family = f, th = object$threshold,
+    m <- evm("y", dat, family = f, th = object$threshold,
              penalty = penalty, priorParameters = pp, cov = object$cov.method)
     param[i] <- coef(m)[paste0(shapeName, ": (Intercept)")]
   }

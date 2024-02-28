@@ -15,16 +15,16 @@ function(object, ...){
   res
 }
 
-#` @export 
-print.summary.migpd <- function(object, ...){
-    cat("\nA collection of", object$d, "generalized Pareto models.\n")
+#' @export 
+print.summary.migpd <- function(x, ...){
+    cat("\nA collection of", x$d, "generalized Pareto models.\n")
         
-    if (is.null(object$conv)) cat("All models converged.\n")
-    else cat("The following model(s) did not converge:", paste(object$conv, collapse=","), "\n")
+    if (is.null(x$conv)) cat("All models converged.\n")
+    else cat("The following model(s) did not converge:", paste(x$conv, collapse=","), "\n")
         
-    cat("Penalty to the likelihood:", object$penalty)
+    cat("Penalty to the likelihood:", x$penalty)
     cat("\n\nSummary of models:\n")
-    print(object$co, ...)
+    print(x$co, ...)
     cat("\n")
-    invisible(object)
+    invisible(x)
 }
