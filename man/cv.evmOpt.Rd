@@ -27,7 +27,7 @@ penalty. The other allowed value is \code{penalty = "lasso"} and an L1
 penalty is used.}
 
 \item{range}{A sequence of values for the penalty parameter. Defaults to
-\code{range = seq(1, 25, length.out = 25)}. Must be strictly positive.
+\code{range = seq(1, 25, length.out = 25)}.
 The values are taken to be the reciprocals of the prior variance so must
 be strictly positive.}
 

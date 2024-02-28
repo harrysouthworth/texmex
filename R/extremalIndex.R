@@ -175,16 +175,40 @@
 #' par(mfrow=c(2,2)); plot(so2.d.gpd.o3)
 #'
 #' @export extremalIndex
-extremalIndex <- function(y,data=NULL,threshold)
-# intevals estimator of the Extremal Index, Ferro and Segers JRSS B (2003)
+extremalIndex <- function(y, data=NULL, threshold)
+# intervals estimator of the Extremal Index, Ferro and Segers JRSS B (2003)
 # assumes data points equally spaced in time and no missing data (ie missing time points)
 {
-  if (!missing(data)) {
-     y <- ifelse(deparse(substitute(y))== "substitute(y)", deparse(y),deparse(substitute(y)))
-     y <- formula(paste(y, "~ 1"))
-     y <- model.response(model.frame(y, data=data))
+  if (FALSE){##} & !missing(data)) {
+     y <- ifelse(deparse(substitute(y)) == "substitute(y)", deparse(y),
+                 deparse(substitute(y)))
+     y <- formula(paste(y, "~ 1", collapse = " "))
+     y <- model.response(model.frame(y, data = data))
   }
+
   theCall <- match.call()
+
+  mf <- match.call()
+  m <- match(c("y", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+
+  if (inherits(mf[[2]], c("name", "call"))){
+    formula_string <- paste(deparse(mf[[2]]), "~ 1")
+  } else if (inherits(mf[[2]], "character")){
+    formula_string <- paste(mf[[2]], "~ 1")
+  }
+
+  if (exists("formula_string")){
+    use_formula <- as.formula(formula_string, env = parent.frame())
+
+    mf[[2L]] <- use_formula
+    mf[[1L]] <- quote(evmReal)
+    y <- eval(mf, parent.frame())
+  } else {
+    y <- eval(mf[[2]], parent.frame())
+  }
+
+
   timeAll <- 1:length(y)
   thExceedance <- y > threshold
   thExceedanceProb <- mean(thExceedance)
@@ -243,24 +267,63 @@ plot.extremalIndex <- function(x,...){
 }
 
 #' @export
-declust <- function(y, r=NULL, data=NULL, ...){
-  if (!missing(data)) {
-     ##y <- deparse(substitute(y))
-     y <- formula(paste(y, "~ 1"))
-     y <- model.response(model.frame(y, data=data))
+declust <- function(y, r = NULL, data = NULL, ...){
+  res <- try(declust.extremalIndex(y, r, data, ...), silent = TRUE)
+  if (inherits(res, "try-error")){
+    mf <- match.call()
+    m <- match(c("y", "data"), names(mf), 0L)
+    mf <- mf[c(1L, m)]
+
+    if (inherits(mf[[2]], c("name", "call"))){
+      formula_string <- paste(deparse(mf[[2]]), "~ 1")
+    } else if (inherits(mf[[2]], "character")){
+      formula_string <- paste(mf[[2]], "~ 1")
+    }
+
+    if (exists("formula_string")){
+      use_formula <- as.formula(formula_string, env = parent.frame())
+
+      mf[[2L]] <- use_formula
+      mf[[1L]] <- quote(evmReal)
+      y <- eval(mf, parent.frame())
+    } else {
+      y <- eval(mf[[2]], parent.frame())
+    }
+    UseMethod("declust", y)
+  } else {
+    res
   }
-  UseMethod("declust", y)
 }
 
 #' @export
 declust.default <- function(y, r=NULL, data=NULL, verbose=TRUE,...){
+  mf <- match.call()
+  m <- match(c("y", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+
+  if (inherits(mf[[2]], c("name", "call"))){
+    formula_string <- paste(deparse(mf[[2]]), "~ 1")
+  } else if (inherits(mf[[2]], "character")){
+    formula_string <- paste(mf[[2]], "~ 1")
+  }
+
+  if (exists("formula_string")){
+    use_formula <- as.formula(formula_string, env = parent.frame())
+
+    mf[[2L]] <- use_formula
+    mf[[1L]] <- quote(evmReal)
+    y <- eval(mf, parent.frame())
+  } else {
+    y <- eval(mf[[2]], parent.frame())
+  }
+
   if(!is.null(data)){
     ei <- extremalIndex(y,...)
   } else {
-    ei <- extremalIndex(data[, y], data,...)
+    ei <- extremalIndex(y,...)
   }
 
-  declust(ei, r=r)
+  declust.extremalIndex(ei, r=r)
 }
 
 #' @export
@@ -354,13 +417,31 @@ bootExtremalIndex <- function(x){
 }
 
 #' @export
-extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(y,0.95),nint=10,nboot=100,alpha=.05, estGPD=TRUE, verbose=TRUE, trace=10, ...){
+extremalIndexRangeFit <- function(y, data=NULL, umin=quantile(y,.5),
+                                  umax=quantile(y,0.95), nint=10, nboot=100,
+                                  alpha=.05, estGPD=TRUE, verbose=TRUE, trace=10,
+                                  ...){
 
-  if (!missing(data)) {
-     y <- deparse(substitute(y))
-     y <- formula(paste(y, "~ 1"))
-     y <- model.response(model.frame(y, data=data))
+  mf <- match.call()
+  m <- match(c("y", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+
+  if (inherits(mf[[2]], c("name", "call"))){
+    formula_string <- paste(deparse(mf[[2]]), "~ 1")
+  } else if (inherits(mf[[2]], "character")){
+    formula_string <- paste(mf[[2]], "~ 1")
   }
+
+  if (exists("formula_string")){
+    use_formula <- as.formula(formula_string, env = parent.frame())
+
+    mf[[2L]] <- use_formula
+    mf[[1L]] <- quote(evmReal)
+    y <- eval(mf, parent.frame())
+  } else {
+    y <- eval(mf[[2]], parent.frame())
+  }
+
 
   EI <- SH <- SC <-
     list(m=numeric(nint),boot=matrix(0,nrow=nint,ncol=nboot))
@@ -370,9 +451,9 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
     if(verbose){
       cat("\n", i,"of",nint,"thresholds: bootstrap ... ")
     }
-    z <- extremalIndex(y,threshold=u[i])
+    z <- extremalIndex(y, threshold=u[i])
     EI$m[i] <- z$EIintervals
-    d <- declust(z)
+    d <- declust.extremalIndex(z)
     if(estGPD){
       gpd.d <- evm.declustered(d)
       co.d <- coef(gpd.d)
@@ -388,7 +469,7 @@ extremalIndexRangeFit <- function(y,data=NULL,umin=quantile(y,.5),umax=quantile(
       z.b <- extremalIndex(boot,threshold=u[i])
       EI$boot[i,j] <- z.b$EIintervals
       if(estGPD){
-        z.d <- declust(z.b)
+        z.d <- declust.extremalIndex(z.b)
         z.d$clusterMaxima <- rgpd(z.d$nClusters,exp(co.d[1]),co.d[2],u=z.d$threshold)
         gpd.b <- try(evm.declustered(z.d,cov="numeric"))
         if(inherits(gpd.b, "try-error")){
@@ -474,6 +555,8 @@ evm.declustered <- function(y, data=NULL, family=gpd, ...){
     dat <- cbind(response, y$data[y$y > y$threshold,][y$isClusterMax, ])
     res <- evm.default("response", data = dat, th = y$threshold, family=family, ...)
   }
+
+  res$call <- match.call()
 
   clusterRate <- max(y$clusters) / length(y$y)
   if(inherits(res, "evmOpt")){

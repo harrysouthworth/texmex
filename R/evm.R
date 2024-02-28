@@ -61,8 +61,8 @@
 #' When \code{method = "bootstrap"}, summaries of the bootstrap distribution
 #' and the bootstrap estimate of bias are displayed.
 #'
-#' @param y Either a numeric vector, the name of a variable in \code{data},
-#' a formula of the form y ~ 1, or a string representing the name of a
+#' @param y Either a numeric vector, the name of a variable in \code{data}
+#' or a string representing the name of a
 #' variable in \code{data}. NOTE THAT the use of non-standard evaluation is
 #' likely to be removed from future versions of texmex.
 #' @param data A data frame containing \code{y} and any covariates.
@@ -280,28 +280,66 @@
 #'   plot(mod)
 #'   }
 #'
+# evm <- function(y, data = NULL, ...) {
+#   if (!is.null(data)) {
+#     isch <- try(is.character(y), silent = TRUE)
+#     if (!inherits(isch, "try-error") && isch){
+#       y <- formula(paste(y, "~ 1", collapse = " "))
+#     } else {
+#       y <- ifelse(deparse(substitute(y)) == "substitute(y)",
+#                   deparse(y), deparse(substitute(y)))
+#       y <- formula(paste(y, "~ 1", collapse = " "))
+#     }
+#     y <- model.response(model.frame(y, data=data))
+#   }
+# }
+
 #' @rdname evm
 #' @export
-evm <- function(y, data, ...) {
-  if (!missing(data)) {
-    isch <- try(is.character(y), silent = TRUE)
-    if (!inherits(isch, "try-error")){ ## y is character
-      y <- data[, y]
-    } else {
-      y <- ifelse(deparse(substitute(y)) == "substitute(y)", deparse(y),
-                  deparse(substitute(y)))
-      y <- formula(paste(y, "~ 1", collapse = " "))
+evm <- function(y, data = NULL, ...) {
+  res <- try(inherits(y, "declustered"), silent = TRUE)
+  if (inherits(res, "try-error") || !res){
+    mf <- match.call()
+    m <- match(c("y", "data"), names(mf), 0L)
+    mf <- mf[c(1L, m)]
 
-      y <- model.response(model.frame(y, data=data))
+    if (inherits(mf[[2]], c("name", "call"))){
+      formula_string <- paste(deparse(mf[[2]]), "~ 1")
+    } else if (inherits(mf[[2]], "character")){
+      formula_string <- paste(mf[[2]], "~ 1")
     }
-  }
+
+    if (exists("formula_string")){
+      use_formula <- as.formula(formula_string, env = parent.frame())
+
+      mf[[2L]] <- use_formula
+      mf[[1L]] <- quote(evmReal)
+      y <- eval(mf, parent.frame())
+    } else {
+      y <- eval(mf[[2]], parent.frame())
+    }
 
   UseMethod("evm", y)
+  } else {
+    evm.declustered(y, data, ...)
+  }
 }
 
 #' @rdname evm
 #' @export
-evm.default <- function (y, data, family=gpd, th= -Inf, qu,
+evmReal <- function(y, data) {
+  mf <- match.call()
+  m <- match(c("y", "data"), names(mf), 0L)
+  mf <- mf[c(1L, m)]
+  names(mf)[2] <- ""
+  mf[[1L]] <- quote(stats::model.frame)
+  mf <- eval(mf, parent.frame())
+  model.response(mf)
+}
+
+#' @rdname evm
+#' @export
+evm.default <- function (y, data = NULL, family=gpd, th= -Inf, qu,
           ..., # arguments specific to family such as phi = ~ 1
           penalty = NULL, prior = "gaussian",
           method = "optimize", cov="observed",
@@ -314,7 +352,19 @@ evm.default <- function (y, data, family=gpd, th= -Inf, qu,
 
     theCall <- match.call()
 
-    modelParameters <- texmexParameters(theCall, family,...)
+    if (!is.null(data)) {
+      isch <- try(is.character(y), silent = TRUE)
+      if (!inherits(isch, "try-error") && isch){
+        y <- formula(paste(y, "~ 1", collapse = " "))
+      } else {
+        y <- ifelse(deparse(substitute(y)) == "substitute(y)",
+                    deparse(y), deparse(substitute(y)))
+        y <- formula(paste(y, "~ 1", collapse = " "))
+      }
+      y <- model.response(model.frame(y, data=data))
+    }
+
+    modelParameters <- texmexParameters(theCall, family, ...)
 
     ##################### Sort out method, penalty/prior, trace...
 
@@ -325,9 +375,6 @@ evm.default <- function (y, data, family=gpd, th= -Inf, qu,
     otrace <- trace[1]; trace <- trace[2]
 
     ############################## Construct data to use...
-
-    if (missing(data)){ data <- NULL }
-    ##else { y <- deparse(substitute(y)) }
 
     # Get list containing response (y) and design matrix for each parameter
     modelData <- texmexPrepareData(y, data, modelParameters)

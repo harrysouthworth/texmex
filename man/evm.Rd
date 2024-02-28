@@ -2,14 +2,17 @@
 % Please edit documentation in R/evm.R
 \name{evm}
 \alias{evm}
+\alias{evmReal}
 \alias{evm.default}
 \title{Extreme value modelling}
 \usage{
-evm(y, data, ...)
+evm(y, data = NULL, ...)
+
+evmReal(y, data)
 
 \method{evm}{default}(
   y,
-  data,
+  data = NULL,
   family = gpd,
   th = -Inf,
   qu,
@@ -36,8 +39,8 @@ evm(y, data, ...)
 )
 }
 \arguments{
-\item{y}{Either a numeric vector, the name of a variable in \code{data},
-a formula of the form y ~ 1, or a string representing the name of a
+\item{y}{Either a numeric vector, the name of a variable in \code{data}
+or a string representing the name of a
 variable in \code{data}. NOTE THAT the use of non-standard evaluation is
 likely to be removed from future versions of texmex.}
 
