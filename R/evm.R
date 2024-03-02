@@ -280,25 +280,27 @@
 #'   plot(mod)
 #'   }
 #'
-# evm <- function(y, data = NULL, ...) {
-#   if (!is.null(data)) {
-#     isch <- try(is.character(y), silent = TRUE)
-#     if (!inherits(isch, "try-error") && isch){
-#       y <- formula(paste(y, "~ 1", collapse = " "))
-#     } else {
-#       y <- ifelse(deparse(substitute(y)) == "substitute(y)",
-#                   deparse(y), deparse(substitute(y)))
-#       y <- formula(paste(y, "~ 1", collapse = " "))
-#     }
-#     y <- model.response(model.frame(y, data=data))
-#   }
-# }
+#'
+is.declustered <- function(x){
+  res <- try(inherits(x, "declustered"), silent = TRUE)
+
+browser()
+
+  if (!inherits(res, "try-error") && res){
+    TRUE
+  } else {
+    FALSE
+  }
+}
 
 #' @rdname evm
 #' @export
 evm <- function(y, data = NULL, ...) {
-  res <- try(inherits(y, "declustered"), silent = TRUE)
-  if (inherits(res, "try-error") || !res){
+  dec <- is.declustered(y)
+
+  if (dec){
+    evm.declustered(y, data, ...)
+  } else {
     mf <- match.call()
     m <- match(c("y", "data"), names(mf), 0L)
     mf <- mf[c(1L, m)]
@@ -319,9 +321,7 @@ evm <- function(y, data = NULL, ...) {
       y <- eval(mf[[2]], parent.frame())
     }
 
-  UseMethod("evm", y)
-  } else {
-    evm.declustered(y, data, ...)
+    UseMethod("evm", y)
   }
 }
 
