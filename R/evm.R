@@ -153,6 +153,7 @@
 #' @param jump.const Control parameter for the Metropolis algorithm.
 #' @param verbose Whether or not to print progress to screen. Defaults to
 #' \code{verbose=TRUE}.
+#' @param call Used internally, defaults to \code{call = NULL}.
 #' @param R The number of parametric bootstrap samples to run when \code{method
 #' = "bootstrap"} is requested. Defaults to 1000.
 #' @param cores The number of cores to use when bootstrapping. Defaults to
@@ -281,18 +282,6 @@
 #'   }
 #'
 #'
-is.declustered <- function(x){
-  res <- try(inherits(x, "declustered"), silent = TRUE)
-
-browser()
-
-  if (!inherits(res, "try-error") && res){
-    TRUE
-  } else {
-    FALSE
-  }
-}
-
 #' @rdname evm
 #' @export
 evm <- function(y, data = NULL, ...) {
@@ -321,9 +310,22 @@ evm <- function(y, data = NULL, ...) {
       y <- eval(mf[[2]], parent.frame())
     }
 
-    UseMethod("evm", y)
+    ##UseMethod("evm", object = y)
+    call <- match.call(expand.dots = TRUE)
+    evm.default(y, data = data, ..., call = call)
   }
 }
+
+is.declustered <- function(x){
+  res <- try(inherits(x, "declustered"), silent = TRUE)
+
+  if (!inherits(res, "try-error") && res){
+    TRUE
+  } else {
+    FALSE
+  }
+}
+
 
 #' @rdname evm
 #' @export
@@ -348,20 +350,12 @@ evm.default <- function (y, data = NULL, family=gpd, th= -Inf, qu,
           iter = 40500, burn=500, thin = 4, chains = 1,
           proposal.dist = c("gaussian", "cauchy"),
           jump.cov, jump.const=NULL,
-          R=1000, cores=NULL, export=NULL, verbose=TRUE) {
+          R=1000, cores=NULL, export=NULL, verbose=TRUE, call = NULL) {
 
-    theCall <- match.call()
-
-    if (!is.null(data)) {
-      isch <- try(is.character(y), silent = TRUE)
-      if (!inherits(isch, "try-error") && isch){
-        y <- formula(paste(y, "~ 1", collapse = " "))
-      } else {
-        y <- ifelse(deparse(substitute(y)) == "substitute(y)",
-                    deparse(y), deparse(substitute(y)))
-        y <- formula(paste(y, "~ 1", collapse = " "))
-      }
-      y <- model.response(model.frame(y, data=data))
+    if (!is.null(call)){
+      theCall <- call
+    } else {
+      theCall <- match.call()
     }
 
     modelParameters <- texmexParameters(theCall, family, ...)
@@ -429,19 +423,4 @@ evm.default <- function (y, data = NULL, family=gpd, th= -Inf, qu,
     o$call <- theCall
 
     o
-}
-
-
-if (FALSE){
-  evmReal <- function(y, data) {
-    mf <- match.call()
-    m <- match(c("y", "data"), names(mf), 0L)
-    mf <- mf[c(1L, m)]
-    mf[[1L]] <- quote(stats::model.frame)
-
-    names(mf)[names(mf) == "y"] <- "formula"
-
-    mf <- eval(mf, parent.frame())
-    model.response(mf)
-  }
 }

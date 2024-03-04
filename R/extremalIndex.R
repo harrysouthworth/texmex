@@ -548,15 +548,19 @@ plot.extremalIndexRangeFit <- function(x,addNexcesses=TRUE,estGPD=TRUE,...){
 
 #' @export
 evm.declustered <- function(y, data=NULL, family=gpd, ...){
+  theCall <- match.call(expand.dots = TRUE)
+
   if(is.null(y$data)){
-    res <- eval(evm.default(y$clusterMaxima, th = y$threshold, family=family, data = data, ...))
+    res <- eval(evm.default(y$clusterMaxima, th = y$threshold,
+                            family=family, data = data, ..., call = theCall))
   } else {
     response <- y$clusterMaxima
     dat <- cbind(response, y$data[y$y > y$threshold,][y$isClusterMax, ])
-    res <- evm.default("response", data = dat, th = y$threshold, family=family, ...)
+    res <- evm.default(response, data = dat, th = y$threshold,
+                       family=family, ..., call = theCall)
   }
 
-  res$call <- match.call()
+  res$call <- theCall
 
   clusterRate <- max(y$clusters) / length(y$y)
   if(inherits(res, "evmOpt")){

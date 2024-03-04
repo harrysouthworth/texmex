@@ -10,7 +10,7 @@ evm(y, data = NULL, ...)
 
 evmReal(y, data)
 
-\method{evm}{default}(
+evm.default(
   y,
   data = NULL,
   family = gpd,
@@ -35,7 +35,8 @@ evmReal(y, data)
   R = 1000,
   cores = NULL,
   export = NULL,
-  verbose = TRUE
+  verbose = TRUE,
+  call = NULL
 )
 }
 \arguments{
@@ -164,6 +165,8 @@ texmex. It it passed to \code{parallel::clusterExport} and used by
 
 \item{verbose}{Whether or not to print progress to screen. Defaults to
 \code{verbose=TRUE}.}
+
+\item{call}{Used internally, defaults to \code{call = NULL}.}
 }
 \value{
 If \code{method = "optimize"}, an object of class \code{evmOpt}:
@@ -334,6 +337,7 @@ by Yee and Stephenson (2007).
   par(mfrow=c(3, 3))
   plot(mod)
   }
+
 
 }
 \references{
